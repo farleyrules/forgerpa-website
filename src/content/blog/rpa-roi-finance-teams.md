@@ -127,4 +127,4 @@ Want to know what your top finance processes could save with automation? I offer
 Or, if you want to run the numbers yourself first, download our [Process Automation Assessment Worksheet](https://forgerpa.com/services/automation-assessment) — the same framework I have used across 100+ automation projects.
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 18+ years in finance leadership and 8 years building enterprise automation at a Fortune 500 manufacturer, he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
