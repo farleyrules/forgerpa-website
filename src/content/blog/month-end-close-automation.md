@@ -3,9 +3,16 @@ title: "5 Month-End Close Tasks You Should Automate Today"
 author: "David Farley, CPA"
 date: "2026-03-11"
 description: "Automate month-end close with these 5 high-impact tasks. A CPA shares hours saved, error reduction, and how automation works for each process."
-tags: ["Month-End Close", "Finance Automation", "Reconciliation", "Financial Reporting"]
+tags:
+  - "Month-End Close"
+  - "Finance Automation"
+  - "Reconciliation"
+  - "Financial Reporting"
 readingTime: "9 min"
 ---
+
+# 5 Month-End Close Tasks You Should Automate Today
+
 
 ## Introduction
 

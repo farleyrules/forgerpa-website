@@ -3,9 +3,16 @@ title: "The Real ROI of RPA for Finance Teams: A CPA's Perspective"
 author: "David Farley, CPA"
 date: "2026-03-11"
 description: "Learn to calculate RPA ROI finance leaders actually trust. A CPA shares real savings data, a DIY framework, and lessons from 100+ automations."
-tags: ["RPA ROI", "Finance Automation", "Cost Savings", "ROI Framework"]
+tags:
+  - "RPA ROI"
+  - "Finance Automation"
+  - "Cost Savings"
+  - "ROI Framework"
 readingTime: "8 min"
 ---
+
+# The Real ROI of RPA for Finance Teams: A CPA's Perspective
+
 
 ## Introduction
 

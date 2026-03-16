@@ -3,9 +3,16 @@ title: "From SOP to Running Automation: How AI Accelerates the Journey"
 author: "David Farley, CPA"
 date: "2026-03-11"
 description: "Learn how to go from SOP to automation faster using AI-powered analysis. Compare traditional vs AI-accelerated timelines and find your best automation candidates."
-tags: ["SOP Automation", "AI Process Automation", "RPA Development", "Process Assessment"]
+tags:
+  - "SOP Automation"
+  - "AI Process Automation"
+  - "RPA Development"
+  - "Process Assessment"
 readingTime: "9 min"
 ---
+
+# From SOP to Running Automation: How AI Accelerates the Journey
+
 
 ## Introduction
 

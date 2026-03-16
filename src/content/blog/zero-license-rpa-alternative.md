@@ -3,9 +3,16 @@ title: "Zero-License RPA: Why Python + Playwright Beats Traditional RPA Vendors"
 author: "David Farley, CPA"
 date: "2026-03-11"
 description: "RPA without licensing costs is real. See how Python + Playwright matches vendor platforms at a fraction of the price. Full cost comparison inside."
-tags: ["Zero License RPA", "Python Automation", "Playwright", "RPA Alternative"]
+tags:
+  - "Zero License RPA"
+  - "Python Automation"
+  - "Playwright"
+  - "RPA Alternative"
 readingTime: "9 min"
 ---
+
+# Zero-License RPA: Why Python + Playwright Beats Traditional RPA Vendors
+
 
 ## Introduction
 
