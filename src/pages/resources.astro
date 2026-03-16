@@ -1,0 +1,91 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import BlogPostCard from '../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+---
+
+<PageLayout
+  title="Resources"
+  description="Free automation resources: one-pagers, frameworks, and guides. Download tools to evaluate your automation opportunities."
+  heroTitle="Resources & Downloads"
+  heroSubtitle="Free tools, frameworks, and guides to help you evaluate and plan your automation program."
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Downloadable Resources -->
+      <div class="mb-20">
+        <h2 class="text-3xl font-bold text-charcoal mb-8">Downloadable Resources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="p-8 bg-white rounded-xl border-2 border-gray-100 hover:border-amber shadow-sm hover:shadow-lg transition-all">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-amber/10 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium px-2 py-1 bg-amber/10 text-amber-dark rounded">PDF</span>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-2">Automation Assessment One-Pager</h3>
+            <p class="text-gray-600 mb-6">
+              Our six-criterion scoring framework on a single page. Print it out, share with your team, and evaluate any process in 30 minutes.
+            </p>
+            <span class="text-amber-dark font-semibold text-sm">Coming Soon</span>
+          </div>
+
+          <div class="p-8 bg-white rounded-xl border-2 border-gray-100 hover:border-amber shadow-sm hover:shadow-lg transition-all">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-amber/10 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium px-2 py-1 bg-amber/10 text-amber-dark rounded">PDF</span>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-2">Workday Conversion One-Pager</h3>
+            <p class="text-gray-600 mb-6">
+              Overview of our 31 iLoad templates, 8 source system mappings, and conversion methodology. Share with your implementation team.
+            </p>
+            <span class="text-amber-dark font-semibold text-sm">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blog Highlights -->
+      <div>
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-charcoal">Latest from the Blog</h2>
+          <a href="/blog" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
+            View All
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <BlogPostCard
+              title={post.data.title}
+              date={post.data.date}
+              readingTime={post.data.readingTime}
+              description={post.data.description}
+              tags={post.data.tags}
+              slug={post.slug}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want a Personalized Assessment?"
+    subtext="Our free 30-minute discovery call is more valuable than any download. Real analysis of your specific processes."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>

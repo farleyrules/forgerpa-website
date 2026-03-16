@@ -1,0 +1,73 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  author?: string;
+  date?: string;
+  tags?: string[];
+  readingTime?: string;
+}
+
+const { title, description, author = 'David Farley, CPA', date, tags = [], readingTime = '8 min' } = Astro.props;
+
+const formattedDate = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}) : '';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main class="py-16 lg:py-24">
+    <article class="max-w-3xl mx-auto px-4 sm:px-6">
+      <header class="mb-12">
+        <div class="flex flex-wrap gap-2 mb-4">
+          {tags.map((tag) => (
+            <a href={`/blog/tags/${encodeURIComponent(tag)}`} class="text-xs font-medium px-3 py-1 bg-amber/10 text-amber-dark rounded-full hover:bg-amber/20 transition-colors">
+              {tag}
+            </a>
+          ))}
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal leading-tight mb-6">
+          {title}
+        </h1>
+        <div class="flex items-center gap-4 text-gray-500 text-sm">
+          <span class="font-medium text-charcoal">{author}</span>
+          <span>|</span>
+          <time datetime={date}>{formattedDate}</time>
+          <span>|</span>
+          <span>{readingTime} read</span>
+        </div>
+      </header>
+      <div class="prose prose-lg max-w-none
+        prose-headings:text-charcoal prose-headings:font-bold
+        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
+        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+        prose-p:text-gray-700 prose-p:leading-relaxed
+        prose-a:text-amber-dark prose-a:no-underline hover:prose-a:underline
+        prose-strong:text-charcoal
+        prose-li:text-gray-700
+        prose-table:text-sm
+        prose-th:bg-charcoal prose-th:text-white prose-th:px-4 prose-th:py-2
+        prose-td:px-4 prose-td:py-2 prose-td:border prose-td:border-gray-200
+      ">
+        <slot />
+      </div>
+      <footer class="mt-16 pt-8 border-t border-gray-200">
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <a href={`/blog/tags/${encodeURIComponent(tag)}`} class="text-sm px-4 py-2 border border-gray-300 rounded-full text-gray-600 hover:border-amber hover:text-amber-dark transition-colors">
+              {tag}
+            </a>
+          ))}
+        </div>
+      </footer>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>

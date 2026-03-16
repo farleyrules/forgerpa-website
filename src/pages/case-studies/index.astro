@@ -1,0 +1,301 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Case Studies"
+  description="Real automation results from real engagements. AP processing, employee offboarding, and financial reporting automation case studies."
+  heroTitle="Results That Speak"
+  heroSubtitle="Real outcomes from real engagements. Every metric is auditable, every timeline is documented, and every client quote is genuine."
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+
+      <!-- Case Study 1: Manufacturing -->
+      <article id="manufacturing" class="scroll-mt-24">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Manufacturing</span>
+          <span class="text-sm text-gray-500">AP Invoice Processing</span>
+        </div>
+        <h2 class="text-3xl font-bold text-charcoal mb-4">70% Reduction in AP Processing Time</h2>
+        <p class="text-xl text-amber-dark font-semibold mb-8">$180K annual savings | 4-month payback</p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+            <p class="text-gray-700 leading-relaxed">
+              A mid-market manufacturer processing 500+ vendor invoices per month had a fully manual 18-step AP workflow spanning SAP, Excel, email approvals, and SharePoint. Processing averaged 25 minutes per invoice with three full-time AP clerks dedicated to the workflow.
+            </p>
+            <ul class="mt-4 space-y-2 text-gray-700">
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Duplicate invoice payments averaging $45,000 per quarter
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Missed early payment discounts worth $120,000 annually
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Approval bottlenecks averaging 4.2 days for director sign-off
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Month-end close delayed by 2 days due to unposted invoices
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+            <p class="text-gray-700 leading-relaxed">
+              Our conversion pipeline analyzed the 18-step SOP and identified 15 steps (83%) as fully automatable, 2 as hybrid (automated data prep with human approval), and 1 requiring human judgment. We built an orchestrated solution combining UiPath for SAP transactions, Python for data processing, and API integration for approval routing.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                'Processing time reduced 70% (25 min to 7.5 min)',
+                'Duplicate payments eliminated entirely',
+                'Early payment discount capture: 94%',
+                'Approval cycle reduced to 1.1 days',
+                'ROI achieved in 4 months',
+                '2 AP clerks redeployed to vendor management',
+              ].map((item) => (
+                <div class="flex items-start gap-2 text-gray-700">
+                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <blockquote class="border-l-4 border-amber pl-6 py-2 bg-slate-light rounded-r-lg">
+            <p class="text-gray-700 italic">
+              "We expected the automation to save us time, but the real win was the discount capture. We were leaving six figures on the table every year because we could not process invoices fast enough to hit the 10-day window."
+            </p>
+            <cite class="block mt-3 text-sm text-gray-500 not-italic">— Controller, Manufacturing Company</cite>
+          </blockquote>
+        </div>
+      </article>
+
+      <hr class="border-gray-200" />
+
+      <!-- Case Study 2: Financial Services -->
+      <article id="financial-services" class="scroll-mt-24">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Financial Services</span>
+          <span class="text-sm text-gray-500">Employee Offboarding</span>
+        </div>
+        <h2 class="text-3xl font-bold text-charcoal mb-4">Same-Day Access Revocation Across 6 Systems</h2>
+        <p class="text-xl text-amber-dark font-semibold mb-8">SOC 2 finding resolved | 3-week delivery</p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+            <p class="text-gray-700 leading-relaxed">
+              A financial services firm with 2,200 employees processed 15-20 separations monthly through a 16-step procedure spanning Workday, Active Directory, ServiceNow, Salesforce, Office 365, and physical badge access. No single system tracked completion.
+            </p>
+            <ul class="mt-4 space-y-2 text-gray-700">
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                AD accounts enabled average 3.8 days post-termination (flagged in consecutive SOC 2 audits)
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                COBRA notifications exceeded 14-day window in 12% of separations
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Software licenses continued billing 22 days post-separation on average
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Exit interviews conducted for only 40% of voluntary separations
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+            <p class="text-gray-700 leading-relaxed">
+              The 16-step SOP was processed through our pipeline: 13 steps (81%) fully automatable, 2 hybrid, 1 conditionally automated. We built a ServiceNow-orchestrated multi-system integration with API connections to all six enterprise systems.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                'Access revocation: same day (within 4 hours)',
+                'COBRA compliance: 100%',
+                'License recovery: $8,400/month saved',
+                'Exit interview completion: 85% (from 40%)',
+                'SOC 2 audit finding resolved',
+                'Delivered in 3 weeks',
+              ].map((item) => (
+                <div class="flex items-start gap-2 text-gray-700">
+                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <blockquote class="border-l-4 border-amber pl-6 py-2 bg-slate-light rounded-r-lg">
+            <p class="text-gray-700 italic">
+              "The compliance angle sold this internally. Our CISO had been asking for same-day access revocation for two years. We delivered it in three weeks, and it cost less than a single quarter of the audit remediation consultants we had been paying."
+            </p>
+            <cite class="block mt-3 text-sm text-gray-500 not-italic">— VP of HR Operations, Financial Services Firm</cite>
+          </blockquote>
+        </div>
+      </article>
+
+      <hr class="border-gray-200" />
+
+      <!-- Case Study 3: Professional Services -->
+      <article id="professional-services" class="scroll-mt-24">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Professional Services</span>
+          <span class="text-sm text-gray-500">AP Aging Report Automation</span>
+        </div>
+        <h2 class="text-3xl font-bold text-charcoal mb-4">4 Hours Compressed to 15 Minutes</h2>
+        <p class="text-xl text-amber-dark font-semibold mb-8">100% accuracy | ROI in 6 weeks</p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+            <p class="text-gray-700 leading-relaxed">
+              A regional professional services company required a weekly AP aging report every Monday. The 13-step process consumed 4 hours of analyst time, with manual threshold checking missing $100K+ vendors 15% of the time.
+            </p>
+            <ul class="mt-4 space-y-2 text-gray-700">
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                4 hours every Monday for a single report
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                $100K+ vendor exposures missed 15% of weeks
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Inconsistent formatting prevented trend analysis
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-dark mt-1">-</span>
+                Report skipped entirely when analyst was on PTO
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+            <p class="text-gray-700 leading-relaxed">
+              Analysis classified 11 of 13 steps (85%) as fully automatable with zero steps requiring human judgment. We deployed UiPath for SAP interaction combined with Python for data processing, Excel generation, and email distribution.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                'Processing: 4 hours to 15 minutes',
+                '100% threshold detection accuracy',
+                'Consistent formatting every week',
+                'Zero missed reports (runs unattended)',
+                'Analyst redeployed to vendor negotiation',
+                'ROI achieved in 6 weeks',
+              ].map((item) => (
+                <div class="flex items-start gap-2 text-gray-700">
+                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <blockquote class="border-l-4 border-amber pl-6 py-2 bg-slate-light rounded-r-lg">
+            <p class="text-gray-700 italic">
+              "It is one of those processes you do not think about automating because it only takes half a day. But half a day every week for years — that adds up. And the fact that we were missing six-figure vendor exposures because of manual threshold checks? That was the real cost we did not see."
+            </p>
+            <cite class="block mt-3 text-sm text-gray-500 not-italic">— AP Manager, Professional Services Company</cite>
+          </blockquote>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Summary Table -->
+  <section class="py-16 bg-slate-light">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-charcoal mb-8 text-center">Summary Comparison</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-charcoal text-white">
+              <th class="px-4 py-3 text-left">Metric</th>
+              <th class="px-4 py-3 text-left">Invoice Processing</th>
+              <th class="px-4 py-3 text-left">Offboarding</th>
+              <th class="px-4 py-3 text-left">AP Aging</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-200">
+              <td class="px-4 py-3 font-medium">Steps</td>
+              <td class="px-4 py-3">18</td>
+              <td class="px-4 py-3">16</td>
+              <td class="px-4 py-3">13</td>
+            </tr>
+            <tr class="border-b border-gray-200 bg-white">
+              <td class="px-4 py-3 font-medium">Systems</td>
+              <td class="px-4 py-3">4</td>
+              <td class="px-4 py-3">6</td>
+              <td class="px-4 py-3">3</td>
+            </tr>
+            <tr class="border-b border-gray-200">
+              <td class="px-4 py-3 font-medium">Automatable</td>
+              <td class="px-4 py-3">83%</td>
+              <td class="px-4 py-3">81%</td>
+              <td class="px-4 py-3">85%</td>
+            </tr>
+            <tr class="border-b border-gray-200 bg-white">
+              <td class="px-4 py-3 font-medium">Delivery Time</td>
+              <td class="px-4 py-3">4 weeks</td>
+              <td class="px-4 py-3">3 weeks</td>
+              <td class="px-4 py-3">2 weeks</td>
+            </tr>
+            <tr class="border-b border-gray-200">
+              <td class="px-4 py-3 font-medium">Primary ROI</td>
+              <td class="px-4 py-3">Discount capture</td>
+              <td class="px-4 py-3">Compliance</td>
+              <td class="px-4 py-3">Time savings</td>
+            </tr>
+            <tr class="bg-white">
+              <td class="px-4 py-3 font-medium">Payback</td>
+              <td class="px-4 py-3">4 months</td>
+              <td class="px-4 py-3">3 months</td>
+              <td class="px-4 py-3">6 weeks</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to Add Your Company to This List?"
+    subtext="Book a free 30-minute discovery call and we will identify your top 3 automation candidates."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>

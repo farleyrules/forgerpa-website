@@ -1,0 +1,54 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import BlogPostCard from '../../../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const allTags = [...new Set(posts.flatMap((post) => post.data.tags))];
+
+  return allTags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((post) => post.data.tags.includes(tag))
+        .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<PageLayout
+  title={`Posts tagged "${tag}"`}
+  description={`Blog posts about ${tag} from ForgeRPA.`}
+  heroTitle={`Tagged: ${tag}`}
+  heroSubtitle={`${posts.length} post${posts.length !== 1 ? 's' : ''} tagged with "${tag}"`}
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <a href="/blog" class="text-amber-dark hover:text-amber font-medium flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          All Posts
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => (
+          <BlogPostCard
+            title={post.data.title}
+            date={post.data.date}
+            readingTime={post.data.readingTime}
+            description={post.data.description}
+            tags={post.data.tags}
+            slug={post.slug}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</PageLayout>

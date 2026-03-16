@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-charcoal: #1a1a2e;
+  --color-charcoal-light: #2d2d44;
+  --color-amber: #f59e0b;
+  --color-amber-dark: #d97706;
+  --color-amber-light: #fbbf24;
+  --color-slate-light: #f8fafc;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}

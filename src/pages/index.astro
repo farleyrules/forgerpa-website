@@ -1,0 +1,131 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import ProofBar from '../components/ProofBar.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import CTASection from '../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Finance Automation by a CPA Who Codes"
+  description="AI-powered automation assessment, process conversion, and Workday data migration. Built by a CPA with 100+ automations at Toyota."
+  heroTitle="Accelerate Your Finance Operations with Intelligent Automation"
+  heroSubtitle="AI-powered automation assessment, process conversion, and Workday data migration — built by a CPA who codes."
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/contact"
+>
+  <!-- Proof Bar -->
+  <ProofBar />
+
+  <!-- Services Section -->
+  <section class="py-20 lg:py-28 bg-slate-light">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal">What We Build</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          Four service lines, one goal: measurable ROI from automation.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <ServiceCard
+          icon="📊"
+          title="Automation Assessment"
+          description="Data-driven scoring of every process. ROI projections. Prioritized roadmap."
+          link="/services/automation-assessment"
+        />
+        <ServiceCard
+          icon="🔄"
+          title="Workday Conversion"
+          description="31 pre-built iLoad templates. 8 source system mappings. CPA-verified accuracy."
+          link="/services/workday-conversion"
+        />
+        <ServiceCard
+          icon="⚙️"
+          title="SOP Automation"
+          description="Your documented processes become working code in weeks, not months."
+          link="/services/sop-automation"
+        />
+        <ServiceCard
+          icon="🔍"
+          title="Process Mining"
+          description="See how work actually flows. Find bottlenecks. Identify automation opportunities."
+          link="/services/process-mining"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies Section -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal">Results That Speak</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          Real outcomes from real engagements. No vanity metrics.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <CaseStudyCard
+          industry="Manufacturing"
+          metric="70% reduction in AP processing time"
+          description="$180K annual savings. Duplicate payments eliminated. Early payment discount capture increased to 94%."
+          link="/case-studies#manufacturing"
+        />
+        <CaseStudyCard
+          industry="Financial Services"
+          metric="Same-day access revocation"
+          description="SOC 2 finding resolved in 3 weeks. $8,400/month in unused license recovery. 100% COBRA compliance."
+          link="/case-studies#financial-services"
+        />
+        <CaseStudyCard
+          industry="Professional Services"
+          metric="4 hours to 15 minutes"
+          description="AP aging report fully automated. Zero missed reports. 100% threshold detection accuracy."
+          link="/case-studies#professional-services"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Why ForgeRPA Section -->
+  <section class="py-20 lg:py-28 bg-charcoal">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Why ForgeRPA</h2>
+        <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+          Not another consulting firm. A hands-on builder who understands your numbers.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center p-6">
+          <div class="text-4xl mb-4">🎓</div>
+          <h3 class="text-lg font-bold text-amber mb-2">CPA + Architect</h3>
+          <p class="text-gray-400 text-sm">You get a CPA who builds automation, not a developer who Googles accounting terms.</p>
+        </div>
+        <div class="text-center p-6">
+          <div class="text-4xl mb-4">💰</div>
+          <h3 class="text-lg font-bold text-amber mb-2">Zero License Model</h3>
+          <p class="text-gray-400 text-sm">Python + Playwright instead of $8K-$20K/bot/year vendor platforms. Same results, fraction of the cost.</p>
+        </div>
+        <div class="text-center p-6">
+          <div class="text-4xl mb-4">🏭</div>
+          <h3 class="text-lg font-bold text-amber mb-2">100+ Automations at Toyota</h3>
+          <p class="text-gray-400 text-sm">Eight years of enterprise automation. Battle-tested patterns and production-proven architecture.</p>
+        </div>
+        <div class="text-center p-6">
+          <div class="text-4xl mb-4">🔑</div>
+          <h3 class="text-lg font-bold text-amber mb-2">You Own Everything</h3>
+          <p class="text-gray-400 text-sm">Full source code, documentation, and training. No vendor lock-in. No recurring license fees.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <CTASection
+    heading="Find Your First $50K in Savings"
+    subtext="Book a free 30-minute discovery call. We will identify your top 3 automation candidates and estimate payback periods using real data."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>

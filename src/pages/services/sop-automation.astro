@@ -1,0 +1,119 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import PricingTier from '../../components/PricingTier.astro';
+---
+
+<PageLayout
+  title="SOP Automation"
+  description="Transform your documented processes into working automation in weeks. AI-powered SOP analysis, code generation, and deployment."
+  heroTitle="Your SOPs Become Working Automation"
+  heroSubtitle="AI-powered analysis transforms your documented processes into production-ready code — in weeks, not months. You keep the source code. No vendor lock-in."
+  heroCta="Start Your Project"
+  heroCtaLink="/contact"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- What We Do -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Do</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          You give us your SOP. We give you back a working automation. Our AI-powered pipeline analyzes every step, classifies automation potential, recommends the right technology, and generates a code scaffold that our engineers refine into production-ready automation.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Traditional automation consultants take 10-19 weeks per process. Our AI-accelerated approach delivers in 3-7 weeks — without cutting corners on testing, validation, or documentation.
+        </p>
+      </div>
+
+      <!-- Deliverables -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What You Receive</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            { title: 'Process Analysis Report', desc: 'Every step classified by automation potential, technology fit, and complexity.' },
+            { title: 'Technology Recommendation', desc: 'The right tool for each step — Python, Playwright, UiPath, or API integration.' },
+            { title: 'Working Automation Code', desc: 'Production-ready code with error handling, logging, and monitoring.' },
+            { title: 'Test Suite', desc: 'Automated tests validating every process path and exception scenario.' },
+            { title: 'Operations Runbook', desc: 'Complete documentation for your team to maintain and extend the automation.' },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How It Works</h2>
+        <div class="space-y-8">
+          {[
+            { step: 'Parse', desc: 'AI ingests your SOP and extracts every step, decision point, system interaction, and exception path.' },
+            { step: 'Classify', desc: 'Each step is scored for automation potential using our six-criterion framework.' },
+            { step: 'Recommend', desc: 'Technology matching ensures the right tool for each step — no over-engineering, no under-engineering.' },
+            { step: 'Generate', desc: 'AI produces a code scaffold with page objects, data models, and orchestration logic.' },
+            { step: 'Review', desc: 'Engineers refine the scaffold, add error handling, and build comprehensive test suites.' },
+            { step: 'Deploy', desc: 'Production deployment with monitoring, alerting, and hypercare support.' },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.step}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Pricing by Complexity</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <PricingTier
+            name="Simple Process"
+            price="$10K - $15K"
+            deliverables={[
+              'Under 15 steps',
+              '1-2 systems',
+              'Minimal exception handling',
+              '3-4 week delivery',
+            ]}
+          />
+          <PricingTier
+            name="Moderate Process"
+            price="$15K - $20K"
+            deliverables={[
+              '15-30 steps',
+              '2-4 systems',
+              'Multiple decision points',
+              '4-6 week delivery',
+            ]}
+            featured={true}
+          />
+          <PricingTier
+            name="Complex Process"
+            price="$20K - $25K"
+            deliverables={[
+              '30+ steps',
+              '4+ systems',
+              'Complex exception handling',
+              '6-8 week delivery',
+              'Extended hypercare',
+            ]}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Which Processes Should You Automate First?"
+    subtext="Send us your top 3 SOPs and we will provide a free preliminary assessment with automation potential scores."
+    ctaText="Send Your SOPs"
+    ctaLink="/contact"
+  />
+</PageLayout>

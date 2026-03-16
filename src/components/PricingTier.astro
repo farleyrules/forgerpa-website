@@ -1,0 +1,35 @@
+---
+interface Props {
+  name: string;
+  price: string;
+  deliverables: string[];
+  ctaText?: string;
+  ctaLink?: string;
+  featured?: boolean;
+}
+
+const { name, price, deliverables, ctaText = 'Get Started', ctaLink = '/contact', featured = false } = Astro.props;
+---
+
+<div class={`relative rounded-xl p-8 ${featured ? 'bg-charcoal text-white border-2 border-amber shadow-xl' : 'bg-white border border-gray-200 shadow-sm'}`}>
+  {featured && (
+    <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber text-charcoal text-xs font-bold rounded-full">
+      Most Popular
+    </span>
+  )}
+  <h3 class={`text-xl font-bold mb-2 ${featured ? 'text-white' : 'text-charcoal'}`}>{name}</h3>
+  <div class={`text-3xl font-extrabold mb-6 ${featured ? 'text-amber' : 'text-amber-dark'}`}>{price}</div>
+  <ul class="space-y-3 mb-8">
+    {deliverables.map((item) => (
+      <li class="flex items-start gap-3">
+        <svg class={`w-5 h-5 mt-0.5 flex-shrink-0 ${featured ? 'text-amber' : 'text-amber-dark'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span class={`text-sm ${featured ? 'text-gray-300' : 'text-gray-600'}`}>{item}</span>
+      </li>
+    ))}
+  </ul>
+  <a href={ctaLink} class={`block w-full text-center px-6 py-3 rounded-lg font-semibold transition-colors ${featured ? 'bg-amber hover:bg-amber-dark text-charcoal' : 'bg-charcoal hover:bg-charcoal-light text-white'}`}>
+    {ctaText}
+  </a>
+</div>

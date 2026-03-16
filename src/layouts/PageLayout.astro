@@ -1,0 +1,33 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroCta?: string;
+  heroCtaLink?: string;
+}
+
+const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  {heroTitle && (
+    <Hero
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      ctaText={heroCta}
+      ctaLink={heroCtaLink}
+    />
+  )}
+  <main>
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>

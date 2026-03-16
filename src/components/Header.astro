@@ -1,0 +1,112 @@
+---
+const navLinks = [
+  { label: 'About', href: '/about' },
+  { label: 'Case Studies', href: '/case-studies' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Resources', href: '/resources' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const serviceLinks = [
+  { label: 'Automation Assessment', href: '/services/automation-assessment' },
+  { label: 'Workday Conversion', href: '/services/workday-conversion' },
+  { label: 'SOP Automation', href: '/services/sop-automation' },
+  { label: 'Process Mining', href: '/services/process-mining' },
+];
+---
+
+<header class="sticky top-0 z-50 bg-charcoal shadow-lg">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-bold text-amber hover:text-amber-light transition-colors">
+        ForgeRPA
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-1">
+        <!-- Services Dropdown -->
+        <div class="relative group">
+          <a href="/services" class="flex items-center gap-1 px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+            Services
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <div class="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="bg-charcoal-light rounded-lg shadow-xl border border-gray-700 py-2">
+              {serviceLinks.map((link) => (
+                <a href={link.href} class="block px-4 py-3 text-sm text-gray-300 hover:text-amber hover:bg-charcoal transition-colors">
+                  {link.label}
+                </a>
+              ))}
+              <div class="border-t border-gray-700 mt-2 pt-2">
+                <a href="/services" class="block px-4 py-3 text-sm text-amber hover:text-amber-light transition-colors font-medium">
+                  View All Services
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {navLinks.map((link) => (
+          <a href={link.href} class="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+            {link.label}
+          </a>
+        ))}
+
+        <a href="/contact" class="ml-4 px-5 py-2 bg-amber hover:bg-amber-dark text-charcoal font-semibold text-sm rounded-lg transition-colors">
+          Book a Call
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobile-menu-btn" class="lg:hidden text-gray-300 hover:text-white" aria-label="Toggle menu">
+        <svg id="menu-open-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="menu-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden pb-6">
+      <div class="border-t border-gray-700 pt-4 space-y-1">
+        <a href="/services" class="block px-4 py-3 text-gray-300 hover:text-amber font-medium">Services</a>
+        <div class="pl-6 space-y-1">
+          {serviceLinks.map((link) => (
+            <a href={link.href} class="block px-4 py-2 text-sm text-gray-400 hover:text-amber">
+              {link.label}
+            </a>
+          ))}
+        </div>
+        {navLinks.map((link) => (
+          <a href={link.href} class="block px-4 py-3 text-gray-300 hover:text-amber font-medium">
+            {link.label}
+          </a>
+        ))}
+        <div class="pt-4 px-4">
+          <a href="/contact" class="block w-full text-center px-5 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
+            Book a Call
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const openIcon = document.getElementById('menu-open-icon');
+  const closeIcon = document.getElementById('menu-close-icon');
+
+  btn?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    openIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+  });
+</script>

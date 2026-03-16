@@ -1,0 +1,108 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PricingTier from '../../components/PricingTier.astro';
+import CTASection from '../../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Process Mining"
+  description="See how work actually flows. Find bottlenecks. Identify automation opportunities with data-driven process mining."
+  heroTitle="See How Your Processes Actually Work"
+  heroSubtitle="Process mining reveals the real flow of work — not what the SOP says, but what actually happens. Data-driven insights that expose bottlenecks, rework loops, and automation opportunities."
+  heroCta="Start Mining"
+  heroCtaLink="/contact"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- What It Is -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What It Is</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Process mining uses event log data from your systems to reconstruct how processes actually execute. Every transaction, every handoff, every delay is captured and visualized. The result is an objective, data-driven map of your operations — free from the bias of interviews and self-reported metrics.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Think of it as an X-ray for your business processes. You see the skeleton of work: where it flows smoothly, where it gets stuck, and where it loops back on itself.
+        </p>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How It Works</h2>
+        <div class="space-y-8">
+          {[
+            { stage: 'Data Extraction', desc: 'We extract event logs from your ERP, workflow systems, and databases. Every transaction creates a trail — we follow it.' },
+            { stage: 'Process Discovery', desc: 'Algorithms reconstruct the actual process flow from event data. No interviews needed. No assumptions. Just data.' },
+            { stage: 'Conformance Checking', desc: 'We compare the discovered process against your documented SOPs to identify deviations, workarounds, and undocumented steps.' },
+            { stage: 'Bottleneck Analysis', desc: 'Statistical analysis identifies where delays accumulate, which handoffs create friction, and which steps generate rework.' },
+            { stage: 'Automation Opportunity Mapping', desc: 'Every process segment is scored for automation potential using our six-criterion framework, with ROI projections.' },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.stage}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Sample Findings -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Typically Find</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            { finding: 'Hidden rework loops', detail: '15-30% of transactions cycle through the same steps multiple times.' },
+            { finding: 'Approval bottlenecks', detail: 'One manager becomes a single point of delay for dozens of processes.' },
+            { finding: 'Undocumented workarounds', detail: 'Staff bypass official procedures — sometimes for good reasons that should be formalized.' },
+            { finding: 'Automation sweet spots', detail: 'High-volume, rule-based segments that are perfect for immediate automation.' },
+          ].map((item) => (
+            <div class="bg-charcoal rounded-xl p-6">
+              <h3 class="font-bold text-amber mb-2">{item.finding}</h3>
+              <p class="text-gray-400 text-sm">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Engagement Options -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Engagement Options</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+          <PricingTier
+            name="Single Process"
+            price="$10K - $12K"
+            deliverables={[
+              'One process deep-dive',
+              'Event log analysis',
+              'Process flow visualization',
+              'Bottleneck report',
+              'Automation recommendations',
+            ]}
+          />
+          <PricingTier
+            name="Department-Wide"
+            price="$15K - $20K"
+            deliverables={[
+              'Multiple process analysis',
+              'Cross-process dependencies',
+              'Resource utilization mapping',
+              'Prioritized automation roadmap',
+              'Executive presentation',
+            ]}
+            featured={true}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Stop Guessing Where the Bottlenecks Are"
+    subtext="Process mining shows you exactly where work gets stuck and where automation will have the biggest impact."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>

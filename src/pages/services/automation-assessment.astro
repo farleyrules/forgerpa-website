@@ -1,0 +1,150 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PricingTier from '../../components/PricingTier.astro';
+import CTASection from '../../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Automation Assessment"
+  description="Data-driven process scoring, ROI projections, and prioritized automation roadmaps. Delivered in 3 weeks."
+  heroTitle="Know Exactly What to Automate First"
+  heroSubtitle="A data-driven assessment that scores every process for automation potential, projects ROI, and delivers a prioritized roadmap — so you invest in the right automations from day one."
+  heroCta="Book Your Assessment"
+  heroCtaLink="/contact"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- What It Is -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What It Is</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Our Automation Assessment evaluates your finance and operations processes using a six-criterion scoring framework developed across 100+ automation projects. Every process gets a weighted score that predicts automation success, estimated ROI, and recommended technology approach.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          This is the same framework we used at Toyota to prioritize automations across departments. It eliminates guesswork and ensures your automation budget goes where it will deliver the fastest payback.
+        </p>
+      </div>
+
+      <!-- What You Receive -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What You Receive</h2>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Process Inventory</h3>
+              <p class="text-gray-600 mt-1">Complete catalog of processes with time estimates, systems involved, and current pain points.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Automation Scoring</h3>
+              <p class="text-gray-600 mt-1">Each process scored on rule complexity, volume, data structure, stability, error impact, and technology compatibility.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">ROI Projections</h3>
+              <p class="text-gray-600 mt-1">Conservative, moderate, and aggressive ROI scenarios with payback period estimates for each candidate.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Technology Recommendations</h3>
+              <p class="text-gray-600 mt-1">Python + Playwright, UiPath, Power Automate, or API integration — matched to each process based on technical requirements.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Implementation Roadmap</h3>
+              <p class="text-gray-600 mt-1">Prioritized sequence of automations with timeline, budget estimates, and dependency mapping.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How It Works</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Week 1</div>
+            <h3 class="font-bold text-charcoal mb-2">Discovery</h3>
+            <p class="text-gray-600 text-sm">Stakeholder interviews, process observation, SOP review, and system inventory.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Week 2</div>
+            <h3 class="font-bold text-charcoal mb-2">Analysis</h3>
+            <p class="text-gray-600 text-sm">AI-powered process scoring, ROI modeling, technology matching, and roadmap development.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Week 3</div>
+            <h3 class="font-bold text-charcoal mb-2">Delivery</h3>
+            <p class="text-gray-600 text-sm">Executive presentation, detailed report, and implementation roadmap with Q&A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Pricing</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <PricingTier
+            name="Single Process"
+            price="$5,000"
+            deliverables={[
+              'Deep dive on 1 process',
+              'Full scoring and ROI analysis',
+              'Technology recommendation',
+              'Implementation plan',
+            ]}
+          />
+          <PricingTier
+            name="Department"
+            price="$10K - $15K"
+            deliverables={[
+              '5-15 processes assessed',
+              'Full scoring matrix',
+              'Comparative ROI analysis',
+              'Prioritized roadmap',
+              'Executive presentation',
+            ]}
+            featured={true}
+          />
+          <PricingTier
+            name="Enterprise"
+            price="$15K - $25K"
+            deliverables={[
+              '15-50 processes assessed',
+              'Cross-department analysis',
+              'Enterprise automation strategy',
+              'Phased implementation plan',
+              'Board-ready materials',
+            ]}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Stop Guessing. Start Measuring."
+    subtext="Book a free 30-minute discovery call to see if an Automation Assessment is right for your team."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>

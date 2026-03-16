@@ -1,0 +1,99 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PricingTier from '../../components/PricingTier.astro';
+import CTASection from '../../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Services"
+  description="Automation assessment, Workday conversion, SOP automation, and process mining. Pricing from $5K to $200K based on scope."
+  heroTitle="Services Built for Finance Teams"
+  heroSubtitle="Four service lines designed to deliver measurable ROI. Every engagement includes full source code, documentation, and knowledge transfer."
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/contact"
+>
+  <!-- Service Lines -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <PricingTier
+          name="Automation Assessment"
+          price="$5K - $25K"
+          deliverables={[
+            'Process inventory and scoring',
+            'ROI projections per process',
+            'Technology recommendations',
+            'Prioritized implementation roadmap',
+            '3-week delivery timeline',
+          ]}
+          ctaText="Learn More"
+          ctaLink="/services/automation-assessment"
+        />
+        <PricingTier
+          name="Process Automation (SOP)"
+          price="$10K - $25K"
+          deliverables={[
+            'SOP analysis and classification',
+            'Technology matching',
+            'Working automation code',
+            'Testing and validation',
+            'Documentation and training',
+          ]}
+          ctaText="Learn More"
+          ctaLink="/services/sop-automation"
+          featured={true}
+        />
+        <PricingTier
+          name="Workday Data Conversion"
+          price="$25K - $200K"
+          deliverables={[
+            '31 pre-built iLoad templates',
+            '8 source system mappings',
+            'CPA-verified data accuracy',
+            'Parallel testing support',
+            'Go-live hypercare',
+          ]}
+          ctaText="Learn More"
+          ctaLink="/services/workday-conversion"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-3xl mx-auto">
+        <PricingTier
+          name="Process Mining"
+          price="$10K - $20K"
+          deliverables={[
+            'Event log extraction',
+            'Process flow visualization',
+            'Bottleneck identification',
+            'Automation opportunity scoring',
+            'Executive summary report',
+          ]}
+          ctaText="Learn More"
+          ctaLink="/services/process-mining"
+        />
+        <PricingTier
+          name="Monthly Retainer"
+          price="$2K - $5K/mo"
+          deliverables={[
+            'Ongoing automation maintenance',
+            'New automation development',
+            'Priority support',
+            'Monthly performance reviews',
+            'Continuous improvement',
+          ]}
+          ctaText="Get Started"
+          ctaLink="/contact"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <CTASection
+    heading="Not Sure Where to Start?"
+    subtext="Book a free 30-minute discovery call. We will help you identify the highest-ROI automation opportunities in your organization."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact"
+  />
+</PageLayout>
