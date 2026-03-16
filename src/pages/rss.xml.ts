@@ -6,7 +6,7 @@ export async function GET(context: APIContext) {
   const posts = await getCollection('blog');
   return rss({
     title: 'ForgeRPA Blog',
-    description: 'Finance automation insights from a CPA who codes',
+    description: 'Finance automation insights from finance professionals who code',
     site: context.site!,
     items: posts.map((post) => ({
       title: post.data.title,

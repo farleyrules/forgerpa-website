@@ -1,8 +1,8 @@
 ---
 title: "5 Month-End Close Tasks You Should Automate Today"
-author: "David Farley, CPA"
+author: "David Farley"
 date: "2026-03-11"
-description: "Automate month-end close with these 5 high-impact tasks. A CPA shares hours saved, error reduction, and how automation works for each process."
+description: "Automate month-end close with these 5 high-impact tasks. Hours saved, error reduction, and how automation works for each process."
 tags:
   - "Month-End Close"
   - "Finance Automation"
@@ -150,4 +150,4 @@ Want to identify which of your month-end close tasks will deliver the fastest pa
 [Book Your Free Close Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is a CPA and Intelligent Automation Architect, founder of ForgeRPA. With 18+ years in finance leadership and 8 years building enterprise automation at Toyota, he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 18+ years in finance leadership and 8 years building enterprise automation at a Fortune 500 manufacturer, he helps mid-market companies automate financial processes without expensive licensing fees.*

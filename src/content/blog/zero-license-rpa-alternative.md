@@ -1,6 +1,6 @@
 ---
 title: "Zero-License RPA: Why Python + Playwright Beats Traditional RPA Vendors"
-author: "David Farley, CPA"
+author: "David Farley"
 date: "2026-03-11"
 description: "RPA without licensing costs is real. See how Python + Playwright matches vendor platforms at a fraction of the price. Full cost comparison inside."
 tags:
@@ -18,9 +18,9 @@ readingTime: "9 min"
 
 RPA without licensing costs sounds too good to be true — until you see the numbers. Let me share one that should make every CFO uncomfortable: **$8,000 to $20,000 per bot, per year.** That is the licensing cost for a single attended automation on a major RPA platform. Scale to ten bots and you are looking at $80,000-$200,000 annually — before you have automated a single additional process.
 
-I spent eight years building automations on UiPath at Toyota. I know the platform inside and out. I am a certified UiPath developer. And I am here to tell you: for a significant percentage of finance automations, you can achieve the same results with RPA without licensing costs by using Python and Playwright.
+I spent eight years building automations on UiPath at a Fortune 500 manufacturer. I know the platform inside and out. I am a certified UiPath developer. And I am here to tell you: for a significant percentage of finance automations, you can achieve the same results with RPA without licensing costs by using Python and Playwright.
 
-This is not anti-vendor rhetoric. It is a cost-benefit analysis from a CPA who has done this 100+ times. There are cases where UiPath is absolutely the right choice. But for web-based financial processes — which represent the majority of work in modern finance teams — the open-source stack delivers equivalent functionality at a fraction of the cost.
+This is not anti-vendor rhetoric. It is a cost-benefit analysis from a finance veteran who has done this 100+ times. There are cases where UiPath is absolutely the right choice. But for web-based financial processes — which represent the majority of work in modern finance teams — the open-source stack delivers equivalent functionality at a fraction of the cost.
 
 ## The Licensing Cost Problem
 
@@ -130,9 +130,9 @@ Here is what a Python + Playwright automation looks like for a common finance pr
 
 Curious whether your automation candidates are better suited for Python + Playwright or a traditional RPA platform? We offer a free [Technology Fit Assessment](https://forgerpa.com/services/automation-assessment) that evaluates your top processes and recommends the optimal technology stack for each.
 
-No vendor bias. No platform commissions. Just a CPA and automation architect telling you what makes financial sense.
+No vendor bias. No platform commissions. Just a finance veteran and automation architect telling you what makes financial sense.
 
 [Schedule Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is a CPA and Intelligent Automation Architect, founder of ForgeRPA. With 18+ years in finance leadership and 8 years building enterprise automation at Toyota, he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 18+ years in finance leadership and 8 years building enterprise automation at a Fortune 500 manufacturer, he helps mid-market companies automate financial processes without expensive licensing fees.*

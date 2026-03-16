@@ -1,8 +1,8 @@
 ---
-title: "The Real ROI of RPA for Finance Teams: A CPA's Perspective"
-author: "David Farley, CPA"
+title: "The Real ROI of RPA for Finance Teams: A Practitioner's Perspective"
+author: "David Farley"
 date: "2026-03-11"
-description: "Learn to calculate RPA ROI finance leaders actually trust. A CPA shares real savings data, a DIY framework, and lessons from 100+ automations."
+description: "Learn to calculate RPA ROI finance leaders actually trust. Real savings data, a DIY framework, and lessons from 100+ automations."
 tags:
   - "RPA ROI"
   - "Finance Automation"
@@ -11,16 +11,16 @@ tags:
 readingTime: "8 min"
 ---
 
-# The Real ROI of RPA for Finance Teams: A CPA's Perspective
+# The Real ROI of RPA for Finance Teams: A Practitioner's Perspective
 
 
 ## Introduction
 
-RPA ROI finance leaders can trust — that is what this article delivers. Not vendor projections. Not theoretical models. Actual results from a CPA who has built and measured the returns on over 100 automations.
+RPA ROI finance leaders can trust — that is what this article delivers. Not vendor projections. Not theoretical models. Actual results from someone who has built and measured the returns on over 100 automations.
 
-Every vendor will tell you that RPA delivers 300% ROI. But what does RPA ROI finance teams actually experience when the implementation is over and the bots are running? After deploying automations at Toyota and building custom systems for mid-market companies, I can tell you the real numbers are both more nuanced and more compelling than the brochures suggest.
+Every vendor will tell you that RPA delivers 300% ROI. But what does RPA ROI finance teams actually experience when the implementation is over and the bots are running? After deploying automations at a Fortune 500 manufacturer and building custom systems for mid-market companies, I can tell you the real numbers are both more nuanced and more compelling than the brochures suggest.
 
-This is not a vendor pitch. I am a CPA who has sat in the Controller's chair, closed the books every month, and then spent eight years automating the exact processes I used to do manually. Here is how RPA ROI finance departments can rely on actually works.
+This is not a vendor pitch. I have sat in the Controller's chair, closed the books every month, and then spent eight years automating the exact processes I used to do manually. Here is how RPA ROI finance departments can rely on actually works.
 
 ## Why Finance Teams Get the Best ROI from RPA
 
@@ -51,9 +51,9 @@ A multi-location restaurant company was spending **days** producing their monthl
 
 After automation, that process took **one day**. The RPA ROI finance leaders cared about here was not just headcount — it was about speed to insight. Leadership got their numbers faster, made decisions earlier, and eliminated an entire week of closing stress for the accounting team.
 
-### The Pattern at Toyota
+### The Pattern at a Fortune 500 Manufacturer
 
-Over eight years at Toyota, I have architected and deployed 100+ intelligent automations. The pattern is consistent: well-targeted automations in finance processes deliver **200-500% ROI in the first year**, with compounding returns as maintenance costs drop and process stability increases.
+Over eight years at a Fortune 500 automotive manufacturer, I architected and deployed 100+ intelligent automations. The pattern is consistent: well-targeted automations in finance processes deliver **200-500% ROI in the first year**, with compounding returns as maintenance costs drop and process stability increases.
 
 ## The RPA ROI Framework: Calculate It Yourself
 
@@ -127,4 +127,4 @@ Want to know what your top finance processes could save with automation? I offer
 Or, if you want to run the numbers yourself first, download our [Process Automation Assessment Worksheet](https://forgerpa.com/services/automation-assessment) — the same framework I have used across 100+ automation projects.
 
 ---
-*David Farley is a CPA and Intelligent Automation Architect, founder of ForgeRPA. With 18+ years in finance leadership and 8 years building enterprise automation at Toyota, he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 18+ years in finance leadership and 8 years building enterprise automation at a Fortune 500 manufacturer, he helps mid-market companies automate financial processes without expensive licensing fees.*

@@ -1,6 +1,6 @@
 ---
 title: "From SOP to Running Automation: How AI Accelerates the Journey"
-author: "David Farley, CPA"
+author: "David Farley"
 date: "2026-03-11"
 description: "Learn how to go from SOP to automation faster using AI-powered analysis. Compare traditional vs AI-accelerated timelines and find your best automation candidates."
 tags:
@@ -168,4 +168,4 @@ Want expert eyes on your evaluation? We offer a complimentary [SOP-to-Automation
 [Book Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is a CPA and Intelligent Automation Architect, founder of ForgeRPA. With 18+ years in finance leadership and 8 years building enterprise automation at Toyota, he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 18+ years in finance leadership and 8 years building enterprise automation at a Fortune 500 manufacturer, he helps mid-market companies automate financial processes without expensive licensing fees.*
