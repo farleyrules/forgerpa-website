@@ -150,4 +150,4 @@ Want to identify which of your month-end close tasks will deliver the fastest pa
 [Book Your Free Close Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps companies automate financial processes without expensive licensing fees.*

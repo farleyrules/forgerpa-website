@@ -34,7 +34,7 @@ Let us put real numbers on the table. Here is what the major RPA platforms charg
 | Power Automate | $15/user/mo (basic) | $150/bot/mo | Included | $1,800+ |
 | **Python + Playwright** | **$0** | **$0** | **Self-hosted: $0-$50/mo** | **$0-$600** |
 
-For a mid-market company running 5-10 automations, the vendor licensing tab is **$50,000-$200,000 per year**. That is pure overhead — it does not include development, maintenance, or the people who manage the platform.
+For a company running 5-10 automations, the vendor licensing tab is **$50,000-$200,000 per year**. That is pure overhead — it does not include development, maintenance, or the people who manage the platform.
 
 RPA without licensing costs is not a fantasy. It is a legitimate architecture choice that hundreds of companies are already making.
 
@@ -135,4 +135,4 @@ No vendor bias. No platform commissions. Just a finance veteran and automation a
 [Schedule Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps companies automate financial processes without expensive licensing fees.*

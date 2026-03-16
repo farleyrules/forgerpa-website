@@ -18,9 +18,9 @@ readingTime: "8 min"
 
 RPA ROI finance leaders can trust — that is what this article delivers. Not vendor projections. Not theoretical models. Actual results from someone who has built and measured the returns on over 100 automations.
 
-Every vendor will tell you that RPA delivers 300% ROI. But what does RPA ROI finance teams actually experience when the implementation is over and the bots are running? After deploying automations at a Fortune 500 manufacturer and building custom systems for mid-market companies, I can tell you the real numbers are both more nuanced and more compelling than the brochures suggest.
+Every vendor will tell you that RPA delivers 300% ROI. But what does RPA ROI finance teams actually experience when the implementation is over and the bots are running? After deploying automations at a Fortune 500 manufacturer and building custom systems for companies across industries, I can tell you the real numbers are both more nuanced and more compelling than the brochures suggest.
 
-This is not a vendor pitch. I have sat in the Controller's chair, closed the books every month, and then spent eight years automating the exact processes I used to do manually. Here is how RPA ROI finance departments can rely on actually works.
+This is not a vendor pitch. I have sat in the Controller's chair, closed the books every month, and then spent decades automating the exact processes I used to do manually. Here is how RPA ROI finance departments can rely on actually works.
 
 ## Why Finance Teams Get the Best ROI from RPA
 
@@ -41,7 +41,7 @@ Let me share two examples from my career that illustrate how RPA ROI finance tea
 
 ### Case 1: Insurance Company — $1M in Savings
 
-At a mid-market insurance company, I built a custom time management and resource allocation system. The problem was not exotic — it was the same operational inefficiency that plagues hundreds of companies. Manual tracking, duplicate data entry, and downstream reconciliation errors were consuming staff time and creating rework cycles.
+At an insurance company, I built a custom time management and resource allocation system. The problem was not exotic — it was the same operational inefficiency that plagues hundreds of companies. Manual tracking, duplicate data entry, and downstream reconciliation errors were consuming staff time and creating rework cycles.
 
 The result: nearly **$1 million in documented savings**. Not projected savings. Not "potential" savings. Actual, auditable cost reduction that showed up in the financials.
 
@@ -127,4 +127,4 @@ Want to know what your top finance processes could save with automation? I offer
 Or, if you want to run the numbers yourself first, download our [Process Automation Assessment Worksheet](https://forgerpa.com/services/automation-assessment) — the same framework I have used across 100+ automation projects.
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps companies automate financial processes without expensive licensing fees.*

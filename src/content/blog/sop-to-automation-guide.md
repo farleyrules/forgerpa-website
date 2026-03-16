@@ -138,7 +138,7 @@ Organizations go through predictable stages in their SOP to automation journey:
 
 **Level 3: Optimized** — AI tools continuously scan process documentation for automation opportunities. New automations are developed and deployed in weeks, not months. A center of excellence maintains standards and reusable components.
 
-Most mid-market finance teams are at Level 1. The goal is to reach Level 2 within six months of your first successful automation.
+Most finance teams are at Level 1. The goal is to reach Level 2 within six months of your first successful automation.
 
 ## Getting Your SOPs Automation-Ready
 
@@ -157,7 +157,7 @@ Before you start any SOP to automation project, invest a small amount of time in
 - AI extracts structured data from SOPs, matches technology, and generates code scaffolds
 - Use the candidate checklist to identify processes worth automating
 - Invest in SOP quality before starting automation — garbage in, garbage out
-- Most mid-market teams are at maturity Level 1; reaching Level 2 is the critical first step
+- Most teams are at maturity Level 1; reaching Level 2 is the critical first step
 
 ## Next Steps
 
@@ -168,4 +168,4 @@ Want expert eyes on your evaluation? We offer a complimentary [SOP-to-Automation
 [Book Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps companies automate financial processes without expensive licensing fees.*

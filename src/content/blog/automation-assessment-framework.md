@@ -18,7 +18,7 @@ readingTime: "10 min"
 
 "We should automate that." You have heard it in meetings, and you have probably said it yourself. But which processes should you automate first? Which ones will deliver real ROI, and which ones will become expensive maintenance headaches?
 
-After deploying 100+ automations at a Fortune 500 manufacturer and running process automation assessments for mid-market companies, I have developed a framework that answers these questions in 30 minutes per process. No consultants needed. No software to buy. Just six criteria, a scoring system, and honest evaluation.
+After deploying 100+ automations at a Fortune 500 manufacturer and running process automation assessments for companies across industries, I have developed a framework that answers these questions in 30 minutes per process. No consultants needed. No software to buy. Just six criteria, a scoring system, and honest evaluation.
 
 I am giving this framework away because it is the best way I know to demonstrate that automation strategy does not need to be mysterious or expensive. If you can evaluate your own processes, you will make better decisions — whether you work with us, another firm, or your internal team.
 
@@ -207,4 +207,4 @@ No sales pitch. Just data-driven recommendations from a finance veteran who has 
 [Get Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps mid-market companies automate financial processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance veteran turned Automation Architect. With 30 years of finance and automation experience — from Excel macros to enterprise RPA — he helps companies automate financial processes without expensive licensing fees.*
