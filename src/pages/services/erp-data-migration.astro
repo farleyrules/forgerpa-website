@@ -5,10 +5,10 @@ import CTASection from '../../components/CTASection.astro';
 ---
 
 <PageLayout
-  title="Workday Data Conversion"
-  description="31 pre-built iLoad templates, 8 source system mappings, and reconciliation-verified accuracy for Workday implementations."
-  heroTitle="Workday Data Conversion Without the Guesswork"
-  heroSubtitle="31 pre-built iLoad templates. 8 source system mappings. Reconciliation-verified accuracy. Get your data into Workday right the first time."
+  title="ERP Data Migration"
+  description="Template-driven data migration for Workday, NetSuite, SAP, and more. 31 pre-built Workday iLoad templates, 8 source system mappings, and reconciliation-verified accuracy."
+  heroTitle="ERP Data Migration Done Right"
+  heroSubtitle="Template-driven data conversion with reconciliation-verified accuracy. Whether you are migrating to Workday, consolidating ERP systems, or moving off legacy platforms, we get your data there clean."
   heroCta="Discuss Your Migration"
   heroCtaLink="/contact"
 >
@@ -18,24 +18,24 @@ import CTASection from '../../components/CTASection.astro';
       <div class="mb-16">
         <h2 class="text-3xl font-bold text-charcoal mb-6">The Problem</h2>
         <p class="text-lg text-gray-700 leading-relaxed">
-          Workday implementations fail at data conversion more than any other phase. Legacy system data does not map cleanly to Workday's data model. Field formats differ. Business rules conflict. And every error that makes it into production creates downstream problems that compound across modules.
+          ERP implementations fail at data conversion more than any other phase. Legacy system data does not map cleanly to your target system's data model. Field formats differ. Business rules conflict. And every error that makes it into production creates downstream problems that compound across modules.
         </p>
         <p class="mt-4 text-lg text-gray-700 leading-relaxed">
           Most implementation partners treat data conversion as a secondary workstream. We treat it as the foundation. Because when your data is wrong, everything built on top of it is wrong too.
         </p>
       </div>
 
-      <!-- The Solution -->
+      <!-- Workday Specialty -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">The Solution</h2>
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Workday Migration Specialty</h2>
         <p class="text-lg text-gray-700 leading-relaxed mb-8">
-          Our conversion engine uses pre-built iLoad templates that have been validated across multiple implementations. Every template handles field mapping, data transformation, validation rules, and error reporting — so your data arrives in Workday clean, complete, and audit-ready.
+          Our deepest expertise is in Workday conversions. Our conversion engine uses pre-built iLoad templates that have been validated across multiple implementations. Every template handles field mapping, data transformation, validation rules, and error reporting — so your data arrives in Workday clean, complete, and audit-ready.
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
           <div class="bg-charcoal rounded-xl p-6 text-center">
             <div class="text-4xl font-extrabold text-amber">31</div>
-            <div class="text-gray-400 mt-2">iLoad Templates</div>
+            <div class="text-gray-400 mt-2">Workday iLoad Templates</div>
           </div>
           <div class="bg-charcoal rounded-xl p-6 text-center">
             <div class="text-4xl font-extrabold text-amber">8</div>
@@ -60,6 +60,27 @@ import CTASection from '../../components/CTASection.astro';
         </div>
       </div>
 
+      <!-- Beyond Workday -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Beyond Workday</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Our migration methodology works for any ERP transition. The same disciplined approach — extract, transform, validate, reconcile — applies whether your target is Workday, NetSuite, SAP, or another platform.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            { title: 'System Consolidation', desc: 'Merging multiple ERPs into a single platform after acquisitions or organizational restructuring.' },
+            { title: 'Legacy System Migration', desc: 'Moving off end-of-life systems with full data preservation, audit trail integrity, and zero business disruption.' },
+            { title: 'Cloud Migration', desc: 'On-premise to cloud transitions with data validation at every stage and parallel testing before cutover.' },
+            { title: 'Data Cleanup and Enrichment', desc: 'Standardizing, deduplicating, and enriching master data as part of the migration process.' },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <!-- Finance Expertise Differentiator -->
       <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
         <h2 class="text-2xl font-bold text-amber mb-4">The Finance Expertise Advantage</h2>
@@ -67,7 +88,7 @@ import CTASection from '../../components/CTASection.astro';
           Most data conversion specialists are technicians. They can map fields and transform formats. But they cannot tell you when a journal entry mapping will create a downstream audit issue, or when a cost center structure will break your financial reporting hierarchy.
         </p>
         <p class="text-gray-300 leading-relaxed mt-4">
-          Our team brings decades of hands-on experience managing Workday financials in production. We verify every conversion from both the technical and accounting perspective. Your auditors will not find surprises in your converted data.
+          Our team brings decades of hands-on experience managing ERP financials in production. We verify every conversion from both the technical and accounting perspective. Your auditors will not find surprises in your converted data.
         </p>
       </div>
 
@@ -115,7 +136,7 @@ import CTASection from '../../components/CTASection.astro';
 
   <CTASection
     heading="Get Your Data Right the First Time"
-    subtext="Schedule a call to discuss your Workday migration timeline and data conversion requirements."
+    subtext="Schedule a call to discuss your migration timeline and data conversion requirements."
     ctaText="Discuss Your Migration"
     ctaLink="/contact"
   />
