@@ -110,7 +110,7 @@ Every process is scored on six dimensions. Each criterion is rated 1-5, giving a
 | 2 | Primarily desktop or legacy systems | SAP GUI, AS/400 green screens |
 | 1 | Citrix, virtual desktop, or highly secured | Citrix-hosted applications, biometric authentication |
 
-**Why it matters**: Technology accessibility determines development cost and reliability. Processes scoring 4-5 can use lightweight, low-cost tools like Python + Playwright. Processes scoring 1-2 may require enterprise RPA platforms with higher licensing costs. The process automation assessment should factor technology fit into the ROI calculation.
+**Why it matters**: Technology accessibility determines development cost and reliability. Processes scoring 4-5 can use lightweight, low-cost automation tools. Processes scoring 1-2 may require enterprise RPA platforms with higher licensing costs. The process automation assessment should factor technology fit into the ROI calculation.
 
 ## Putting It All Together: The Scoring Worksheet
 

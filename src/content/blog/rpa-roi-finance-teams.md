@@ -79,7 +79,7 @@ A conservative rule of thumb: RPA handles **70-90% of task volume** for well-str
 |---|---|
 | Development cost | $5,000 - $40,000 per process |
 | Licensing (if vendor platform) | $8,000 - $20,000/bot/year |
-| Licensing (Python + open source) | $0 |
+| Licensing (open-source approach) | $0 |
 | Maintenance (annual) | 15-20% of development cost |
 | Change management & training | $2,000 - $5,000 |
 
@@ -116,7 +116,7 @@ This is why organizations that start with one finance automation often end up wi
 - Use the four-step framework to calculate ROI for any process in 30 minutes
 - Avoid the three ROI killers: broken processes, over-engineering, and ignoring maintenance
 - RPA ROI compounds over time as maintenance costs stabilize and automation expertise grows
-- Open-source tools (Python, Playwright) can eliminate $8K-$20K/year in licensing costs per bot
+- Open-source alternatives can eliminate $8K-$20K/year in licensing costs per bot
 
 ## Next Steps
 

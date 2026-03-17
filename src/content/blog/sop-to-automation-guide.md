@@ -74,11 +74,11 @@ An AI system reads your SOP, tags each step with these attributes, and produces 
 
 The SOP to automation bridge includes technology selection. AI analyzes the step characteristics and recommends the right tool:
 
-- **Web-based data entry with structured forms** — Python + Playwright
-- **Desktop application with complex UI** — UiPath or Power Automate Desktop
-- **File processing and data transformation** — Python scripts
-- **Cross-system data movement with APIs** — API integration (no RPA needed)
-- **Email-triggered workflows** — Power Automate Cloud
+- **Web-based data entry with structured forms** — Lightweight browser automation
+- **Desktop application with complex UI** — Enterprise RPA platform
+- **File processing and data transformation** — Custom scripts
+- **Cross-system data movement with APIs** — Direct API integration (no RPA needed)
+- **Email-triggered workflows** — Cloud workflow platform
 
 This matching eliminates weeks of architectural deliberation and ensures you do not over-engineer or under-engineer the solution.
 
