@@ -116,7 +116,7 @@ This is why organizations that start with one finance automation often end up wi
 - Use the four-step framework to calculate ROI for any process in 30 minutes
 - Avoid the three ROI killers: broken processes, over-engineering, and ignoring maintenance
 - RPA ROI compounds over time as maintenance costs stabilize and automation expertise grows
-- Open-source alternatives can eliminate $8K-$20K/year in licensing costs per bot
+- Alternative approaches can significantly reduce the licensing costs typically associated with automation
 
 ## Next Steps
 
@@ -127,4 +127,4 @@ Want to know what your top finance processes could save with automation? I offer
 Or, if you want to run the numbers yourself first, download our [Process Automation Assessment Worksheet](https://forgerpa.com/services/automation-assessment) — the same framework I have used across 100+ automation projects.
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from Excel macros to enterprise RPA — he helps companies automate business processes without expensive licensing fees.*
+*David Farley is the founder of ForgeRPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from Excel macros to enterprise RPA — he helps companies automate business processes while keeping costs under control.*
