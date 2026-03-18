@@ -7,19 +7,70 @@ import CTASection from '../../components/CTASection.astro';
   title="Case Studies"
   description="Real automation results from real engagements. See how ForgeRPA helps companies streamline operations and reduce costs."
   heroTitle="Results That Speak"
-  heroSubtitle="Real outcomes from real engagements. We are currently preparing detailed case studies from our work. Check back soon."
+  heroSubtitle="Real outcomes from real engagements."
 >
   <section class="py-20 lg:py-28">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+
+      <!-- Case Study 1: Enterprise Data Analysis -->
+      <article class="scroll-mt-24">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Enterprise</span>
+          <span class="text-sm text-gray-500">Data Analysis at Scale</span>
+        </div>
+        <h2 class="text-3xl font-bold text-charcoal mb-4">Enterprise Data Analysis Beyond Excel's Limits</h2>
+        <p class="text-xl text-amber-dark font-semibold mb-8">Deployed across multiple business units</p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+            <p class="text-gray-700 leading-relaxed">
+              A large manufacturer needed to analyze operational datasets that regularly exceeded Excel's worksheet row limits. The exported data was too large for standard Excel analysis, leaving teams unable to build the PivotTable reports they relied on for decision-making. Multiple business units faced the same limitation.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+            <p class="text-gray-700 leading-relaxed">
+              We designed a solution using text files as the data source for Power Query connections, bypassing Excel's worksheet limits entirely. The Data Model (Power Pivot) handled the heavy lifting with DAX measures for analysis, while PivotTables provided the familiar reporting interface teams already knew how to use. No new software. No additional licensing. Just a smarter architecture using tools already available.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                'Full analysis of datasets beyond Excel row limits',
+                'Power Query connections to external text file sources',
+                'DAX-powered Data Model for advanced calculations',
+                'PivotTable reporting on the full dataset',
+                'Deployed across multiple business units',
+                'Zero additional software or licensing required',
+              ].map((item) => (
+                <div class="flex items-start gap-2 text-gray-700">
+                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <hr class="border-gray-200" />
+
+      <!-- More Case Studies Coming -->
       <div class="text-center">
         <div class="bg-slate-light rounded-xl p-12 lg:p-16">
           <div class="text-5xl mb-6">📋</div>
-          <h2 class="text-2xl font-bold text-charcoal mb-4">Case Studies Coming Soon</h2>
+          <h2 class="text-2xl font-bold text-charcoal mb-4">More Case Studies Coming Soon</h2>
           <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            We are preparing detailed case studies from our engagements across industries. Each will include the challenge, our approach, measurable outcomes, and lessons learned.
+            We are preparing additional case studies from our engagements across industries. Each will include the challenge, our approach, measurable outcomes, and lessons learned.
           </p>
           <p class="mt-6 text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            In the meantime, book a discovery call to hear how we have delivered results for companies like yours.
+            Book a discovery call to hear how we have delivered results for companies like yours.
           </p>
           <div class="mt-8">
             <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-lg rounded-lg transition-colors shadow-lg shadow-amber/20">
@@ -28,6 +79,7 @@ import CTASection from '../../components/CTASection.astro';
           </div>
         </div>
       </div>
+
     </div>
   </section>
 
