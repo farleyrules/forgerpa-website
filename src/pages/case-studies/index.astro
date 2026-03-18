@@ -32,7 +32,7 @@ import CTASection from '../../components/CTASection.astro';
           <div>
             <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
             <p class="text-gray-700 leading-relaxed">
-              We designed a fully automated end-to-end solution. An RPA process extracted the data and delivered it as text files to a SharePoint folder. A VBA procedure detected the updated files, refreshed the Power Query connections, and updated the PivotTable reports automatically. The Data Model (Power Pivot) handled the heavy lifting with DAX measures for analysis, while PivotTables provided the familiar reporting interface teams already knew how to use. No new software. No additional licensing. No manual steps. Just a smarter architecture using tools already available.
+              We designed a fully automated end-to-end solution. An RPA process extracted the data, used VBA within the automation to refresh Power Query connections and update PivotTable reports, then placed the finished file in SharePoint and emailed the folder link to users. The Data Model (Power Pivot) handled the heavy lifting with DAX measures for analysis, while PivotTables provided the familiar reporting interface teams already knew how to use. No new software. No additional licensing. No manual steps. Users simply received an email with their updated reports ready to go.
             </p>
           </div>
 
@@ -41,8 +41,8 @@ import CTASection from '../../components/CTASection.astro';
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 'Full analysis of datasets beyond Excel row limits',
-                'End-to-end automation: RPA extraction to SharePoint delivery',
-                'VBA-driven refresh of Power Query connections and PivotTables',
+                'End-to-end automation: extract, transform, publish, notify',
+                'RPA orchestrated VBA, Power Query refresh, and SharePoint delivery',
                 'DAX-powered Data Model for advanced calculations',
                 'Deployed across multiple business units',
                 'Zero manual steps. Zero additional licensing.',
