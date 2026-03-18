@@ -61,6 +61,55 @@ import CTASection from '../../components/CTASection.astro';
 
       <hr class="border-gray-200" />
 
+      <!-- Case Study 2: Month-End Close -->
+      <article class="scroll-mt-24">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Finance</span>
+          <span class="text-sm text-gray-500">Month-End Close Automation</span>
+        </div>
+        <h2 class="text-3xl font-bold text-charcoal mb-4">40 Hours of Manual Work Reduced to Under 20 Minutes</h2>
+        <p class="text-xl text-amber-dark font-semibold mb-8">Replicated across 4-5 accounting groups with the same results</p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+            <p class="text-gray-700 leading-relaxed">
+              During month-end close, five team members each spent a full 8-hour day performing the same process for their assigned companies. The work involved downloading data from SAP, performing analysis, and preparing journal entries. Combined, this single process consumed over 40 hours every close cycle.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+            <p class="text-gray-700 leading-relaxed">
+              We automated the entire workflow using RPA. The automation handled all company downloads from SAP, performed the required analysis, and generated the journal entries. What previously required five people working a full day was consolidated into a single automated process.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                '40+ hours reduced to under 20 minutes',
+                'All companies processed in a single automated run',
+                'Journal entries generated automatically',
+                'SAP downloads and analysis fully automated',
+                'Replicated across 4-5 accounting groups',
+                'Same dramatic time savings in every group',
+              ].map((item) => (
+                <div class="flex items-start gap-2 text-gray-700">
+                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <hr class="border-gray-200" />
+
       <!-- More Case Studies Coming -->
       <div class="text-center">
         <div class="bg-slate-light rounded-xl p-12 lg:p-16">
