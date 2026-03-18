@@ -32,7 +32,7 @@ import CTASection from '../../components/CTASection.astro';
           <div>
             <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
             <p class="text-gray-700 leading-relaxed">
-              We designed a solution using text files as the data source for Power Query connections, bypassing Excel's worksheet limits entirely. The Data Model (Power Pivot) handled the heavy lifting with DAX measures for analysis, while PivotTables provided the familiar reporting interface teams already knew how to use. No new software. No additional licensing. Just a smarter architecture using tools already available.
+              We designed a fully automated end-to-end solution. An RPA process extracted the data and delivered it as text files to a SharePoint folder. A VBA procedure detected the updated files, refreshed the Power Query connections, and updated the PivotTable reports automatically. The Data Model (Power Pivot) handled the heavy lifting with DAX measures for analysis, while PivotTables provided the familiar reporting interface teams already knew how to use. No new software. No additional licensing. No manual steps. Just a smarter architecture using tools already available.
             </p>
           </div>
 
@@ -41,11 +41,11 @@ import CTASection from '../../components/CTASection.astro';
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 'Full analysis of datasets beyond Excel row limits',
-                'Power Query connections to external text file sources',
+                'End-to-end automation: RPA extraction to SharePoint delivery',
+                'VBA-driven refresh of Power Query connections and PivotTables',
                 'DAX-powered Data Model for advanced calculations',
-                'PivotTable reporting on the full dataset',
                 'Deployed across multiple business units',
-                'Zero additional software or licensing required',
+                'Zero manual steps. Zero additional licensing.',
               ].map((item) => (
                 <div class="flex items-start gap-2 text-gray-700">
                   <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
