@@ -4,8 +4,10 @@ import CTASection from '../../components/CTASection.astro';
 import { getCollection } from 'astro:content';
 
 const caseStudies = await getCollection('case-studies');
+
+// Sort by order field (lower number = shown first)
 const sortedCaseStudies = caseStudies.sort((a, b) => 
-  new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+  (a.data.order || 999) - (b.data.order || 999)
 );
 ---
 

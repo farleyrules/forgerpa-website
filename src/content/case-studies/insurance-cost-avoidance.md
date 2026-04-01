@@ -9,6 +9,7 @@ outcome:
   - "Avoided approximately $1 million in ERP module costs"
   - "Delivered a production-grade daily time management system"
   - "Solution remained in use for years with excellent ROI"
+order: 6
 publishDate: "2025-03-20"
 tags:
   - "Cost Avoidance"

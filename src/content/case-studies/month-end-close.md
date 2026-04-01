@@ -12,6 +12,7 @@ outcome:
   - "Advanced VBA for complex analysis and journal entries"
   - "Consistent, error-free reporting delivered via SharePoint"
   - "Team freed to focus on analysis and business insights"
+order: 2
 publishDate: "2025-02-10"
 tags:
   - "Month-End Close"

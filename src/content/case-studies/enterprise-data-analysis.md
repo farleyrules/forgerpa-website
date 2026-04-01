@@ -12,6 +12,7 @@ outcome:
   - "DAX-powered Data Model for advanced financial calculations"
   - "Deployed to 5+ business units with identical results"
   - "Zero manual steps. Zero additional licensing costs."
+order: 3
 publishDate: "2025-01-15"
 tags:
   - "Manufacturing"
@@ -19,5 +20,3 @@ tags:
   - "Data Analysis"
 featured: true
 ---
-
-# Enterprise Data Analysis Beyond Excel's Limits

@@ -10,6 +10,7 @@ outcome:
   - "Dramatically reduced time and errors in payroll data conversion"
   - "Provided a repeatable solution for one of Workday’s most challenging template sets"
   - "Enabled the project to stay on schedule despite initial difficulties"
+order: 1
 publishDate: "2025-03-05"
 tags:
   - "Workday"

@@ -10,6 +10,7 @@ outcome:
   - "Automated creation of 850+ management reports (2 days → 30 minutes)"
   - "Multiple additional month-end close processes automated with zero manual data entry"
   - "Significantly reduced overtime and improved reporting accuracy"
+order: 4
 publishDate: "2025-03-28"
 tags:
   - "Month-End Close"

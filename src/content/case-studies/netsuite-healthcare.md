@@ -9,6 +9,7 @@ outcome:
   - "Successfully converted historical data for 100+ subsidiaries"
   - "Handled datasets well beyond normal Excel limits"
   - "Eliminated weeks of manual data work with full reconciliation reporting"
+order: 5
 publishDate: "2025-03-12"
 tags:
   - "NetSuite"
