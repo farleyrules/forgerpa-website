@@ -4,6 +4,9 @@ import ProofBar from '../components/ProofBar.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
 import CTASection from '../components/CTASection.astro';
+import { getCollection } from 'astro:content';
+const featuredStudies = await getCollection('case-studies', ({ data }) => data.featured === true);
+const sortedFeatured = featuredStudies.sort((a, b) => (a.data.order || 999) - (b.data.order || 999)).slice(0, 3);
 ---
 
 <PageLayout
@@ -51,6 +54,36 @@ import CTASection from '../components/CTASection.astro';
           description="Discover how work actually gets done. Identify bottlenecks, inefficiencies, and high-ROI automation opportunities."
           link="/services/process-mining"
         />
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Case Studies -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal mb-4">Real Results</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">See how we've delivered measurable ROI for finance and accounting teams.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {sortedFeatured.map((study) => (
+          <CaseStudyCard
+            industry={study.data.industry}
+            metric={study.data.summary.split('–')[0] || study.data.summary}
+            description={study.data.summary.includes('–') ? study.data.summary.split('–').slice(1).join('–').trim() : study.data.summary}
+            link={`/case-studies#${study.id}`}
+          />
+        ))}
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="/case-studies" class="inline-flex items-center gap-2 text-amber-dark hover:text-amber font-semibold">
+          View All Case Studies
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7" />
+          </svg>
+        </a>
       </div>
     </div>
   </section>
