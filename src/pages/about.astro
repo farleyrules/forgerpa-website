@@ -4,74 +4,53 @@ import CTASection from '../components/CTASection.astro';
 ---
 
 <PageLayout
-  title="About"
-  description="30-year finance leader turned automation expert. Former Controller building practical RPA and Excel automations for accounting and finance teams."
-  heroTitle="An Operations Team That Builds Automation"
-  heroSubtitle="We have lived your processes. Now we automate them."
+  title="About ForgeRPA"
+  description="Practical finance automation built by people with deep operations experience. We help accounting and finance teams eliminate manual work and focus on higher-value activities."
+  heroTitle="Operations Experience That Builds Better Automation"
+  heroSubtitle="We’ve lived the challenges of finance and accounting. Now we automate them."
 >
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Background -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Background</h2>
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Our Approach</h2>
         <p class="text-lg text-gray-700 leading-relaxed">
           ForgeRPA was founded on a simple observation: the people who understand business processes best are rarely the ones building the automations. That gap leads to solutions that look good in demos but fall apart in production.
         </p>
         <p class="mt-4 text-lg text-gray-700 leading-relaxed">
-          Our founder, David Farley, spent 30 years in finance and operations leadership — Controller, Finance Manager, Senior Accountant — across industries. He turned that operational knowledge into an automation practice. From advanced Excel and VBA in the early days to enterprise RPA and AI-powered process conversion today, he has architected and deployed hundreds of automations across industries. They work because they were designed by someone who has actually done the work.
+          With over 30 years of hands-on experience in finance and operations, our team has closed the books, managed reconciliations, prepared financial reports, and lived the daily challenges that finance teams face. This practical experience shapes every automation we build.
         </p>
         <p class="mt-4 text-lg text-gray-700 leading-relaxed">
-          David has sat in the Controller's chair. He has closed the books every month across multiple companies. He has lived the pain of manual processes, reconciliation errors, and month-end crunches. That firsthand finance leadership experience is what drives every automation we build.
-        </p>
-        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
-          ForgeRPA exists because every company deserves access to enterprise-grade automation. Without the enterprise price tag.
+          We combine deep knowledge of accounting processes with technical expertise in RPA, data automation, and system integration. The result is practical, maintainable automation that delivers real ROI — not just impressive demos.
         </p>
       </div>
 
-      <!-- Credentials -->
+      <!-- Experience -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Credentials & Experience</h2>
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Experience</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div class="bg-slate-light rounded-xl p-6 text-center">
+          <div class="bg-slate-light rounded-xl p-6">
             <div class="text-3xl mb-3">📊</div>
-            <h3 class="font-bold text-charcoal">Finance Leadership</h3>
-            <p class="text-gray-600 text-sm mt-1">Controller, Finance Manager, and accounting leadership roles. Deep domain expertise in month-end close, reconciliations, and financial reporting.</p>
+            <h3 class="font-bold text-charcoal mb-2">Finance & Operations</h3>
+            <p class="text-gray-600 text-sm">
+              30+ years working in accounting, financial reporting, reconciliations, and month-end close processes across multiple industries. We understand the real challenges finance teams face because we've lived them.
+            </p>
           </div>
-          <div class="bg-slate-light rounded-xl p-6 text-center">
+          <div class="bg-slate-light rounded-xl p-6">
             <div class="text-3xl mb-3">🤖</div>
-            <h3 class="font-bold text-charcoal">Automation Expertise</h3>
-            <p class="text-gray-600 text-sm mt-1">Certified UiPath Developer with 100+ enterprise automations delivered. Specializing in practical, low-maintenance solutions for finance teams.</p>
+            <h3 class="font-bold text-charcoal mb-2">Automation Expertise</h3>
+            <p class="text-gray-600 text-sm">
+              Certified in RPA development with extensive experience building practical automation solutions. We specialize in turning complex manual processes into reliable, maintainable systems.
+            </p>
           </div>
-        </div>
-      </div>
-
-      <!-- Key Achievements -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Track Record</h2>
-        <div class="space-y-6">
-          {[
-            { metric: 'Significant cost savings', context: 'Built custom systems that transformed manual operations into automated workflows, delivering measurable ROI across multiple engagements.' },
-            { metric: 'Hundreds of enterprise automations deployed', context: '30 years of business process automation. From advanced Excel and VBA solutions to enterprise RPA, deployed across industries.' },
-            { metric: 'Month-end close acceleration', context: 'Proven track record of significantly reducing close timelines across multiple companies.' },
-            { metric: 'Workday iLoad conversions at scale', context: 'Managed and executed data conversions across multiple Workday implementations using dozens of pre-built templates.' },
-            { metric: '"Silver Bullet" recognition', context: 'Recognized for automation solutions that resolved long-standing operational challenges.' },
-          ].map((item) => (
-            <div class="flex items-start gap-4 p-6 bg-white border border-gray-200 rounded-xl">
-              <div class="w-2 h-2 bg-amber rounded-full mt-3 flex-shrink-0"></div>
-              <div>
-                <h3 class="font-bold text-charcoal text-lg">{item.metric}</h3>
-                <p class="text-gray-600 mt-1">{item.context}</p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
       <!-- Philosophy -->
       <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
-        <h2 class="text-2xl font-bold text-amber mb-4">Philosophy</h2>
+        <h2 class="text-2xl font-bold text-amber mb-4">Our Philosophy</h2>
         <blockquote class="text-xl text-gray-300 leading-relaxed italic">
-          "You get someone who has lived your processes — closed the books, managed the team, fought the fires — and then learned to automate all of it. Every automation we build starts with the question: does this make business sense? If the ROI does not clear the hurdle rate, we do not build it."
+          "The best automations aren't built by pure technologists or pure accountants — they're built by people who deeply understand both the business process and how to automate it effectively."
         </blockquote>
       </div>
 
@@ -79,13 +58,13 @@ import CTASection from '../components/CTASection.astro';
       <div class="mb-16">
         <h2 class="text-3xl font-bold text-charcoal mb-6">Industries Served</h2>
         <div class="flex flex-wrap gap-3">
-          {['Manufacturing', 'Financial Services', 'Insurance', 'Restaurant & Hospitality', 'Professional Services', 'Healthcare', 'Technology', 'Automotive'].map((industry) => (
+          {['Manufacturing', 'Financial Services', 'Insurance', 'Restaurant & Hospitality', 'Professional Services', 'Healthcare', 'Technology', 'Utilities'].map((industry) => (
             <span class="px-4 py-2 bg-amber/10 text-amber-dark font-medium rounded-lg text-sm">
               {industry}
             </span>
           ))}
         </div>
-        <p class="mt-4 text-gray-600 text-sm">These are a few of the industries we have worked in. Our approach applies to any industry with manual processes.</p>
+        <p class="mt-4 text-gray-600 text-sm">These are a few of the industries we have worked in. Our approach applies to any organization with manual finance and accounting processes.</p>
       </div>
     </div>
   </section>
