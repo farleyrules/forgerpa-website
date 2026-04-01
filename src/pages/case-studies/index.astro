@@ -1,6 +1,12 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import { getCollection } from 'astro:content';
+
+const caseStudies = await getCollection('case-studies');
+const sortedCaseStudies = caseStudies.sort((a, b) => 
+  new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+);
 ---
 
 <PageLayout
@@ -11,289 +17,43 @@ import CTASection from '../../components/CTASection.astro';
 >
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-
-      <!-- Case Study 1: Enterprise Data Analysis -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Manufacturing Finance</span>
-          <span class="text-sm text-gray-500">Operational Reporting</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">Enterprise Data Analysis Beyond Excel's Limits</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">40+ hours/month across multiple business units automated</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              A Fortune 500 manufacturer’s finance and operations teams regularly exported datasets from SAP that exceeded Excel’s 1M+ row limits. Analysts spent days manually splitting files, building fragmented PivotTables, and reconciling numbers across business units. Critical monthly reporting was delayed, and decision-makers lacked timely insights.
-            </p>
+      {sortedCaseStudies.map((study) => (
+        <article class="scroll-mt-24" id={study.id}>
+          <div class="flex items-center gap-3 mb-6">
+            <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">{study.data.industry}</span>
+            <span class="text-sm text-gray-500">{study.data.service}</span>
           </div>
+          
+          <h2 class="text-3xl font-bold text-charcoal mb-4">{study.data.title}</h2>
+          <p class="text-xl text-amber-dark font-semibold mb-8">{study.data.summary}</p>
 
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We designed a fully automated end-to-end solution using RPA to extract data from SAP, followed by advanced VBA and Power Query to refresh connections, update PivotTables, and leverage the Data Model (Power Pivot) with DAX for complex calculations. Completed reports were automatically saved to SharePoint with email notifications containing direct links. The solution required no new software licenses and preserved the familiar Excel interface users already trusted.
-            </p>
-          </div>
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
+              <p class="text-gray-700 leading-relaxed">{study.data.challenge}</p>
+            </div>
 
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                '40+ hours of manual work eliminated per month',
-                'End-to-end automation: SAP extract → Power Query → SharePoint delivery',
-                'Analysis of datasets far beyond Excel row limits',
-                'DAX-powered Data Model for advanced financial calculations',
-                'Deployed to 5+ business units with identical results',
-                'Zero manual steps. Zero additional licensing costs.',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
+            <div>
+              <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
+              <p class="text-gray-700 leading-relaxed">{study.data.approach}</p>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {study.data.outcome.map((item) => (
+                  <div class="flex items-start gap-2 text-gray-700">
+                    <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </article>
-
-      <hr class="border-gray-200" />
-
-      <!-- Case Study 2: Month-End Close -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Finance & Accounting</span>
-          <span class="text-sm text-gray-500">Month-End Close</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">40 Hours of Manual Work Reduced to Under 20 Minutes</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">Replicated across multiple accounting groups with consistent 95%+ time savings</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              At a large manufacturer, five accountants each spent a full 8-hour day during month-end close downloading SAP data, performing analysis, and preparing journal entries for their assigned companies. The repetitive process consumed over 40 hours per close cycle.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We implemented a full end-to-end automation. RPA bots extracted data directly from SAP, advanced VBA scripts within Excel performed all analysis, calculations, and journal entry preparation. Completed files were automatically uploaded to SharePoint with email notifications containing direct links.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                '40+ hours per close cycle reduced to under 20 minutes',
-                '95%+ time savings across replicated deployments',
-                'Full end-to-end automation with zero manual intervention',
-                'Advanced VBA for complex analysis and journal entries',
-                'Consistent, error-free reporting delivered via SharePoint',
-                'Team freed to focus on analysis and business insights',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-gray-200" />
-
-      <!-- Case Study 3: Dairy Workday Payroll -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">ERP Data Migration</span>
-          <span class="text-sm text-gray-500">Workday Payroll</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">Workday Payroll Data Conversion – Global Dairy Company</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">Complex payroll iLoad templates automated</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              A global dairy company was implementing Workday across multiple international entities. The US team and Canada team were struggling significantly with the payroll data conversion. The payroll iLoad templates are widely considered some of the most complex in Workday.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We were brought in to support the US team and developed a highly effective Excel + VBA automation solution that successfully populated the complex payroll iLoad templates. The solution was so effective that it was offered to the Canada team as well.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                'Successfully automated population of complex payroll iLoad templates',
-                'Dramatically reduced time and errors in payroll data conversion',
-                'Provided a repeatable solution for one of Workday’s most challenging template sets',
-                'Enabled the project to stay on schedule despite initial difficulties',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-gray-200" />
-
-      <!-- Case Study 4: NetSuite Data Conversion -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">ERP Data Migration</span>
-          <span class="text-sm text-gray-500">NetSuite Implementation</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">Multi-Subsidiary NetSuite Data Conversion</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">Historical data converted for 100+ subsidiaries</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              A healthcare company migrating from QuickBooks to NetSuite needed to convert historical accounting balance data for over 100 subsidiary locations. The volume of data far exceeded practical Excel limits.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We delivered a robust solution using Excel orchestration with VBA and SQL stored procedures.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                'Successfully converted historical data for 100+ subsidiaries',
-                'Handled datasets well beyond normal Excel limits',
-                'Eliminated weeks of manual data work with full reconciliation reporting',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-gray-200" />
-
-      <!-- Case Study 5: Insurance Company -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Cost Avoidance</span>
-          <span class="text-sm text-gray-500">Process Automation</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">$1 Million ERP Module Cost Avoidance</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">Custom time and forecasting system for large insurance company</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              A large insurance company was preparing to purchase an expensive ERP module for daily time tracking, resource forecasting, and billing allocation at a projected cost of nearly $1 million.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We built a highly effective custom solution using advanced Excel, VBA, and Hyperion Essbase.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                'Avoided approximately $1 million in ERP module costs',
-                'Delivered a production-grade daily time management system',
-                'Solution remained in use for years with excellent ROI',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-gray-200" />
-
-      <!-- Case Study 6: Utility Company -->
-      <article class="scroll-mt-24">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">Finance Automation</span>
-          <span class="text-sm text-gray-500">Month-End Close</span>
-        </div>
-        <h2 class="text-3xl font-bold text-charcoal mb-4">Month-End Close Acceleration – Utility Company</h2>
-        <p class="text-xl text-amber-dark font-semibold mb-8">Reduced close cycle from 7 days to 4 days</p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-            <p class="text-gray-700 leading-relaxed">
-              A utility company’s finance team required 7 days to complete the monthly close cycle. Creating over 850 management reports alone took two full days each month. Multiple other close processes also required significant time and manual data entry.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-            <p class="text-gray-700 leading-relaxed">
-              We automated the process using SQL, Excel, VBA, and Hyperion Essbase. In addition, multiple other month-end close processes were automated using Excel and VBA automation, removing the need for data entry of any kind.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                'Reduced monthly financial close cycle from 7 days to 4 days',
-                'Automated creation of 850+ management reports (2 days → 30 minutes)',
-                'Multiple additional month-end close processes automated with zero manual data entry',
-                'Significantly reduced overtime and improved reporting accuracy',
-              ].map((item) => (
-                <div class="flex items-start gap-2 text-gray-700">
-                  <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </article>
-
+        </article>
+      ))}
     </div>
   </section>
 
