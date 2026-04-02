@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import PricingTier from '../../components/PricingTier.astro';
 import CTASection from '../../components/CTASection.astro';
 ---
 
@@ -67,35 +66,6 @@ import CTASection from '../../components/CTASection.astro';
         </div>
       </div>
 
-      <!-- Engagement Options -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Engagement Options</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          <PricingTier
-            name="Single Process"
-            price="$10K - $12K"
-            deliverables={[
-              'One process deep-dive',
-              'Event log analysis',
-              'Process flow visualization',
-              'Bottleneck report',
-              'Automation recommendations',
-            ]}
-          />
-          <PricingTier
-            name="Department-Wide"
-            price="$15K - $20K"
-            deliverables={[
-              'Multiple process analysis',
-              'Cross-process dependencies',
-              'Resource utilization mapping',
-              'Prioritized automation roadmap',
-              'Executive presentation',
-            ]}
-            featured={true}
-          />
-        </div>
-      </div>
     </div>
   </section>
 
