@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import PricingTier from '../../components/PricingTier.astro';
 import CTASection from '../../components/CTASection.astro';
 ---
 
@@ -23,76 +22,42 @@ import CTASection from '../../components/CTASection.astro';
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <PricingTier
-          name="Automation Assessment"
-          price="$5K - $25K"
-          deliverables={[
-            'Process inventory and scoring',
-            'ROI projections per process',
-            'Technology recommendations',
-            'Prioritized implementation roadmap',
-            '3-week delivery timeline',
-          ]}
-          ctaText="Learn More"
-          ctaLink="/services/automation-assessment"
-        />
-        <PricingTier
-          name="Finance Process Automation"
-          price="$10K - $25K"
-          deliverables={[
-            'Advanced Excel, VBA & Power Query automation',
-            'Month-end close and reconciliation processes',
-            'Accounts payable and financial reporting',
-            'Working automation code with full documentation',
-            'Testing, validation, and knowledge transfer',
-          ]}
-          ctaText="Learn More"
-          ctaLink="/services/sop-automation"
-          featured={true}
-        />
-        <PricingTier
-          name="ERP Data Migration"
-          price="$25K - $200K"
-          deliverables={[
-            'Workday, SAP, NetSuite, Ariba, Lawson & more',
-            '31 pre-built Workday iLoad templates',
-            'Reconciliation-verified data accuracy',
-            'Advanced Excel, VBA & Power Query transformation',
-            'Parallel testing and go-live support',
-          ]}
-          ctaText="Learn More"
-          ctaLink="/services/erp-data-migration"
-        />
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-sm font-semibold tracking-widest mb-3">01</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-4">Automation Assessment</h3>
+          <p class="text-gray-600 mb-8">Data-driven process scoring, ROI projections, and prioritized automation roadmaps specifically designed for finance and accounting teams.</p>
+          <a href="/services/automation-assessment" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
+            Learn More →
+          </a>
+        </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-3xl mx-auto">
-        <PricingTier
-          name="Process Mining"
-          price="$10K - $20K"
-          deliverables={[
-            'Discovery of actual finance processes',
-            'Bottleneck and exception analysis',
-            'Automation opportunity scoring',
-            'Month-end close and AP process insights',
-            'Executive summary with ROI projections',
-          ]}
-          ctaText="Learn More"
-          ctaLink="/services/process-mining"
-        />
-        <PricingTier
-          name="Monthly Retainer"
-          price="$2K - $5K/mo"
-          deliverables={[
-            'Ongoing automation maintenance',
-            'New automation development',
-            'Priority support',
-            'Monthly performance reviews',
-            'Continuous improvement',
-          ]}
-          ctaText="Get Started"
-          ctaLink="/contact"
-        />
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-sm font-semibold tracking-widest mb-3">02</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-4">Finance Process Automation</h3>
+          <p class="text-gray-600 mb-8">Transform complex finance processes into reliable automation using advanced Excel, VBA, Power Query, and targeted RPA tools.</p>
+          <a href="/services/sop-automation" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
+            Learn More →
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-sm font-semibold tracking-widest mb-3">03</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-4">ERP Data Migration</h3>
+          <p class="text-gray-600 mb-8">Clean, accurate data conversion for Workday, SAP, NetSuite, Ariba, Lawson and other systems with full reconciliation and validation.</p>
+          <a href="/services/erp-data-migration" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
+            Learn More →
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-sm font-semibold tracking-widest mb-3">04</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-4">Process Mining</h3>
+          <p class="text-gray-600 mb-8">Discover how your finance processes actually work. Identify bottlenecks, exceptions, and high-ROI automation opportunities using real transaction data.</p>
+          <a href="/services/process-mining" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
+            Learn More →
+          </a>
+        </div>
       </div>
     </div>
   </section>

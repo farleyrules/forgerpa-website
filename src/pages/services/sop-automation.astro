@@ -1,7 +1,6 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
-import PricingTier from '../../components/PricingTier.astro';
 ---
 
 <PageLayout
@@ -69,44 +68,6 @@ import PricingTier from '../../components/PricingTier.astro';
         </div>
       </div>
 
-      <!-- Pricing -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Pricing by Complexity</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <PricingTier
-            name="Simple Process"
-            price="$10K - $15K"
-            deliverables={[
-              'Under 15 steps',
-              '1-2 systems',
-              'Minimal exception handling',
-              '3-4 week delivery',
-            ]}
-          />
-          <PricingTier
-            name="Moderate Process"
-            price="$15K - $20K"
-            deliverables={[
-              '15-30 steps',
-              '2-4 systems',
-              'Multiple decision points',
-              '4-6 week delivery',
-            ]}
-            featured={true}
-          />
-          <PricingTier
-            name="Complex Process"
-            price="$20K - $25K"
-            deliverables={[
-              '30+ steps',
-              '4+ systems',
-              'Complex exception handling',
-              '6-8 week delivery',
-              'Extended hypercare',
-            ]}
-          />
-        </div>
-      </div>
     </div>
   </section>
 

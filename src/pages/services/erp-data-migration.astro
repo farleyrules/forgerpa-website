@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import PricingTier from '../../components/PricingTier.astro';
 import CTASection from '../../components/CTASection.astro';
 ---
 
@@ -95,45 +94,6 @@ import CTASection from '../../components/CTASection.astro';
         </p>
       </div>
 
-      <!-- Pricing -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Engagement Models</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <PricingTier
-            name="Assessment Only"
-            price="$5K - $10K"
-            deliverables={[
-              'Source system analysis',
-              'Data quality assessment',
-              'Migration complexity scoring',
-              'Timeline and budget estimate',
-            ]}
-          />
-          <PricingTier
-            name="Conversion"
-            price="$25K - $100K"
-            deliverables={[
-              'Full data extraction',
-              'Template-based transformation',
-              'Validation and error correction',
-              'Parallel testing support',
-              '3 mock conversion cycles',
-            ]}
-            featured={true}
-          />
-          <PricingTier
-            name="Full Support"
-            price="$50K - $200K"
-            deliverables={[
-              'End-to-end conversion',
-              'Custom template development',
-              'Cutover planning and execution',
-              'Go-live hypercare (4 weeks)',
-              'Post-conversion audit support',
-            ]}
-          />
-        </div>
-      </div>
     </div>
   </section>
 

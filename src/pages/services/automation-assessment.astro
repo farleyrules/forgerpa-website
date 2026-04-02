@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import PricingTier from '../../components/PricingTier.astro';
 import CTASection from '../../components/CTASection.astro';
 ---
 
@@ -99,45 +98,6 @@ import CTASection from '../../components/CTASection.astro';
         </div>
       </div>
 
-      <!-- Pricing -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Pricing</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <PricingTier
-            name="Single Process"
-            price="$5,000"
-            deliverables={[
-              'Deep dive on 1 process',
-              'Full scoring and ROI analysis',
-              'Technology recommendation',
-              'Implementation plan',
-            ]}
-          />
-          <PricingTier
-            name="Department"
-            price="$10K - $15K"
-            deliverables={[
-              '5-15 processes assessed',
-              'Full scoring matrix',
-              'Comparative ROI analysis',
-              'Prioritized roadmap',
-              'Executive presentation',
-            ]}
-            featured={true}
-          />
-          <PricingTier
-            name="Enterprise"
-            price="$15K - $25K"
-            deliverables={[
-              '15-50 processes assessed',
-              'Cross-department analysis',
-              'Enterprise automation strategy',
-              'Phased implementation plan',
-              'Board-ready materials',
-            ]}
-          />
-        </div>
-      </div>
     </div>
   </section>
 
