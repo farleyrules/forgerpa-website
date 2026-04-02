@@ -6,7 +6,9 @@ import CaseStudyCard from '../components/CaseStudyCard.astro';
 import CTASection from '../components/CTASection.astro';
 import { getCollection } from 'astro:content';
 const featuredStudies = await getCollection('case-studies', ({ data }) => data.featured === true);
-const sortedFeatured = featuredStudies.sort((a, b) => (a.data.order || 999) - (b.data.order || 999)).slice(0, 3);
+const sortedFeatured = featuredStudies
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .slice(0, 3);
 ---
 
 <PageLayout
@@ -70,8 +72,8 @@ const sortedFeatured = featuredStudies.sort((a, b) => (a.data.order || 999) - (b
         {sortedFeatured.map((study) => (
           <CaseStudyCard
             industry={study.data.industry}
-            metric={study.data.summary.split('–')[0] || study.data.summary}
-            description={study.data.summary.includes('–') ? study.data.summary.split('–').slice(1).join('–').trim() : study.data.summary}
+            metric={study.data.metric || study.data.summary}
+            description={study.data.shortDescription || study.data.summary}
             link={`/case-studies#${study.id}`}
           />
         ))}

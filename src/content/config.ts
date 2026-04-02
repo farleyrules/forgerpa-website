@@ -7,6 +7,8 @@ const caseStudyCollection = defineCollection({
     industry: z.string(),
     service: z.string(),
     summary: z.string(),
+    metric: z.string().optional(),           // Bold headline shown on homepage cards
+    shortDescription: z.string().optional(), // Supporting text on homepage cards
     challenge: z.string(),
     approach: z.string(),
     outcome: z.array(z.string()),

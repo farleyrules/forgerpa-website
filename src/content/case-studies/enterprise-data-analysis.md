@@ -3,6 +3,8 @@ title: "Enterprise Data Analysis Beyond Excel's Limits"
 industry: "Manufacturing"
 service: "Operational Reporting"
 summary: "40+ hours/month across multiple business units automated"
+metric: "40+ hours/month eliminated"
+shortDescription: "Enterprise data analysis beyond Excel limits using RPA + advanced Power Query and DAX"
 challenge: "A Fortune 500 manufacturer’s finance and operations teams regularly exported datasets from SAP that exceeded Excel’s 1M+ row limits. Analysts spent days manually splitting files, building fragmented PivotTables, and reconciling numbers across business units. Critical monthly reporting was delayed, and decision-makers lacked timely insights."
 approach: "We designed a fully automated end-to-end solution using RPA to extract data from SAP, followed by advanced VBA and Power Query to refresh connections, update PivotTables, and leverage the Data Model (Power Pivot) with DAX for complex calculations. Completed reports were automatically saved to SharePoint with email notifications containing direct links. The solution required no new software licenses and preserved the familiar Excel interface users already trusted."
 outcome:
