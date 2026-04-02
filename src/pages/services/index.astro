@@ -5,16 +5,24 @@ import CTASection from '../../components/CTASection.astro';
 ---
 
 <PageLayout
-  title="Services"
-  description="Automation assessment, ERP data migration, SOP automation, and process mining. Pricing from $5K to $200K based on scope."
-  heroTitle="Services Built for Your Operations"
-  heroSubtitle="Four service lines designed to deliver measurable ROI. Every engagement includes full source code, documentation, and knowledge transfer."
+  title="Finance & Accounting Automation Services"
+  description="Automation assessment, finance process automation, ERP data migration, and process mining for accounting teams. Advanced Excel, VBA, Power Query, and RPA solutions."
+  heroTitle="Finance & Accounting Automation Services"
+  heroSubtitle="We help Controllers, CFOs, and finance operations teams eliminate manual work in month-end close, accounts payable, reconciliations, reporting, and ERP data processes."
   heroCta="Book a Discovery Call"
   heroCtaLink="/contact"
 >
   <!-- Service Lines -->
   <section class="py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal">Core Finance Automation Services</h2>
+        <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
+          Proven in Finance Operations at Fortune 500 manufacturers, utilities, and healthcare organizations. 
+          Our work spans SAP, Workday, NetSuite, Ariba, Lawson, Hyperion, and advanced Excel, VBA &amp; Power Query solutions.
+        </p>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <PricingTier
           name="Automation Assessment"
@@ -30,14 +38,14 @@ import CTASection from '../../components/CTASection.astro';
           ctaLink="/services/automation-assessment"
         />
         <PricingTier
-          name="Process Automation (SOP)"
+          name="Finance Process Automation"
           price="$10K - $25K"
           deliverables={[
-            'SOP analysis and classification',
-            'Technology matching',
-            'Working automation code',
-            'Testing and validation',
-            'Documentation and training',
+            'Advanced Excel, VBA & Power Query automation',
+            'Month-end close and reconciliation processes',
+            'Accounts payable and financial reporting',
+            'Working automation code with full documentation',
+            'Testing, validation, and knowledge transfer',
           ]}
           ctaText="Learn More"
           ctaLink="/services/sop-automation"
@@ -47,11 +55,11 @@ import CTASection from '../../components/CTASection.astro';
           name="ERP Data Migration"
           price="$25K - $200K"
           deliverables={[
-            'Workday, NetSuite, SAP, and more',
+            'Workday, SAP, NetSuite, Ariba, Lawson & more',
             '31 pre-built Workday iLoad templates',
             'Reconciliation-verified data accuracy',
-            'Parallel testing support',
-            'Go-live hypercare',
+            'Advanced Excel, VBA & Power Query transformation',
+            'Parallel testing and go-live support',
           ]}
           ctaText="Learn More"
           ctaLink="/services/erp-data-migration"
@@ -63,11 +71,11 @@ import CTASection from '../../components/CTASection.astro';
           name="Process Mining"
           price="$10K - $20K"
           deliverables={[
-            'Event log extraction',
-            'Process flow visualization',
-            'Bottleneck identification',
+            'Discovery of actual finance processes',
+            'Bottleneck and exception analysis',
             'Automation opportunity scoring',
-            'Executive summary report',
+            'Month-end close and AP process insights',
+            'Executive summary with ROI projections',
           ]}
           ctaText="Learn More"
           ctaLink="/services/process-mining"
@@ -91,8 +99,8 @@ import CTASection from '../../components/CTASection.astro';
 
   <!-- CTA Section -->
   <CTASection
-    heading="Not Sure Where to Start?"
-    subtext="Book a free 30-minute discovery call. We will help you identify the highest-ROI automation opportunities in your organization."
+    heading="Ready to Reduce Manual Finance Work?"
+    subtext="Book a free 30-minute discovery call. We will help you identify the highest-ROI opportunities in your month-end close, AP, and reporting processes."
     ctaText="Book a Discovery Call"
     ctaLink="/contact"
   />
