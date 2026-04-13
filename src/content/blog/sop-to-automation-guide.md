@@ -168,4 +168,4 @@ Want expert eyes on your evaluation? We offer a complimentary [SOP-to-Automation
 [Book Your Free Assessment](https://forgerpa.com/contact)
 
 ---
-*David Farley is the founder of ForgeRPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.*
+*David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.*

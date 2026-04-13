@@ -1,4 +1,4 @@
-# ForgeRPA Website
+# Forge RPA Website
 
 ## Overview
 Static website for [forgerpa.com](https://forgerpa.com), built with Astro 5 + Tailwind v4. Deployed via Cloudflare Pages.
