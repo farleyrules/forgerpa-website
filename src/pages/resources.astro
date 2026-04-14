@@ -1,91 +1,110 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
-import BlogPostCard from '../components/BlogPostCard.astro';
-import { getCollection } from 'astro:content';
-
-const posts = (await getCollection('blog'))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 3);
 ---
 
 <PageLayout
-  title="Resources"
-  description="Free automation resources: one-pagers, frameworks, and guides. Download tools to evaluate your automation opportunities."
-  heroTitle="Resources & Downloads"
-  heroSubtitle="Free tools, frameworks, and guides to help you evaluate and plan your automation program."
+  title="Resources | Forge RPA"
+  description="Free tools and guides for finance and accounting automation. Download our assessment worksheets, checklists, and ROI calculators."
+  heroTitle="Resources for Finance Leaders"
+  heroSubtitle="Practical tools and insights to help you identify, prioritize, and implement high-ROI automation in your finance operations."
 >
   <section class="py-20 lg:py-28">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Downloadable Resources -->
-      <div class="mb-20">
-        <h2 class="text-3xl font-bold text-charcoal mb-8">Downloadable Resources</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="p-8 bg-white rounded-xl border-2 border-gray-100 hover:border-amber shadow-sm hover:shadow-lg transition-all">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 bg-amber/10 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium px-2 py-1 bg-amber/10 text-amber-dark rounded">PDF</span>
-            </div>
-            <h3 class="text-xl font-bold text-charcoal mb-2">Automation Assessment One-Pager</h3>
-            <p class="text-gray-600 mb-6">
-              Our six-criterion scoring framework on a single page. Print it out, share with your team, and evaluate any process in 30 minutes.
-            </p>
-            <span class="text-amber-dark font-semibold text-sm">Coming Soon</span>
-          </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Free Tools &amp; Guides</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Download practical resources developed from 30 years of financial operations experience. 
+          These tools are designed to help you assess automation opportunities and build momentum in your finance transformation.
+        </p>
+      </div>
 
-          <div class="p-8 bg-white rounded-xl border-2 border-gray-100 hover:border-amber shadow-sm hover:shadow-lg transition-all">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 bg-amber/10 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium px-2 py-1 bg-amber/10 text-amber-dark rounded">PDF</span>
-            </div>
-            <h3 class="text-xl font-bold text-charcoal mb-2">ERP Data Migration One-Pager</h3>
-            <p class="text-gray-600 mb-6">
-              Overview of our migration methodology, Workday iLoad templates, source system mappings, and conversion approach. Share with your implementation team.
-            </p>
-            <span class="text-amber-dark font-semibold text-sm">Coming Soon</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Lead Magnet 1 -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-4xl mb-6">📋</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation Assessment Framework</h3>
+          <p class="text-gray-600 mb-6">
+            Our proprietary six-criterion scoring framework used to evaluate finance processes for automation potential, 
+            ROI projection, and recommended approach. Includes Excel template with built-in calculations and benchmarks.
+          </p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500">Excel Template + Guide (Instant Download)</span>
+            <a href="/contact" 
+               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
+              Download Framework
+            </a>
+          </div>
+        </div>
+
+        <!-- Lead Magnet 2 -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-4xl mb-6">📊</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-3">Month-End Close Optimization Checklist</h3>
+          <p class="text-gray-600 mb-6">
+            47-point checklist based on real finance operations experience. Identifies the most common bottlenecks 
+            in month-end close processes with specific automation opportunities and estimated time savings for each.
+          </p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500">PDF Checklist + Framework Notes</span>
+            <a href="/contact" 
+               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
+              Download Checklist
+            </a>
+          </div>
+        </div>
+
+        <!-- Lead Magnet 3 -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-4xl mb-6">🎯</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-3">5 High-ROI Finance Processes to Automate</h3>
+          <p class="text-gray-600 mb-6">
+            Practical guide based on real implementations. Details the five finance processes that consistently deliver 
+            the highest ROI, with specific examples, typical time savings, implementation approach, and expected returns.
+          </p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500">PDF Guide with Real Examples</span>
+            <a href="/contact" 
+               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
+              Download Guide
+            </a>
+          </div>
+        </div>
+
+        <!-- Lead Magnet 4 -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
+          <div class="text-amber text-4xl mb-6">📈</div>
+          <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation ROI Calculator</h3>
+          <p class="text-gray-600 mb-6">
+            Interactive Excel tool that helps you estimate potential ROI for common finance processes. 
+            Includes benchmarks from our framework implementations across multiple industries.
+          </p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500">Excel Template with Framework Benchmarks</span>
+            <a href="/contact" 
+               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
+              Get the Calculator
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Blog Highlights -->
-      <div>
-        <div class="flex items-center justify-between mb-8">
-          <h2 class="text-3xl font-bold text-charcoal">Latest from the Blog</h2>
-          <a href="/blog" class="text-amber-dark hover:text-amber font-semibold flex items-center gap-2">
-            View All
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <BlogPostCard
-              title={post.data.title}
-              date={post.data.date}
-              readingTime={post.data.readingTime}
-              description={post.data.description}
-              tags={post.data.tags}
-              slug={post.slug}
-            />
-          ))}
-        </div>
+      <div class="mt-16 text-center">
+        <p class="text-gray-600 mb-6">
+          All resources are free and instant. No email gatekeeping — just practical tools to help you move faster.
+        </p>
+        <p class="text-sm text-gray-500">
+          These tools were developed from real finance operations experience and refined through our proprietary framework.
+        </p>
       </div>
     </div>
   </section>
 
   <CTASection
-    heading="Want a Personalized Assessment?"
-    subtext="Our free 30-minute discovery call is more valuable than any download. Real analysis of your specific processes."
+    heading="Ready to Reduce Manual Finance Work?"
+    subtext="Book a 30-minute discovery call. We'll review your specific challenges and show you how our framework can deliver results."
     ctaText="Book a Discovery Call"
     ctaLink="/contact"
   />
 </PageLayout>
+---
