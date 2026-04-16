@@ -1,6 +1,13 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
+
+const downloads = {
+  assessment: '/downloads/forgerpa-finance-automation-assessment-framework.xlsx',
+  checklist: '/downloads/forgerpa-month-end-close-checklist.html',
+  guide: '/downloads/forgerpa-5-high-roi-finance-processes.md',
+  roi: '/downloads/forgerpa-finance-automation-roi-calculator.xlsx',
+} as const;
 ---
 
 <PageLayout
@@ -14,76 +21,88 @@ import CTASection from '../components/CTASection.astro';
       <div class="text-center mb-16">
         <h2 class="text-3xl font-bold text-charcoal mb-6">Free Tools &amp; Guides</h2>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Download practical resources developed from 30 years of financial operations experience. 
+          Download practical resources developed from 30 years of financial operations experience.
           These tools are designed to help you assess automation opportunities and build momentum in your finance transformation.
+        </p>
+        <p class="mt-4 text-sm text-gray-500 max-w-2xl mx-auto">
+          Want to talk through your scores or roadmap?{' '}
+          <a href="/book" class="text-amber-dark hover:text-amber font-semibold">Book a 30-minute discovery call</a>.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Lead Magnet 1 -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📋</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation Assessment Framework</h3>
           <p class="text-gray-600 mb-6">
-            Our proprietary six-criterion scoring framework used to evaluate finance processes for automation potential, 
-            ROI projection, and recommended approach. Includes Excel template with built-in calculations and benchmarks.
+            Six-criterion weighted scoring to evaluate finance processes for automation potential, plus a short interpretation
+            guide. Includes process inventory rows and calculated weighted scores.
           </p>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500">Excel Template + Guide (Instant Download)</span>
-            <a href="/book" 
-               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
-              Download Framework
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span class="text-sm text-gray-500">Microsoft Excel (.xlsx)</span>
+            <a
+              href={downloads.assessment}
+              download
+              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+            >
+              Download framework
             </a>
           </div>
         </div>
 
-        <!-- Lead Magnet 2 -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📊</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Month-End Close Optimization Checklist</h3>
           <p class="text-gray-600 mb-6">
-            47-point checklist based on real finance operations experience. Identifies the most common bottlenecks 
-            in month-end close processes with specific automation opportunities and estimated time savings for each.
+            Forty-seven checkpoints across pre-close, execution, reconciliations, reporting, and post-close improvement. Each
+            line is written with automation and control ownership in mind.
           </p>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500">PDF Checklist + Framework Notes</span>
-            <a href="/book" 
-               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
-              Download Checklist
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span class="text-sm text-gray-500">HTML — open file, then Print → Save as PDF</span>
+            <a
+              href={downloads.checklist}
+              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+            >
+              Open checklist
             </a>
           </div>
         </div>
 
-        <!-- Lead Magnet 3 -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">🎯</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">5 High-ROI Finance Processes to Automate</h3>
           <p class="text-gray-600 mb-6">
-            Practical guide based on real implementations. Details the five finance processes that consistently deliver 
-            the highest ROI, with specific examples, typical time savings, implementation approach, and expected returns.
+            A concise guide covering five process families that routinely produce strong returns when data and ownership are
+            aligned: AP match, reconciliations, close packs, intercompany support, and operational reporting pulls.
           </p>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500">PDF Guide with Real Examples</span>
-            <a href="/book" 
-               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
-              Download Guide
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span class="text-sm text-gray-500">Markdown (.md)</span>
+            <a
+              href={downloads.guide}
+              download
+              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+            >
+              Download guide
             </a>
           </div>
         </div>
 
-        <!-- Lead Magnet 4 -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📈</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation ROI Calculator</h3>
           <p class="text-gray-600 mb-6">
-            Interactive Excel tool that helps you estimate potential ROI for common finance processes. 
-            Includes benchmarks from our framework implementations across multiple industries.
+            Illustrative workbook: enter hours removed per month, loaded hourly cost, adoption, implementation spend, and
+            annual run-state costs. Outputs monthly and annual labor savings, year-one net, and simple payback on
+            implementation.
           </p>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500">Excel Template with Framework Benchmarks</span>
-            <a href="/book" 
-               class="inline-flex items-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors">
-              Get the Calculator
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span class="text-sm text-gray-500">Microsoft Excel (.xlsx)</span>
+            <a
+              href={downloads.roi}
+              download
+              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+            >
+              Get the calculator
             </a>
           </div>
         </div>
@@ -91,10 +110,14 @@ import CTASection from '../components/CTASection.astro';
 
       <div class="mt-16 text-center">
         <p class="text-gray-600 mb-6">
-          All resources are free and instant. No email gatekeeping — just practical tools to help you move faster.
+          All resources are free and instant. No email gate — download and use them on your own timeline.
         </p>
         <p class="text-sm text-gray-500">
-          These tools were developed from 30 years of real finance operations experience and refined through our proprietary framework. Proven in finance but applicable to other operational processes.
+          These tools were developed from real finance operations experience and refined through our proprietary framework.
+          Proven in finance but applicable to other operational processes.
+        </p>
+        <p class="mt-4 text-xs text-gray-500">
+          Files are regenerated from <code class="text-gray-600">scripts/build_lead_magnets.py</code> when we update templates.
         </p>
       </div>
     </div>
@@ -107,4 +130,3 @@ import CTASection from '../components/CTASection.astro';
     ctaLink="/book"
   />
 </PageLayout>
----
