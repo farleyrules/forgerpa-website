@@ -187,12 +187,23 @@ const defaultHeroSubtitle =
       expect.textContent = ctx.expectLead;
     }
 
+    var interestPrefillByFrom = {
+      assessment: 'Automation assessment',
+      sop: 'Finance process / SOP automation',
+      'process-mining': 'Process mining',
+      migration: 'ERP / data migration',
+    };
+
     var iframe = document.getElementById('cal-booking-iframe');
     if (iframe) {
       var u = new URL(baseCal);
       u.searchParams.set('utm_source', 'forgerpa-site');
       u.searchParams.set('utm_medium', 'book-page');
       u.searchParams.set('utm_content', 'from-' + from);
+      var interestLabel = interestPrefillByFrom[from];
+      if (interestLabel) {
+        u.searchParams.append('Interest', interestLabel);
+      }
       iframe.setAttribute('src', u.toString());
     }
   })();
