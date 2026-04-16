@@ -1,23 +1,37 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
+
+const defaultTitle = 'Book a Discovery Call';
+const defaultDescription =
+  'Schedule a 30-minute discovery call to discuss your finance and operational challenges. Proven in finance but applicable to other operational processes.';
+const defaultHeroSubtitle =
+  '30 minutes. No sales pitch. Just an honest conversation about where automation can make the biggest impact for your team.';
 ---
 
-<PageLayout
-  title="Book a Discovery Call | Forge RPA"
-  description="Schedule a 30-minute discovery call to discuss your finance and operational challenges. Proven in finance but applicable to other operational processes."
-  heroTitle="Book a Discovery Call"
-  heroSubtitle="30 minutes. No sales pitch. Just an honest conversation about where automation can make the biggest impact for your team."
->
+<PageLayout title={defaultTitle} description={defaultDescription} heroTitle={defaultTitle} heroSubtitle={defaultHeroSubtitle}>
   <section class="py-20 lg:py-28 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="prose max-w-none">
+        <div id="book-context-banner" class="mb-10 hidden rounded-2xl border border-amber/40 bg-amber/10 px-5 py-4 text-sm text-charcoal">
+          <p class="m-0 font-semibold">Context</p>
+          <p id="book-context-banner-body" class="mt-2 mb-0 text-gray-800"></p>
+          <p class="mt-3 mb-0 text-xs text-gray-600">
+            Please mention this context when you book so we can prepare. If your scheduling tool asks how you heard about us,
+            reference the page you came from.
+          </p>
+        </div>
+
         <div class="mb-12">
           <h2 class="text-3xl font-bold text-charcoal mb-6">What to Expect</h2>
-          <p class="text-lg text-gray-700 leading-relaxed">
-            During this 30-minute call, we'll discuss your specific challenges in finance and operational processes. 
-            We'll explore how our proprietary automation framework — proven in finance but applicable to other operational areas — 
+          <p id="book-expect-lead" class="text-lg text-gray-700 leading-relaxed">
+            During this 30-minute call, we will discuss your specific challenges in finance and operational processes. We will
+            explore how our proprietary automation framework, proven in finance but applicable to other operational areas,
             might help reduce manual work and deliver measurable ROI for your team.
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed mt-4">
+            The calendar below uses our standard 30-minute discovery format. We tailor the conversation to what you share here
+            and in the booking flow.
           </p>
         </div>
 
@@ -26,27 +40,36 @@ import CTASection from '../components/CTASection.astro';
           <p class="text-gray-600 mb-8">
             The questions below help us prepare effectively for our conversation. All information is kept confidential.
           </p>
-          
+
           <div class="bg-slate-light rounded-2xl p-8 text-sm">
             <ol class="space-y-6 list-decimal pl-5">
-              <li><strong>What is your primary role?</strong> (Controller, CFO, Finance Manager, Operations Manager, Owner/Founder, Other)</li>
-              <li><strong>What is your biggest current challenge?</strong> (Month-end close processes, Accounts Payable/Receivable, Reconciliations, Financial reporting, Operational process efficiency, Data migration or system implementation, Other)</li>
-              <li><strong>What primary systems do you use?</strong> (SAP, Workday, NetSuite, Excel/Power Query, Other ERP systems, Multiple systems, Other)</li>
+              <li>
+                <strong>What is your primary role?</strong> (Controller, CFO, Finance Manager, Operations Manager,
+                Owner/Founder, Other)
+              </li>
+              <li>
+                <strong>What is your biggest current challenge?</strong> (Month-end close processes, Accounts
+                Payable/Receivable, Reconciliations, Financial reporting, Operational process efficiency, Data migration or
+                system implementation, Other)
+              </li>
+              <li>
+                <strong>What primary systems do you use?</strong> (SAP, Workday, NetSuite, Excel/Power Query, Other ERP
+                systems, Multiple systems, Other)
+              </li>
               <li><strong>How many people are on your team?</strong> (1-5, 6-15, 16-30, 30+)</li>
             </ol>
           </div>
         </div>
       </div>
 
-      <!-- Cal.com Booking Embed -->
       <div class="mt-12 border border-gray-200 rounded-3xl overflow-hidden shadow-sm bg-white">
-        <iframe 
-          src="https://cal.com/david-farley/discovery-call" 
-          width="100%" 
-          height="900" 
-          frameborder="0"
-          style="min-height: 900px;">
-        </iframe>
+        <iframe
+          id="cal-booking-iframe"
+          src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page"
+          width="100%"
+          height="900"
+          style="min-height: 900px;"
+          title="Schedule a discovery call"></iframe>
       </div>
 
       <div class="text-center mt-12 text-sm text-gray-500">
@@ -62,4 +85,115 @@ import CTASection from '../components/CTASection.astro';
     ctaLink="mailto:info@forgerpa.com"
   />
 </PageLayout>
----
+
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var from = (params.get('from') || '').toLowerCase().trim();
+    var baseCal = 'https://cal.com/david-farley/discovery-call';
+
+    function setMetaDescription(text) {
+      var m = document.querySelector('meta[name="description"]');
+      if (m) m.setAttribute('content', text);
+      var og = document.querySelector('meta[property="og:description"]');
+      if (og) og.setAttribute('content', text);
+      var tw = document.querySelector('meta[name="twitter:description"]');
+      if (tw) tw.setAttribute('content', text);
+    }
+
+    function setOgTitle(text) {
+      var og = document.querySelector('meta[property="og:title"]');
+      if (og) og.setAttribute('content', text);
+      var tw = document.querySelector('meta[name="twitter:title"]');
+      if (tw) tw.setAttribute('content', text);
+    }
+
+    var contexts = {
+      assessment: {
+        title: 'Book an assessment consultation',
+        description:
+          'Schedule a 30-minute call to see whether a formal Automation Assessment is the right next step for your finance or operations team.',
+        heroTitle: 'Book your assessment consultation',
+        heroSubtitle:
+          'This is the same 30-minute conversation we use for every new relationship. We will focus on your process list, scoring approach, and whether a structured assessment delivers the clarity you need before larger automation spend.',
+        banner:
+          'You arrived from Automation Assessment. We will prioritize fit, scope, and what a three-week assessment would cover for your environment.',
+        expectLead:
+          'We will start with your goals for prioritizing finance or operational processes, then walk through how our scoring framework applies to your systems and timelines.',
+      },
+      sop: {
+        title: 'Book a call about your SOPs',
+        description:
+          'Schedule a 30-minute call to discuss turning documented processes into reliable automation.',
+        heroTitle: 'Book a call about your SOPs',
+        heroSubtitle:
+          'Bring your top one to three SOPs or process outlines to the conversation if you have them. If not, we will still map the highest-impact candidates and explain how we convert documentation into tested automation.',
+        banner:
+          'You arrived from Finance Process Automation. We will emphasize SOP intake, delivery expectations, and how we scope build and handoff.',
+        expectLead:
+          'We will review where manual work lives today, what documentation you already have, and what a practical automation path looks like for your team.',
+      },
+      'process-mining': {
+        title: 'Book a process mining conversation',
+        description:
+          'Schedule a 30-minute call to discuss data-driven process discovery and where mining fits your roadmap.',
+        heroTitle: 'Discuss process mining on a quick call',
+        heroSubtitle:
+          'We will talk about event data availability, the questions mining answers best, and how findings connect to automation priorities. No obligation beyond clarity on next steps.',
+        banner:
+          'You arrived from Process Mining. We will focus on data sources, timelines, and what a mining engagement typically surfaces for finance and operations teams.',
+        expectLead:
+          'We will cover which systems can supply event logs, what readiness looks like, and how mining outputs feed prioritization and business cases.',
+      },
+      migration: {
+        title: 'Book a migration planning call',
+        description:
+          'Schedule a 30-minute call to discuss ERP or platform data conversion, templates, and reconciliation.',
+        heroTitle: 'Discuss your data migration',
+        heroSubtitle:
+          'We will review source and target systems, cutover constraints, and how template-driven conversion plus reconciliation fits your timeline. Same 30-minute format as our standard discovery call.',
+        banner:
+          'You arrived from ERP Data Migration. We will emphasize conversion risk, validation approach, and what information we need to scope accurately.',
+        expectLead:
+          'We will walk through your migration context, data volumes, and quality checkpoints so you know what a conversion engagement would involve.',
+      },
+    };
+
+    var ctx = contexts[from];
+    if (!ctx) return;
+
+    var fullTitle = ctx.title + ' | Forge RPA';
+    document.title = fullTitle;
+    setOgTitle(fullTitle);
+    setMetaDescription(ctx.description);
+
+    var hero = document.getElementById('page-hero');
+    if (hero) {
+      var h1 = hero.querySelector('h1');
+      if (h1) h1.textContent = ctx.heroTitle;
+      var sub = hero.querySelector('p.mt-6');
+      if (sub) sub.textContent = ctx.heroSubtitle;
+    }
+
+    var banner = document.getElementById('book-context-banner');
+    var bannerBody = document.getElementById('book-context-banner-body');
+    if (banner && bannerBody && ctx.banner) {
+      bannerBody.textContent = ctx.banner;
+      banner.classList.remove('hidden');
+    }
+
+    var expect = document.getElementById('book-expect-lead');
+    if (expect && ctx.expectLead) {
+      expect.textContent = ctx.expectLead;
+    }
+
+    var iframe = document.getElementById('cal-booking-iframe');
+    if (iframe) {
+      var u = new URL(baseCal);
+      u.searchParams.set('utm_source', 'forgerpa-site');
+      u.searchParams.set('utm_medium', 'book-page');
+      u.searchParams.set('utm_content', 'from-' + from);
+      iframe.setAttribute('src', u.toString());
+    }
+  })();
+</script>
