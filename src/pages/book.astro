@@ -1,0 +1,65 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Book a Discovery Call | Forge RPA"
+  description="Schedule a 30-minute discovery call to discuss your finance and operational challenges. Proven in finance but applicable to other operational processes."
+  heroTitle="Book a Discovery Call"
+  heroSubtitle="30 minutes. No sales pitch. Just an honest conversation about where automation can make the biggest impact for your team."
+>
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="prose max-w-none">
+        <div class="mb-12">
+          <h2 class="text-3xl font-bold text-charcoal mb-6">What to Expect</h2>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            During this 30-minute call, we'll discuss your specific challenges in finance and operational processes. 
+            We'll explore how our proprietary automation framework — proven in finance but applicable to other operational areas — 
+            might help reduce manual work and deliver measurable ROI for your team.
+          </p>
+        </div>
+
+        <div class="mb-12">
+          <h2 class="text-3xl font-bold text-charcoal mb-6">Please Answer These Questions</h2>
+          <p class="text-gray-600 mb-8">
+            The questions below help us prepare effectively for our conversation. All information is kept confidential.
+          </p>
+          
+          <div class="bg-slate-light rounded-2xl p-8 text-sm">
+            <ol class="space-y-6 list-decimal pl-5">
+              <li><strong>What is your primary role?</strong> (Controller, CFO, Finance Manager, Operations Manager, Owner/Founder, Other)</li>
+              <li><strong>What is your biggest current challenge?</strong> (Month-end close processes, Accounts Payable/Receivable, Reconciliations, Financial reporting, Operational process efficiency, Data migration or system implementation, Other)</li>
+              <li><strong>What primary systems do you use?</strong> (SAP, Workday, NetSuite, Excel/Power Query, Other ERP systems, Multiple systems, Other)</li>
+              <li><strong>How many people are on your team?</strong> (1-5, 6-15, 16-30, 30+)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cal.com Booking Embed -->
+      <div class="mt-12 border border-gray-200 rounded-3xl overflow-hidden shadow-sm bg-white">
+        <iframe 
+          src="https://cal.com/david-farley/discovery-call" 
+          width="100%" 
+          height="900" 
+          frameborder="0"
+          style="min-height: 900px;">
+        </iframe>
+      </div>
+
+      <div class="text-center mt-12 text-sm text-gray-500">
+        All calls are confidential. We respect your time and will come prepared with relevant insights based on your responses.
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Prefer to Send an Email?"
+    subtext="If scheduling a call isn't convenient right now, feel free to reach out directly."
+    ctaText="Email Us"
+    ctaLink="mailto:info@forgerpa.com"
+  />
+</PageLayout>
+---
