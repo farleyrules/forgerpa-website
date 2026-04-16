@@ -147,7 +147,7 @@ You do not need to automate all five at once. Pick one. The AP aging report is t
 
 Want to identify which of your month-end close tasks will deliver the fastest payback? We offer a free [Close Process Assessment](https://forgerpa.com/services/automation-assessment) where we map your close timeline, identify bottlenecks, and recommend a phased automation roadmap.
 
-[Book Your Free Close Assessment](https://forgerpa.com/contact)
+[Book Your Free Close Assessment](/book)
 
 ---
 *David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.*

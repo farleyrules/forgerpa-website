@@ -204,7 +204,7 @@ Want us to run this assessment for your team? We offer a complimentary [Process 
 
 No sales pitch. Just data-driven recommendations from a finance veteran who has done this 100+ times.
 
-[Get Your Free Assessment](https://forgerpa.com/contact)
+[Get Your Free Assessment](/book)
 
 ---
 *David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.*

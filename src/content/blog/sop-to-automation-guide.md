@@ -165,7 +165,7 @@ Ready to evaluate your processes for automation potential? Start with your top 5
 
 Want expert eyes on your evaluation? We offer a complimentary [SOP-to-Automation Assessment](https://forgerpa.com/services/automation-assessment) where we analyze your top processes and deliver a prioritized roadmap with timeline and ROI estimates.
 
-[Book Your Free Assessment](https://forgerpa.com/contact)
+[Book Your Free Assessment](/book)
 
 ---
 *David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.*

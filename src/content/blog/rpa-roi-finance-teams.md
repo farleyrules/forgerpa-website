@@ -122,7 +122,7 @@ This is why organizations that start with one finance automation often end up wi
 
 Want to know what your top finance processes could save with automation? I offer a free 30-minute discovery call where we identify your three highest-ROI automation candidates and estimate payback periods using real numbers.
 
-[Schedule a Discovery Call](https://forgerpa.com/contact)
+[Schedule a Discovery Call](/book)
 
 Or, if you want to run the numbers yourself first, download our [Process Automation Assessment Worksheet](https://forgerpa.com/services/automation-assessment) — the same framework I have used across 100+ automation projects.
 
