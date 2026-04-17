@@ -3,9 +3,16 @@ interface Props {
   title: string;
   description?: string;
   canonicalUrl?: string;
+  /** When true, ask search engines not to index (e.g. form thank-you pages). */
+  noindex?: boolean;
 }
 
-const { title, description = 'Intelligent automation built by people who understand your operations. Process automation, ERP data migration, and AI-powered assessment.', canonicalUrl } = Astro.props;
+const {
+  title,
+  description = 'Intelligent automation built by people who understand your operations. Process automation, ERP data migration, and AI-powered assessment.',
+  canonicalUrl,
+  noindex = false,
+} = Astro.props;
 const siteUrl = 'https://forgerpa.com';
 const canonical = canonicalUrl || Astro.url.href;
 ---
@@ -15,6 +22,7 @@ const canonical = canonicalUrl || Astro.url.href;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta name="description" content={description} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />

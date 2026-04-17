@@ -1,0 +1,85 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+
+const downloads = {
+  assessment: '/downloads/forgerpa-finance-automation-assessment-framework.xlsx',
+  checklist: '/downloads/forgerpa-month-end-close-checklist.html',
+  guide: '/downloads/forgerpa-5-high-roi-finance-processes.pdf',
+  roi: '/downloads/forgerpa-finance-automation-roi-calculator.xlsx',
+} as const;
+---
+
+<PageLayout
+  title="Your toolkit is ready"
+  description="Download the Forge RPA finance automation toolkit: assessment framework, ROI calculator, 5 High-ROI guide, and month-end checklist."
+  heroTitle="You are all set"
+  heroSubtitle="Your request was received. Download everything immediately below — no need to wait for an email. We may follow up only if you asked for a brief clarification."
+  heroCta="Book a discovery call"
+  heroCtaLink="/book"
+  noindex={true}
+>
+  <section class="py-16 lg:py-20 bg-slate-light">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-gray-700 mb-10 leading-relaxed">
+        These are the same public files from the{' '}
+        <a href="/resources" class="text-amber-dark hover:text-amber font-semibold">Resources</a> page. Keep this tab open
+        if you want to grab them on another device later.
+      </p>
+
+      <ul class="space-y-4">
+        <li class="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="font-bold text-charcoal">Finance Automation Assessment Framework</p>
+            <p class="text-sm text-gray-500">Excel (.xlsx)</p>
+          </div>
+          <a
+            href={downloads.assessment}
+            download
+            class="inline-flex justify-center px-5 py-2.5 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg text-sm"
+            >Download</a
+          >
+        </li>
+        <li class="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="font-bold text-charcoal">Finance Automation ROI Calculator</p>
+            <p class="text-sm text-gray-500">Excel (.xlsx)</p>
+          </div>
+          <a
+            href={downloads.roi}
+            download
+            class="inline-flex justify-center px-5 py-2.5 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg text-sm"
+            >Download</a
+          >
+        </li>
+        <li class="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="font-bold text-charcoal">5 High-ROI Finance Processes</p>
+            <p class="text-sm text-gray-500">PDF</p>
+          </div>
+          <a
+            href={downloads.guide}
+            download
+            class="inline-flex justify-center px-5 py-2.5 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg text-sm"
+            >Download</a
+          >
+        </li>
+        <li class="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="font-bold text-charcoal">Month-End Close Optimization Checklist</p>
+            <p class="text-sm text-gray-500">HTML (Print to PDF)</p>
+          </div>
+          <a
+            href={downloads.checklist}
+            class="inline-flex justify-center px-5 py-2.5 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg text-sm"
+            >Open checklist</a
+          >
+        </li>
+      </ul>
+
+      <p class="mt-10 text-sm text-gray-500">
+        Optional: enable Formspree <strong class="text-charcoal">Auto Response</strong> in your form settings if you
+        also want a confirmation email with this same link list (plan-dependent).
+      </p>
+    </div>
+  </section>
+</PageLayout>

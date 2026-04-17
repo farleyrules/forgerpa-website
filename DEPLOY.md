@@ -45,6 +45,8 @@ The Resources page includes an **optional** “email me the toolkit links” blo
 
 If this variable is **not** set at build time, the page shows a **mailto:** fallback to `info@forgerpa.com` so visitors can still request the bundle.
 
+After a successful Formspree submit, visitors are redirected to **`/resources/toolkit-thanks`**, which lists the same four instant download links (so they never have to wait on a human email just to get the files). Formspree can still notify you of the lead. Optionally enable Formspree’s **Auto Response** plugin if you also want an automated confirmation email to the submitter (plan-dependent).
+
 See also `.env.example` in this repo.
 
 ## Build & Deploy Commands (Manual fallback)

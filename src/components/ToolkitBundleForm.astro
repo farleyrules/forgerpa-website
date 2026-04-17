@@ -7,6 +7,9 @@
  */
 const formspreeUrl = (import.meta.env.PUBLIC_FORMSPREE_TOOLKIT as string | undefined)?.trim() ?? '';
 
+const siteBase = ((import.meta.env.SITE as string | undefined) ?? 'https://forgerpa.com').replace(/\/$/, '');
+const toolkitThanksUrl = `${siteBase}/resources/toolkit-thanks`;
+
 const mailtoSubject = 'Forge RPA — toolkit bundle request';
 const mailtoBody = `Hi Forge RPA,
 
@@ -31,18 +34,20 @@ const mailtoHref = `mailto:info@forgerpa.com?subject=${encodeURIComponent(mailto
   aria-labelledby="toolkit-bundle-heading"
 >
   <h2 id="toolkit-bundle-heading" class="text-xl sm:text-2xl font-bold text-white mb-2">
-    Prefer the toolkit in your inbox?
+    Save this lead + get instant downloads
   </h2>
   <p class="text-gray-300 text-sm sm:text-base leading-relaxed max-w-2xl mb-6">
-    Everything above stays <strong class="text-amber">one-click and ungated</strong>. If you would rather receive
-    <strong class="text-white">one email</strong> with direct links to all four files plus a short orientation, use the
-    form below. We do not add you to a newsletter from this request.
+    All files above stay <strong class="text-amber">one-click and ungated</strong>. If you submit this form (when
+    enabled), Formspree notifies us and you are <strong class="text-white">immediately redirected</strong> to a thank-you
+    page with the same four download links. No waiting for a manual email just to access the files. Optional follow-up
+    stays limited to what you select below; we do not add you to a newsletter from this request.
   </p>
 
   {
     formspreeUrl ? (
       <form action={formspreeUrl} method="POST" class="max-w-xl space-y-4">
         <input type="hidden" name="_subject" value="Toolkit bundle request (forgerpa.com/resources)" />
+        <input type="hidden" name="_next" value={toolkitThanksUrl} />
         <div>
           <label for="toolkit-email" class="block text-sm font-medium text-amber mb-1.5">
             Work email <span class="text-red-300">*</span>
@@ -98,10 +103,11 @@ const mailtoHref = `mailto:info@forgerpa.com?subject=${encodeURIComponent(mailto
           type="submit"
           class="inline-flex items-center justify-center px-8 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold rounded-lg transition-colors shadow-md"
         >
-          Email me the toolkit links
+          Submit and open downloads
         </button>
         <p class="text-xs text-gray-400 leading-relaxed">
-          We use your email only to send this bundle unless you checked the follow-up box. You can book a call anytime at{' '}
+          You will land on our thank-you page with the files right away. We receive your submission for follow-up only as
+          needed. Book a call anytime at{' '}
           <a href="/book" class="text-amber underline hover:text-amber-light">forgerpa.com/book</a>.
         </p>
       </form>

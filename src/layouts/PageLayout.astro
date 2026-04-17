@@ -11,12 +11,13 @@ interface Props {
   heroSubtitle?: string;
   heroCta?: string;
   heroCtaLink?: string;
+  noindex?: boolean;
 }
 
-const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink } = Astro.props;
+const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink, noindex } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} noindex={noindex}>
   <Header />
   {heroTitle && (
     <Hero
