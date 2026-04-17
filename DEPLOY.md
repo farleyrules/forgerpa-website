@@ -32,22 +32,9 @@ To add a new case study:
 2. Follow the existing frontmatter format
 3. Push to main
 
-## Optional: Toolkit bundle email form (Resources page)
+## Lead capture
 
-The Resources page includes an **optional** “email me the toolkit links” block. Individual downloads stay one-click and ungated.
-
-1. Create a form at [Formspree](https://formspree.io/) (free tier is fine).
-2. Copy the form endpoint URL (looks like `https://formspree.io/f/xxxxxxxx`).
-3. In **Cloudflare Pages** → your project → **Settings** → **Environment variables** → **Production** (and Preview if you want):
-   - Name: `PUBLIC_FORMSPREE_TOOLKIT`
-   - Value: your Formspree URL
-4. Trigger a new deployment (push to `main` or **Retry deployment** from the dashboard).
-
-If this variable is **not** set at build time, the page shows a **mailto:** fallback to `info@forgerpa.com` so visitors can still request the bundle.
-
-After a successful Formspree submit, visitors are redirected to **`/resources/toolkit-thanks`**, which lists the same four instant download links (so they never have to wait on a human email just to get the files). Formspree can still notify you of the lead. Optionally enable Formspree’s **Auto Response** plugin if you also want an automated confirmation email to the submitter (plan-dependent).
-
-See also `.env.example` in this repo.
+Public resources stay **ungated**. Primary high-intent capture is **Cal.com** on **`/book`** (booker email, answers, and calendar hold). If you previously set `PUBLIC_FORMSPREE_TOOLKIT` in Cloudflare Pages for an old Resources form, you can remove that variable and redeploy.
 
 ## Build & Deploy Commands (Manual fallback)
 ```powershell
