@@ -32,6 +32,21 @@ To add a new case study:
 2. Follow the existing frontmatter format
 3. Push to main
 
+## Optional: Toolkit bundle email form (Resources page)
+
+The Resources page includes an **optional** “email me the toolkit links” block. Individual downloads stay one-click and ungated.
+
+1. Create a form at [Formspree](https://formspree.io/) (free tier is fine).
+2. Copy the form endpoint URL (looks like `https://formspree.io/f/xxxxxxxx`).
+3. In **Cloudflare Pages** → your project → **Settings** → **Environment variables** → **Production** (and Preview if you want):
+   - Name: `PUBLIC_FORMSPREE_TOOLKIT`
+   - Value: your Formspree URL
+4. Trigger a new deployment (push to `main` or **Retry deployment** from the dashboard).
+
+If this variable is **not** set at build time, the page shows a **mailto:** fallback to `info@forgerpa.com` so visitors can still request the bundle.
+
+See also `.env.example` in this repo.
+
 ## Build & Deploy Commands (Manual fallback)
 ```powershell
 npm run build

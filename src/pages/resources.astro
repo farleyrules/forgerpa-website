@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
+import ToolkitBundleForm from '../components/ToolkitBundleForm.astro';
 
 const downloads = {
   assessment: '/downloads/forgerpa-finance-automation-assessment-framework.xlsx',
@@ -108,9 +109,12 @@ const downloads = {
         </div>
       </div>
 
-      <div class="mt-16 text-center">
-        <p class="text-gray-600 mb-6">
-          All resources are free and instant. No email gate — download and use them on your own timeline.
+      <ToolkitBundleForm />
+
+      <div class="mt-12 text-center">
+        <p class="text-gray-600 mb-4">
+          All files above are free, instant, and <strong class="text-charcoal">ungated</strong>. Use them on your own
+          timeline. The inbox option is only if you want one consolidated message with the same links.
         </p>
         <p class="text-sm text-gray-500">
           These tools were developed from real finance operations experience and refined through our proprietary framework.
