@@ -1,10 +1,12 @@
 """
 Generate lead magnet files into public/downloads/.
 Run from repo root: py -3 scripts/build_lead_magnets.py
-Requires: openpyxl (py -3 -m pip install openpyxl)
+Requires: openpyxl, fpdf2 (fpdf2 is auto-installed via pip if missing)
 """
 from __future__ import annotations
 
+import subprocess
+import sys
 import textwrap
 from pathlib import Path
 
@@ -15,6 +17,85 @@ from openpyxl.utils import get_column_letter
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "downloads"
+
+# Forge RPA site tokens (see src/styles/global.css @theme)
+CHARCOAL = (26, 26, 46)
+AMBER = (245, 158, 11)
+AMBER_DARK = (217, 119, 6)
+
+HIGH_ROI_GUIDE_MARKDOWN = textwrap.dedent(
+    """
+        # Five high-ROI finance processes to automate first
+
+        **Forge RPA** — practical guide for finance and accounting leaders.  
+        *Proven in finance; applicable to other high-volume operational processes.*
+
+        ---
+
+        ## 1. Accounts payable — intake, coding, and three-way match
+
+        **Why ROI is high:** High transaction volume, structured data (PO, receipt, invoice), clear exception paths.  
+        **Typical savings:** Dozens to hundreds of hours per month in larger AP teams when match and follow-up are manual.  
+        **Implementation approach:** Stabilize matching rules and exception taxonomy; automate the “happy path”; queue exceptions for specialists.  
+        **Caveats:** Vendor master quality and tax/VAT complexity can dominate effort — fix data before scaling bots.
+
+        ---
+
+        ## 2. Bank and GL reconciliations
+
+        **Why ROI is high:** Recurring, deadline-driven, repetitive tie-outs across many accounts.  
+        **Typical savings:** Material close compression and fewer late-night corrections.  
+        **Implementation approach:** Standardize supporting workpapers; automate download, matching, and variance narratives where safe; escalate true breaks.  
+        **Caveats:** One-off restructuring or new accounts need controlled onboarding into the automation library.
+
+        ---
+
+        ## 3. Month-end journal entry and consolidation support packs
+
+        **Why ROI is high:** Same calendar-driven steps every period; heavy copy-paste between ERP and Excel.  
+        **Typical savings:** Often 30–50%+ of manual pack time when reporting is template-driven.  
+        **Implementation approach:** Treat packs as products — fixed inputs, fixed outputs, explicit validation checks; add controlled overrides for judgment lines.  
+        **Caveats:** “Spreadsheet archaeology” should be replaced with governed models, not more hidden formulas.
+
+        ---
+
+        ## 4. Intercompany billings, allocations, and eliminations support
+
+        **Why ROI is high:** Rules repeat across entities; errors are painful to unwind.  
+        **Typical savings:** Fewer reversals and faster IC true-up during close.  
+        **Implementation approach:** Document entity logic once; automate calculation and posting where policy is stable; keep audit trail explicit.  
+        **Caveats:** Legal entity changes and tax-driven adjustments need governance gates.
+
+        ---
+
+        ## 5. Management and operational reporting from ERP subledgers
+
+        **Why ROI is high:** Reporting pulls are constant; many are structured pivots and reconciliations to a single “source of truth.”  
+        **Typical savings:** Frees FP&A and accounting from repetitive pulls into consistent dashboards.  
+        **Implementation approach:** Lock definitions (metrics dictionary); automate extract-transform-load to reporting models; add reconciliation to GL.  
+        **Caveats:** Bad mappings multiply — invest in data definitions before visual polish.
+
+        ---
+
+        ## How to use this list with the Assessment Framework
+
+        1. Shortlist processes that match the patterns above in *your* environment.  
+        2. Score each with the Excel framework (`forgerpa-finance-automation-assessment-framework.xlsx`).  
+        3. Size hours, loaded cost, and adoption conservatively in the ROI calculator.  
+        4. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
+
+        ---
+
+        *© Forge RPA. Provided for planning purposes. Not legal, tax, or investment advice.*
+        """
+).strip()
+
+
+def ensure_fpdf() -> None:
+    try:
+        import fpdf  # noqa: F401
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "fpdf2", "-q"])
 
 
 def style_header(cell, *, bold: bool = True, fill: str | None = "FFF4E6") -> None:
@@ -184,74 +265,148 @@ def build_roi_workbook() -> None:
 
 
 def build_guide_markdown() -> None:
-    body = textwrap.dedent(
-        """
-        # Five high-ROI finance processes to automate first
-
-        **Forge RPA** — practical guide for finance and accounting leaders.  
-        *Proven in finance; applicable to other high-volume operational processes.*
-
-        ---
-
-        ## 1. Accounts payable — intake, coding, and three-way match
-
-        **Why ROI is high:** High transaction volume, structured data (PO, receipt, invoice), clear exception paths.  
-        **Typical savings:** Dozens to hundreds of hours per month in larger AP teams when match and follow-up are manual.  
-        **Implementation approach:** Stabilize matching rules and exception taxonomy; automate the “happy path”; queue exceptions for specialists.  
-        **Caveats:** Vendor master quality and tax/VAT complexity can dominate effort — fix data before scaling bots.
-
-        ---
-
-        ## 2. Bank and GL reconciliations
-
-        **Why ROI is high:** Recurring, deadline-driven, repetitive tie-outs across many accounts.  
-        **Typical savings:** Material close compression and fewer late-night corrections.  
-        **Implementation approach:** Standardize supporting workpapers; automate download, matching, and variance narratives where safe; escalate true breaks.  
-        **Caveats:** One-off restructuring or new accounts need controlled onboarding into the automation library.
-
-        ---
-
-        ## 3. Month-end journal entry and consolidation support packs
-
-        **Why ROI is high:** Same calendar-driven steps every period; heavy copy-paste between ERP and Excel.  
-        **Typical savings:** Often 30–50%+ of manual pack time when reporting is template-driven.  
-        **Implementation approach:** Treat packs as products — fixed inputs, fixed outputs, explicit validation checks; add controlled overrides for judgment lines.  
-        **Caveats:** “Spreadsheet archaeology” should be replaced with governed models, not more hidden formulas.
-
-        ---
-
-        ## 4. Intercompany billings, allocations, and eliminations support
-
-        **Why ROI is high:** Rules repeat across entities; errors are painful to unwind.  
-        **Typical savings:** Fewer reversals and faster IC true-up during close.  
-        **Implementation approach:** Document entity logic once; automate calculation and posting where policy is stable; keep audit trail explicit.  
-        **Caveats:** Legal entity changes and tax-driven adjustments need governance gates.
-
-        ---
-
-        ## 5. Management and operational reporting from ERP subledgers
-
-        **Why ROI is high:** Reporting pulls are constant; many are structured pivots and reconciliations to a single “source of truth.”  
-        **Typical savings:** Frees FP&A and accounting from repetitive pulls into consistent dashboards.  
-        **Implementation approach:** Lock definitions (metrics dictionary); automate extract-transform-load to reporting models; add reconciliation to GL.  
-        **Caveats:** Bad mappings multiply — invest in data definitions before visual polish.
-
-        ---
-
-        ## How to use this list with the Assessment Framework
-
-        1. Shortlist processes that match the patterns above in *your* environment.  
-        2. Score each with the Excel framework (`forgerpa-finance-automation-assessment-framework.xlsx`).  
-        3. Size hours, loaded cost, and adoption conservatively in the ROI calculator.  
-        4. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
-
-        ---
-
-        *© Forge RPA. Provided for planning purposes. Not legal, tax, or investment advice.*
-        """
-    ).strip()
     path = OUT / "forgerpa-5-high-roi-finance-processes.md"
-    path.write_text(body, encoding="utf-8")
+    path.write_text(HIGH_ROI_GUIDE_MARKDOWN + "\n", encoding="utf-8")
+    print("Wrote", path)
+
+
+def build_guide_pdf() -> None:
+    ensure_fpdf()
+    from fpdf import FPDF
+
+    class GuidePDF(FPDF):
+        def footer(self) -> None:
+            self.set_y(-12)
+            self.set_font("Helvetica", "", 8)
+            self.set_text_color(100, 116, 139)
+            self.cell(0, 8, f"Forge RPA  |  forgerpa.com/resources  |  Page {self.page_no()}", align="C")
+
+    pdf = GuidePDF()
+    pdf.set_auto_page_break(auto=True, margin=16)
+    pdf.set_margins(18, 18, 18)
+    pdf.add_page()
+    ew = pdf.w - pdf.l_margin - pdf.r_margin
+
+    # Header band (matches site charcoal + amber accent)
+    pdf.set_fill_color(*CHARCOAL)
+    pdf.rect(0, 0, 210, 36, "F")
+    pdf.set_xy(pdf.l_margin, 9)
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.set_text_color(*AMBER)
+    pdf.cell(ew, 5, "Forge RPA", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "B", 15)
+    pdf.set_text_color(255, 255, 255)
+    pdf.multi_cell(ew, 6, "Five high-ROI finance processes to automate first")
+    pdf.set_x(pdf.l_margin)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(226, 232, 240)
+    pdf.multi_cell(
+        ew,
+        4,
+        "Practical guide for finance and accounting leaders. Proven in finance; applicable to other high-volume operational processes.",
+    )
+
+    pdf.set_y(42)
+    pdf.set_x(pdf.l_margin)
+    pdf.set_text_color(15, 23, 42)
+    pdf.set_font("Helvetica", "", 10)
+
+    def section(title: str, parts: list[tuple[str, str]]) -> None:
+        pdf.ln(3)
+        pdf.set_x(pdf.l_margin)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.set_text_color(*CHARCOAL)
+        pdf.multi_cell(ew, 5, title)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.set_text_color(30, 41, 59)
+        for label, body in parts:
+            pdf.set_x(pdf.l_margin)
+            pdf.set_font("Helvetica", "B", 10)
+            pdf.cell(ew, 5, label, new_x="LMARGIN", new_y="NEXT")
+            pdf.set_font("Helvetica", "", 10)
+            pdf.multi_cell(ew, 4, body)
+            pdf.ln(1)
+
+    section(
+        "1. Accounts payable - intake, coding, and three-way match",
+        [
+            ("Why ROI is high:", "High transaction volume, structured data (PO, receipt, invoice), clear exception paths."),
+            ("Typical savings:", "Dozens to hundreds of hours per month in larger AP teams when match and follow-up are manual."),
+            ("Implementation approach:", "Stabilize matching rules and exception taxonomy; automate the happy path; queue exceptions for specialists."),
+            ("Caveats:", "Vendor master quality and tax/VAT complexity can dominate effort - fix data before scaling bots."),
+        ],
+    )
+    section(
+        "2. Bank and GL reconciliations",
+        [
+            ("Why ROI is high:", "Recurring, deadline-driven, repetitive tie-outs across many accounts."),
+            ("Typical savings:", "Material close compression and fewer late-night corrections."),
+            ("Implementation approach:", "Standardize supporting workpapers; automate download, matching, and variance narratives where safe; escalate true breaks."),
+            ("Caveats:", "One-off restructuring or new accounts need controlled onboarding into the automation library."),
+        ],
+    )
+    section(
+        "3. Month-end journal entry and consolidation support packs",
+        [
+            ("Why ROI is high:", "Same calendar-driven steps every period; heavy copy-paste between ERP and Excel."),
+            ("Typical savings:", "Often 30-50%+ of manual pack time when reporting is template-driven."),
+            ("Implementation approach:", "Treat packs as products - fixed inputs, fixed outputs, explicit validation checks; add controlled overrides for judgment lines."),
+            ("Caveats:", "Spreadsheet archaeology should be replaced with governed models, not more hidden formulas."),
+        ],
+    )
+    section(
+        "4. Intercompany billings, allocations, and eliminations support",
+        [
+            ("Why ROI is high:", "Rules repeat across entities; errors are painful to unwind."),
+            ("Typical savings:", "Fewer reversals and faster IC true-up during close."),
+            ("Implementation approach:", "Document entity logic once; automate calculation and posting where policy is stable; keep audit trail explicit."),
+            ("Caveats:", "Legal entity changes and tax-driven adjustments need governance gates."),
+        ],
+    )
+    section(
+        "5. Management and operational reporting from ERP subledgers",
+        [
+            ("Why ROI is high:", "Reporting pulls are constant; many are structured pivots and reconciliations to a single source of truth."),
+            ("Typical savings:", "Frees FP&A and accounting from repetitive pulls into consistent dashboards."),
+            ("Implementation approach:", "Lock definitions (metrics dictionary); automate extract-transform-load to reporting models; add reconciliation to GL."),
+            ("Caveats:", "Bad mappings multiply - invest in data definitions before visual polish."),
+        ],
+    )
+
+    pdf.ln(2)
+    pdf.set_x(pdf.l_margin)
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(*CHARCOAL)
+    pdf.cell(ew, 6, "How to use this list with the Assessment Framework", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(30, 41, 59)
+    steps = [
+        "Shortlist processes that match the patterns above in your environment.",
+        "Score each with the Excel workbook forgerpa-finance-automation-assessment-framework.xlsx.",
+        "Size hours, loaded cost, and adoption conservatively in forgerpa-finance-automation-roi-calculator.xlsx.",
+        "Book a discovery call if you want a second opinion on sequencing.",
+    ]
+    for i, s in enumerate(steps, start=1):
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(ew, 4, f"{i}. {s}")
+    pdf.ln(2)
+    pdf.set_x(pdf.l_margin)
+    pdf.set_text_color(*AMBER_DARK)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(ew, 5, "Schedule a 30-minute discovery call:", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "U", 10)
+    pdf.set_text_color(30, 64, 175)
+    pdf.set_x(pdf.l_margin)
+    pdf.cell(ew, 5, "https://forgerpa.com/book", new_x="LMARGIN", new_y="NEXT", link="https://forgerpa.com/book")
+
+    pdf.ln(4)
+    pdf.set_x(pdf.l_margin)
+    pdf.set_font("Helvetica", "I", 8)
+    pdf.set_text_color(100, 116, 139)
+    pdf.multi_cell(ew, 4, "Provided for planning purposes. Not legal, tax, or investment advice.")
+
+    path = OUT / "forgerpa-5-high-roi-finance-processes.pdf"
+    pdf.output(str(path))
     print("Wrote", path)
 
 
@@ -348,31 +503,127 @@ def build_checklist_html() -> None:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1a1a2e" />
   <title>Month-end close optimization checklist — Forge RPA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root {{ font-family: Inter, system-ui, sans-serif; color: #1e293b; }}
-    body {{ max-width: 48rem; margin: 2rem auto; padding: 0 1.25rem 3rem; }}
-    h1 {{ font-size: 1.75rem; margin-bottom: 0.25rem; }}
-    .sub {{ color: #64748b; margin-bottom: 1.5rem; }}
-    .hint {{ background: #fffbeb; border: 1px solid #fcd34d; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 2rem; font-size: 0.9rem; }}
+    :root {{
+      --charcoal: #1a1a2e;
+      --charcoal-light: #2d2d44;
+      --amber: #f59e0b;
+      --amber-dark: #d97706;
+      --amber-tint: #fffbeb;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--slate-700);
+    }}
+    body {{ max-width: 48rem; margin: 2rem auto; padding: 0 1.25rem 3rem; background: #fff; }}
+    h1 {{
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 0.35rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 4px solid var(--amber);
+      display: inline-block;
+    }}
+    .sub {{ color: var(--slate-500); margin-bottom: 1rem; max-width: 40rem; line-height: 1.45; }}
+    .sub .brand {{ color: var(--amber-dark); font-weight: 700; }}
+    .meta-bar {{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0 1.25rem;
+      padding: 1rem 1.1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.65rem;
+    }}
+    @media (min-width: 640px) {{
+      .meta-bar {{ grid-template-columns: 1fr 1fr 1fr; }}
+    }}
+    .meta-field {{ font-size: 0.8rem; color: var(--slate-500); }}
+    .meta-label {{ display: block; font-weight: 600; color: var(--charcoal); margin-bottom: 0.2rem; }}
+    .meta-line {{ display: block; min-height: 1.35rem; border-bottom: 1px solid #cbd5e1; }}
+    .hint {{
+      background: var(--amber-tint);
+      border: 1px solid var(--amber);
+      padding: 0.85rem 1rem;
+      border-radius: 0.65rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--slate-700);
+    }}
+    .cta-strip {{
+      background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+      color: #fff;
+      padding: 1.25rem 1.35rem;
+      border-radius: 0.85rem;
+      margin: 0 0 1.75rem;
+      border: 2px solid var(--amber);
+      box-shadow: 0 10px 25px rgba(26, 26, 46, 0.12);
+    }}
+    .cta-strip h2 {{ margin: 0 0 0.35rem; font-size: 1.15rem; font-weight: 700; color: #fff; border: none; padding: 0; }}
+    .cta-strip p {{ margin: 0.35rem 0 0; font-size: 0.95rem; color: #e2e8f0; line-height: 1.45; }}
+    .cta-strip .btn-book {{
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.7rem 1.35rem;
+      background: var(--amber);
+      color: var(--charcoal);
+      font-weight: 800;
+      font-size: 0.95rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      border: 2px solid var(--amber-dark);
+    }}
+    .cta-strip .btn-book:hover {{ background: var(--amber-dark); color: #fff; }}
+    .print-only-url {{ display: none; font-size: 0.75rem; color: #cbd5e1; margin-top: 0.5rem; }}
     section.block {{ margin-bottom: 2rem; page-break-inside: avoid; }}
-    h2 {{ font-size: 1.1rem; margin-bottom: 0.75rem; color: #0f172a; }}
+    h2 {{
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: var(--charcoal);
+      border-left: 4px solid var(--amber);
+      padding-left: 0.55rem;
+    }}
     ol.chk {{ list-style: none; padding: 0; margin: 0; }}
-    ol.chk li {{ margin: 0.45rem 0; line-height: 1.35; }}
+    ol.chk li {{ margin: 0.45rem 0; line-height: 1.35; color: var(--slate-700); }}
     label {{ cursor: pointer; }}
-    footer {{ margin-top: 3rem; font-size: 0.8rem; color: #94a3b8; }}
+    footer {{ margin-top: 2.5rem; font-size: 0.8rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 1rem; }}
+    footer a {{ color: var(--amber-dark); font-weight: 600; text-decoration: none; }}
+    footer a:hover {{ text-decoration: underline; }}
     @media print {{
+      body {{ margin: 0.5rem; }}
       .hint {{ border-color: #ccc; background: #fafafa; }}
-      a {{ color: inherit; text-decoration: none; }}
+      .cta-strip {{ box-shadow: none; break-inside: avoid; }}
+      .cta-strip .btn-book {{ border: 1px solid #000; color: #000; background: #fbbf24; }}
+      .print-only-url {{ display: block; color: #333; }}
     }}
   </style>
 </head>
 <body>
   <h1>Month-end close optimization checklist</h1>
-  <p class="sub"><strong>Forge RPA</strong> — 47 checkpoints with automation notes. Use Print → Save as PDF in your browser.</p>
-  <p class="hint"><strong>Automation angle:</strong> mark items that are mostly rules + repeatable data pulls — those are usually the best early automation candidates. Judgment-heavy items may still benefit from workflow and evidence packaging.</p>
+  <p class="sub"><span class="brand">Forge RPA</span> &mdash; 47 checkpoints with automation notes. Use <strong>Print &rarr; Save as PDF</strong> in your browser to keep a dated copy for your files.</p>
+  <div class="meta-bar">
+    <div class="meta-field"><span class="meta-label">Entity / BU (optional)</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Close period</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Prepared by</span><span class="meta-line"></span></div>
+  </div>
+  <p class="hint"><strong>Automation angle:</strong> mark items that are mostly rules plus repeatable data pulls &mdash; those are usually the best early automation candidates. Judgment-heavy items may still benefit from workflow and evidence packaging.</p>
+  <div class="cta-strip">
+    <h2>Want help turning checks into a roadmap?</h2>
+    <p>Book a free 30-minute discovery call. We will help you prioritize what to automate first and what to stabilize before you invest.</p>
+    <a class="btn-book" href="https://forgerpa.com/book">Book a discovery call</a>
+    <p class="print-only-url">Booking link: https://forgerpa.com/book</p>
+  </div>
   {sections_html}
-  <footer>© Forge RPA. For planning use. https://forgerpa.com/resources</footer>
+  <footer>&copy; Forge RPA. For planning use. More resources: <a href="https://forgerpa.com/resources">forgerpa.com/resources</a> &middot; <a href="https://forgerpa.com/book">forgerpa.com/book</a></footer>
 </body>
 </html>"""
     path = OUT / "forgerpa-month-end-close-checklist.html"
@@ -385,6 +636,7 @@ def main() -> None:
     build_assessment_workbook()
     build_roi_workbook()
     build_guide_markdown()
+    build_guide_pdf()
     build_checklist_html()
 
 

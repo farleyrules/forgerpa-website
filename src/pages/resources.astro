@@ -5,7 +5,7 @@ import CTASection from '../components/CTASection.astro';
 const downloads = {
   assessment: '/downloads/forgerpa-finance-automation-assessment-framework.xlsx',
   checklist: '/downloads/forgerpa-month-end-close-checklist.html',
-  guide: '/downloads/forgerpa-5-high-roi-finance-processes.md',
+  guide: '/downloads/forgerpa-5-high-roi-finance-processes.pdf',
   roi: '/downloads/forgerpa-finance-automation-roi-calculator.xlsx',
 } as const;
 ---
@@ -76,7 +76,7 @@ const downloads = {
             aligned: AP match, reconciliations, close packs, intercompany support, and operational reporting pulls.
           </p>
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <span class="text-sm text-gray-500">Markdown (.md)</span>
+            <span class="text-sm text-gray-500">PDF guide</span>
             <a
               href={downloads.guide}
               download

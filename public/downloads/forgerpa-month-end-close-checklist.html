@@ -3,29 +3,125 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1a1a2e" />
   <title>Month-end close optimization checklist — Forge RPA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root { font-family: Inter, system-ui, sans-serif; color: #1e293b; }
-    body { max-width: 48rem; margin: 2rem auto; padding: 0 1.25rem 3rem; }
-    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
-    .sub { color: #64748b; margin-bottom: 1.5rem; }
-    .hint { background: #fffbeb; border: 1px solid #fcd34d; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 2rem; font-size: 0.9rem; }
+    :root {
+      --charcoal: #1a1a2e;
+      --charcoal-light: #2d2d44;
+      --amber: #f59e0b;
+      --amber-dark: #d97706;
+      --amber-tint: #fffbeb;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--slate-700);
+    }
+    body { max-width: 48rem; margin: 2rem auto; padding: 0 1.25rem 3rem; background: #fff; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 0.35rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 4px solid var(--amber);
+      display: inline-block;
+    }
+    .sub { color: var(--slate-500); margin-bottom: 1rem; max-width: 40rem; line-height: 1.45; }
+    .sub .brand { color: var(--amber-dark); font-weight: 700; }
+    .meta-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0 1.25rem;
+      padding: 1rem 1.1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.65rem;
+    }
+    @media (min-width: 640px) {
+      .meta-bar { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .meta-field { font-size: 0.8rem; color: var(--slate-500); }
+    .meta-label { display: block; font-weight: 600; color: var(--charcoal); margin-bottom: 0.2rem; }
+    .meta-line { display: block; min-height: 1.35rem; border-bottom: 1px solid #cbd5e1; }
+    .hint {
+      background: var(--amber-tint);
+      border: 1px solid var(--amber);
+      padding: 0.85rem 1rem;
+      border-radius: 0.65rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--slate-700);
+    }
+    .cta-strip {
+      background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+      color: #fff;
+      padding: 1.25rem 1.35rem;
+      border-radius: 0.85rem;
+      margin: 0 0 1.75rem;
+      border: 2px solid var(--amber);
+      box-shadow: 0 10px 25px rgba(26, 26, 46, 0.12);
+    }
+    .cta-strip h2 { margin: 0 0 0.35rem; font-size: 1.15rem; font-weight: 700; color: #fff; border: none; padding: 0; }
+    .cta-strip p { margin: 0.35rem 0 0; font-size: 0.95rem; color: #e2e8f0; line-height: 1.45; }
+    .cta-strip .btn-book {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.7rem 1.35rem;
+      background: var(--amber);
+      color: var(--charcoal);
+      font-weight: 800;
+      font-size: 0.95rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      border: 2px solid var(--amber-dark);
+    }
+    .cta-strip .btn-book:hover { background: var(--amber-dark); color: #fff; }
+    .print-only-url { display: none; font-size: 0.75rem; color: #cbd5e1; margin-top: 0.5rem; }
     section.block { margin-bottom: 2rem; page-break-inside: avoid; }
-    h2 { font-size: 1.1rem; margin-bottom: 0.75rem; color: #0f172a; }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: var(--charcoal);
+      border-left: 4px solid var(--amber);
+      padding-left: 0.55rem;
+    }
     ol.chk { list-style: none; padding: 0; margin: 0; }
-    ol.chk li { margin: 0.45rem 0; line-height: 1.35; }
+    ol.chk li { margin: 0.45rem 0; line-height: 1.35; color: var(--slate-700); }
     label { cursor: pointer; }
-    footer { margin-top: 3rem; font-size: 0.8rem; color: #94a3b8; }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+    footer a { color: var(--amber-dark); font-weight: 600; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
     @media print {
+      body { margin: 0.5rem; }
       .hint { border-color: #ccc; background: #fafafa; }
-      a { color: inherit; text-decoration: none; }
+      .cta-strip { box-shadow: none; break-inside: avoid; }
+      .cta-strip .btn-book { border: 1px solid #000; color: #000; background: #fbbf24; }
+      .print-only-url { display: block; color: #333; }
     }
   </style>
 </head>
 <body>
   <h1>Month-end close optimization checklist</h1>
-  <p class="sub"><strong>Forge RPA</strong> — 47 checkpoints with automation notes. Use Print → Save as PDF in your browser.</p>
-  <p class="hint"><strong>Automation angle:</strong> mark items that are mostly rules + repeatable data pulls — those are usually the best early automation candidates. Judgment-heavy items may still benefit from workflow and evidence packaging.</p>
+  <p class="sub"><span class="brand">Forge RPA</span> &mdash; 47 checkpoints with automation notes. Use <strong>Print &rarr; Save as PDF</strong> in your browser to keep a dated copy for your files.</p>
+  <div class="meta-bar">
+    <div class="meta-field"><span class="meta-label">Entity / BU (optional)</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Close period</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Prepared by</span><span class="meta-line"></span></div>
+  </div>
+  <p class="hint"><strong>Automation angle:</strong> mark items that are mostly rules plus repeatable data pulls &mdash; those are usually the best early automation candidates. Judgment-heavy items may still benefit from workflow and evidence packaging.</p>
+  <div class="cta-strip">
+    <h2>Want help turning checks into a roadmap?</h2>
+    <p>Book a free 30-minute discovery call. We will help you prioritize what to automate first and what to stabilize before you invest.</p>
+    <a class="btn-book" href="https://forgerpa.com/book">Book a discovery call</a>
+    <p class="print-only-url">Booking link: https://forgerpa.com/book</p>
+  </div>
   <section class="block"><h2>Pre–month-end readiness (items 1–10)</h2><ol class="chk"><li><label><input type="checkbox" /> 1. Cutoff communications sent (AP, AR, procurement, treasury)</label></li>
 <li><label><input type="checkbox" /> 2. Accrual templates prepared with clear ownership</label></li>
 <li><label><input type="checkbox" /> 3. Preliminary FX rates captured where required</label></li>
@@ -69,6 +165,6 @@
 <li><label><input type="checkbox" /> 45. Training gaps logged for new hires or new systems</label></li>
 <li><label><input type="checkbox" /> 46. Documentation updated for recurring JEs and close paths</label></li>
 <li><label><input type="checkbox" /> 47. Lessons learned shared with FP&A and operations for next cycle</label></li></ol></section>
-  <footer>© Forge RPA. For planning use. https://forgerpa.com/resources</footer>
+  <footer>&copy; Forge RPA. For planning use. More resources: <a href="https://forgerpa.com/resources">forgerpa.com/resources</a> &middot; <a href="https://forgerpa.com/book">forgerpa.com/book</a></footer>
 </body>
 </html>
