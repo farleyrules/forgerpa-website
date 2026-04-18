@@ -108,6 +108,39 @@ const defaultHeroSubtitle =
       if (tw) tw.setAttribute('content', text);
     }
 
+    function industryContext(fromKey) {
+      if (!fromKey || fromKey.indexOf('industries-') !== 0) return null;
+      var slug = fromKey.replace(/^industries-/, '').replace(/-/g, ' ');
+      var pretty = {
+        'oil gas': 'Oil & Gas',
+        'healthcare finance': 'Healthcare finance (non-PHI)',
+        'insurance finance': 'Insurance finance',
+        'utilities finance': 'Utilities & infrastructure finance',
+        overview: 'Industries overview',
+      }[slug];
+      var label =
+        pretty ||
+        slug.replace(/\b\w/g, function (c) {
+          return c.toUpperCase();
+        });
+      return {
+        title: 'Book a discovery call',
+        description:
+          'Schedule a 30-minute discovery call. We will connect your industry context to concrete finance and operations automation opportunities.',
+        heroTitle: 'Book a Discovery Call',
+        heroSubtitle:
+          'You arrived from our ' +
+          label +
+          ' content. Same 30-minute format — we will map where automation and governance matter most for your team.',
+        banner:
+          'You arrived from a Forge RPA industry page (' +
+          label +
+          '). We will use that lens for examples and questions, then confirm fit before any larger commitment.',
+        expectLead:
+          'We will start with your priorities for close, reporting, or ERP-adjacent work, then outline what a low-risk assessment or pilot could look like in your environment.',
+      };
+    }
+
     var contexts = {
       assessment: {
         title: 'Book an assessment consultation',
@@ -159,32 +192,33 @@ const defaultHeroSubtitle =
       },
     };
 
-    var ctx = contexts[from];
-    if (!ctx) return;
+    var ctx = contexts[from] || industryContext(from);
 
-    var fullTitle = ctx.title + ' | Forge RPA';
-    document.title = fullTitle;
-    setOgTitle(fullTitle);
-    setMetaDescription(ctx.description);
+    if (ctx) {
+      var fullTitle = ctx.title + ' | Forge RPA';
+      document.title = fullTitle;
+      setOgTitle(fullTitle);
+      setMetaDescription(ctx.description);
 
-    var hero = document.getElementById('page-hero');
-    if (hero) {
-      var h1 = hero.querySelector('h1');
-      if (h1) h1.textContent = ctx.heroTitle;
-      var sub = hero.querySelector('p.mt-6');
-      if (sub) sub.textContent = ctx.heroSubtitle;
-    }
+      var hero = document.getElementById('page-hero');
+      if (hero) {
+        var h1 = hero.querySelector('h1');
+        if (h1) h1.textContent = ctx.heroTitle;
+        var sub = hero.querySelector('p.mt-6');
+        if (sub) sub.textContent = ctx.heroSubtitle;
+      }
 
-    var banner = document.getElementById('book-context-banner');
-    var bannerBody = document.getElementById('book-context-banner-body');
-    if (banner && bannerBody && ctx.banner) {
-      bannerBody.textContent = ctx.banner;
-      banner.classList.remove('hidden');
-    }
+      var banner = document.getElementById('book-context-banner');
+      var bannerBody = document.getElementById('book-context-banner-body');
+      if (banner && bannerBody && ctx.banner) {
+        bannerBody.textContent = ctx.banner;
+        banner.classList.remove('hidden');
+      }
 
-    var expect = document.getElementById('book-expect-lead');
-    if (expect && ctx.expectLead) {
-      expect.textContent = ctx.expectLead;
+      var expect = document.getElementById('book-expect-lead');
+      if (expect && ctx.expectLead) {
+        expect.textContent = ctx.expectLead;
+      }
     }
 
     var interestPrefillByFrom = {
@@ -199,8 +233,11 @@ const defaultHeroSubtitle =
       var u = new URL(baseCal);
       u.searchParams.set('utm_source', 'forgerpa-site');
       u.searchParams.set('utm_medium', 'book-page');
-      u.searchParams.set('utm_content', 'from-' + from);
+      u.searchParams.set('utm_content', from ? 'from-' + from : 'book-direct');
       var interestLabel = interestPrefillByFrom[from];
+      if (!interestLabel && from && from.indexOf('industries-') === 0) {
+        interestLabel = 'Industry / vertical solutions';
+      }
       if (interestLabel) {
         u.searchParams.append('Interest', interestLabel);
       }
