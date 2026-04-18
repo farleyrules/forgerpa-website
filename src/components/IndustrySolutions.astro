@@ -22,6 +22,9 @@ interface Props {
   /** Short industry-specific “why value feels different here” copy */
   valueHeading?: string;
   valueBullets?: string[];
+  /** Optional second group: field ops, supply chain, admin — not only GL */
+  operationsPains?: PainPoint[];
+  operationsSectionTitle?: string;
 }
 
 const {
@@ -37,7 +40,11 @@ const {
   bookingSource,
   valueHeading,
   valueBullets,
+  operationsPains,
+  operationsSectionTitle = 'Operations, supply chain, and administrative flows',
 } = Astro.props;
+
+const hasOps = operationsPains && operationsPains.length > 0;
 
 const bookHref = bookingSource
   ? `/book?from=${encodeURIComponent(bookingSource)}`
@@ -78,10 +85,18 @@ const bookHref = bookingSource
 
   <section class="py-16 lg:py-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold text-charcoal mb-6">High-impact automation areas</h2>
-      <p class="text-lg text-gray-700 leading-relaxed mb-10">
+      <h2 class="text-3xl font-bold text-charcoal mb-4">High-impact automation areas</h2>
+      {hasOps && (
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          We automate <strong>accounting and finance</strong> work and, in parallel, many <strong>operations and administrative</strong> flows that sit beside finance — the same rules-based, high-volume patterns (handoffs, portals, email, spreadsheets, ERP interfaces) with full lineage where you need evidence.
+        </p>
+      )}
+      <p class={`text-lg text-gray-700 leading-relaxed ${hasOps ? 'mb-6' : 'mb-10'}`}>
         {systemsBlurb}
       </p>
+      {hasOps && (
+        <h3 class="text-xl font-bold text-charcoal mb-6 border-b border-gray-200 pb-2">Accounting &amp; finance</h3>
+      )}
       <div class="space-y-8">
         {pains.map((p) => (
           <div class="bg-white rounded-2xl border border-gray-100 p-8">
@@ -90,6 +105,19 @@ const bookHref = bookingSource
           </div>
         ))}
       </div>
+      {hasOps && (
+        <>
+          <h3 class="text-xl font-bold text-charcoal mt-14 mb-6 border-b border-gray-200 pb-2">{operationsSectionTitle}</h3>
+          <div class="space-y-8">
+            {operationsPains!.map((p) => (
+              <div class="bg-white rounded-2xl border border-gray-100 p-8">
+                <h3 class="text-xl font-bold text-charcoal mb-3">{p.title}</h3>
+                <p class="text-gray-600 leading-relaxed">{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   </section>
 

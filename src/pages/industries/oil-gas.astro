@@ -4,12 +4,13 @@ import IndustrySolutions from '../../components/IndustrySolutions.astro';
 
 <IndustrySolutions
   title="Oil & Gas Finance Automation | Forge RPA"
-  metaDescription="Automation for oil and gas finance and revenue accounting: JV support, volume tie-outs, intercompany, royalty extracts, and audit-ready Excel and ERP workflows."
-  heroTitle="Oil &amp; gas finance operations"
-  heroSubtitle="High transaction volume, strict controls, and systems that must stay up through close. We automate the finance and accounting work around revenue, JVs, and reporting — with full audit trails and outputs your auditors expect."
+  metaDescription="Oil and gas automation for finance and operations: revenue and JV accounting, volume tie-outs, field-to-finance handoffs, supply chain interfaces, and audit-ready workflows."
+  heroTitle="Oil &amp; gas — finance &amp; operations"
+  heroSubtitle="High transaction volume, strict controls, and systems that must stay up through close. We automate accounting and revenue work — and many operations and supply-chain handoffs that feed finance — with full audit trails and outputs your teams can defend."
   audience={[
     'Controller and VP Finance',
     'Revenue accounting and JV accounting leads',
+    'Supply chain, materials, or land administration partners where data touches finance',
     'Shared services and finance IT partners',
     'Leaders who need reliability through month-end and acquisition activity',
   ]}
@@ -45,7 +46,29 @@ import IndustrySolutions from '../../components/IndustrySolutions.astro';
         'Sandbox / QA / production patterns, logging, and rerunnable batches so close-critical jobs behave predictably.',
     },
   ]}
-  systemsBlurb="We speak the same languages as your finance stack: SAP (including common oil & gas configurations), revenue and land suites, operational well and volume feeds, and the advanced Excel workflows that still run critical close processes. We describe integrations generically until an NDA and discovery define your exact landscape."
+  operationsPains={[
+    {
+      title: 'Materials, transfers, and inventory bridges',
+      body:
+        'Scheduled matches between warehouse or pipe tally movement files and finance subledger expectations — exception lists for operations and controllers before posting waves.',
+    },
+    {
+      title: 'Field tickets and service spend accrual support',
+      body:
+        'Aggregating approved field service or rig-related spend into accrual-ready buckets with document references — finance still signs off; automation reduces month-end scavenger hunts.',
+    },
+    {
+      title: 'Procurement and contract admin data hygiene',
+      body:
+        'Vendor master touch-ups, PO closeout sweeps, and recurring catalog extracts that keep procure-to-pay and operations aligned before close.',
+    },
+    {
+      title: 'Logistics and dispatch cutoffs for revenue recognition',
+      body:
+        'Cutoff lists tying shipping or nomination events to accounting period boundaries — especially where spreadsheets still mediate between systems.',
+    },
+  ]}
+  systemsBlurb="We speak the same languages as your finance stack (SAP and common O&G configurations, revenue and land suites, well and volume feeds) and many operations stacks (materials movements, 3PL or pipe tally exports, procurement workbenches, field ticketing exports) — plus the Excel that still glues it all together. We describe integrations generically until an NDA and discovery define your exact landscape."
   proofBlurb="We typically begin with an automation assessment or a focused discovery so ROI, systems, and controls are explicit before build. Deliverables are designed for production: audit columns, robot or service identities, and documentation your finance team can own."
   disclaimer="Automation supports your controls; your organization retains sign-off on regulatory, land, and reserve reporting. We do not provide engineering reserves, safety, or environmental compliance advice."
   bookingSource="industries-oil-gas"

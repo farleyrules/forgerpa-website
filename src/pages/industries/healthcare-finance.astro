@@ -4,13 +4,14 @@ import IndustrySolutions from '../../components/IndustrySolutions.astro';
 
 <IndustrySolutions
   title="Healthcare Finance Automation (non-PHI) | Forge RPA"
-  metaDescription="Finance and operations automation for healthcare organizations: GL, close, payer file interfaces, and ERP workflows without clinical PHI scope on this page."
+  metaDescription="Healthcare finance and non-clinical operations automation: GL, close, supply chain finance, facilities cost feeds, payer file interfaces — non-PHI scope on this page."
   heroTitle="Healthcare — finance &amp; operations (non-PHI)"
-  heroSubtitle="Hospitals and payers run finance and revenue operations under heavy scrutiny. This page covers automation where finance owns the data: GL, close, allocations, and structured files — not clinical care workflows."
+  heroSubtitle="Hospitals and payers run finance and revenue operations under heavy scrutiny. This page stays in finance-owned and non-clinical operations data: GL, close, supply chain finance interfaces, facilities cost feeds, and structured files — not bedside or EMR clinical workflows."
   audience={[
     'CFO office, Controller, and FP&A',
     'RCM leadership for finance-owned file flows (not bedside or clinical IT)',
-    'Supply chain finance and ERP teams',
+    'Supply chain, materials management, and facilities finance partners',
+    'ERP teams bridging operational feeds into the ledger',
   ]}
   pains={[
     {
@@ -34,7 +35,24 @@ import IndustrySolutions from '../../components/IndustrySolutions.astro';
         'Structured transformations and checklists that reduce manual rework for finance reviewers.',
     },
   ]}
-  systemsBlurb="Typical stacks include major ERPs, workday-class HCM/finance boundaries, and heavy Excel — the same patterns we use across industries, with terminology adapted for healthcare finance."
+  operationsPains={[
+    {
+      title: 'Supplies and purchased services accrual support',
+      body:
+        'Rolling builds from MM or requisition extracts into accrual worksheets with three-way style checks where your policy allows — scoped to non-PHI identifiers only.',
+    },
+    {
+      title: 'Facilities and work-order cost bridges',
+      body:
+        'Turning CMMS or facilities exports into capitalization vs OpEx buckets and exception queues for finance reviewers (no clinical workflow claims on this page).',
+    },
+    {
+      title: 'Non-clinical vendor catalog and contract renewals hygiene',
+      body:
+        'Recurring vendor file normalization for supply chain finance before close — duplicate detection, inactive flags, and PO linkage prep.',
+    },
+  ]}
+  systemsBlurb="Typical stacks include major ERPs, Workday-class HCM/finance boundaries, materials and MM feeds, facilities / work-order exports, and heavy Excel — the same patterns we use across industries, with terminology adapted for healthcare finance and adjacent non-clinical operations."
   proofBlurb="When a use case touches identifiable patient data or regulated clinical systems, we treat that as a separate security and compliance engagement (BAA, minimum necessary, access controls). This landing page is intentionally limited to finance-owned scope so procurement and InfoSec know what you are buying first."
   disclaimer="This page describes finance and operations automation on non-PHI datasets. Clinical workflows, PHI, and HIPAA-regulated processing require an explicit security assessment, agreements, and architecture — not covered by marketing copy alone."
   bookingSource="industries-healthcare-finance"

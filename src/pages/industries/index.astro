@@ -7,40 +7,64 @@ const industries = [
     href: '/industries/oil-gas',
     title: 'Oil & Gas',
     description:
-      'Finance and revenue accounting operations: JV support, volume tie-outs, intercompany, and audit-ready reporting across common upstream and midstream stacks.',
+      'Revenue accounting, JVs, operations-to-finance handoffs, materials and field ticketing bridges, and close-critical reporting.',
   },
   {
     href: '/industries/healthcare-finance',
-    title: 'Healthcare (non-PHI finance)',
+    title: 'Healthcare (non-PHI)',
     description:
-      'Controller, RCM finance interfaces, and ERP-adjacent automation focused on datasets owned by finance — not clinical workflows or identifiable patient data.',
+      'Finance close, payer files, supply chain finance, facilities cost feeds — finance-owned and non-clinical operations data.',
   },
   {
     href: '/industries/insurance-finance',
     title: 'Insurance',
     description:
-      'Finance operations, allocations, and reporting packs where controls and speed matter as much as in any large insurer.',
+      'Allocations, subledgers, claims ops finance files, underwriting support assembly, and governed reporting.',
   },
   {
     href: '/industries/utilities-finance',
     title: 'Utilities & infrastructure',
     description:
-      'Month-end, project and work-order cost rollups (finance view), regulatory reporting extracts, and governed handoffs to specialists.',
+      'Month-end, work orders, field events, WIP and regulatory extracts — finance and field operations together.',
+  },
+  {
+    href: '/industries/small-business',
+    title: 'Small & growing businesses',
+    description:
+      'Assessment-first engagements, per-solution builds, optional retainer when you want Hub support without adding IT headcount.',
   },
 ];
 ---
 
 <PageLayout
   title="Industries | Forge RPA"
-  description="Finance and operations automation for oil and gas, healthcare finance, insurance, and utilities — governed, audit-friendly, and built to run in production."
+  description="Accounting, finance, and operations automation across industries — oil and gas, healthcare, insurance, utilities, and SMB. Industry pages highlight typical pain points; your roadmap still starts with discovery."
   heroTitle="Industry solutions"
-  heroSubtitle="We specialize in finance-grade automation: clear audit trails, environment controls, and outputs accountants trust. Pick your industry to see typical use cases — every engagement still starts with discovery and assessment."
+  heroSubtitle="Vertical pages show how we think about your world — not a limit on where we work. Every organization has accounting &amp; finance and operations friction we can help with; over time we add sharper industry examples as we ship more work."
   heroCta="Book a Discovery Call"
   heroCtaLink="/book?from=industries-overview"
 >
+  <section class="py-16 lg:py-20 bg-slate-light">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-6">Every industry runs on A&amp;F and operations</h2>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6">
+        Regardless of sector, leadership cares about the same underlying problems: <strong>month-end integrity</strong>,{' '}
+        <strong>order-to-cash and procure-to-pay discipline</strong>, <strong>reconciliations that tie</strong>,{' '}
+        <strong>handoffs between the field and the ledger</strong>, and <strong>evidence when auditors or regulators ask</strong>.
+        Our deepest craft is finance-grade automation — and we apply the same rigor to <strong>operations and administrative</strong> flows
+        (supply chain paperwork, vendor onboarding, scheduling data, inventory interfaces, HR ops where data is non-PHI, and more) when they are rules-based and systems-accessible.
+      </p>
+      <p class="text-lg text-gray-700 leading-relaxed">
+        The industry tiles below are <strong>starting lenses</strong>: concrete pain language so visitors from that sector see themselves quickly.
+        If your industry is not listed yet, the conversation is the same — we map your processes, then prioritize what to automate first.
+      </p>
+    </div>
+  </section>
+
   <section class="py-20 lg:py-28">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-charcoal mb-10 text-center">Explore by industry</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {industries.map((item) => (
           <a
             href={item.href}
@@ -57,7 +81,7 @@ const industries = [
 
   <CTASection
     heading="Not sure where you fit?"
-    subtext="Most of our work still centers on month-end, subledgers, and ERP data flows. Book a call and we will map your processes to the right tools."
+    subtext="Most of our work still centers on month-end, subledgers, ERP data flows, and the operations handoffs that feed them. Book a call and we will map your processes to the right tools."
     ctaText="Book a Discovery Call"
     ctaLink="/book?from=industries-overview"
   />
