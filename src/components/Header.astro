@@ -13,6 +13,14 @@ const serviceLinks = [
   { label: 'SOP Automation', href: '/services/sop-automation' },
   { label: 'Process Mining', href: '/services/process-mining' },
 ];
+
+const industryLinks = [
+  { label: 'Overview', href: '/industries' },
+  { label: 'Oil & Gas', href: '/industries/oil-gas' },
+  { label: 'Healthcare finance', href: '/industries/healthcare-finance' },
+  { label: 'Insurance', href: '/industries/insurance-finance' },
+  { label: 'Utilities', href: '/industries/utilities-finance' },
+];
 ---
 
 <header class="sticky top-0 z-50 bg-charcoal shadow-lg">
@@ -49,6 +57,25 @@ const serviceLinks = [
           </div>
         </div>
 
+        <!-- Industries Dropdown -->
+        <div class="relative group">
+          <a href="/industries" class="flex items-center gap-1 px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+            Industries
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <div class="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="bg-charcoal-light rounded-lg shadow-xl border border-gray-700 py-2">
+              {industryLinks.map((link) => (
+                <a href={link.href} class="block px-4 py-3 text-sm text-gray-300 hover:text-amber hover:bg-charcoal transition-colors">
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {navLinks.map((link) => (
           <a href={link.href} class="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
             {link.label}
@@ -77,6 +104,14 @@ const serviceLinks = [
         <a href="/services" class="block px-4 py-3 text-gray-300 hover:text-amber font-medium">Services</a>
         <div class="pl-6 space-y-1">
           {serviceLinks.map((link) => (
+            <a href={link.href} class="block px-4 py-2 text-sm text-gray-400 hover:text-amber">
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <a href="/industries" class="block px-4 py-3 text-gray-300 hover:text-amber font-medium">Industries</a>
+        <div class="pl-6 space-y-1">
+          {industryLinks.map((link) => (
             <a href={link.href} class="block px-4 py-2 text-sm text-gray-400 hover:text-amber">
               {link.label}
             </a>

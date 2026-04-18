@@ -1,0 +1,120 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from './CTASection.astro';
+
+export interface PainPoint {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  title: string;
+  metaDescription: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  audience: string[];
+  pains: PainPoint[];
+  systemsBlurb: string;
+  disclaimer: string;
+  proofBlurb?: string;
+  /** Pass-through for analytics / n8n (e.g. industries-oil-gas) → `/book?from=…` */
+  bookingSource?: string;
+  /** Short industry-specific “why value feels different here” copy */
+  valueHeading?: string;
+  valueBullets?: string[];
+}
+
+const {
+  title,
+  metaDescription,
+  heroTitle,
+  heroSubtitle,
+  audience,
+  pains,
+  systemsBlurb,
+  disclaimer,
+  proofBlurb,
+  bookingSource,
+  valueHeading,
+  valueBullets,
+} = Astro.props;
+
+const bookHref = bookingSource
+  ? `/book?from=${encodeURIComponent(bookingSource)}`
+  : '/book';
+---
+
+<PageLayout
+  {title}
+  description={metaDescription}
+  {heroTitle}
+  heroSubtitle={heroSubtitle}
+  heroCta="Book a Discovery Call"
+  heroCtaLink={bookHref}
+>
+  <section class="py-16 lg:py-20 bg-slate-light">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-charcoal mb-4">Who this is for</h2>
+      <ul class="list-disc pl-6 text-lg text-gray-700 space-y-2">
+        {audience.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {valueHeading && valueBullets && valueBullets.length > 0 && (
+    <section class="py-16 lg:py-20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-charcoal mb-4">{valueHeading}</h2>
+        <ul class="list-disc pl-6 text-lg text-gray-700 space-y-3">
+          {valueBullets.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="py-16 lg:py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-charcoal mb-6">High-impact automation areas</h2>
+      <p class="text-lg text-gray-700 leading-relaxed mb-10">
+        {systemsBlurb}
+      </p>
+      <div class="space-y-8">
+        {pains.map((p) => (
+          <div class="bg-white rounded-2xl border border-gray-100 p-8">
+            <h3 class="text-xl font-bold text-charcoal mb-3">{p.title}</h3>
+            <p class="text-gray-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {proofBlurb && (
+    <section class="py-16 lg:py-20 bg-slate-light">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-charcoal mb-4">How we work</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">{proofBlurb}</p>
+      </div>
+    </section>
+  )}
+
+  <section class="py-12 lg:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="rounded-xl border border-amber/30 bg-amber/5 p-6 text-gray-800 text-sm leading-relaxed">
+        <strong class="text-charcoal">Important:</strong>
+        {disclaimer}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Discuss your roadmap"
+    subtext="Start with a low-risk automation assessment or a discovery call. We will help you prioritize what to automate first and how to govern it."
+    ctaText="Book a Discovery Call"
+    ctaLink={bookHref}
+  />
+</PageLayout>

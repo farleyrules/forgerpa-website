@@ -1,0 +1,64 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const industries = [
+  {
+    href: '/industries/oil-gas',
+    title: 'Oil & Gas',
+    description:
+      'Finance and revenue accounting operations: JV support, volume tie-outs, intercompany, and audit-ready reporting across common upstream and midstream stacks.',
+  },
+  {
+    href: '/industries/healthcare-finance',
+    title: 'Healthcare (non-PHI finance)',
+    description:
+      'Controller, RCM finance interfaces, and ERP-adjacent automation focused on datasets owned by finance — not clinical workflows or identifiable patient data.',
+  },
+  {
+    href: '/industries/insurance-finance',
+    title: 'Insurance',
+    description:
+      'Finance operations, allocations, and reporting packs where controls and speed matter as much as in any large insurer.',
+  },
+  {
+    href: '/industries/utilities-finance',
+    title: 'Utilities & infrastructure',
+    description:
+      'Month-end, project and work-order cost rollups (finance view), regulatory reporting extracts, and governed handoffs to specialists.',
+  },
+];
+---
+
+<PageLayout
+  title="Industries | Forge RPA"
+  description="Finance and operations automation for oil and gas, healthcare finance, insurance, and utilities — governed, audit-friendly, and built to run in production."
+  heroTitle="Industry solutions"
+  heroSubtitle="We specialize in finance-grade automation: clear audit trails, environment controls, and outputs accountants trust. Pick your industry to see typical use cases — every engagement still starts with discovery and assessment."
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/book?from=industries-overview"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {industries.map((item) => (
+          <a
+            href={item.href}
+            class="block bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors"
+          >
+            <h2 class="text-2xl font-bold text-charcoal mb-3">{item.title}</h2>
+            <p class="text-gray-600 leading-relaxed mb-4">{item.description}</p>
+            <span class="text-amber-dark font-semibold">Learn more →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Not sure where you fit?"
+    subtext="Most of our work still centers on month-end, subledgers, and ERP data flows. Book a call and we will map your processes to the right tools."
+    ctaText="Book a Discovery Call"
+    ctaLink="/book?from=industries-overview"
+  />
+</PageLayout>
