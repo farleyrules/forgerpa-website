@@ -2,8 +2,8 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 
-/** Cal booker iframe height — raise if the last step clips; lower if you see a large empty band. Typical band others use: ~600–840px. */
-const calIframeMinHeightPx = 600;
+/** Cal booker iframe height — raise if the last step clips; lower if you see a large empty band. Typical band others use: ~600–840px (640 current). */
+const calIframeMinHeightPx = 640;
 
 const defaultTitle = 'Book a Discovery Call';
 const defaultDescription =
@@ -65,12 +65,13 @@ const defaultHeroSubtitle =
         </div>
       </div>
 
-      <div class="mt-12 border border-gray-200 rounded-3xl overflow-hidden shadow-sm bg-white">
+      <div class="mt-12 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm">
         <iframe
           id="cal-booking-iframe"
           src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page&hideEventTypeDetails=1"
           width="100%"
           height={calIframeMinHeightPx}
+          class="block w-full rounded-lg"
           style={`min-height: ${calIframeMinHeightPx}px;`}
           title="Schedule a discovery call"></iframe>
       </div>
