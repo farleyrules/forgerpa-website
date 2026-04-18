@@ -2,6 +2,9 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 
+/** Cal booker iframe height — raise if the last step clips; lower if you see a large empty band. Typical band others use: ~640–840px. */
+const calIframeMinHeightPx = 720;
+
 const defaultTitle = 'Book a Discovery Call';
 const defaultDescription =
   'Schedule a 30-minute discovery call to discuss your finance and operational challenges. Proven in finance but applicable to other operational processes.';
@@ -67,8 +70,8 @@ const defaultHeroSubtitle =
           id="cal-booking-iframe"
           src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page&hideEventTypeDetails=1"
           width="100%"
-          height="900"
-          style="min-height: 900px;"
+          height={calIframeMinHeightPx}
+          style={`min-height: ${calIframeMinHeightPx}px;`}
           title="Schedule a discovery call"></iframe>
       </div>
 
