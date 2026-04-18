@@ -65,7 +65,7 @@ const defaultHeroSubtitle =
       <div class="mt-12 border border-gray-200 rounded-3xl overflow-hidden shadow-sm bg-white">
         <iframe
           id="cal-booking-iframe"
-          src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page"
+          src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page&hideEventTypeDetails=1"
           width="100%"
           height="900"
           style="min-height: 900px;"
@@ -90,7 +90,8 @@ const defaultHeroSubtitle =
   (function () {
     var params = new URLSearchParams(window.location.search);
     var from = (params.get('from') || '').toLowerCase().trim();
-    var baseCal = 'https://cal.com/david-farley/discovery-call';
+    /* hideEventTypeDetails: Cal booking UI — reduces host/title/duration block above calendar (see Cal embed / booking URL docs). */
+    var baseCal = 'https://cal.com/david-farley/discovery-call?hideEventTypeDetails=1';
 
     function setMetaDescription(text) {
       var m = document.querySelector('meta[name="description"]');
