@@ -25,6 +25,8 @@ interface Props {
   /** Optional second group: field ops, supply chain, admin — not only GL */
   operationsPains?: PainPoint[];
   operationsSectionTitle?: string;
+  /** Override default “not exhaustive” copy after pain lists; omit for standard wording */
+  beyondExamplesNote?: string;
 }
 
 const {
@@ -42,9 +44,15 @@ const {
   valueBullets,
   operationsPains,
   operationsSectionTitle = 'Operations, supply chain, and administrative flows',
+  beyondExamplesNote,
 } = Astro.props;
 
 const hasOps = operationsPains && operationsPains.length > 0;
+
+const defaultBeyondExamples =
+  'The scenarios above are representative examples, not an exhaustive catalog. Most strong automation candidates are rules-based and repeatable, grounded in systems or documents your teams already use, and benefit from clear audit evidence. Processes that fit that pattern—whether in accounting, operations, or the handoffs between them—are usually worth a structured discovery or automation assessment to confirm fit, scope, and ROI before any build commitment.';
+
+const beyondExamplesHtml = beyondExamplesNote ?? defaultBeyondExamples;
 
 const bookHref = bookingSource
   ? `/book?from=${encodeURIComponent(bookingSource)}`
@@ -118,6 +126,13 @@ const bookHref = bookingSource
           </div>
         </>
       )}
+    </div>
+  </section>
+
+  <section class="py-10 lg:py-14 bg-slate-light border-y border-gray-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl font-bold text-charcoal mb-4">Illustrative, not exhaustive</h2>
+      <p class="text-lg text-gray-700 leading-relaxed">{beyondExamplesHtml}</p>
     </div>
   </section>
 
