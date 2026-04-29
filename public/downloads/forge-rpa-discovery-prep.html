@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <title>Discovery Call Prep Worksheet — Forge RPA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --charcoal: #1a1a2e;
+      --charcoal-light: #2d2d44;
+      --amber: #f59e0b;
+      --amber-dark: #d97706;
+      --amber-tint: #fffbeb;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--slate-700);
+    }
+    body { max-width: 48rem; margin: 1.5rem auto; padding: 0 1.25rem 2.5rem; background: #fff; }
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 4px solid var(--amber);
+      display: inline-block;
+    }
+    .sub { color: var(--slate-500); margin-bottom: 0.75rem; max-width: 42rem; line-height: 1.45; font-size: 0.95rem; }
+    .sub .brand { color: var(--amber-dark); font-weight: 700; }
+    .meta-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      margin: 1rem 0 1rem;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.65rem;
+    }
+    @media (min-width: 640px) {
+      .meta-bar.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .meta-field { font-size: 0.8rem; color: var(--slate-500); }
+    .meta-label { display: block; font-weight: 600; color: var(--charcoal); margin-bottom: 0.2rem; }
+    .meta-line { display: block; min-height: 1.35rem; border-bottom: 1px solid #cbd5e1; }
+    .hint {
+      background: var(--amber-tint);
+      border: 1px solid var(--amber);
+      padding: 0.75rem 0.95rem;
+      border-radius: 0.65rem;
+      margin-bottom: 1.1rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--slate-700);
+    }
+    .cta-strip {
+      background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+      color: #fff;
+      padding: 1rem 1.2rem;
+      border-radius: 0.85rem;
+      margin: 0 0 1.35rem;
+      border: 2px solid var(--amber);
+      box-shadow: 0 10px 25px rgba(26, 26, 46, 0.12);
+    }
+    .cta-strip h2 { margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 700; color: #fff; border: none; padding: 0; }
+    .cta-strip p { margin: 0.35rem 0 0; font-size: 0.9rem; color: #e2e8f0; line-height: 1.45; }
+    .cta-strip .btn-book {
+      display: inline-block;
+      margin-top: 0.85rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--amber);
+      color: var(--charcoal);
+      font-weight: 800;
+      font-size: 0.9rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      border: 2px solid var(--amber-dark);
+    }
+    .print-only-url { display: none; font-size: 0.75rem; color: #cbd5e1; margin-top: 0.5rem; }
+    section.block { margin-bottom: 1.35rem; page-break-inside: avoid; }
+    h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--charcoal);
+      border-left: 4px solid var(--amber);
+      padding-left: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 0.35rem;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 0.4rem 0.45rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: #f1f5f9; font-weight: 600; color: var(--charcoal); font-size: 0.78rem; }
+    .small { font-size: 0.8rem; color: var(--slate-500); margin: 0.25rem 0 0.5rem; }
+    ul.compact { margin: 0.35rem 0 0; padding-left: 1.15rem; }
+    ul.compact li { margin: 0.25rem 0; line-height: 1.35; }
+    footer { margin-top: 1.75rem; font-size: 0.78rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 0.85rem; }
+    footer a { color: var(--amber-dark); font-weight: 600; text-decoration: none; }
+    @media print {
+      body { margin: 0.4rem; }
+      .hint { border-color: #ccc; background: #fafafa; }
+      .cta-strip { box-shadow: none; break-inside: avoid; }
+      .cta-strip .btn-book { border: 1px solid #000; color: #000; background: #fbbf24; }
+      .print-only-url { display: block; color: #333; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Discovery Call Prep Worksheet</h1>
+  <p class="sub"><span class="brand">Forge RPA</span> &mdash; Confidential. About 15 minutes. Use <strong>Print &rarr; Save as PDF</strong> to keep a dated copy. This worksheet does not include proprietary scoring or ROI methodology.</p>
+
+  <div class="meta-bar cols-3">
+    <div class="meta-field"><span class="meta-label">Organization</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Your name &amp; role</span><span class="meta-line"></span></div>
+    <div class="meta-field"><span class="meta-label">Email / phone</span><span class="meta-line"></span></div>
+  </div>
+  <div class="meta-bar">
+    <div class="meta-field"><span class="meta-label">Primary systems (ERP, FP&amp;A, ticketing)</span><span class="meta-line"></span><span class="meta-line" style="margin-top:0.5rem"></span></div>
+  </div>
+
+  <div class="cta-strip">
+    <h2>Schedule your call</h2>
+    <p>Same-day prep is fine &mdash; bring this sheet or your notes.</p>
+    <a class="btn-book" href="https://forgerpa.com/book">Book a discovery call</a>
+    <p class="print-only-url">https://forgerpa.com/book</p>
+  </div>
+
+  <section class="block">
+    <h2>1. Three candidate processes</h2>
+    <p class="small">Weekly or monthly pain &mdash; not one-offs.</p>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Process name (plain language)</th><th>Owner team</th><th>Frequency</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>2. Volume &amp; time (ballpark)</h2>
+    <table>
+      <thead>
+        <tr><th>Process #</th><th>Volume / month</th><th>Minutes or hours per unit</th><th>Who does it?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>3. Pain signals (check what applies)</h2>
+    <table>
+      <thead>
+        <tr><th>Pain</th><th>1</th><th>2</th><th>3</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Rework / exceptions eat capacity</td><td></td><td></td><td></td></tr>
+        <tr><td>Slow vs SLA</td><td></td><td></td><td></td></tr>
+        <tr><td>Audit or control gaps</td><td></td><td></td><td></td></tr>
+        <tr><td>Key-person dependency</td><td></td><td></td><td></td></tr>
+        <tr><td>Data in spreadsheets / email</td><td></td><td></td><td></td></tr>
+        <tr><td>Other (note):</td><td colspan="3"></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>4. Systems for process #1 (order of flow)</h2>
+    <table>
+      <thead>
+        <tr><th>Step</th><th>System or channel</th><th>Data moved</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td></tr>
+        <tr><td>4</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>5. &ldquo;Done&rdquo; for process #1</h2>
+    <p class="small">Deliverables, approvers, evidence you keep today:</p>
+    <div class="meta-bar" style="margin-top:0"><div class="meta-field"><span class="meta-line"></span><span class="meta-line" style="margin-top:0.65rem"></span><span class="meta-line" style="margin-top:0.65rem"></span></div></div>
+  </section>
+
+  <section class="block">
+    <h2>6. Constraints &amp; timing</h2>
+    <table>
+      <thead>
+        <tr><th>Topic</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hard deadlines (close, audit, go-live)</td><td></td></tr>
+        <tr><td>Change freezes / blackouts</td><td></td></tr>
+        <tr><td>Must-stay systems or vendors</td><td></td></tr>
+        <tr><td>Compliance (SOX, etc.)</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>7. Success in 12 months (1&ndash;2 sentences)</h2>
+    <div class="meta-bar" style="margin-top:0"><div class="meta-field"><span class="meta-line"></span><span class="meta-line" style="margin-top:0.65rem"></span></div></div>
+  </section>
+
+  <section class="block">
+    <h2>8. Questions for Forge</h2>
+    <ol class="compact">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ol>
+  </section>
+
+  <p class="hint"><strong>Reminder:</strong> A structured Automation Assessment is a paid engagement; this prep sheet only orients the discovery conversation.</p>
+
+  <footer>&copy; Forge RPA LLC. <a href="https://forgerpa.com/book">forgerpa.com/book</a> &middot; <a href="mailto:info@forgerpa.com">info@forgerpa.com</a></footer>
+</body>
+</html>
