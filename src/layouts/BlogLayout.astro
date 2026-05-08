@@ -44,18 +44,7 @@ const formattedDate = date ? new Date(date + 'T00:00:00').toLocaleDateString('en
           <span>{readingTime} read</span>
         </div>
       </header>
-      <div class="prose prose-lg max-w-none
-        prose-headings:text-charcoal prose-headings:font-bold
-        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
-        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-        prose-p:text-gray-700 prose-p:leading-relaxed
-        prose-a:text-amber-dark prose-a:no-underline hover:prose-a:underline
-        prose-strong:text-charcoal
-        prose-li:text-gray-700
-        prose-table:text-sm
-        prose-th:bg-charcoal prose-th:text-white prose-th:px-4 prose-th:py-2
-        prose-td:px-4 prose-td:py-2 prose-td:border prose-td:border-gray-200
-      ">
+      <div class="blog-content max-w-none">
         <slot />
       </div>
       <footer class="mt-16 pt-8 border-t border-gray-200">
