@@ -2,3 +2,9 @@ node_modules/
 dist/
 .astro/
 .env
+
+# Additional .env variants (added 2026-05-08)
+.env.local
+.env.*.local
+.env.bak
+.env.needs
