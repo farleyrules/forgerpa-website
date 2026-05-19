@@ -2,7 +2,7 @@
 title: "SOX-Adjacent Close Tasks Without Heroics Every Quarter"
 industry: "Manufacturing"
 service: "Month-End Close & Controls"
-summary: "Composite engagement pattern from manufacturers with public-adjacent reporting pressure — controls evidence packaged where auditors actually look."
+summary: "Composite engagement pattern from manufacturers with public-adjacent reporting pressure, controls evidence packaged where auditors actually look."
 metric: "Control samples assembled in hours, not days"
 shortDescription: "Composite manufacturer pattern: journal-entry support, reconciliation packets, and segregation visibility."
 challenge: "A manufacturer with quarterly scrutiny stitched SOX-relevant evidence from exports, shared drives, and ticket comments. Each quarter-end, finance pulled the same reports differently; reviewers could not rely on prior-period folders because naming and versions drifted."

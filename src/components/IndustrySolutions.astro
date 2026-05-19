@@ -22,7 +22,7 @@ interface Props {
   /** Short industry-specific “why value feels different here” copy */
   valueHeading?: string;
   valueBullets?: string[];
-  /** Optional second group: field ops, supply chain, admin — not only GL */
+  /** Optional second group: field ops, supply chain, admin, not only GL */
   operationsPains?: PainPoint[];
   operationsSectionTitle?: string;
   /** Override default “not exhaustive” copy after pain lists; omit for standard wording */
@@ -50,7 +50,7 @@ const {
 const hasOps = operationsPains && operationsPains.length > 0;
 
 const defaultBeyondExamples =
-  'The scenarios above are representative examples, not an exhaustive catalog. Most strong automation candidates are rules-based and repeatable, grounded in systems or documents your teams already use, and benefit from clear audit evidence. Processes that fit that pattern—whether in accounting, operations, or the handoffs between them—are usually worth a structured discovery or automation assessment to confirm fit, scope, and ROI before any build commitment.';
+  'The scenarios above are representative examples, not an exhaustive catalog. Most strong automation candidates are rules-based and repeatable, grounded in systems or documents your teams already use, and benefit from clear audit evidence. Processes that fit that pattern, whether in accounting, operations, or the handoffs between them, are usually worth a structured discovery or automation assessment to confirm fit, scope, and ROI before any build commitment.';
 
 const beyondExamplesHtml = beyondExamplesNote ?? defaultBeyondExamples;
 
@@ -96,7 +96,7 @@ const bookHref = bookingSource
       <h2 class="text-3xl font-bold text-charcoal mb-4">High-impact automation areas</h2>
       {hasOps && (
         <p class="text-lg text-gray-700 leading-relaxed mb-8">
-          We automate <strong>accounting and finance</strong> work and, in parallel, many <strong>operations and administrative</strong> flows that sit beside finance — the same rules-based, high-volume patterns (handoffs, portals, email, spreadsheets, ERP interfaces) with full lineage where you need evidence.
+          We automate <strong>accounting and finance</strong> work and, in parallel, many <strong>operations and administrative</strong> flows that sit beside finance, the same rules-based, high-volume patterns (handoffs, portals, email, spreadsheets, ERP interfaces) with full lineage where you need evidence.
         </p>
       )}
       <p class={`text-lg text-gray-700 leading-relaxed ${hasOps ? 'mb-6' : 'mb-10'}`}>

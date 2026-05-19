@@ -13,7 +13,7 @@ readingTime: "8 min"
 
 <h2>Introduction</h2>
 
-<p>RPA ROI finance leaders can trust — that is what this article delivers. <strong>Not vendor projections. Not theoretical models.</strong> Actual results from someone who has built and measured the returns on over 100 automations.</p>
+<p>RPA ROI finance leaders can trust, that is what this article delivers. <strong>Not vendor projections. Not theoretical models.</strong> Actual results from someone who has built and measured the returns on over 100 automations.</p>
 
 <p>Every vendor will tell you that RPA delivers 300% ROI. But what does ROI in a finance team actually look like when the implementation is over and the bots are running? After deploying automations at a Fortune 500 manufacturer and building custom systems for companies across industries, I can tell you the real numbers are both <em>more nuanced and more compelling</em> than the brochures suggest.</p>
 
@@ -26,10 +26,10 @@ readingTime: "8 min"
 <p>Consider what your team does each month:</p>
 
 <ul>
-  <li><strong>Data transfers between systems</strong> — copying figures from the ERP to spreadsheets</li>
-  <li><strong>Reconciliation</strong> — matching records across GL, subledgers, and bank statements</li>
-  <li><strong>Report generation</strong> — pulling the same data, applying the same formatting, every single period</li>
-  <li><strong>Compliance checks</strong> — verifying the same rules against the same datasets</li>
+  <li><strong>Data transfers between systems</strong>, copying figures from the ERP to spreadsheets</li>
+  <li><strong>Reconciliation</strong>, matching records across GL, subledgers, and bank statements</li>
+  <li><strong>Report generation</strong>, pulling the same data, applying the same formatting, every single period</li>
+  <li><strong>Compliance checks</strong>, verifying the same rules against the same datasets</li>
 </ul>
 
 <p>These tasks share three qualities that make finance teams achieve exceptionally strong RPA ROI: they are <em>high-volume, rule-based, and error-prone when performed manually</em>. That combination is exactly where automation delivers the fastest payback.</p>
@@ -38,17 +38,17 @@ readingTime: "8 min"
 
 <p>Let me share two examples from my career that illustrate how this plays out in practice.</p>
 
-<h3>Case 1: Insurance Company — $1M in Savings</h3>
+<h3>Case 1: Insurance Company, $1M in Savings</h3>
 
-<p>At an insurance company, I built a custom time management and resource allocation system. The problem was not exotic — it was the same operational inefficiency that plagues hundreds of companies. Manual tracking, duplicate data entry, and downstream reconciliation errors were consuming staff time and creating rework cycles.</p>
+<p>At an insurance company, I built a custom time management and resource allocation system. The problem was not exotic, it was the same operational inefficiency that plagues hundreds of companies. Manual tracking, duplicate data entry, and downstream reconciliation errors were consuming staff time and creating rework cycles.</p>
 
 <p>The result: nearly <strong>$1 million in documented savings</strong>. Not projected savings. Not "potential" savings. <em>Actual, auditable cost reduction that showed up in the financials.</em></p>
 
-<h3>Case 2: Restaurant Company — Month-End Close Compressed</h3>
+<h3>Case 2: Restaurant Company, Month-End Close Compressed</h3>
 
 <p>A multi-location restaurant company was spending <em>days</em> producing their monthly financial statement package. Multiple people, multiple spreadsheets, multiple error-checking cycles.</p>
 
-<p>After automation, that process took <strong>one day</strong>. The ROI that finance leaders cared about here was not just headcount — it was about <em>speed to insight</em>. Leadership got their numbers faster, made decisions earlier, and eliminated an entire week of closing stress for the accounting team.</p>
+<p>After automation, that process took <strong>one day</strong>. The ROI that finance leaders cared about here was not just headcount, it was about <em>speed to insight</em>. Leadership got their numbers faster, made decisions earlier, and eliminated an entire week of closing stress for the accounting team.</p>
 
 <h3>The Pattern at a Fortune 500 Manufacturer</h3>
 
@@ -70,7 +70,7 @@ readingTime: "8 min"
 
 <h3>Step 2: Estimate Automation Savings</h3>
 
-<p>A conservative rule of thumb: RPA handles <strong>70-90% of task volume</strong> for well-structured finance processes. Do not assume 100% — there will always be exceptions that require human review.</p>
+<p>A conservative rule of thumb: RPA handles <strong>70-90% of task volume</strong> for well-structured finance processes. Do not assume 100%, there will always be exceptions that require human review.</p>
 
 <h3>Step 3: Calculate Total Investment</h3>
 
@@ -94,7 +94,7 @@ readingTime: "8 min"
 
 <p><strong>1. Automating a broken process.</strong> If your month-end close has undefined steps, tribal knowledge, and inconsistent data sources, automating it will just make it fail faster. <em>Fix the process first, then automate.</em></p>
 
-<p><strong>2. Over-engineering the solution.</strong> A $50,000 UiPath implementation for a task that a Python script could handle in $5,000 is not smart architecture — it is vendor lock-in dressed up as strategy.</p>
+<p><strong>2. Over-engineering the solution.</strong> A $50,000 UiPath implementation for a task that a Python script could handle in $5,000 is not smart architecture, it is vendor lock-in dressed up as strategy.</p>
 
 <p><strong>3. Ignoring maintenance costs.</strong> Every time your ERP vendor pushes a UI update, your bot breaks. Budget 15-20% of development cost annually for maintenance, or your ROI erodes fast.</p>
 
@@ -125,8 +125,8 @@ readingTime: "8 min"
 
 <p><a href="/book">Schedule a Discovery Call →</a></p>
 
-<p>Or, if you want to run the numbers yourself first, download our <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment Worksheet</a> — the same framework I have used across 100+ automation projects.</p>
+<p>Or, if you want to run the numbers yourself first, download our <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment Worksheet</a>, the same framework I have used across 100+ automation projects.</p>
 
 <hr />
 
-<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
