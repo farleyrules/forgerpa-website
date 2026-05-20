@@ -17,7 +17,7 @@ readingTime: "10 min"
 
 <p>After deploying 100+ automations at a Fortune 500 manufacturer and running process automation assessments for companies across industries, I have developed a framework that answers these questions in 30 minutes per process. No consultants needed. No software to buy. Just six criteria, a scoring system, and honest evaluation.</p>
 
-<p>I am giving this framework away because it is the best way I know to demonstrate that automation strategy does not need to be mysterious or expensive. If you can evaluate your own processes, you will make better decisions — whether you work with us, another firm, or your internal team.</p>
+<p>I am giving this framework away because it is the best way I know to demonstrate that automation strategy does not need to be mysterious or expensive. If you can evaluate your own processes, you will make better decisions, whether you work with us, another firm, or your internal team.</p>
 
 <p>Here is the complete process automation assessment framework.</p>
 
@@ -65,7 +65,7 @@ readingTime: "10 min"
 | 2 | Mostly unstructured | Email requests with varying formats and language |
 | 1 | Fully unstructured | Handwritten forms, scanned documents, verbal instructions |
 
-<p><strong>Why it matters:</strong> Structured data is automation fuel. Unstructured data requires OCR, NLP, or AI interpretation — all of which add cost, complexity, and error rates. Flag any process scoring below 3 as requiring additional investment in data standardization.</p>
+<p><strong>Why it matters:</strong> Structured data is automation fuel. Unstructured data requires OCR, NLP, or AI interpretation, all of which add cost, complexity, and error rates. Flag any process scoring below 3 as requiring additional investment in data standardization.</p>
 
 <h3>Criterion 4: Process Stability (1-5)</h3>
 
@@ -93,7 +93,7 @@ readingTime: "10 min"
 | 2 | Rare errors with minimal impact | Occasional typos in internal memos |
 | 1 | Virtually error-free | Simple file transfers between folders |
 
-<p><strong>Why it matters:</strong> This criterion is scored inversely from what you might expect. High error rates and high impact mean automation delivers <em>more</em> value — both in cost savings and risk reduction.</p>
+<p><strong>Why it matters:</strong> This criterion is scored inversely from what you might expect. High error rates and high impact mean automation delivers <em>more</em> value, both in cost savings and risk reduction.</p>
 
 <h3>Criterion 6: Technology Compatibility (1-5)</h3>
 
@@ -127,10 +127,10 @@ readingTime: "10 min"
 
 | Weighted Score | Recommendation |
 |---|---|
-| 4.0 - 5.0 | **Strong candidate** — automate now. Expected ROI > 200% in year one. |
-| 3.0 - 3.9 | **Good candidate** — worth automating after top-tier processes. Investigate further. |
-| 2.0 - 2.9 | **Marginal candidate** — address process issues first, then reassess. |
-| Below 2.0 | **Not recommended** — process needs fundamental redesign before automation is viable. |
+| 4.0 - 5.0 | **Strong candidate**, automate now. Expected ROI > 200% in year one. |
+| 3.0 - 3.9 | **Good candidate**, worth automating after top-tier processes. Investigate further. |
+| 2.0 - 2.9 | **Marginal candidate**, address process issues first, then reassess. |
+| Below 2.0 | **Not recommended**, process needs fundamental redesign before automation is viable. |
 
 <h2>Real-World Assessment Examples</h2>
 
@@ -158,7 +158,7 @@ readingTime: "10 min"
 | Process Stability | 2 | Rules change with new ASC 606 interpretations |
 | Error Impact | 5 | Material misstatement risk |
 | Technology Compatibility | 3 | Multiple systems involved |
-| **Weighted Score** | **2.8** | **Marginal — focus on data gathering only** |
+| **Weighted Score** | **2.8** | **Marginal, focus on data gathering only** |
 
 <h3>Example 3: Bank Reconciliation</h3>
 
@@ -180,7 +180,7 @@ readingTime: "10 min"
 
 <p><strong>Ignoring exception handling.</strong> The main path scores 5/5 on rule complexity. But 20% of transactions hit exceptions that require judgment. That drops the real score to 3.</p>
 
-<p><strong>Overweighting technology compatibility.</strong> A process that scores 5 on every criterion except technology (score: 2) is still worth automating — you just need a different technology approach.</p>
+<p><strong>Overweighting technology compatibility.</strong> A process that scores 5 on every criterion except technology (score: 2) is still worth automating, you just need a different technology approach.</p>
 
 <p><strong>Assessing in isolation.</strong> Some processes are mediocre automation candidates alone but become strong candidates when combined with upstream or downstream automations. Consider the process chain, not just individual steps.</p>
 
@@ -191,7 +191,7 @@ readingTime: "10 min"
   <li>Scores of 4.0+ are strong candidates for immediate automation</li>
   <li>Rule complexity and volume are the strongest predictors of automation success</li>
   <li>Score the actual process, not the documented ideal</li>
-  <li>Consider process chains — some automations unlock value in adjacent processes</li>
+  <li>Consider process chains, some automations unlock value in adjacent processes</li>
   <li>Use the weighted scoring worksheet to compare candidates objectively</li>
 </ul>
 
@@ -207,4 +207,4 @@ readingTime: "10 min"
 
 <hr />
 
-<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>

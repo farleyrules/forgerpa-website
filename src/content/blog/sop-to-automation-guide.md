@@ -17,7 +17,7 @@ readingTime: "9 min"
 
 <p>Now someone says, "We should automate this."</p>
 
-<p>The traditional path from SOP to automation is painful: weeks of discovery, months of development, and a lingering fear that you automated the wrong thing. But AI is fundamentally changing this timeline. I have seen what used to take 12 weeks compressed into 3 — <strong>not by cutting corners, but by making every step smarter</strong>.</p>
+<p>The traditional path from SOP to automation is painful: weeks of discovery, months of development, and a lingering fear that you automated the wrong thing. But AI is fundamentally changing this timeline. I have seen what used to take 12 weeks compressed into 3, <strong>not by cutting corners, but by making every step smarter</strong>.</p>
 
 <p>Here is how the SOP-to-automation pipeline works today, and how you can use it to move faster without taking on more risk.</p>
 
@@ -54,7 +54,7 @@ readingTime: "9 min"
 
 <h2>How AI Transforms SOP to Automation</h2>
 
-<p>AI does not skip these phases — it <em>compresses</em> them. Here is what changes.</p>
+<p>AI does not skip these phases, it <em>compresses</em> them. Here is what changes.</p>
 
 <h3>AI-Powered Process Analysis</h3>
 
@@ -75,18 +75,18 @@ readingTime: "9 min"
 <p>The bridge from SOP to automation includes technology selection. AI analyzes the step characteristics and recommends the right tool:</p>
 
 <ul>
-  <li><strong>Web-based data entry with structured forms</strong> — Lightweight browser automation</li>
-  <li><strong>Desktop application with complex UI</strong> — Enterprise RPA platform</li>
-  <li><strong>File processing and data transformation</strong> — Custom scripts</li>
-  <li><strong>Cross-system data movement with APIs</strong> — Direct API integration (no RPA needed)</li>
-  <li><strong>Email-triggered workflows</strong> — Cloud workflow platform</li>
+  <li><strong>Web-based data entry with structured forms</strong>, Lightweight browser automation</li>
+  <li><strong>Desktop application with complex UI</strong>, Enterprise RPA platform</li>
+  <li><strong>File processing and data transformation</strong>, Custom scripts</li>
+  <li><strong>Cross-system data movement with APIs</strong>, Direct API integration (no RPA needed)</li>
+  <li><strong>Email-triggered workflows</strong>, Cloud workflow platform</li>
 </ul>
 
 <p>This matching eliminates weeks of architectural deliberation and ensures you do not over-engineer or under-engineer the solution.</p>
 
 <h3>Automated Code Generation</h3>
 
-<p>Once the approach is selected, AI generates the first draft of automation code directly from the SOP steps. This is not production-ready code — it is a starting scaffold that a developer refines. But it cuts development time by <strong>40-60%</strong>.</p>
+<p>Once the approach is selected, AI generates the first draft of automation code directly from the SOP steps. This is not production-ready code, it is a starting scaffold that a developer refines. But it cuts development time by <strong>40-60%</strong>.</p>
 
 <h2>Traditional vs AI-Accelerated Timelines</h2>
 
@@ -100,7 +100,7 @@ readingTime: "9 min"
 | Testing & Deployment | 2-4 weeks | 1-3 weeks | 30-40% |
 | **Total** | **10-19 weeks** | **3-7 weeks** | **55-65%** |
 
-<p>The biggest compression happens in <em>discovery and design</em> — the phases that are most knowledge-intensive and least code-intensive. AI is exceptionally good at pattern recognition across process documentation, which is exactly what these phases require.</p>
+<p>The biggest compression happens in <em>discovery and design</em>, the phases that are most knowledge-intensive and least code-intensive. AI is exceptionally good at pattern recognition across process documentation, which is exactly what these phases require.</p>
 
 <h2>What Makes a Good SOP-to-Automation Candidate?</h2>
 
@@ -140,11 +140,11 @@ readingTime: "9 min"
 
 <p>Organizations go through predictable stages in their SOP-to-automation journey:</p>
 
-<p><strong>Level 1: Ad Hoc</strong> — Automations are one-off projects driven by individual pain points. No standard evaluation framework. Success depends on who champions the project.</p>
+<p><strong>Level 1: Ad Hoc</strong>, Automations are one-off projects driven by individual pain points. No standard evaluation framework. Success depends on who champions the project.</p>
 
-<p><strong>Level 2: Repeatable</strong> — A standard process exists for identifying and prioritizing candidates. The pipeline has defined stages and stakeholders.</p>
+<p><strong>Level 2: Repeatable</strong>, A standard process exists for identifying and prioritizing candidates. The pipeline has defined stages and stakeholders.</p>
 
-<p><strong>Level 3: Optimized</strong> — AI tools continuously scan process documentation for automation opportunities. New automations are developed and deployed in weeks, not months. A center of excellence maintains standards and reusable components.</p>
+<p><strong>Level 3: Optimized</strong>, AI tools continuously scan process documentation for automation opportunities. New automations are developed and deployed in weeks, not months. A center of excellence maintains standards and reusable components.</p>
 
 <p>Most finance teams are at Level 1. The goal is to reach Level 2 within six months of your first successful automation.</p>
 
@@ -153,11 +153,11 @@ readingTime: "9 min"
 <p>Before you start any automation project, invest a small amount of time in documentation quality:</p>
 
 <ol>
-  <li><strong>Verify accuracy</strong> — Walk through the SOP with the person who actually does the work. Update any steps that have drifted from documentation.</li>
-  <li><strong>Document exceptions</strong> — Add a section for "what happens when things go wrong" — this is where most automation development time is spent.</li>
-  <li><strong>Identify decision points</strong> — Mark every step that requires judgment. These are the boundaries of your automation scope.</li>
-  <li><strong>Catalog systems</strong> — List every application, spreadsheet, and data source the process touches.</li>
-  <li><strong>Measure baseline metrics</strong> — Time how long each cycle takes. Count errors per month. This becomes your ROI baseline.</li>
+  <li><strong>Verify accuracy</strong>, Walk through the SOP with the person who actually does the work. Update any steps that have drifted from documentation.</li>
+  <li><strong>Document exceptions</strong>, Add a section for "what happens when things go wrong", this is where most automation development time is spent.</li>
+  <li><strong>Identify decision points</strong>, Mark every step that requires judgment. These are the boundaries of your automation scope.</li>
+  <li><strong>Catalog systems</strong>, List every application, spreadsheet, and data source the process touches.</li>
+  <li><strong>Measure baseline metrics</strong>, Time how long each cycle takes. Count errors per month. This becomes your ROI baseline.</li>
 </ol>
 
 <h2>Key Takeaways</h2>
@@ -167,7 +167,7 @@ readingTime: "9 min"
   <li>AI-powered analysis compresses this to 3-7 weeks by accelerating discovery and design</li>
   <li>AI extracts structured data from SOPs, matches technology, and generates code scaffolds</li>
   <li>Use the candidate checklist to identify processes worth automating</li>
-  <li>Invest in SOP quality before starting automation — <em>garbage in, garbage out</em></li>
+  <li>Invest in SOP quality before starting automation, <em>garbage in, garbage out</em></li>
   <li>Most teams are at maturity Level 1; reaching Level 2 is the critical first step</li>
 </ul>
 
@@ -181,4 +181,4 @@ readingTime: "9 min"
 
 <hr />
 
-<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience — from advanced Excel and VBA solutions to enterprise RPA — he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
