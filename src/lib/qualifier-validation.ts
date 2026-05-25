@@ -48,8 +48,27 @@ const COMPANY_ALLOWED_SUFFIXES = [
   ", ltd",
 ];
 
-const FCC_FICTIONAL_RE = /\b555-?01[0-9]{2}\b/;
 const TEST_NUMBERS = ["1234567890", "5555555555", "0000000000"];
+
+/**
+ * Detect "555 exchange" fictional NANP numbers. North American carriers
+ * never assign 555-XXXX subscriber numbers (formally 555-0100..0199 per
+ * FCC reservation; informally all 555-XXXX is treated as fictional in
+ * media + tests). Also catches the impossible "555" area code.
+ *
+ * Strips non-digits, normalizes a leading "1" (US/Canada country code),
+ * then inspects the 10-digit NPA-NXX-XXXX layout.
+ */
+function isFictional555(digits: string): boolean {
+  const norm =
+    digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+  if (norm.length !== 10) return false;
+  // Exchange (middle 3 digits) — positions 3..6 in NPA-NXX-XXXX.
+  if (norm.substring(3, 6) === "555") return true;
+  // Area code "555" — no real NANP NPA starts with 555.
+  if (norm.substring(0, 3) === "555") return true;
+  return false;
+}
 
 export function validateEmailNotFree(email: string): string | null {
   const trimmed = email.trim().toLowerCase();
@@ -100,8 +119,8 @@ export function validatePhoneIfProvided(phone: string): string | null {
   if (TEST_NUMBERS.includes(digits)) {
     return "Please enter a valid phone number, or leave this field blank.";
   }
-  if (FCC_FICTIONAL_RE.test(trimmed)) {
-    return "Please enter a valid phone number, or leave this field blank.";
+  if (isFictional555(digits)) {
+    return "That looks like a fictional 555-prefix number. Please enter a real phone number, or leave this field blank.";
   }
   return null;
 }
