@@ -459,8 +459,13 @@ async function submitWizard(): Promise<void> {
 
   let serverTier: FitTier | null = null;
   let serverError: string | null = null;
+  let response: Response | null = null;
+
+  // Step A: the fetch itself. If this throws, we never reached the backend
+  // (CORS rejection at browser level, Brave Shields / privacy extension
+  // blocking, DNS / network failure, etc.).
   try {
-    const response = await fetch(
+    response = await fetch(
       `${COCKPIT_ORIGIN}/api/warm-intake/discovery-qualifier`,
       {
         method: "POST",
@@ -469,14 +474,34 @@ async function submitWizard(): Promise<void> {
         body: JSON.stringify(payload),
       },
     );
-    const json = (await response.json()) as { tier?: FitTier; error?: string };
-    if (response.ok && json.tier) {
-      serverTier = json.tier;
-    } else {
-      serverError = json.error || "Submission failed. Please try again.";
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[discovery-qualifier] fetch failed:", err);
+    serverError =
+      "Couldn't reach the booking service. If you're on Brave or a privacy browser, try lowering Shields for sales.forgerpa.com and retry.";
+  }
+
+  // Step B: parse the response body. Distinguish "valid JSON with error"
+  // from "non-JSON body" so we surface the actual HTTP status in the
+  // catch-all case (helps diagnose Vercel error pages, edge timeouts, etc.).
+  if (response && !serverError) {
+    let parsed: { tier?: FitTier; error?: string } | null = null;
+    try {
+      parsed = (await response.json()) as { tier?: FitTier; error?: string };
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("[discovery-qualifier] response parse failed:", err);
+      serverError = `Booking service responded with HTTP ${response.status} (no JSON body). Please try again, or email sales@forgerpa.com.`;
     }
-  } catch {
-    serverError = "Couldn't reach the booking service. Please try again in a moment.";
+    if (parsed) {
+      if (response.ok && parsed.tier) {
+        serverTier = parsed.tier;
+      } else {
+        serverError =
+          parsed.error ||
+          `Submission failed (HTTP ${response.status}). Please try again.`;
+      }
+    }
   }
 
   if (serverError) {
