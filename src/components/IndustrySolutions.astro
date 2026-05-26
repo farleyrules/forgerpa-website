@@ -7,6 +7,11 @@ export interface PainPoint {
   body: string;
 }
 
+export interface ScaleScenario {
+  label: string;
+  body: string;
+}
+
 interface Props {
   title: string;
   metaDescription: string;
@@ -27,6 +32,11 @@ interface Props {
   operationsSectionTitle?: string;
   /** Override default “not exhaustive” copy after pain lists; omit for standard wording */
   beyondExamplesNote?: string;
+  /** Optional dual-scale ROI scenario block (mid-market + enterprise side-by-side) */
+  scaleScenarios?: {
+    midMarket: ScaleScenario;
+    enterprise: ScaleScenario;
+  };
 }
 
 const {
@@ -45,6 +55,7 @@ const {
   operationsPains,
   operationsSectionTitle = 'Operations, supply chain, and administrative flows',
   beyondExamplesNote,
+  scaleScenarios,
 } = Astro.props;
 
 const hasOps = operationsPains && operationsPains.length > 0;
@@ -87,6 +98,27 @@ const bookHref = bookingSource
             <li>{line}</li>
           ))}
         </ul>
+      </div>
+    </section>
+  )}
+
+  {scaleScenarios && (
+    <section class="py-16 lg:py-20 bg-slate-light border-y border-gray-100">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-charcoal mb-2">How impact scales</h2>
+        <p class="text-gray-600 mb-8 leading-relaxed">
+          Same automation discipline, different scope at different scales. Numbers below are typical ranges anchored in fully-loaded labor cost and industry benchmarks; your specific figures fall out of the discovery or assessment.
+        </p>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <h3 class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">{scaleScenarios.midMarket.label}</h3>
+            <p class="text-gray-700 leading-relaxed">{scaleScenarios.midMarket.body}</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <h3 class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">{scaleScenarios.enterprise.label}</h3>
+            <p class="text-gray-700 leading-relaxed">{scaleScenarios.enterprise.body}</p>
+          </div>
+        </div>
       </div>
     </section>
   )}
