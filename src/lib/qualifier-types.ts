@@ -93,7 +93,21 @@ const SENIOR_ROLES = [
 const NEAR_TERM = ["This quarter", "Next quarter"];
 const TARGET_SIZE = ["6-15", "16-30", "30+"];
 
-export function computeFitTier(answers: QualifierAnswers): FitTier {
+/**
+ * Optional modifiers — mirror of forgerpa-sales/lib/discovery/qualifier-types.ts.
+ * `personalEmail=true` caps the result at MEDIUM (HIGH→MEDIUM; LOW and
+ * DISQUALIFY unchanged). Server is authoritative; this client-side mirror
+ * exists for UX-preview routing decisions (which outcome screen to show
+ * before the round-trip resolves).
+ */
+export interface FitTierModifiers {
+  personalEmail?: boolean;
+}
+
+export function computeFitTier(
+  answers: QualifierAnswers,
+  modifiers: FitTierModifiers = {},
+): FitTier {
   if (answers.role === "Consultant") return "DISQUALIFY";
   if (answers.role === "Other" && answers.timeline === "Just researching") {
     return "DISQUALIFY";
@@ -103,12 +117,14 @@ export function computeFitTier(answers: QualifierAnswers): FitTier {
     !!answers.primaryChallenge && answers.primaryChallenge !== "Other";
   const nearTerm = NEAR_TERM.includes(answers.timeline);
   const targetSize = TARGET_SIZE.includes(answers.teamSize);
-  if (seniorRole && definedPain && nearTerm && targetSize) return "HIGH";
-  if (answers.timeline === "Just researching") return "LOW";
-  if (answers.teamSize === "1-5" && answers.primaryChallenge === "Other") {
-    return "LOW";
+  let tier: FitTier = "MEDIUM";
+  if (seniorRole && definedPain && nearTerm && targetSize) tier = "HIGH";
+  else if (answers.timeline === "Just researching") tier = "LOW";
+  else if (answers.teamSize === "1-5" && answers.primaryChallenge === "Other") {
+    tier = "LOW";
   }
-  return "MEDIUM";
+  if (modifiers.personalEmail && tier === "HIGH") return "MEDIUM";
+  return tier;
 }
 
 /**

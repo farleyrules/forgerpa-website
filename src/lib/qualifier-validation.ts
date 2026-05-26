@@ -70,18 +70,46 @@ function isFictional555(digits: string): boolean {
   return false;
 }
 
-export function validateEmailNotFree(email: string): string | null {
+/**
+ * Validate email format. Returns null on success, error string on failure.
+ *
+ * Policy update 2026-05-25: this validator NO LONGER rejects free-email
+ * domains. The cockpit backend treats free-email as a tier modifier
+ * (caps HIGH at MEDIUM) rather than a hard reject — SMB owners legitimately
+ * use gmail / yahoo / icloud as their work email. See
+ * forgerpa-sales/lib/spam/validators.ts for the server-side change.
+ */
+export function validateEmailFormat(email: string): string | null {
   const trimmed = email.trim().toLowerCase();
-  if (!trimmed) return "Please enter your work email address.";
+  if (!trimmed) return "Please enter your email address.";
   const atIdx = trimmed.lastIndexOf("@");
   if (atIdx < 1 || atIdx === trimmed.length - 1) {
     return "Please enter a valid email address.";
   }
-  const domain = trimmed.slice(atIdx + 1);
-  if (FREE_EMAIL_DOMAINS.includes(domain)) {
-    return "Please use your work email address. Personal email accounts aren't supported for our discovery calls.";
+  // Basic TLD-shape check — at least one '.' after the '@'.
+  if (!trimmed.slice(atIdx + 1).includes(".")) {
+    return "Please enter a valid email address.";
   }
   return null;
+}
+
+/** True if the email's domain is on the personal-email list. */
+export function isPersonalEmail(email: string): boolean {
+  const trimmed = email.trim().toLowerCase();
+  const atIdx = trimmed.lastIndexOf("@");
+  if (atIdx < 1) return false;
+  const domain = trimmed.slice(atIdx + 1);
+  return FREE_EMAIL_DOMAINS.includes(domain);
+}
+
+/**
+ * @deprecated 2026-05-25 — use `validateEmailFormat` + `isPersonalEmail`.
+ * This shim keeps the old name working for any in-flight callers; the
+ * free-email branch has been removed (now never returns a domain error,
+ * only format errors).
+ */
+export function validateEmailNotFree(email: string): string | null {
+  return validateEmailFormat(email);
 }
 
 /**
