@@ -1,0 +1,261 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const faq = [
+  {
+    q: "How is this different from a Workday implementation partner's discovery phase?",
+    a: "Implementation partner discovery is scoped to what they need to start billing the build. Our pre-cutover assessment is scoped to what your CFO and project sponsor need to evaluate the build. Independent of any partner choice."
+  },
+  {
+    q: "Do you work with our chosen Workday or NetSuite implementation partner?",
+    a: "Yes — typically as a finance-led pre-cutover diagnostic that surfaces issues their team would have hit at cutover. Our deliverable goes into their project plan as known work items, not surprises."
+  },
+  {
+    q: "What if we're already mid-cutover?",
+    a: "The assessment shifts focus to risk triage. We identify which entities are most likely to fail reconciliation at go-live and what to clean up first. Still 2-3 days; faster ROI because issues are imminent."
+  },
+  {
+    q: "Which ERPs do you cover?",
+    a: "Workday is the deepest specialty — 31 prebuilt iLoad templates across 8 source systems and 7 Workday modules. We also cover NetSuite, SAP, Oracle, and PeopleSoft as source or target. Other ERPs are scoped during the discovery call."
+  }
+];
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "ERP Handoff Assessment",
+  "provider": { "@type": "Organization", "name": "Forge RPA LLC", "url": "https://forgerpa.com" },
+  "serviceType": "Pre-Migration Assessment",
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "description": "A 2-3 day pre-cutover ERP assessment covering Workday, NetSuite, and SAP that finds data quality and master-data issues before they become mid-migration consulting overages.",
+  "url": "https://forgerpa.com/services/erp-handoff-assessment"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map(({ q, a }) => ({
+    "@type": "Question",
+    "name": q,
+    "acceptedAnswer": { "@type": "Answer", "text": a }
+  }))
+};
+---
+
+<PageLayout
+  title="ERP Handoff Assessment — Workday, NetSuite, SAP | Forge RPA"
+  description="Pre-cutover ERP assessment that finds the data quality and master-data issues before they become mid-migration consulting bills. Covers Workday, NetSuite, SAP. 2-3 days."
+  heroTitle="Know What's Real Before You Cut Over"
+  heroSubtitle="Most ERP migrations don't fail because the new system is bad. They go over budget because nobody caught the data quality problems until cutover weekend. We assess your source data, score your migration risk, and hand you a pre-cutover cleanup plan covering Workday, NetSuite, and SAP in 2 to 3 days."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/book?from=erp-handoff-assessment"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section 1: The pain -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Where ERP migrations actually go over budget</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          The new system is rarely the problem. The overruns come from data nobody looked at hard enough until the cutover calendar made it expensive.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Master data hygiene problems hiding in the source system</h3>
+              <p class="text-gray-600 mt-1">Duplicate vendors, orphan GL accounts, inconsistent customer codes — your consulting firm will charge you to clean these up during cutover at $250-450 per hour.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Reconciliation gaps post-go-live</h3>
+              <p class="text-gray-600 mt-1">Opening balances that don't tie, AR aging that doesn't match, fixed-asset registers that lose accumulated depreciation in translation. Discovered after go-live; expensive to fix backward.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">iLoad / template gaps you don't know about yet</h3>
+              <p class="text-gray-600 mt-1">Your consulting firm has templates for 70% of what you need; the other 30% is custom development billed by the hour.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Cutover sequence guesswork</h3>
+              <p class="text-gray-600 mt-1">Nobody on the project team has done your exact source-target combination before, so the dependency graph is half-known and the cutover plan is partially fictional.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Discovery happening AT cutover instead of before</h3>
+              <p class="text-gray-600 mt-1">When it costs 10x as much to fix and creates calendar pressure that compounds every other risk on the project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: What you receive -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What you receive</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          A finance- and IT-grade deliverable your project sponsor can hand to the implementation partner on day one — and that your CFO can defend in a steering committee.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Source-system data quality scoring</h3>
+              <p class="text-gray-600 mt-1">Gaps, duplicates, master-data hygiene across the entities that matter (Customer, Vendor, GL Account, Fixed Asset, Open AR, Open AP).</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Target-state mapping for Workday, NetSuite, or SAP</h3>
+              <p class="text-gray-600 mt-1">Every source entity, where it lands in the target, what transformation is needed.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Template inventory</h3>
+              <p class="text-gray-600 mt-1">For Workday cutovers specifically, we map your data to our 31 pre-built iLoad templates across 8 source systems and 7 Workday modules. Anything not covered becomes a known custom development item, not a surprise.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Risk-ranked entity list</h3>
+              <p class="text-gray-600 mt-1">Which entities will likely fail reconciliation if migrated as-is, with mitigations.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Recommended cutover sequence</h3>
+              <p class="text-gray-600 mt-1">With estimated effort hours per phase, dependency mapping, and a pre-cutover cleanup checklist.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Dual-scenario ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-6">What this typically saves</h2>
+
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-charcoal mb-3">For mid-market ERP migrations ($20M–$500M revenue)</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Pre-migration assessments typically save <strong class="text-charcoal">$50,000-$200,000</strong> of consulting spend by catching data quality and master-data issues weeks before they become mid-cutover blockers. For a typical Workday cutover, that's about 20-30% of the consulting hours that would otherwise be spent on reactive cleanup. The assessment fee is creditable against subsequent migration work with us if you decide to engage.
+          </p>
+        </div>
+
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-charcoal mb-3">For enterprise multi-entity migrations ($1B+ revenue)</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Savings often reach <strong class="text-charcoal">$200,000-$1,000,000</strong> as the issues that show up in a mid-cutover crisis multiply across entities. A single bad master data field discovered three weeks before go-live costs the project days; the same field discovered during cutover weekend costs weeks. Pre-cutover assessment converts those discoveries into known items with budget, not surprises with overage.
+          </p>
+        </div>
+
+        <p class="text-sm text-gray-600 italic">
+          Your specific numbers fall out of the assessment; we anchor every recommendation to your actual baseline.
+        </p>
+      </div>
+
+      <!-- Section 4: How it works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How it works</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Two to three days, end to end. Finance, IT, and project sponsorship in the room or on the calls. No drawn-out RFP cycle.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 1</div>
+            <h3 class="font-bold text-charcoal mb-2">Discovery</h3>
+            <p class="text-gray-600 text-sm">Source system inventory, key entity walk-through with finance + IT, sample data extracts.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 2</div>
+            <h3 class="font-bold text-charcoal mb-2">Analysis</h3>
+            <p class="text-gray-600 text-sm">Data quality scoring, target-state mapping, template inventory, risk ranking.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 3</div>
+            <h3 class="font-bold text-charcoal mb-2">Delivery</h3>
+            <p class="text-gray-600 text-sm">Executive presentation, full report, cutover sequence recommendation, pre-cutover cleanup checklist, Q&amp;A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Positioning — Assess before commit -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">This is the diagnostic you do BEFORE you sign with a migration partner</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          Your implementation firm's discovery phase is paid for by you, at their rates, and is scoped to what they want to learn before billing the build. Our pre-cutover assessment is independent — we don't need to win the implementation work to make the engagement worthwhile. The deliverable is the information your project sponsor and CFO need to make the build/buy decision with their eyes open.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          If you've already chosen an implementation partner, the assessment still pays back by catching data issues before they enter the change-order phase of the project.
+        </p>
+      </div>
+
+      <!-- Section 6: Cross-link to migration page -->
+      <div class="mb-16 bg-slate-light border-l-4 border-amber-dark rounded-r-xl p-6">
+        <p class="text-gray-700 leading-relaxed">
+          <strong class="text-charcoal">Already past the assessment phase?</strong> See how we <a href="/services/erp-data-migration" class="text-amber-dark font-semibold hover:underline">partner on full Workday data migrations</a> with our 31 pre-built iLoad templates.
+        </p>
+      </div>
+
+      <!-- Section 7: FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common questions</h2>
+        <div class="space-y-4">
+          {faq.map(({ q, a }) => (
+            <details class="bg-slate-light rounded-xl p-6 group">
+              <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+                <span>{q}</span>
+                <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p class="text-gray-700 mt-4 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Know what's real before you commit"
+    subtext="30-minute discovery call. We confirm scope, target system, and timing."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/book?from=erp-handoff-assessment"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</PageLayout>
