@@ -15,6 +15,71 @@ const {
 } = Astro.props;
 const siteUrl = 'https://forgerpa.com';
 const canonical = canonicalUrl || Astro.url.href;
+
+// --- Tracking / verification env vars (Astro requires PUBLIC_ prefix for client-exposed values) ---
+const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+const gscVerificationToken = import.meta.env.PUBLIC_GSC_VERIFICATION_TOKEN;
+const googleAdsConversionId = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_ID;
+
+// --- JSON-LD Organization schema (site-wide) ---
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Forge RPA',
+  legalName: 'Capable Forge LLC',
+  url: 'https://forgerpa.com',
+  logo: 'https://forgerpa.com/logo.png',
+  description: 'Enterprise finance and operations automation',
+  email: 'david@forgerpa.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressRegion: 'TX',
+    addressCountry: 'US',
+  },
+  sameAs: [] as string[],
+};
+
+// --- BreadcrumbList: derive from canonical URL path. Only emit when depth >= 1. ---
+function titleize(segment: string): string {
+  return segment
+    .split('-')
+    .map((w) => (w.length ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+    .join(' ');
+}
+
+let breadcrumbSchema: Record<string, unknown> | null = null;
+try {
+  const canonicalPath = new URL(canonical).pathname;
+  const segments = canonicalPath.split('/').filter((s) => s.length > 0);
+  if (segments.length >= 1) {
+    const itemListElement: Array<Record<string, unknown>> = [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl + '/',
+      },
+    ];
+    let acc = '';
+    segments.forEach((seg, idx) => {
+      acc += '/' + seg;
+      itemListElement.push({
+        '@type': 'ListItem',
+        position: idx + 2,
+        name: titleize(seg),
+        item: siteUrl + acc,
+      });
+    });
+    breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement,
+    };
+  }
+} catch {
+  // If canonical URL is malformed for any reason, skip breadcrumb schema rather than break the build.
+  breadcrumbSchema = null;
+}
 ---
 
 <!DOCTYPE html>
@@ -38,6 +103,45 @@ const canonical = canonicalUrl || Astro.url.href;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <title>{title} | Forge RPA</title>
+
+  {/* Google Search Console verification */}
+  {gscVerificationToken && (
+    <meta name="google-site-verification" content={gscVerificationToken} />
+  )}
+
+  {/* Google Analytics 4 */}
+  {ga4Id && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+      <script set:html={`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${ga4Id}');
+      `}></script>
+    </>
+  )}
+
+  {/* Google Ads conversion tracking (shares dataLayer with GA4 when both present) */}
+  {googleAdsConversionId && !ga4Id && (
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsConversionId}`}></script>
+  )}
+  {googleAdsConversionId && (
+    <script set:html={`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('config', '${googleAdsConversionId}');
+    `}></script>
+  )}
+
+  {/* JSON-LD: Organization (site-wide) */}
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+
+  {/* JSON-LD: BreadcrumbList (when on a sub-page) */}
+  {breadcrumbSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+  )}
+
   <style is:global>
     @import '../styles/global.css';
   </style>
