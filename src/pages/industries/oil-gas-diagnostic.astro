@@ -1,0 +1,317 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Oil & Gas Finance Operations Diagnostic",
+  "provider": { "@type": "Organization", "name": "Forge RPA LLC", "url": "https://forgerpa.com" },
+  "serviceType": "Industry-Specific Automation Diagnostic",
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "audience": { "@type": "Audience", "audienceType": "Oil & Gas Independent Operators" },
+  "description": "A 2-3 day diagnostic for independent oil and gas operators that scores production accounting, volume reconciliation, JV settlement, and severance tax workflows for automation potential and delivers a sequenced 90-day roadmap.",
+  "url": "https://forgerpa.com/industries/oil-gas-diagnostic"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do you work with our existing P2 / Quorum / OGsys implementation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The diagnostic assesses what each system already does, where the gaps are, and what's automatable around the edges of your current implementation. We don't try to replace your operational systems; we automate the manual work between them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is this different from our auditors' assessment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Auditors assess compliance. We assess automation potential and ROI. Different lens, different deliverable — both useful, neither substitutes for the other."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if our production accounting is already partially automated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most operators are. The diagnostic finds the next-highest-ROI automation candidate given what you've already built. We don't recommend ripping and replacing working automation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How big does our operation need to be for this to make sense?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Generally 50+ wells or 5+ person revenue-accounting team is the threshold where the math starts to compound. Below that, you may not have enough volume to justify the diagnostic; we'll be straight about it on the discovery call."
+      }
+    }
+  ]
+};
+---
+
+<PageLayout
+  title="Oil & Gas Finance Ops Diagnostic | Forge RPA"
+  description="Get your production accounting and JV settlement workflows off spreadsheets. A 2-3 day diagnostic for independent oil and gas operators. Covers SAP, Quorum, P2, OGsys."
+  heroTitle="Get Your Production Accounting and JV Workflows Off Spreadsheets"
+  heroSubtitle="Independent operators routinely lose 1 to 3 weeks per month to manual production accounting, volume reconciliation, and JV settlement work. We diagnose where the time is going, score the automation candidates, and hand you a sequenced roadmap, covering SAP, P2 Energy Solutions, Quorum, and OGsys integrations, in 2 to 3 business days."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/book?from=oil-gas-diagnostic"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section 1: The pain -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Where the weeks are going</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Independent operators in the 50-to-500-well range tend to look fine on the org chart and feel terrible from the inside of the revenue-accounting team. The same friction points show up in nearly every diagnostic.
+        </p>
+        <div class="mt-10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Production accounting consuming weeks per month-end</h3>
+              <p class="text-gray-600 mt-1">Revenue recognition + joint interest billing rebuilt in spreadsheets every cycle.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Volume reconciliation across SCADA, gauging tickets, and accounting</h3>
+              <p class="text-gray-600 mt-1">Done line-by-line in Excel because no two systems agree on the same well's daily volume.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">JV audit prep gathering documentation from 5+ systems per joint operation</h3>
+              <p class="text-gray-600 mt-1">Pulled together at the last minute, every quarter, by hand.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Owner relations distributions and DOI changes processed manually</h3>
+              <p class="text-gray-600 mt-1">Deadline-driven manual reminders managed in spreadsheets; misses create owner-payment delays and audit issues.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Severance tax reporting requiring per-state regulatory submissions on different schedules</h3>
+              <p class="text-gray-600 mt-1">Manual data pulls each time; multiple states multiply the work.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: What you receive -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What you receive</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          A short, focused engagement. No 60-page deck. Six concrete deliverables your finance and JV leadership can act on the same week.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Production accounting workflow map</h3>
+              <p class="text-gray-600 mt-1">Revenue recognition + joint interest billing, end-to-end, with current hour cost per step.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Volume reconciliation gap analysis</h3>
+              <p class="text-gray-600 mt-1">Where SCADA and accounting disagree, how the disagreements get reconciled today, what's automatable.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">JV settlement automation readiness scoring</h3>
+              <p class="text-gray-600 mt-1">Six-criterion framework applied to your specific JV workflow.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Owner relations / DOI change-handling candidates</h3>
+              <p class="text-gray-600 mt-1">Which steps are deterministic (good for RPA) and which need human judgment.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Tech matching to your operational stack</h3>
+              <p class="text-gray-600 mt-1">SAP, P2 Energy Solutions, Quorum, OGsys, Excel — what already does the work, what needs targeted RPA or process automation.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">6</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">ROI projection with sequenced 90-day roadmap</h3>
+              <p class="text-gray-600 mt-1">What unlocks the most hours first, what compounds across subsequent quarters.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Two-scenario ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-6">What automation tends to unlock</h2>
+        <div class="bg-white rounded-xl border border-amber/30 p-6 mb-6">
+          <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">For independent operators (5-8 person revenue-accounting team)</p>
+          <p class="text-gray-700 leading-relaxed">
+            Clients automating production accounting and JV settlement workflows typically recover <strong class="text-charcoal">1 to 3 weeks per month</strong> of revenue-cycle team time — the difference between a close cycle that runs hot every month and one that finishes on schedule. At blended labor cost ($65-95 per hour), that's about <strong class="text-charcoal">$150,000-$370,000 per year</strong> of recovered finance capacity, before counting the audit-readiness benefit during JV true-ups and severance tax filings.
+          </p>
+        </div>
+        <div class="bg-white rounded-xl border border-amber/30 p-6 mb-6">
+          <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">For larger operators (200+ wells, multi-state operations)</p>
+          <p class="text-gray-700 leading-relaxed">
+            Recovered capacity often scales to <strong class="text-charcoal">$400,000-$1,200,000 per year</strong> as compounding manual reconciliation across SCADA / accounting / JV settlement systems multiplies the per-well overhead. Multi-state severance tax compliance also benefits disproportionately — every additional state adds linear manual work; automation makes that work approximately constant regardless of state count.
+          </p>
+        </div>
+        <p class="text-sm text-gray-600 italic">
+          Your specific numbers fall out of the diagnostic; we anchor every recommendation to your actual baseline.
+        </p>
+      </div>
+
+      <!-- Section 4: How it works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How it works</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Two to three working days of structured diagnostic. Light touch on your team — a few interviews, a data pull, a working session.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 1</div>
+            <h3 class="font-bold text-charcoal mb-3">Discovery</h3>
+            <p class="text-gray-600 text-sm">Revenue-accounting team walk-through. SCADA-to-accounting data flow inventory. JV settlement workflow review. Severance tax filing sample.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 2</div>
+            <h3 class="font-bold text-charcoal mb-3">Analysis</h3>
+            <p class="text-gray-600 text-sm">Six-criterion process scoring on production accounting + JV settlement candidates. Volume reconciliation gap mapping. Tech matching to your specific stack.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 3</div>
+            <h3 class="font-bold text-charcoal mb-3">Delivery</h3>
+            <p class="text-gray-600 text-sm">Executive presentation, detailed report, sequenced 90-day roadmap, Q&amp;A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Scope boundary (out-of-scope callout) -->
+      <div class="mb-16 bg-slate-light border-l-4 border-charcoal rounded-r-xl p-8">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 bg-charcoal/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-charcoal mb-4">What this diagnostic does NOT cover</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              This is a finance and operations diagnostic only. We focus on the back-office workflows and field-to-finance handoffs where automation pays back fast.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              <strong class="text-charcoal">Out of scope:</strong> reserve estimation, safety/HSE workflows, environmental compliance attestation, regulatory production reporting (Form W-1, P-4, etc.), wellbore engineering analysis. Those workflows need specialized counsel — not us.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              If you're not sure whether a workflow falls in scope, ask during the discovery call. We'll tell you straight.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Cross-link to existing oil & gas industry page -->
+      <div class="mb-16 bg-amber/5 border border-amber/30 rounded-xl p-6">
+        <p class="text-gray-700 leading-relaxed">
+          <strong class="text-charcoal">Want the broader industry context first?</strong> See our <a href="/industries/oil-gas" class="text-amber-dark font-semibold underline hover:text-charcoal transition-colors">oil &amp; gas finance automation overview</a> for systems, audiences, and the full pain library.
+        </p>
+      </div>
+
+      <!-- Section 7: FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Do you work with our existing P2 / Quorum / OGsys implementation?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Yes. The diagnostic assesses what each system already does, where the gaps are, and what's automatable around the edges of your current implementation. We don't try to replace your operational systems; we automate the manual work between them.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How is this different from our auditors' assessment?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Auditors assess compliance. We assess automation potential and ROI. Different lens, different deliverable — both useful, neither substitutes for the other.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What if our production accounting is already partially automated?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Most operators are. The diagnostic finds the next-highest-ROI automation candidate given what you've already built. We don't recommend ripping and replacing working automation.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How big does our operation need to be for this to make sense?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Generally 50+ wells or 5+ person revenue-accounting team is the threshold where the math starts to compound. Below that, you may not have enough volume to justify the diagnostic; we'll be straight about it on the discovery call.
+            </p>
+          </details>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Get your time back from spreadsheets"
+    subtext="30-minute discovery call. We confirm fit, scope, and timing."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/book?from=oil-gas-diagnostic"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</PageLayout>
