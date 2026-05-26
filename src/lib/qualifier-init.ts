@@ -36,9 +36,10 @@ import {
   type StepIndex,
 } from "./qualifier-state.js";
 import {
-  validateEmailNotFree,
+  validateEmailFormat,
   validateCompanyNotUrl,
   validatePhoneIfProvided,
+  isPersonalEmail,
 } from "./qualifier-validation.js";
 
 /** Sales cockpit origin — discovery-qualifier endpoint + turnstile-site-key. */
@@ -390,7 +391,11 @@ async function submitWizard(): Promise<void> {
     setError("qualifier-step6-email", "Please enter your work email.");
     return;
   }
-  const emailErr = validateEmailNotFree(email);
+  // Email validation: format-only (free-domain submitters are accepted —
+  // see qualifier-validation.ts policy note 2026-05-25). The personal-
+  // email modifier is computed below and used both for the client-side
+  // tier preview and as a payload field for the server.
+  const emailErr = validateEmailFormat(email);
   if (emailErr) {
     setError("qualifier-step6-email", emailErr);
     return;
@@ -438,6 +443,23 @@ async function submitWizard(): Promise<void> {
   }
 
   const attribution = captureAttribution();
+
+  // Recompute the local tier preview now that we have the email — passes
+  // the personalEmail modifier so the fallback (used if the server call
+  // fails) matches what the server would have returned. Server is still
+  // authoritative when its response arrives.
+  const personalEmailFlag = isPersonalEmail(email);
+  state.computedTier = computeFitTier(
+    {
+      role: state.answers.role,
+      primaryChallenge: state.answers.primaryChallenge,
+      primarySystems: state.answers.primarySystems,
+      teamSize: state.answers.teamSize,
+      timeline: state.answers.timeline,
+    },
+    { personalEmail: personalEmailFlag },
+  );
+
   const payload = {
     source: "discovery_qualifier",
     name,
