@@ -1,0 +1,277 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "AP & Reconciliation Automation Assessment",
+  "provider": { "@type": "Organization", "name": "Forge RPA LLC", "url": "https://forgerpa.com" },
+  "serviceType": "Automation Assessment",
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "description": "A 2-3 day diagnostic that scores your accounts payable and reconciliation processes for automation potential, projects ROI ranges across mid-market and enterprise scenarios, and delivers a prioritized roadmap.",
+  "url": "https://forgerpa.com/services/ap-reconciliation-assessment"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does this work with our existing AP automation tool (e.g., Bill.com, AP automation in NetSuite)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We assess against what you already have. The goal isn't to replace your AP tool but to find the gaps it leaves and fill them with targeted automation — three-way match exception routing, reconciliation accuracy, vendor master data hygiene."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What invoice volume makes automation worth it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Generally 300+ invoices/month per AP analyst makes the math compelling. Below that, automation pays back slowly. Above that, the savings compound fast."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you handle multi-entity AP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Multi-entity is where automation pays back fastest. Each additional entity multiplies the manual reconciliation overhead. We map AP flows per entity and surface the cross-entity automation opportunities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you integrate with our procurement system (Coupa, Ariba, Procurify)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. PO data from procurement is one of the three legs of three-way match. The assessment includes integration scoping for your specific procurement stack."
+      }
+    }
+  ]
+};
+---
+
+<PageLayout
+  title="AP & Reconciliation Automation Assessment | Forge RPA"
+  description="Stop the AP backlog. Reconcile faster. A 2-3 day diagnostic that scores your AP and reconciliation processes, projects ROI ranges, and maps your automation sequence."
+  heroTitle="Stop the AP Backlog. Reconcile Faster."
+  heroSubtitle="If your AP team is handling 500 to 2,000 invoices a month, three-way match exceptions are probably consuming half their time, and reconciliation errors are quietly creating audit findings. We diagnose the leak, score your automation candidates, and hand you a sequenced roadmap in 2 to 3 days."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/book?from=ap-reconciliation-assessment"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section 1: The pain -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Where the hours are going</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          AP teams at the 500-to-2,000-invoice-per-month range tend to look fine on a process map and feel terrible from the inside. The same friction points show up in nearly every diagnostic.
+        </p>
+        <div class="mt-10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Three-way match exceptions piling up</h3>
+              <p class="text-gray-600 mt-1">Each one a 10-15 minute manual investigation. At 200 exceptions a month, that's a full-time analyst doing nothing but reconciling.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Invoice data re-typed from PDF into your ERP</h3>
+              <p class="text-gray-600 mt-1">Because the OCR you bought doesn't handle vendor-specific layouts.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Reconciliation errors creating audit findings</h3>
+              <p class="text-gray-600 mt-1">Discrepancies that show up months later, traced back to a manual mistake nobody can identify.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Vendor payment delays creating supplier strain</h3>
+              <p class="text-gray-600 mt-1">Even though the funds are sitting in the account. Slow payment hurts pricing leverage and supplier relationships.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">AP team turnover from grinding work</h3>
+              <p class="text-gray-600 mt-1">Repetitive keying is not a career; high-performers leave for FP&amp;A and analyst roles.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: What you receive -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What you receive</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          A short, focused engagement. No 60-page deck. Five concrete deliverables your finance leadership can act on the same week.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">AP/AR process map</h3>
+              <p class="text-gray-600 mt-1">Receipt to entry to match to pay to reconcile, with current hour cost + exception rate per step.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Volume and error-rate analysis</h3>
+              <p class="text-gray-600 mt-1">Percentage of invoices cycling through exceptions today, and what's recoverable through automation.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Three-way match automation candidates</h3>
+              <p class="text-gray-600 mt-1">Which PO/receipt/invoice triples can be auto-matched, and which need rule-based exception routing.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">ERP-integration readiness scoring</h3>
+              <p class="text-gray-600 mt-1">Whether your ERP can ingest automated data cleanly, or whether middleware is required.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">ROI projection with implementation sequence</h3>
+              <p class="text-gray-600 mt-1">What unlocks the most hours first, what saves the most dollars later.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Two-scenario ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-6">What automation tends to unlock</h2>
+        <div class="bg-white rounded-xl border border-amber/30 p-6 mb-6">
+          <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">For mid-market AP teams ($20M–$500M revenue, 500-2,000 monthly invoices)</p>
+          <p class="text-gray-700 leading-relaxed">
+            Clients automating three-way match and exception routing typically recover <strong class="text-charcoal">30-60 hours per month</strong> of AP team time — about <strong class="text-charcoal">$18,000-$60,000 per year</strong> of recovered AP capacity at a blended fully-loaded labor cost of $50-80 per hour. Reconciliation accuracy improvements typically clean up an additional 1-3% of AP transaction volume that would otherwise surface as audit findings later. The larger benefit is the redeployment value — AP analysts moving from invoice keying to vendor relationship management and supplier financing optimization.
+          </p>
+        </div>
+        <div class="bg-white rounded-xl border border-amber/30 p-6 mb-6">
+          <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-3">For enterprise organizations ($1B+ revenue, 10,000+ monthly invoices)</p>
+          <p class="text-gray-700 leading-relaxed">
+            Recovered AP capacity often reaches <strong class="text-charcoal">150-300 hours per month</strong> as multi-entity coordination, complex exception routing, and audit-evidence gathering compound. At enterprise AP blended labor cost ($70-110 per hour), that's <strong class="text-charcoal">$126,000-$396,000 per year</strong> of recovered capacity — before counting the larger reconciliation-accuracy lift and the supplier financing optimization opportunities that automated payment timing unlocks.
+          </p>
+        </div>
+        <p class="text-sm text-gray-600 italic">
+          Your specific numbers fall out of the assessment; we anchor every recommendation to your actual baseline, not industry averages.
+        </p>
+      </div>
+
+      <!-- Section 4: How it works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How it works</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Two to three working days of structured diagnostic. Light touch on your team — a few interviews, a data pull, a working session.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 1</div>
+            <h3 class="font-bold text-charcoal mb-3">Discovery</h3>
+            <p class="text-gray-600 text-sm">Walk-through of receipt-to-reconcile workflow with your AP team. Volume data pull from your ERP. Exception sample review.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 2</div>
+            <h3 class="font-bold text-charcoal mb-3">Analysis</h3>
+            <p class="text-gray-600 text-sm">Six-criterion scoring on automation candidates, integration assessment, ROI modeling per candidate.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Day 3</div>
+            <h3 class="font-bold text-charcoal mb-3">Delivery</h3>
+            <p class="text-gray-600 text-sm">Executive presentation, detailed report, prioritized roadmap with effort estimates, Q&amp;A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How does this work with our existing AP automation tool (e.g., Bill.com, AP automation in NetSuite)?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We assess against what you already have. The goal isn't to replace your AP tool but to find the gaps it leaves and fill them with targeted automation — three-way match exception routing, reconciliation accuracy, vendor master data hygiene.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What invoice volume makes automation worth it?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Generally 300+ invoices/month per AP analyst makes the math compelling. Below that, automation pays back slowly. Above that, the savings compound fast.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How do you handle multi-entity AP?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Multi-entity is where automation pays back fastest. Each additional entity multiplies the manual reconciliation overhead. We map AP flows per entity and surface the cross-entity automation opportunities.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Can you integrate with our procurement system (Coupa, Ariba, Procurify)?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Yes. PO data from procurement is one of the three legs of three-way match. The assessment includes integration scoping for your specific procurement stack.
+            </p>
+          </details>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Find where your AP team's hours are going"
+    subtext="30-minute discovery call. We confirm fit, scope, and timing for a formal assessment."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/book?from=ap-reconciliation-assessment"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</PageLayout>

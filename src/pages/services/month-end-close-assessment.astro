@@ -1,0 +1,253 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const faqs = [
+  {
+    q: "How is this different from a generic process audit?",
+    a: "A process audit tells you what's broken. Our assessment tells you what to automate first, how much it costs, what it saves, and how long it takes — with the math grounded in your actual baseline, not industry averages."
+  },
+  {
+    q: "What if our ERP can't be automated against?",
+    a: "Most ERPs can be — through API, through scheduled extracts, or through targeted RPA at the UI layer. The assessment surfaces which path fits your specific environment. We've worked across SAP, Workday, NetSuite, Oracle, Sage Intacct, and several niche ERPs."
+  },
+  {
+    q: "Do we need to involve IT in the assessment phase?",
+    a: "Not for the diagnostic itself. IT involvement starts at implementation. The assessment is owned by finance."
+  },
+  {
+    q: "What's the assessment fee, and is it creditable against later work?",
+    a: "Pricing is scoped to your environment after the discovery call. The assessment fee is creditable against subsequent automation work with us if you decide to engage within 60 days."
+  }
+];
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Month-End Close Automation Assessment",
+  "provider": {
+    "@type": "Organization",
+    "name": "Forge RPA LLC",
+    "url": "https://forgerpa.com"
+  },
+  "serviceType": "Automation Assessment",
+  "areaServed": {
+    "@type": "Country",
+    "name": "United States"
+  },
+  "description": "A 2-3 day diagnostic that scores your month-end close process across six criteria, projects ROI ranges, and delivers a prioritized 90-day automation roadmap.",
+  "url": "https://forgerpa.com/services/month-end-close-assessment"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(({ q, a }) => ({
+    "@type": "Question",
+    "name": q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": a
+    }
+  }))
+};
+---
+
+<PageLayout
+  title="Month-End Close Automation Assessment | Forge RPA"
+  description="Cut your month-end close cycle from 10+ days to 5. A 2-3 day diagnostic that scores your close process and projects ROI before you commit to automation."
+  heroTitle="Compress Your Month-End Close from 10+ Days to 5"
+  heroSubtitle="Mid-market finance teams typically lose 30 to 50 hours every close cycle to manual reassembly work. We score your close process across six criteria, project the recovered capacity, and hand you a 90-day roadmap, in 2 to 3 business days."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/book?from=month-end-close-assessment"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- The Pain -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The close that keeps getting longer</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          You see the same five symptoms in nearly every mid-market finance team we walk through. None of them are about effort; they are about plumbing.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Close cycles running 10+ business days</h3>
+              <p class="text-gray-600 mt-1">Peers at your scale close in five. The gap is data plumbing and manual reconciliation work, not effort.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Manual journal entry consuming 40+ hours/month</h3>
+              <p class="text-gray-600 mt-1">Senior accountant time that should be on FP&amp;A and decision support, not spreadsheet keying.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Intercompany eliminations rebuilt in spreadsheets every cycle</h3>
+              <p class="text-gray-600 mt-1">Because the ERP can't do them cleanly, the workbook becomes the system of record.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Audit prep starting two weeks before fieldwork</h3>
+              <p class="text-gray-600 mt-1">Reconciliation evidence is scattered across email, file shares, and ad-hoc folders nobody can find at 9pm on a Tuesday.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">The close getting longer as the company grows, not shorter</h3>
+              <p class="text-gray-600 mt-1">Headcount additions help marginally; process automation compounds.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What You Receive -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What you receive</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          A self-contained diagnostic package your finance leadership can act on, with or without us.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Close-cycle process map</h3>
+              <p class="text-gray-600 mt-1">Every step from cutoff to close-the-books, with current hour cost per step.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Automation scoring</h3>
+              <p class="text-gray-600 mt-1">Each step scored on rule complexity, volume, data structure, stability, error impact, and technology compatibility. Same six-criterion framework we used across Fortune 500 finance transformations.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">ROI projection</h3>
+              <p class="text-gray-600 mt-1">Conservative, moderate, and aggressive scenarios with payback period estimates per automation candidate.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Technology recommendations</h3>
+              <p class="text-gray-600 mt-1">What's already in your stack (M365, Power Query, Power Automate, your ERP) that can do the work, and where targeted RPA makes sense.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">90-day automation roadmap</h3>
+              <p class="text-gray-600 mt-1">Sequenced by ROI and dependency, with effort estimates per phase.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-scenario ROI block -->
+      <div class="mb-16 bg-slate-light border-l-4 border-amber rounded-r-xl p-8 lg:p-10">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-6">What the math typically looks like</h2>
+
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-amber-dark mb-3">For mid-market finance teams ($20M–$500M revenue):</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Clients automating their highest-friction close steps typically recover <strong class="text-charcoal">30-50 hours per cycle</strong> — about <strong class="text-charcoal">$25,000-$60,000 per year</strong> of finance-team capacity at a blended fully-loaded labor cost of $70-100 per hour. The larger value usually shows up in redeployment: senior accountants moving from spreadsheet rework to FP&amp;A, decision support, and the strategic work the CFO actually wants from them.
+          </p>
+        </div>
+
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-amber-dark mb-3">For enterprise organizations and multi-entity health systems ($1B+ revenue):</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Recovered capacity often reaches <strong class="text-charcoal">200-400 hours per close cycle</strong> as consolidation overhead, intercompany eliminations, and audit-evidence gathering compound across entities. At enterprise blended labor cost ($90-130 per hour), that's <strong class="text-charcoal">$216,000-$624,000 per year</strong> of recovered finance capacity — before counting compressed audit prep, earlier financial visibility for capital-allocation decisions, and the lower external audit fees that follow from automated documentation.
+          </p>
+        </div>
+
+        <p class="text-gray-600 italic text-sm leading-relaxed pt-4 border-t border-gray-300">
+          Your specific numbers fall out of the assessment; we anchor every recommendation to your actual baseline, not industry averages.
+        </p>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How it works</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Two to three business days, end to end. Finance-led. No IT lift in the diagnostic phase.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Day 1</div>
+            <h3 class="font-bold text-charcoal mb-2">Discovery</h3>
+            <p class="text-gray-600 text-sm">Stakeholder interviews, process observation, SOP review, system inventory across the close cycle.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Day 2</div>
+            <h3 class="font-bold text-charcoal mb-2">Analysis</h3>
+            <p class="text-gray-600 text-sm">Six-criterion process scoring, ROI modeling per candidate, technology matching to your stack.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-8 text-center">
+            <div class="text-3xl font-extrabold text-amber mb-2">Day 3</div>
+            <h3 class="font-bold text-charcoal mb-2">Delivery</h3>
+            <p class="text-gray-600 text-sm">Executive presentation, detailed report, prioritized 90-day roadmap, and Q&amp;A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common questions</h2>
+        <div class="space-y-4">
+          {faqs.map(({ q, a }) => (
+            <details class="bg-slate-light rounded-xl p-6 group">
+              <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+                <span>{q}</span>
+                <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p class="text-gray-700 mt-4 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Know exactly what to compress and by how much"
+    subtext="Book a 30-minute discovery call. We will walk through your close cycle, your reporting pain, and what a 2-3 day assessment could surface in your environment."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/book?from=month-end-close-assessment"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</PageLayout>
