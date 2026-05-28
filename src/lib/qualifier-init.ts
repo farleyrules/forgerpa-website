@@ -39,6 +39,7 @@ import {
   validateEmailFormat,
   validateCompanyNotUrl,
   validatePhoneIfProvided,
+  formatPhone,
   isPersonalEmail,
 } from "./qualifier-validation.js";
 
@@ -299,12 +300,81 @@ function bindStep6(): void {
     const el = $(`qualifier-contact-${field}`) as HTMLInputElement | null;
     if (!el) continue;
     el.addEventListener("input", () => {
+      // Phone gets live-formatted to NNN-NNN-NNNN as the user types.
+      // Idempotent — accepts raw digits, partial formats, or pre-formatted
+      // pastes; strips non-digits before re-formatting.
+      if (field === "phone") {
+        const formatted = formatPhone(el.value);
+        if (formatted !== el.value) {
+          // Preserve cursor position when reformatting wouldn't move the
+          // last character forward (e.g., user typing at end of field).
+          const wasAtEnd = el.selectionStart === el.value.length;
+          el.value = formatted;
+          if (wasAtEnd) {
+            el.setSelectionRange(formatted.length, formatted.length);
+          }
+        }
+      }
       (state.contact as Record<string, string>)[field] = el.value;
       saveState(state);
     });
   }
   $("qualifier-step6-back")?.addEventListener("click", () => showStep(5));
   $("qualifier-step6-submit")?.addEventListener("click", () => void submitWizard());
+}
+
+/**
+ * Brave detection. The Brave browser exposes a `navigator.brave` object
+ * with an `isBrave()` async method that returns true on Brave. We use
+ * this to show a preemptive warning ABOVE step 6 (before the user hits
+ * submit and hits the existing post-failure error message), since
+ * Brave Shields aggressively blocks the Cloudflare Turnstile widget AND
+ * the cross-origin POST to sales.forgerpa.com.
+ *
+ * Returns a Promise<boolean>. Resolves false on any error (e.g.,
+ * navigator.brave undefined, isBrave throws, etc.) — meaning we err on
+ * the side of NOT showing the warning to non-Brave users.
+ */
+interface BraveNavigator extends Navigator {
+  brave?: { isBrave?: () => Promise<boolean> };
+}
+
+async function detectBrave(): Promise<boolean> {
+  if (typeof navigator === "undefined") return false;
+  const nav = navigator as BraveNavigator;
+  try {
+    const isBrave = await nav.brave?.isBrave?.();
+    return isBrave === true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Show the Brave-Shields warning banner inside step 6. Idempotent —
+ * checks for an existing banner node before inserting.
+ */
+function showBraveWarning(): void {
+  const step6 = $$("[data-qualifier-step]").find(
+    (el) => el.getAttribute("data-qualifier-step") === "6",
+  );
+  if (!step6) return;
+  if (step6.querySelector("[data-brave-warning]")) return; // already shown
+
+  const banner = document.createElement("div");
+  banner.setAttribute("data-brave-warning", "true");
+  banner.className =
+    "mb-6 rounded-lg border border-amber-400 bg-amber-50 px-4 py-3 text-sm text-amber-900";
+  banner.innerHTML = `
+    <p class="font-semibold m-0">Brave browser detected</p>
+    <p class="mt-2 mb-0">
+      Brave Shields can block this form's spam-check widget. If submission fails,
+      click the <span class="font-semibold">Brave lion icon</span> in your address
+      bar and lower Shields for this site, then try again.
+    </p>
+  `;
+  // Insert at the very top of step 6's content, before the h3.
+  step6.insertBefore(banner, step6.firstChild);
 }
 
 async function mountTurnstileWidget(): Promise<void> {
@@ -673,6 +743,14 @@ export function initDiscoveryQualifier(): void {
 
   // Resume at the saved step (default 1).
   showStep((state.step || 1) as StepIndex);
+
+  // Brave detection runs async + fire-and-forget — the banner appears
+  // inside step 6 if the user is on Brave. Showing it on init (vs. only
+  // when they reach step 6) is fine because the step 6 DOM is in the
+  // document from the start, just hidden.
+  void detectBrave().then((isBrave) => {
+    if (isBrave) showBraveWarning();
+  });
 }
 
 // Auto-init when imported.

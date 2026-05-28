@@ -135,6 +135,23 @@ export function validateCompanyNotUrl(company: string): string | null {
 }
 
 /**
+ * Format a phone number to the canonical US `NNN-NNN-NNNN` shape as the
+ * user types. Idempotent — if the input is already partially formatted
+ * (or pasted as `(214) 578-1717`), we strip non-digits before reformatting.
+ * Caps at 10 digits (US format); excess digits are dropped silently.
+ *
+ * Used by the step-6 phone input's `input` event handler so the field
+ * always renders the formatted value back to the user.
+ */
+export function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+  if (digits.length === 0) return "";
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+/**
  * Phone is OPTIONAL. Return null if empty OR if it passes basic format
  * + isn't an obvious test number. Return an error string otherwise.
  */
