@@ -99,6 +99,14 @@ function showStep(step: StepIndex): void {
   }
   state.step = step;
   saveState(state);
+
+  // Whenever step 6 becomes visible — whether reached by the step-5 Next
+  // button OR by restoring saved state on page load (state.step === 6) —
+  // ensure the Turnstile mount is at least attempted. Idempotent: the
+  // mount function bails early if it already succeeded.
+  if (step === 6 && turnstileMountStatus !== "ok") {
+    void mountTurnstileWidget();
+  }
 }
 
 function showOutcome(tier: FitTier): void {
@@ -458,21 +466,42 @@ async function mountTurnstileWidget(): Promise<void> {
 
   // Load Turnstile script if not yet loaded.
   if (!window.turnstile) {
+    // 8-second timeout: Brave (and some other shields) silently abandon
+    // the script load without firing `script.onerror`. Without a
+    // timeout, the await below would hang forever and the failure block
+    // would never render. 8 seconds is long enough for slow connections
+    // to legitimately succeed, short enough that a blocked load doesn't
+    // make the wizard appear frozen.
     const scriptLoaded = await new Promise<boolean>((resolve) => {
+      let settled = false;
+      const settle = (ok: boolean) => {
+        if (settled) return;
+        settled = true;
+        resolve(ok);
+      };
+      const timeoutId = window.setTimeout(() => settle(false), 8000);
+      const onSuccess = () => {
+        window.clearTimeout(timeoutId);
+        settle(true);
+      };
+      const onError = () => {
+        window.clearTimeout(timeoutId);
+        settle(false);
+      };
       const existing = document.querySelector(
         'script[src*="challenges.cloudflare.com/turnstile"]',
       );
       if (existing) {
-        existing.addEventListener("load", () => resolve(true));
-        existing.addEventListener("error", () => resolve(false));
+        existing.addEventListener("load", onSuccess);
+        existing.addEventListener("error", onError);
         return;
       }
       const script = document.createElement("script");
       script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
       script.async = true;
       script.defer = true;
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
+      script.onload = onSuccess;
+      script.onerror = onError;
       document.head.appendChild(script);
     });
     if (!scriptLoaded) {
