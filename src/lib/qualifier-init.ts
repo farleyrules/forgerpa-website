@@ -368,19 +368,74 @@ function showBraveWarning(): void {
   banner.innerHTML = `
     <p class="font-semibold m-0">Brave browser detected</p>
     <p class="mt-2 mb-0">
-      Brave Shields can block this form's spam-check widget. If submission fails,
-      click the <span class="font-semibold">Brave lion icon</span> in your address
-      bar and lower Shields for this site, then try again.
+      Brave Shields blocks the spam-check widget and the form submission.
+      Before you submit, click the
+      <span class="font-semibold">Brave lion icon</span>
+      in your address bar and toggle
+      <span class="font-semibold">Shields OFF for this site</span>.
+      If you submit first and the widget didn't load, a red error box
+      below the spam-check will give you a Retry button.
     </p>
   `;
   // Insert at the very top of step 6's content, before the h3.
   step6.insertBefore(banner, step6.firstChild);
 }
 
+/**
+ * Status of the Turnstile widget mount. Used by submitWizard() to give a
+ * better error message when the widget never actually rendered (most
+ * commonly because Brave Shields / a privacy extension blocked the script
+ * load from challenges.cloudflare.com).
+ */
+type TurnstileMountStatus = "ok" | "site-key-fetch-failed" | "script-blocked" | "render-failed";
+let turnstileMountStatus: TurnstileMountStatus | "pending" = "pending";
+
+function renderTurnstileFailureBlock(reason: TurnstileMountStatus): void {
+  const container = $("qualifier-turnstile");
+  if (!container) return;
+  // Wipe whatever's in the container (could be empty, could be a previous
+  // attempt's residual node).
+  container.innerHTML = "";
+  container.classList.remove("hidden");
+
+  const explanation =
+    reason === "site-key-fetch-failed"
+      ? "We couldn't reach our spam-check service. This usually means a network or privacy-extension is blocking <code>sales.forgerpa.com</code>."
+      : "Our spam-check widget didn't load. This usually means a browser shield or privacy extension is blocking <code>challenges.cloudflare.com</code>.";
+
+  const help = document.createElement("div");
+  help.className =
+    "rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900";
+  help.innerHTML = `
+    <p class="font-semibold m-0">Spam-check widget didn't load</p>
+    <p class="mt-2 mb-0">${explanation}</p>
+    <p class="mt-2 mb-0">
+      Fix:
+      <span class="font-semibold">click the Brave lion icon</span>
+      (or your privacy extension's shield icon) in your address bar and
+      turn shields <span class="font-semibold">OFF for this site</span>.
+      Then click the button below.
+    </p>
+  `;
+  container.appendChild(help);
+
+  const retry = document.createElement("button");
+  retry.type = "button";
+  retry.className =
+    "mt-3 inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-900 hover:bg-red-50";
+  retry.textContent = "Retry spam-check";
+  retry.addEventListener("click", () => {
+    container.innerHTML = "";
+    turnstileMountStatus = "pending";
+    void mountTurnstileWidget();
+  });
+  container.appendChild(retry);
+}
+
 async function mountTurnstileWidget(): Promise<void> {
   const container = $("qualifier-turnstile");
   if (!container) return;
-  if (container.hasChildNodes()) return; // already mounted
+  if (container.hasChildNodes() && turnstileMountStatus === "ok") return; // already mounted successfully
 
   // Fetch site key from cockpit
   let siteKey: string | null = null;
@@ -393,50 +448,68 @@ async function mountTurnstileWidget(): Promise<void> {
       siteKey = json.siteKey ?? null;
     }
   } catch {
-    /* will fall through to script-load failure handling */
+    /* will fall through to failure handling below */
   }
   if (!siteKey) {
-    container.textContent =
-      "(Couldn't load spam-check widget — please try refreshing the page.)";
-    container.classList.remove("hidden");
+    turnstileMountStatus = "site-key-fetch-failed";
+    renderTurnstileFailureBlock(turnstileMountStatus);
     return;
   }
 
   // Load Turnstile script if not yet loaded.
   if (!window.turnstile) {
-    await new Promise<void>((resolve, reject) => {
+    const scriptLoaded = await new Promise<boolean>((resolve) => {
       const existing = document.querySelector(
         'script[src*="challenges.cloudflare.com/turnstile"]',
       );
       if (existing) {
-        existing.addEventListener("load", () => resolve());
-        existing.addEventListener("error", () => reject(new Error("turnstile-script-error")));
+        existing.addEventListener("load", () => resolve(true));
+        existing.addEventListener("error", () => resolve(false));
         return;
       }
       const script = document.createElement("script");
       script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
       script.async = true;
       script.defer = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("turnstile-script-error"));
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
       document.head.appendChild(script);
-    }).catch(() => {
-      container.textContent =
-        "(Spam-check widget unavailable — please try refreshing the page.)";
     });
+    if (!scriptLoaded) {
+      turnstileMountStatus = "script-blocked";
+      renderTurnstileFailureBlock(turnstileMountStatus);
+      return;
+    }
   }
-  if (!window.turnstile) return;
+  // Belt-and-suspenders: in some browsers, the script "loads" successfully
+  // (script.onload fires) but the window.turnstile global never appears
+  // because the script body was tampered/blocked. Treat that the same as
+  // a script-load failure.
+  if (!window.turnstile) {
+    turnstileMountStatus = "script-blocked";
+    renderTurnstileFailureBlock(turnstileMountStatus);
+    return;
+  }
 
-  turnstileWidgetId = window.turnstile.render(`#${container.id}`, {
-    sitekey: siteKey,
-    theme: "light",
-    callback: (token: string) => {
-      turnstileToken = token;
-    },
-    "error-callback": () => {
-      turnstileToken = null;
-    },
-  });
+  try {
+    turnstileWidgetId = window.turnstile.render(`#${container.id}`, {
+      sitekey: siteKey,
+      theme: "light",
+      callback: (token: string) => {
+        turnstileToken = token;
+      },
+      "error-callback": () => {
+        turnstileToken = null;
+      },
+    });
+    turnstileMountStatus = "ok";
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[discovery-qualifier] turnstile.render threw:", err);
+    turnstileMountStatus = "render-failed";
+    renderTurnstileFailureBlock(turnstileMountStatus);
+    return;
+  }
 }
 
 async function submitWizard(): Promise<void> {
@@ -485,10 +558,25 @@ async function submitWizard(): Promise<void> {
     return;
   }
   if (!turnstileToken) {
-    setError(
-      "qualifier-step6",
-      "Please complete the spam-check above, then try again.",
-    );
+    // Distinguish "widget never loaded" (Brave Shields / privacy
+    // extension blocked it) from "widget loaded but user didn't click
+    // it." The former needs an actionable fix; the latter just needs a
+    // nudge to interact with the widget.
+    const widgetActuallyMounted =
+      turnstileMountStatus === "ok" &&
+      window.turnstile != null &&
+      turnstileWidgetId != null;
+    if (!widgetActuallyMounted) {
+      setError(
+        "qualifier-step6",
+        "The spam-check widget didn't load (likely a browser shield / privacy extension). See the red box above for fix instructions, then click 'Retry spam-check'.",
+      );
+    } else {
+      setError(
+        "qualifier-step6",
+        "Please complete the spam-check above (click the checkbox), then try again.",
+      );
+    }
     return;
   }
   if (
