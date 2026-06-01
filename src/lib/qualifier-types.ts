@@ -40,6 +40,8 @@ export interface ContactInfo {
   company: string;
   phone?: string;
   linkedinUrl?: string;
+  /** Optional free-text "anything else you'd like us to know?" from step 6. */
+  additionalNotes?: string;
 }
 
 export const ALLOWED_ROLES = [

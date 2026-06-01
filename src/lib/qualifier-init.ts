@@ -156,6 +156,9 @@ function formatQualifierNotesForCal(): string {
   if (a.teamSize) parts.push(`Team size: ${a.teamSize}`);
   if (a.timeline) parts.push(`Timeline: ${a.timeline}`);
   if (state.contact.company) parts.push(`Company: ${state.contact.company}`);
+  if (state.contact.additionalNotes) {
+    parts.push(`Notes: ${state.contact.additionalNotes}`);
+  }
   return parts.join(" | ");
 }
 
@@ -303,7 +306,7 @@ function bindStep5(): void {
 /* Step 6: Contact info + Turnstile + submit                           */
 /* ------------------------------------------------------------------ */
 function bindStep6(): void {
-  const fields = ["name", "email", "company", "phone", "linkedinUrl"];
+  const fields = ["name", "email", "company", "phone", "linkedinUrl", "additionalNotes"];
   for (const field of fields) {
     const el = $(`qualifier-contact-${field}`) as HTMLInputElement | null;
     if (!el) continue;
@@ -548,6 +551,7 @@ async function submitWizard(): Promise<void> {
   const company = (contact.company || "").trim();
   const phone = (contact.phone || "").trim();
   const linkedinUrl = (contact.linkedinUrl || "").trim();
+  const additionalNotes = (contact.additionalNotes || "").trim();
 
   setError("qualifier-step6", null);
   setError("qualifier-step6-email", null);
@@ -654,6 +658,7 @@ async function submitWizard(): Promise<void> {
     company,
     phone: phone || undefined,
     linkedinUrl: linkedinUrl || undefined,
+    additionalNotes: additionalNotes || undefined,
     qualifierAnswers: {
       role: state.answers.role,
       primaryChallenge: state.answers.primaryChallenge,
@@ -820,9 +825,18 @@ function restorePriorState(): void {
     );
     if (r) r.checked = true;
   }
-  for (const f of ["name", "email", "company", "phone", "linkedinUrl"] as const) {
+  for (const f of [
+    "name",
+    "email",
+    "company",
+    "phone",
+    "linkedinUrl",
+    "additionalNotes",
+  ] as const) {
     const v = (state.contact as Record<string, string | undefined>)[f];
     if (v) {
+      // additionalNotes is a <textarea>; the rest are <input>. Both expose
+      // .value, so HTMLInputElement is a safe-enough cast for assignment.
       const input = $(`qualifier-contact-${f}`) as HTMLInputElement | null;
       if (input) input.value = v;
     }
