@@ -56,7 +56,11 @@ const COCKPIT_ORIGIN = "https://sales.forgerpa.com";
  *   - PRIVACY_VERSION: /privacy page's effective date (the live page).
  */
 const TERMS_VERSION = "v1 (2026-06-01)";
-const PRIVACY_VERSION = "2026-05-25";
+// Privacy uses its "Last updated" date as its version identifier (the policy
+// body says the Last-updated date is the revision marker). Bumped to
+// 2026-06-01 when PR #32 materially revised the policy (retention 24mo →
+// 5-6yr, state-neutral framing, T&C reference).
+const PRIVACY_VERSION = "2026-06-01";
 const CONSENT_ASSENT_TEXT =
   "I have read and agree to the Terms & Conditions and Privacy Policy.";
 const CONSENT_FORM_NAME = "discovery_qualifier";
