@@ -137,34 +137,102 @@ function showOutcome(tier: FitTier): void {
   const progressBar = $("qualifier-progress-container");
   if (progressBar) progressBar.classList.add("hidden");
 
-  // For HIGH and MEDIUM tiers, also reveal + prefill the Cal.com iframe.
+  // For HIGH and MEDIUM tiers, reveal the booking container + mount the
+  // Cal.com inline embed (auto-resizes — no internal scroll on the
+  // confirmation screen).
   if (tier === "HIGH" || tier === "MEDIUM") {
     const calContainer = $("cal-booking-container");
     if (calContainer) {
       calContainer.classList.remove("hidden");
-      prefillCalIframe();
+      initCalInlineEmbed();
     }
   }
 }
 
-function prefillCalIframe(): void {
-  const iframe = $("cal-booking-iframe") as HTMLIFrameElement | null;
-  if (!iframe) return;
-  const src = iframe.getAttribute("src") || "";
-  let url: URL;
-  try {
-    url = new URL(src, window.location.origin);
-  } catch {
-    return;
+/* ------------------------------------------------------------------ */
+/* Cal.com inline embed                                               */
+/* ------------------------------------------------------------------ */
+/*
+ * Replaces the old fixed-height <iframe>. The official Cal.com inline embed
+ * auto-resizes the container to fit its content — the calendar while picking
+ * a time AND the taller "This meeting is scheduled" confirmation — so the
+ * confirmation is fully visible without an internal scrollbar.
+ *
+ * Name + email prefill via the embed `config` (replaces the old URL-param
+ * prefill). We deliberately do NOT pass the qualification summary or notes —
+ * that already lives in the cockpit (Notion + Postgres) and the
+ * #discovery-bookings Discord alert; Cal is purely the date/time picker.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CalApi = any;
+
+let calEmbedLoaded = false;
+
+function loadCalEmbed(): void {
+  if (calEmbedLoaded) return;
+  calEmbedLoaded = true;
+  // Official Cal.com embed loader snippet (vanilla), lightly typed via `any`.
+  /* eslint-disable */
+  (function (C: any, A: string, L: string) {
+    const p = function (a: any, ar: any) {
+      a.q.push(ar);
+    };
+    const d = C.document;
+    C.Cal =
+      C.Cal ||
+      function () {
+        const cal = C.Cal;
+        const ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement("script")).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () {
+            p(api, arguments);
+          };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === "string") {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ["initNamespace", namespace]);
+          } else {
+            p(cal, ar);
+          }
+          return;
+        }
+        p(cal, ar);
+      };
+  })(window as any, "https://app.cal.com/embed/embed.js", "init");
+  /* eslint-enable */
+  const Cal = (window as unknown as { Cal?: CalApi }).Cal;
+  if (typeof Cal === "function") {
+    Cal("init", { origin: "https://app.cal.com" });
   }
-  // Prefill name + email only. The qualification summary is NOT pushed into
-  // the Cal.com notes field — that data already lives in the cockpit (Notion
-  // lead + Postgres mirror) and the #discovery-bookings Discord alert, so
-  // duplicating it into the calendar invite is redundant. Cal.com is purely
-  // the date/time picker. (David, 2026-06-01.)
-  if (state.contact.name) url.searchParams.set("name", state.contact.name);
-  if (state.contact.email) url.searchParams.set("email", state.contact.email);
-  iframe.setAttribute("src", url.toString());
+}
+
+let calEmbedMounted = false;
+
+function initCalInlineEmbed(): void {
+  if (calEmbedMounted) return; // mount once
+  loadCalEmbed();
+  const Cal = (window as unknown as { Cal?: CalApi }).Cal;
+  if (typeof Cal !== "function") return;
+  calEmbedMounted = true;
+  Cal("inline", {
+    elementOrSelector: "#cal-booking-inline",
+    calLink: "david-farley/discovery-call",
+    config: {
+      name: state.contact.name || "",
+      email: state.contact.email || "",
+      utm_source: "forgerpa-site",
+      utm_medium: "book-page",
+    },
+  });
+  Cal("ui", { hideEventTypeDetails: true });
 }
 
 function setError(stepId: string, message: string | null): void {

@@ -9,8 +9,6 @@ import {
   ALLOWED_TIMELINES,
 } from '../lib/qualifier-types.ts';
 
-/** Cal booker iframe height. */
-const calIframeMinHeightPx = 640;
 
 const defaultTitle = 'Book a Discovery Call';
 const defaultDescription =
@@ -286,16 +284,14 @@ const defaultHeroSubtitle =
         <!-- ===================== End wizard ===================== -->
       </div>
 
-      <!-- Cal.com iframe — hidden by default, revealed for HIGH/MEDIUM outcomes only. -->
-      <div id="cal-booking-container" class="mt-4 hidden rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm">
-        <iframe
-          id="cal-booking-iframe"
-          src="https://cal.com/david-farley/discovery-call?utm_source=forgerpa-site&utm_medium=book-page&hideEventTypeDetails=1"
-          width="100%"
-          height={calIframeMinHeightPx}
-          class="block w-full rounded-lg"
-          style={`min-height: ${calIframeMinHeightPx}px;`}
-          title="Schedule a discovery call"></iframe>
+      <!-- Cal.com inline embed — hidden by default, revealed for HIGH/MEDIUM
+           outcomes only. The official inline embed (initialized by
+           qualifier-init.ts) AUTO-RESIZES this container to fit whatever Cal
+           is showing — the calendar while picking a time, the (taller) "This
+           meeting is scheduled" confirmation after booking — so there's no
+           internal scroll. Name + email are prefilled via the embed config. -->
+      <div id="cal-booking-container" class="mt-4 hidden">
+        <div id="cal-booking-inline" style="min-width:320px;width:100%"></div>
       </div>
 
       <div class="text-center mt-12 text-sm text-gray-500">
@@ -317,8 +313,6 @@ const defaultHeroSubtitle =
   (function () {
     var params = new URLSearchParams(window.location.search);
     var from = (params.get('from') || '').toLowerCase().trim();
-    /* hideEventTypeDetails: Cal booking UI, reduces host/title/duration block above calendar (see Cal embed / booking URL docs). */
-    var baseCal = 'https://cal.com/david-farley/discovery-call?hideEventTypeDetails=1';
 
     function setMetaDescription(text) {
       var m = document.querySelector('meta[name="description"]');
