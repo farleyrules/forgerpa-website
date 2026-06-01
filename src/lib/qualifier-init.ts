@@ -46,6 +46,21 @@ import {
 /** Sales cockpit origin — discovery-qualifier endpoint + turnstile-site-key. */
 const COCKPIT_ORIGIN = "https://sales.forgerpa.com";
 
+/**
+ * Clickwrap consent constants. The version strings travel with the consent
+ * payload so the per-submission consent record references the exact document
+ * versions displayed at the moment of acceptance (the courts' "version
+ * presented controls" pillar). Keep these in sync with the published /terms
+ * and /privacy pages.
+ *   - TERMS_VERSION: /terms page, effective 2026-06-01.
+ *   - PRIVACY_VERSION: /privacy page's effective date (the live page).
+ */
+const TERMS_VERSION = "v1 (2026-06-01)";
+const PRIVACY_VERSION = "2026-05-25";
+const CONSENT_ASSENT_TEXT =
+  "I have read and agree to the Terms & Conditions and Privacy Policy.";
+const CONSENT_FORM_NAME = "discovery_qualifier";
+
 declare global {
   interface Window {
     turnstile?: {
@@ -316,6 +331,21 @@ function bindStep6(): void {
       saveState(state);
     });
   }
+  // Clickwrap consent checkbox. Unchecked by default (never pre-checked).
+  // The submit button is disabled until the box is checked — a client-side
+  // gate that the server-side gate in the cockpit backstops so it can't be
+  // bypassed by editing the DOM.
+  const consentBox = $("qualifier-consent") as HTMLInputElement | null;
+  const submitBtn = $("qualifier-step6-submit") as HTMLButtonElement | null;
+  if (consentBox && submitBtn) {
+    // Reflect the initial (unchecked) state on the button.
+    submitBtn.disabled = !consentBox.checked;
+    consentBox.addEventListener("change", () => {
+      submitBtn.disabled = !consentBox.checked;
+      if (consentBox.checked) setError("qualifier-step6-consent", null);
+    });
+  }
+
   $("qualifier-step6-back")?.addEventListener("click", () => showStep(5));
   $("qualifier-step6-submit")?.addEventListener("click", () => void submitWizard());
 }
@@ -543,6 +573,19 @@ async function submitWizard(): Promise<void> {
   setError("qualifier-step6-email", null);
   setError("qualifier-step6-company", null);
   setError("qualifier-step6-phone", null);
+  setError("qualifier-step6-consent", null);
+
+  // Clickwrap consent gate (hard stop). The submit button is disabled until
+  // the box is checked, but re-check here in case the DOM was tampered with.
+  // The cockpit also enforces this server-side.
+  const consentBox = $("qualifier-consent") as HTMLInputElement | null;
+  if (!consentBox || !consentBox.checked) {
+    setError(
+      "qualifier-step6-consent",
+      "Please confirm you have read and agree to the Terms & Conditions and Privacy Policy.",
+    );
+    return;
+  }
 
   // Required fields.
   if (!name) {
@@ -655,6 +698,17 @@ async function submitWizard(): Promise<void> {
     attribution,
     turnstileToken,
     fromContext: state.fromContext,
+    // Clickwrap consent. The server assembles the authoritative record
+    // (server UTC timestamp + email + raw IP); these client-supplied fields
+    // capture exactly which document versions + assent text were displayed.
+    consent: {
+      consentGiven: true,
+      termsVersion: TERMS_VERSION,
+      privacyVersion: PRIVACY_VERSION,
+      assentText: CONSENT_ASSENT_TEXT,
+      formName: CONSENT_FORM_NAME,
+      clientTimestamp: new Date().toISOString(),
+    },
   };
 
   let serverTier: FitTier | null = null;

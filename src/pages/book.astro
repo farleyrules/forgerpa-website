@@ -206,6 +206,34 @@ const defaultHeroSubtitle =
               <div id="qualifier-turnstile" class="cf-turnstile inline-block"></div>
             </div>
 
+            <div class="mt-6">
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="qualifier-consent"
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-amber focus:ring-amber"
+                />
+                <span class="text-sm text-charcoal">
+                  I have read and agree to the
+                  <a
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener"
+                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
+                    >Terms &amp; Conditions</a>
+                  and
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener"
+                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
+                    >Privacy Policy</a>.
+                  <span class="mt-1 block text-xs text-gray-500">Terms &amp; Conditions v1, effective June 1, 2026 · Privacy Policy effective May 25, 2026.</span>
+                </span>
+              </label>
+              <p id="qualifier-step6-consent-error" class="hidden mt-2 text-xs text-red-600"></p>
+            </div>
+
             <p id="qualifier-step6-error" class="hidden mt-4 text-sm text-red-600"></p>
 
             <div class="mt-6 flex justify-between items-center">
