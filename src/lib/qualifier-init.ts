@@ -138,28 +138,14 @@ function prefillCalIframe(): void {
   } catch {
     return;
   }
+  // Prefill name + email only. The qualification summary is NOT pushed into
+  // the Cal.com notes field — that data already lives in the cockpit (Notion
+  // lead + Postgres mirror) and the #discovery-bookings Discord alert, so
+  // duplicating it into the calendar invite is redundant. Cal.com is purely
+  // the date/time picker. (David, 2026-06-01.)
   if (state.contact.name) url.searchParams.set("name", state.contact.name);
   if (state.contact.email) url.searchParams.set("email", state.contact.email);
-  const notes = formatQualifierNotesForCal();
-  if (notes) url.searchParams.set("notes", notes);
   iframe.setAttribute("src", url.toString());
-}
-
-function formatQualifierNotesForCal(): string {
-  const a = state.answers;
-  const parts: string[] = [];
-  if (a.role) parts.push(`Role: ${a.role}`);
-  if (a.primaryChallenge) parts.push(`Challenge: ${a.primaryChallenge}`);
-  if (a.primarySystems && a.primarySystems.length) {
-    parts.push(`Systems: ${a.primarySystems.join(", ")}`);
-  }
-  if (a.teamSize) parts.push(`Team size: ${a.teamSize}`);
-  if (a.timeline) parts.push(`Timeline: ${a.timeline}`);
-  if (state.contact.company) parts.push(`Company: ${state.contact.company}`);
-  if (state.contact.additionalNotes) {
-    parts.push(`Notes: ${state.contact.additionalNotes}`);
-  }
-  return parts.join(" | ");
 }
 
 function setError(stepId: string, message: string | null): void {
