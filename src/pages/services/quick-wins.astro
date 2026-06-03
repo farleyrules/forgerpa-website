@@ -10,8 +10,8 @@ const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL ||
 
 const faqs = [
   {
-    q: "What's a Spreadsheet Rescue versus a Report Automation?",
-    a: "A Spreadsheet Rescue ($750 flat, 2 business days) fixes or rebuilds one workbook with a single defined outcome: it's broken, it's slow, or it's fragile and you need it dependable. Report Automation ($1,500 to $3,500, 5 to 7 business days) turns a recurring manual report into a refresh-on-click automation using Power Query, Office Scripts, or Power Automate. If you rebuild the same report by hand every month, that's Report Automation."
+    q: "What's a Spreadsheet Rescue versus an Automation Assessment?",
+    a: "A Spreadsheet Rescue ($750 flat, 2 business days) fixes or rebuilds one workbook with a single defined outcome: it's broken, it's slow, or it's fragile and you need it dependable. When the job is bigger than one workbook (a whole recurring process you want automated end to end), we start with a flat $2,000 Automation Assessment that scopes the build, projects ROI, and is credited toward the resulting statement of work. There is one assessment for every build."
   },
   {
     q: "How do you price a fixed quote so fast?",
@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: "How do I pay?",
-    a: "Spreadsheet Rescue ($750) can be paid in full up front through the fast-lane checkout. Report Automation and Automation Sprint blocks take a 50% deposit to start, with the balance on delivery. Sprint hours are billed in 15-minute increments against a prepaid 10-hour block."
+    a: "Spreadsheet Rescue ($750) can be paid in full up front through the fast-lane checkout. The Automation Assessment is a flat $2,000, paid up front and credited toward your statement of work if you proceed with the build. Automation Sprint hours are billed in 15-minute increments against a prepaid 10-hour block."
   }
 ];
 
@@ -45,7 +45,7 @@ const serviceSchema = {
     "@type": "Country",
     "name": "United States"
   },
-  "description": "Fixed-price, fast-turnaround finance automation: spreadsheet rescues, report automation, and fractional automation sprints. Built by a CPA with 30 years in finance, delivered AI-fast, with a QA tie-out on every job.",
+  "description": "Fixed-price, fast-turnaround finance automation: spreadsheet rescues, automation assessments, and fractional automation sprints. Built by a CPA with 30 years in finance, delivered AI-fast, with a QA tie-out on every job.",
   "url": "https://forgerpa.com/services/quick-wins"
 };
 
@@ -156,7 +156,7 @@ const faqSchema = {
 
       <!-- Pricing Ladder -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Three ways in, one flat price each</h2>
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Three ways to start</h2>
         <p class="text-lg text-gray-700 leading-relaxed mb-10">
           Most of this work has a definable outcome, so we lead with fixed-price packages. You know the price before we start. Every engagement begins with a free 15-minute triage call where we tell you straight which rung fits, or refer you up the ladder to an Assessment.
         </p>
@@ -179,14 +179,14 @@ const faqSchema = {
           <!-- Rung 2 -->
           <div class="bg-slate-light rounded-xl p-8 flex flex-col border-2 border-amber">
             <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Rung 2</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Report Automation</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$1,500 to $3,500</div>
-            <div class="text-sm text-gray-500 mb-4">flat / 5 to 7 business days</div>
-            <p class="text-gray-600 text-sm mb-4">Turn a recurring manual report into a refresh-on-click automation with Power Query, Office Scripts, or Power Automate.</p>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Assessment</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$2,000</div>
+            <div class="text-sm text-gray-500 mb-4">flat / credited to your SOW</div>
+            <p class="text-gray-600 text-sm mb-4">When it's bigger than one workbook. We scope the recurring process you want automated, project the ROI, and map the build. Every automation build starts here.</p>
             <ul class="space-y-2 text-sm text-gray-700 mt-auto">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">$1,500</strong> single-source refresh-on-click</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">$2,500</strong> multi-source consolidation</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">$3,500</strong> multi-source + reconciliation and exception logic</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Process scoped and ROI projected</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Fully credited toward your statement of work</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Leads straight into the build</span></li>
             </ul>
           </div>
 
@@ -327,8 +327,8 @@ const faqSchema = {
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
-            <h3 class="font-bold text-charcoal mb-2">Automation Assessment</h3>
-            <p class="text-gray-600 text-sm mb-4">A 2 to 3 day diagnostic that scores a whole process for automation potential, projects ROI, and hands you a prioritized roadmap.</p>
+            <h3 class="font-bold text-charcoal mb-2">What the $2,000 Assessment covers</h3>
+            <p class="text-gray-600 text-sm mb-4">A focused diagnostic that scores the whole process for automation potential, projects ROI, and hands you a prioritized roadmap. Credited toward your build.</p>
             <span class="text-amber-dark font-semibold text-sm">Learn more →</span>
           </a>
           <a href="/services/sop-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
