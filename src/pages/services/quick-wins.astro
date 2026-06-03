@@ -156,15 +156,15 @@ const faqSchema = {
 
       <!-- Pricing Ladder -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Three ways to start</h2>
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Pick the way in that fits</h2>
         <p class="text-lg text-gray-700 leading-relaxed mb-10">
-          Most of this work has a definable outcome, so we lead with fixed-price packages. You know the price before we start. Every engagement begins with a free 15-minute triage call where we tell you straight which rung fits, or refer you up the ladder to an Assessment.
+          Most of this work has a definable outcome, so we lead with fixed-price packages. You know the price before we start. Every engagement begins with a free 15-minute triage call where we tell you straight which option fits.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Rung 1 -->
+          <!-- Spreadsheet Rescue -->
           <div class="bg-slate-light rounded-xl p-8 flex flex-col">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Rung 1</div>
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Fixed price</div>
             <h3 class="text-xl font-bold text-charcoal mb-1">Spreadsheet Rescue</h3>
             <div class="text-3xl font-extrabold text-charcoal mb-1">$750</div>
             <div class="text-sm text-gray-500 mb-4">flat / 2 business days</div>
@@ -176,38 +176,58 @@ const faqSchema = {
             </ul>
           </div>
 
-          <!-- Rung 2 -->
+          <!-- Quick Win Project -->
           <div class="bg-slate-light rounded-xl p-8 flex flex-col border-2 border-amber">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Rung 2</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Assessment</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$2,000</div>
-            <div class="text-sm text-gray-500 mb-4">flat / credited to your SOW</div>
-            <p class="text-gray-600 text-sm mb-4">When it's bigger than one workbook. We scope the recurring process you want automated, project the ROI, and map the build. Every automation build starts here.</p>
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Most popular</div>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Quick Win Project</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$1,500 to $12,000</div>
+            <div class="text-sm text-gray-500 mb-4">flat / no SOW / days to ~2 weeks</div>
+            <p class="text-gray-600 text-sm mb-4">A defined-scope build, quoted flat from the triage call and delivered without SOW ceremony. For when it's more than a rescue but you don't want a big project.</p>
             <ul class="space-y-2 text-sm text-gray-700 mt-auto">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Process scoped and ROI projected</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Fully credited toward your statement of work</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Leads straight into the build</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Light</strong> one report automated, one workbook hardened</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Standard</strong> multi-source consolidation or a recurring reconciliation</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Heavy</strong> several stitched automations</span></li>
             </ul>
           </div>
 
-          <!-- Rung 3 -->
+          <!-- Automation Assessment -->
           <div class="bg-slate-light rounded-xl p-8 flex flex-col">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Rung 3</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Sprint</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$140/hr</div>
-            <div class="text-sm text-gray-500 mb-4">10-hour blocks ($1,400)</div>
-            <p class="text-gray-600 text-sm mb-4">For exploratory or ongoing work that resists fixed scope. Also the discovery bridge into a larger automation engagement.</p>
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">For bigger builds</div>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Assessment</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$2,000</div>
+            <div class="text-sm text-gray-500 mb-4">flat / credited to your SOW</div>
+            <p class="text-gray-600 text-sm mb-4">When the work is bigger than a single project, or the scope isn't clear yet. We scope it, project the ROI, and map the build, credited toward the statement of work.</p>
             <ul class="space-y-2 text-sm text-gray-700 mt-auto">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Billed in 15-minute increments</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Prepaid block, top up as needed</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Weekly retainer available</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Process scoped and ROI projected</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Fully credited toward your SOW</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Leads straight into the build</span></li>
             </ul>
+          </div>
+        </div>
+
+        <!-- More ways to work together -->
+        <h3 class="text-xl font-bold text-charcoal mt-12 mb-4">More ways to work together</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation Sprint</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$140/hr</div>
+            <p class="text-gray-600 text-sm">Prepaid 10-hour blocks ($1,400). Also about $1,100/day or $5,000/week for short-term embedded work. For scope that's genuinely open-ended.</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation-on-Call</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 to $2,500/mo</div>
+            <p class="text-gray-600 text-sm">A monthly block of priority hours for teams with a steady trickle of small automation needs. Predictable, and we stay close to your stack.</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation Workshop</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 / half-day</div>
+            <p class="text-gray-600 text-sm">Hands-on team training on Power Query and Excel automation, so your people can build and maintain the simple things themselves.</p>
           </div>
         </div>
 
         <div class="mt-8 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6">
           <p class="text-gray-700">
-            <strong class="text-charcoal">Start free.</strong> The 15-minute Spreadsheet Triage call is your entry point. You leave with a one-line verdict on which rung fits, or a recommendation to step up to a full Automation Assessment. No pitch, no obligation.
+            <strong class="text-charcoal">Start free.</strong> The 15-minute Spreadsheet Triage call is your entry point. You leave with a one-line verdict on which option fits, or a recommendation to step up to a full Automation Assessment. No pitch, no obligation.
           </p>
         </div>
       </div>
