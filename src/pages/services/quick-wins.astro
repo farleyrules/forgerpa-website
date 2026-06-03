@@ -5,7 +5,7 @@ import CTASection from '../../components/CTASection.astro';
 // Secondary "fast lane" CTA for Rung 1 (Spreadsheet Rescue, $750, pay in full).
 // Env-driven so David can paste the live Stripe Payment Link without a code change.
 // Falls back to the booking funnel if the env var is unset, so the button is never dead.
-const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL || '/book?from=quick-wins';
+const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL || '/triage';
 // TODO: David pastes the Stripe Payment Link for the $750 Spreadsheet Rescue into PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL
 
 const faqs = [
@@ -69,7 +69,7 @@ const faqSchema = {
   heroTitle="Turn your manual finance spreadsheets into automations that run themselves"
   heroSubtitle="Senior finance automation. Fixed price. Fast. Built by a CPA-trained finance veteran who's spent 30 years in the field and now delivers AI-fast, and who knows when the number is wrong. Start with a free 15-minute triage call and a flat quote within one business day."
   heroCta="Book a free 15-min triage call"
-  heroCtaLink="/book?from=quick-wins"
+  heroCtaLink="/triage"
 >
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -382,7 +382,7 @@ const faqSchema = {
     heading="Tell us the spreadsheet that's costing you"
     subtext="Book a free 15-minute triage call. We'll tell you straight which rung fits and quote a flat price within one business day. No pitch."
     ctaText="Book a free 15-min triage call"
-    ctaLink="/book?from=quick-wins"
+    ctaLink="/triage"
   />
 
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)}></script>
