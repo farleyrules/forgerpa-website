@@ -1,0 +1,390 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Secondary "fast lane" CTA for Rung 1 (Spreadsheet Rescue, $750, pay in full).
+// Env-driven so David can paste the live Stripe Payment Link without a code change.
+// Falls back to the booking funnel if the env var is unset, so the button is never dead.
+const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL || '/book?from=quick-wins';
+// TODO: David pastes the Stripe Payment Link for the $750 Spreadsheet Rescue into PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL
+
+const faqs = [
+  {
+    q: "What's a Spreadsheet Rescue versus an Automation Assessment?",
+    a: "A Spreadsheet Rescue ($750 flat, 2 business days) fixes or rebuilds one workbook with a single defined outcome: it's broken, it's slow, or it's fragile and you need it dependable. When the job is bigger than one workbook (a whole recurring process you want automated end to end), we start with a flat $2,000 Automation Assessment that scopes the build, projects ROI, and is credited toward the resulting statement of work. There is one assessment for every build."
+  },
+  {
+    q: "How do you price a fixed quote so fast?",
+    a: "The free 15-minute triage call captures the artifact, the outcome, the data sources, and the cadence. That maps cleanly to one of three rungs, so you get a flat price within one business day. Fixed scope means fixed price. New asks become a new package or a change order, never silent scope creep."
+  },
+  {
+    q: "Isn't this just something AI can do now?",
+    a: "AI is great at producing a spreadsheet that looks right. It cannot tell you the reconciliation doesn't tie, the accrual is backwards, or the number will mislead the CFO. A CPA with 30 years in finance can. We use the same AI everyone else has to deliver faster, and we are the accountability layer that catches when the AI is wrong. In finance, the expensive failure is not slow. It is looks right but is quietly wrong."
+  },
+  {
+    q: "What's included, and what isn't?",
+    a: "Fixed price covers the defined scope, plus a QA tie-out against a known-good baseline and a short Loom walkthrough at handoff. Not included: ongoing maintenance after handoff (that's a separate retainer), net-new data sources discovered mid-build, or work requiring production system credentials we weren't scoped for. We state this plainly up front so there are no surprises."
+  },
+  {
+    q: "How do I pay?",
+    a: "Spreadsheet Rescue ($750) can be paid in full up front through the fast-lane checkout. The Automation Assessment is a flat $2,000, paid up front and credited toward your statement of work if you proceed with the build. Automation Sprint hours are billed in 15-minute increments against a prepaid 10-hour block."
+  }
+];
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Forge Quick Wins",
+  "provider": {
+    "@type": "Organization",
+    "name": "Forge RPA LLC",
+    "url": "https://forgerpa.com"
+  },
+  "serviceType": "Finance Spreadsheet and Report Automation",
+  "areaServed": {
+    "@type": "Country",
+    "name": "United States"
+  },
+  "description": "Fixed-price, fast-turnaround finance automation: spreadsheet rescues, automation assessments, and fractional automation sprints. Built by a CPA with 30 years in finance, delivered AI-fast, with a QA tie-out on every job.",
+  "url": "https://forgerpa.com/services/quick-wins"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(({ q, a }) => ({
+    "@type": "Question",
+    "name": q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": a
+    }
+  }))
+};
+---
+
+<PageLayout
+  title="Forge Quick Wins | Fixed-Price Finance Automation, Fast"
+  description="Turn manual finance spreadsheets and reports into automations that run themselves. Fixed-price packages from $750, built by a CPA with 30 years in finance, delivered AI-fast with a QA tie-out on every job."
+  heroTitle="Turn your manual finance spreadsheets into automations that run themselves"
+  heroSubtitle="Senior finance automation. Fixed price. Fast. Built by a CPA who's spent 30 years in finance and now delivers AI-fast, and who knows when the number is wrong. Start with a free 15-minute triage call and a flat quote within one business day."
+  heroCta="Book a free 15-min triage call"
+  heroCtaLink="/book?from=quick-wins"
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Fast-lane secondary CTA (Rung 1 pay-in-full) -->
+      <div class="mb-16 -mt-4">
+        <div class="bg-amber/5 border border-amber rounded-xl p-6 lg:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-1">Fast lane</p>
+            <h2 class="text-xl lg:text-2xl font-bold text-charcoal">One workbook to rescue? Skip the call.</h2>
+            <p class="text-gray-700 mt-2">Pay for a $750 Spreadsheet Rescue up front and we start within two business days. Fixed price, defined outcome, QA tie-out included.</p>
+          </div>
+          <a href={rescueCheckoutUrl} class="inline-flex items-center justify-center px-6 py-3 bg-charcoal hover:bg-charcoal-light text-white font-bold rounded-lg transition-colors shadow-lg flex-shrink-0">
+            Start a $750 Rescue
+          </a>
+        </div>
+      </div>
+
+      <!-- The Pain -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The grind that quietly eats your week</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          You don't need a six-month RPA project. You need one specific thing to stop being painful. We see the same triggers in nearly every finance and operations team.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">A monthly report rebuilt by hand, every single cycle</h3>
+              <p class="text-gray-600 mt-1">The same exports, the same copy-paste, the same lookups. Hours that should be analysis instead go to reassembly.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">A workbook that broke, or got too slow to trust</h3>
+              <p class="text-gray-600 mt-1">Formulas that error, links that snapped, a file that takes five minutes to open. You're not sure the number is even right anymore.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">The person who owned the spreadsheet just left</h3>
+              <p class="text-gray-600 mt-1">Now nobody understands how it works, and the close depends on it. You need it documented, dependable, and not in one person's head.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Data living in three systems that don't talk</h3>
+              <p class="text-gray-600 mt-1">Every report means manual exports from each one, then stitching them together by hand and hoping they tie.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">5</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">Pre-close crunch that swallows your evenings</h3>
+              <p class="text-gray-600 mt-1">A few manual steps stand between you and a clean close, and they cost you the same nights every month.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Positioning -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">We don't sell Excel help. We sell judgment that AI can't replace.</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          In finance, the expensive failure mode is not slow. It is looks right but is quietly wrong. Generative AI is excellent at producing a spreadsheet that looks right. It cannot tell you the reconciliation doesn't tie, the accrual is backwards, or the number will mislead the CFO.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          A CPA with 30 years in finance can. That judgment and accountability layer is exactly what survives the AI wave. We use the same AI everyone else has as a delivery accelerator, so you get senior work at a fair fixed price, faster than a traditional consultant, and you get the person who knows when the AI is wrong.
+        </p>
+      </div>
+
+      <!-- Pricing Ladder -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Pick the way in that fits</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Most of this work has a definable outcome, so we lead with fixed-price packages. You know the price before we start. Every engagement begins with a free 15-minute triage call where we tell you straight which option fits.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Spreadsheet Rescue -->
+          <div class="bg-slate-light rounded-xl p-8 flex flex-col">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Fixed price</div>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Spreadsheet Rescue</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$750</div>
+            <div class="text-sm text-gray-500 mb-4">flat / 2 business days</div>
+            <p class="text-gray-600 text-sm mb-4">One workbook, one defined outcome. Fix what's broken or slow, or rebuild a fragile manual sheet into something dependable.</p>
+            <ul class="space-y-2 text-sm text-gray-700 mt-auto">
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Pay in full, fast-lane start</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>QA tie-out included</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Loom walkthrough at handoff</span></li>
+            </ul>
+          </div>
+
+          <!-- Quick Win Project -->
+          <div class="bg-slate-light rounded-xl p-8 flex flex-col border-2 border-amber">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Most popular</div>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Quick Win Project</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$1,500 to $12,000</div>
+            <div class="text-sm text-gray-500 mb-4">flat / no SOW / days to ~2 weeks</div>
+            <p class="text-gray-600 text-sm mb-4">A defined-scope build, quoted flat from the triage call and delivered without SOW ceremony. For when it's more than a rescue but you don't want a big project.</p>
+            <ul class="space-y-2 text-sm text-gray-700 mt-auto">
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Light</strong> one report automated, one workbook hardened</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Standard</strong> multi-source consolidation or a recurring reconciliation</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Heavy</strong> several stitched automations</span></li>
+            </ul>
+          </div>
+
+          <!-- Automation Assessment -->
+          <div class="bg-slate-light rounded-xl p-8 flex flex-col">
+            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">For bigger builds</div>
+            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Assessment</h3>
+            <div class="text-3xl font-extrabold text-charcoal mb-1">$2,000</div>
+            <div class="text-sm text-gray-500 mb-4">flat / credited to your SOW</div>
+            <p class="text-gray-600 text-sm mb-4">When the work is bigger than a single project, or the scope isn't clear yet. We scope it, project the ROI, and map the build, credited toward the statement of work.</p>
+            <ul class="space-y-2 text-sm text-gray-700 mt-auto">
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Process scoped and ROI projected</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Fully credited toward your SOW</span></li>
+              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Leads straight into the build</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- More ways to work together -->
+        <h3 class="text-xl font-bold text-charcoal mt-12 mb-4">More ways to work together</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation Sprint</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$150/hr</div>
+            <p class="text-gray-600 text-sm">Prepaid 10-hour blocks ($1,500). Also $1,200/day or $6,000/week for short-term embedded work. For scope that's genuinely open-ended.</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation-on-Call</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 to $2,500/mo</div>
+            <p class="text-gray-600 text-sm">A monthly block of priority hours for teams with a steady trickle of small automation needs. Predictable, and we stay close to your stack.</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h4 class="font-bold text-charcoal mb-1">Automation Workshop</h4>
+            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 / half-day</div>
+            <p class="text-gray-600 text-sm">Hands-on team training on Power Query and Excel automation, so your people can build and maintain the simple things themselves.</p>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6">
+          <p class="text-gray-700">
+            <strong class="text-charcoal">Start free.</strong> The 15-minute Spreadsheet Triage call is your entry point. You leave with a one-line verdict on which option fits, or a recommendation to step up to a full Automation Assessment. No pitch, no obligation.
+          </p>
+        </div>
+      </div>
+
+      <!-- What You Get -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What you get</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Every package ships the same way: senior work, validated, and handed off so your team can run it without us.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">The working deliverable</h3>
+              <p class="text-gray-600 mt-1">The fixed, rebuilt, or automated artifact: a dependable workbook, a refresh-on-click report, or the automation block of work you scoped.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">A QA tie-out you can trust</h3>
+              <p class="text-gray-600 mt-1">Validation against a known-good baseline, with edge-case and exception checks. This is the accountability step, and we never skip it.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">A short Loom walkthrough</h3>
+              <p class="text-gray-600 mt-1">A recorded tour of how it works and how to refresh it, so the knowledge lives with your team, not in one person's head.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-amber-dark font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-charcoal">A one-page how-it-works note</h3>
+              <p class="text-gray-600 mt-1">Plain-language documentation of the logic and the refresh steps. No black box, no lock-in.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How it works</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          Five steps, days not months. You always know the price before we build.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div class="bg-slate-light rounded-xl p-6 text-center">
+            <div class="text-2xl font-extrabold text-amber mb-2">1</div>
+            <h3 class="font-bold text-charcoal text-sm mb-1">Triage</h3>
+            <p class="text-gray-600 text-xs">Free 15-minute call. We capture the artifact, the pain, the cadence, and the deadline.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6 text-center">
+            <div class="text-2xl font-extrabold text-amber mb-2">2</div>
+            <h3 class="font-bold text-charcoal text-sm mb-1">Fixed quote</h3>
+            <p class="text-gray-600 text-xs">We map the ask to a rung and a flat price within one business day.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6 text-center">
+            <div class="text-2xl font-extrabold text-amber mb-2">3</div>
+            <h3 class="font-bold text-charcoal text-sm mb-1">Build</h3>
+            <p class="text-gray-600 text-xs">AI-accelerated delivery. David is the judgment layer, not the keystroke layer.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6 text-center">
+            <div class="text-2xl font-extrabold text-amber mb-2">4</div>
+            <h3 class="font-bold text-charcoal text-sm mb-1">QA tie-out</h3>
+            <p class="text-gray-600 text-xs">Validation against a known-good baseline. The step that catches what AI misses.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6 text-center">
+            <div class="text-2xl font-extrabold text-amber mb-2">5</div>
+            <h3 class="font-bold text-charcoal text-sm mb-1">Handoff + Loom</h3>
+            <p class="text-gray-600 text-xs">Deliverable, walkthrough video, and a one-page how-it-works note.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proof / Trust signals -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8 lg:p-10">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-4">The kind of grind we make disappear</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Quick Wins are sized down from the same finance and automation work behind these results.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl border border-amber/30 p-6">
+            <p class="text-2xl font-extrabold text-charcoal mb-1">Days to one day</p>
+            <p class="text-gray-600 text-sm">Cut a restaurant company's financial-statement package from a multi-day grind down to a single day.</p>
+          </div>
+          <div class="bg-white rounded-xl border border-amber/30 p-6">
+            <p class="text-2xl font-extrabold text-charcoal mb-1">Nearly $1M saved</p>
+            <p class="text-gray-600 text-sm">A custom time-management system for an insurance company that saved close to a million dollars.</p>
+          </div>
+          <div class="bg-white rounded-xl border border-amber/30 p-6">
+            <p class="text-2xl font-extrabold text-charcoal mb-1">40 templates, under 1 hour</p>
+            <p class="text-gray-600 text-sm">An automated Workday conversion handling roughly 40 iLoad templates in under an hour.</p>
+          </div>
+          <div class="bg-white rounded-xl border border-amber/30 p-6">
+            <p class="text-2xl font-extrabold text-charcoal mb-1">100+ automations</p>
+            <p class="text-gray-600 text-sm">Over 100 intelligent automations deployed at a Fortune 500 manufacturer. CPA, 30 years in finance.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Where this leads -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">When a quick win uncovers a bigger one</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Most quick wins surface a larger recurring pain underneath. When that happens, we name it and you decide. There's a clear next rung when the conversation turns to "this whole process should run itself."
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">What the $2,000 Assessment covers</h3>
+            <p class="text-gray-600 text-sm mb-4">A focused diagnostic that scores the whole process for automation potential, projects ROI, and hands you a prioritized roadmap. Credited toward your build.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn more →</span>
+          </a>
+          <a href="/services/sop-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Finance &amp; Operations Process Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">Full builds for the recurring processes worth automating end to end, with reliability and ownership baked in.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn more →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common questions</h2>
+        <div class="space-y-4">
+          {faqs.map(({ q, a }) => (
+            <details class="bg-slate-light rounded-xl p-6 group">
+              <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+                <span>{q}</span>
+                <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p class="text-gray-700 mt-4 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Tell us the spreadsheet that's costing you"
+    subtext="Book a free 15-minute triage call. We'll tell you straight which rung fits and quote a flat price within one business day. No pitch."
+    ctaText="Book a free 15-min triage call"
+    ctaLink="/book?from=quick-wins"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</PageLayout>
