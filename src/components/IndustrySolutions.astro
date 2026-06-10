@@ -37,6 +37,10 @@ interface Props {
     midMarket: ScaleScenario;
     enterprise: ScaleScenario;
   };
+  /** Optional JSON-LD Service schema object, emitted as-is for SEO. */
+  serviceSchema?: Record<string, unknown>;
+  /** Optional JSON-LD FAQPage schema object, emitted only when the page shows visible FAQ content. */
+  faqSchema?: Record<string, unknown>;
 }
 
 const {
@@ -56,6 +60,8 @@ const {
   operationsSectionTitle = 'Operations, supply chain, and administrative flows',
   beyondExamplesNote,
   scaleScenarios,
+  serviceSchema,
+  faqSchema,
 } = Astro.props;
 
 const hasOps = operationsPains && operationsPains.length > 0;
@@ -78,6 +84,14 @@ const bookHref = bookingSource
   heroCta="Book a Discovery Call"
   heroCtaLink={bookHref}
 >
+  {/* JSON-LD structured data (emitted only when the page supplies it) */}
+  {serviceSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  )}
+  {faqSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  )}
+
   <section class="py-16 lg:py-20 bg-slate-light">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-charcoal mb-4">Who this is for</h2>

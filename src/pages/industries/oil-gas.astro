@@ -1,8 +1,28 @@
 ---
 import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Oil & Gas Finance & Operations Automation',
+  serviceType: 'Oil and Gas Finance Automation',
+  description:
+    'Finance and operations automation for oil and gas: revenue and JV accounting, volume tie-outs, field-to-finance handoffs, supply chain interfaces, and audit-ready workflows for high-volume, tightly controlled close environments.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/oil-gas',
+};
 ---
 
 <IndustrySolutions
+  serviceSchema={serviceSchema}
   title="Oil & Gas Finance Automation | Forge RPA"
   metaDescription="Oil and gas automation for finance and operations: revenue and JV accounting, volume tie-outs, field-to-finance handoffs, supply chain interfaces, and audit-ready workflows."
   heroTitle="Oil &amp; Gas Finance &amp; Operations"

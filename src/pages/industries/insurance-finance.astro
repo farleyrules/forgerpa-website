@@ -1,8 +1,28 @@
 ---
 import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Insurance Finance & Operations Automation',
+  serviceType: 'Insurance Finance Automation',
+  description:
+    'Finance and operations automation for insurers: allocations, subledgers, financial reporting, claims-operations finance file interfaces, and underwriting support assembly, built where rules and audit evidence matter most.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/insurance-finance',
+};
 ---
 
 <IndustrySolutions
+  serviceSchema={serviceSchema}
   title="Insurance Finance & Operations Automation | Forge RPA"
   metaDescription="Insurance automation for finance and operations: allocations, subledgers, claims ops finance interfaces, underwriting support files, and audit-ready handoffs."
   heroTitle="Insurance Finance &amp; Operations"

@@ -1,8 +1,28 @@
 ---
 import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Healthcare Finance & Operations Automation (Non-PHI)',
+  serviceType: 'Healthcare Finance Automation',
+  description:
+    'Finance and non-clinical operations automation for hospitals and payers, scoped to non-PHI data: month-end close, payer remittance and cash-posting file interfaces, cost-center and facilities rollups, and supply chain finance feeds, with full lineage and audit-ready evidence.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/healthcare-finance',
+};
 ---
 
 <IndustrySolutions
+  serviceSchema={serviceSchema}
   title="Healthcare Finance Automation (non-PHI) | Forge RPA"
   metaDescription="Healthcare finance and non-clinical operations automation: GL, close, supply chain finance, facilities cost feeds, payer file interfaces, non-PHI scope on this page."
   heroTitle="Healthcare Finance &amp; Operations (Non-PHI)"

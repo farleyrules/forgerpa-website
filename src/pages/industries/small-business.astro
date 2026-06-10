@@ -1,8 +1,28 @@
 ---
 import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Small and Growing Business Automation',
+  serviceType: 'Small Business Finance and Operations Automation',
+  description:
+    'Finance-grade automation scoped for small and growing businesses without a large IT shop: an assessment first, builds priced per solution or phase, and an optional retainer to run, monitor, and extend the automation Hub without adding headcount.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/small-business',
+};
 ---
 
 <IndustrySolutions
+  serviceSchema={serviceSchema}
   title="Small and Growing Business Automation | Forge RPA"
   metaDescription="Automation for SMBs: accounting and operations without a large IT shop, assessment first, fixed builds per solution, optional retainer for ongoing support and Hub operations."
   heroTitle="Small and Growing Businesses"

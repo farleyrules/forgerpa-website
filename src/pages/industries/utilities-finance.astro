@@ -1,8 +1,28 @@
 ---
 import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Utilities Finance & Field Operations Automation',
+  serviceType: 'Utilities Finance Automation',
+  description:
+    'Finance and field-operations automation for utilities: month-end close, work orders, project WIP and accruals, regulatory extracts, and governed bridges between ERP and work-management systems, with an audit-first approach.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/utilities-finance',
+};
 ---
 
 <IndustrySolutions
+  serviceSchema={serviceSchema}
   title="Utilities Finance Automation | Forge RPA"
   metaDescription="Utilities automation for finance and field operations: month-end, work orders, project WIP, regulatory extracts, and governed ERP and work-management bridges."
   heroTitle="Utilities Finance &amp; Field Operations"
