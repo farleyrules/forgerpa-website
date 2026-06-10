@@ -8,3 +8,8 @@ dist/
 .env.*.local
 .env.bak
 .env.needs
+
+# Playwright e2e artifacts (added 2026-06-10)
+test-results/
+playwright-report/
+.playwright/
