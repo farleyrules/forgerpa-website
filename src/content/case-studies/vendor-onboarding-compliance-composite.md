@@ -1,7 +1,7 @@
 ---
 title: "Vendor Onboarding Where Compliance Cannot Be an Afterthought"
-industry: "Regulated operations"
-service: "Vendor master & onboarding"
+industry: "Regulated Operations"
+service: "Vendor Master & Onboarding"
 summary: "Composite pattern combining regulated-industry diligence with realistic Ops timelines, fewer stalled vendors, clearer approvals."
 metric: "Cycle time down without skipping diligence steps"
 shortDescription: "Composite vendor onboarding: screening checkpoints, tax/W-9 coherence, and ERP readiness gates."

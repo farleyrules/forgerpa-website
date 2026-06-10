@@ -35,6 +35,7 @@ python scripts/sync_website.py
 - Colors: charcoal `#1a1a2e`, amber `#f59e0b`, white
 - Font: Inter (Google Fonts)
 - Responsive with mobile hamburger nav
+- Structural UI labels (nav, buttons/CTAs, section + card headers, table headers, page `<title>` metadata) use Title Case per the "UI capitalization" rule in `~/.claude/CLAUDE.md`. Hero and marketing headlines are deliberately EXEMPT: leave them as written (sentence case is an intentional voice choice).
 
 ## Deployment
 Cloudflare Pages auto-deploys from `main` branch.
