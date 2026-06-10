@@ -1,6 +1,26 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Workday & ERP Data Migration',
+  serviceType: 'ERP and Workday Data Migration',
+  description:
+    'Template-driven ERP and Workday data migration with reconciliation-verified accuracy. 31 pre-built Workday iLoad templates and mappings for SAP, Oracle, PeopleSoft, NetSuite, and legacy systems. Verified from both the technical and accounting perspective.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/erp-data-migration',
+};
 ---
 
 <PageLayout
@@ -11,6 +31,9 @@ import CTASection from '../../components/CTASection.astro';
   heroCta="Discuss your migration"
   heroCtaLink="/book?from=migration"
 >
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- The Problem -->

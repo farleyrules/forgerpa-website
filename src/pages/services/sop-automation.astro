@@ -1,6 +1,26 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Finance and Operations Process Automation',
+  serviceType: 'SOP and Process Automation',
+  description:
+    'We turn documented finance and operations SOPs into reliable, maintainable automation using advanced Excel, VBA, Power Query, and targeted RPA. Month-end close, accounts payable, reconciliations, reporting, and governed operational handoffs, with testing, error handling, and runbooks.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/sop-automation',
+};
 ---
 
 <PageLayout
@@ -11,6 +31,9 @@ import CTASection from '../../components/CTASection.astro';
   heroCta="Book a call about your SOPs"
   heroCtaLink="/book?from=sop"
 >
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- What We Do -->

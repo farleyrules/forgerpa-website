@@ -1,6 +1,74 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Data Lake for Multi-Unit Operators',
+  serviceType: 'Data Warehouse and Operational Reporting',
+  description:
+    'A unified data foundation for multi-unit operators, built in your own Microsoft Fabric or Google BigQuery cloud account. We connect POS, payroll, accounting, scheduling, and inventory into a reconciled warehouse with weekly P&L, daily flash, and dashboards. You own the data and the code from day one.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/data-lake',
+};
+
+// FAQPage schema mirrors the visible "Common questions" section below.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How is this different from a SaaS reporting tool?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SaaS reporting vendors pull your data into their system and rent it back to you. We build the warehouse in your cloud account, with your billing and IAM. The schemas, the models, and the dashboards all belong to you. If you ever decide to stop working with us, you keep everything.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I have to be on Microsoft?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. We pick the stack that matches what your team already uses. If you live in Microsoft 365 and Power BI, we build on Microsoft Fabric. If your team is on Google Workspace, we build on Google BigQuery. Either way, the architecture and the outcomes are the same.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How fast can you really build this?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The first working deliverable usually lands within a few weeks. The full foundation comes online over the following months. We use an AI-leveraged delivery approach that compresses what used to be a year of work into a fraction of the time. The savings show up on your time-to-value, not on your invoice.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What if I want to cancel partway through?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You can stop at any natural milestone. You keep all the data, all the code, and the running infrastructure in your cloud. There is no perpetual lock-in. Specific notice terms are written into each engagement and discussed in the discovery call.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Who owns the data?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You do. 100 percent. From day one. Every byte lives in your cloud account, on your subscription, under your access controls. The code lives in your GitHub. There is no shared environment, no vendor-side copy, no extraction layer that holds your data hostage.',
+      },
+    },
+  ],
+};
 ---
 
 <PageLayout
@@ -11,6 +79,10 @@ import CTASection from '../../components/CTASection.astro';
   heroCta="Schedule a Discovery Call"
   heroCtaLink="/book?from=data-lake"
 >
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
   <!-- The Problem -->
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

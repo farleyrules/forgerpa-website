@@ -1,6 +1,26 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Process Mining for Finance & Operations',
+  serviceType: 'Process Mining and Discovery',
+  description:
+    'Data-driven process discovery for finance, accounting, and operations. We reconstruct how processes actually execute from ERP and event-log data, identify bottlenecks and rework loops, and score each segment for automation potential with ROI projections.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/process-mining',
+};
 ---
 
 <PageLayout
@@ -11,6 +31,9 @@ import CTASection from '../../components/CTASection.astro';
   heroCta="Discuss process mining"
   heroCtaLink="/book?from=process-mining"
 >
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- What It Is -->
