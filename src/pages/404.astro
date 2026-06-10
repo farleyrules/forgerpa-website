@@ -1,0 +1,72 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+
+// Top destinations to recover a lost visitor (including paid clicks that hit a dead URL).
+const destinations = [
+  {
+    label: 'Accounts Payable Automation',
+    href: '/services/accounts-payable-automation',
+    desc: 'Invoice capture, three-way match, approval routing, and ERP posting around your existing system.',
+  },
+  {
+    label: 'Forge Quick Wins',
+    href: '/services/quick-wins',
+    desc: 'Fixed-price spreadsheet rescues and fast automation sprints, delivered in days.',
+  },
+  {
+    label: 'Automation Assessment',
+    href: '/services/automation-assessment',
+    desc: 'Data-driven process scoring, ROI projections, and a prioritized automation roadmap.',
+  },
+  {
+    label: 'Industries we serve',
+    href: '/industries',
+    desc: 'Finance and operations automation tailored to healthcare, oil and gas, insurance, utilities, and more.',
+  },
+];
+---
+
+<PageLayout
+  title="Page Not Found"
+  description="The page you were looking for moved or never existed. Here are the most useful places to pick up where you left off, or book a 30-minute discovery call."
+  heroTitle="That page took a different route"
+  heroSubtitle="The link you followed is broken or the page has moved. No problem. Here are the destinations most people are looking for, and a quick way to talk to us directly."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/book?from=404"
+  noindex={true}
+>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <h2 class="text-3xl font-bold text-charcoal mb-4">Where would you like to go?</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Pick the destination that fits what you came for. If you are not sure, the discovery call is the fastest way to get a straight answer about whether we can help.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {destinations.map((d) => (
+          <a href={d.href} class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors border border-transparent hover:border-amber">
+            <h3 class="font-bold text-charcoal mb-2">{d.label}</h3>
+            <p class="text-gray-600 text-sm mb-4">{d.desc}</p>
+            <span class="text-amber-dark font-semibold text-sm">Go there &rarr;</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-12 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12 text-center">
+        <h2 class="text-2xl font-bold text-amber mb-3">Would rather just talk to someone?</h2>
+        <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">
+          Book a 30-minute discovery call. We will walk through your finance or operations pain and tell you plainly whether automation is the right next step, even if we never work together.
+        </p>
+        <a href="/book?from=404" class="inline-flex items-center justify-center px-8 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-lg rounded-lg transition-colors shadow-lg shadow-amber/20">
+          Book a 30-min discovery call
+        </a>
+      </div>
+
+      <p class="mt-10 text-center text-gray-600">
+        Or head back to the <a href="/" class="text-amber-dark font-semibold hover:underline">Forge RPA home page</a>.
+      </p>
+    </div>
+  </section>
+</PageLayout>
