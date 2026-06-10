@@ -5,6 +5,13 @@ interface Props {
   canonicalUrl?: string;
   /** When true, ask search engines not to index (e.g. form thank-you pages). */
   noindex?: boolean;
+  /**
+   * Absolute URL of the social-share image (1200x630 recommended). When set,
+   * emits og:image + twitter:image and upgrades the Twitter card to a large
+   * summary. When omitted, no image tags are emitted (no placeholder asset is
+   * referenced) and the Twitter card stays a plain summary.
+   */
+  ogImage?: string;
 }
 
 const {
@@ -12,6 +19,7 @@ const {
   description = 'Intelligent automation built by people who understand your operations. Process automation, ERP data migration, and AI-powered assessment.',
   canonicalUrl,
   noindex = false,
+  ogImage,
 } = Astro.props;
 const siteUrl = 'https://forgerpa.com';
 const canonical = canonicalUrl || Astro.url.href;
@@ -30,7 +38,7 @@ const organizationSchema = {
   url: 'https://forgerpa.com',
   logo: 'https://forgerpa.com/logo.png',
   description: 'Enterprise finance and operations automation',
-  email: 'david@forgerpa.com',
+  email: 'info@forgerpa.com',
   address: {
     '@type': 'PostalAddress',
     addressRegion: 'TX',
@@ -94,9 +102,11 @@ try {
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Forge RPA" />
-  <meta name="twitter:card" content="summary" />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+  <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
+  {ogImage && <meta name="twitter:image" content={ogImage} />}
   <link rel="canonical" href={canonical} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
