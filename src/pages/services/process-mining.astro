@@ -21,10 +21,65 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/services/process-mining',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is process mining?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Process mining uses event-log data from your ERP, accounting, and adjacent operational systems to reconstruct how a process actually executes. Every transaction, handoff, and delay is captured and visualized, giving you an objective, data-driven view of your finance and operations reality instead of a process map drawn from interviews and assumptions.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is process mining different from a traditional process review?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A traditional review relies on interviews and documented procedures, which capture how people believe the process works. Process mining reads the actual event data, so it surfaces the hidden bottlenecks, manual workarounds, and rework loops that interviews miss. No assumptions, just the trail every transaction leaves behind.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What data do you need from us?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We need event logs or timestamped transaction records from your ERP, workflow systems, and relevant databases. Most systems already capture this. On the discovery call we confirm what is available and how to extract it, and we work with your team to pull the logs without disrupting operations.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do you typically find?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Common findings include hidden rework loops where a meaningful share of transactions cycle through the same steps more than once, approval bottlenecks where one person becomes a single point of delay, undocumented workarounds that staff use to get the job done, and high-volume rule-based segments that are strong candidates for immediate automation.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does process mining connect to automation?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Every process segment we discover is scored for automation potential using our six-criterion framework, with ROI projections. The output is not just a diagnosis of where the friction lives; it is a ranked, defensible view of which segments to automate first, which feeds directly into an automation roadmap.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is process mining priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We scope process mining as a fixed-fee engagement after the discovery call, sized to the number of processes and systems in view, so you know the price before we start. Any follow-on build work or advisory time beyond the defined scope is billed hourly and disclosed up front.',
+      },
+    },
+  ],
+};
 ---
 
 <PageLayout
-  title="Process Mining for Finance & Operations | Forge RPA"
+  title="Process Mining for Finance & Operations"
   description="Data-driven process discovery for finance and operations. Identify bottlenecks and automation opportunities using actual transaction and event data."
   heroTitle="Process Mining for Finance and Operations"
   heroSubtitle="Process mining reveals how your finance, accounting, and operations processes actually work. We analyze real transaction and event data from your systems to identify bottlenecks, exceptions, and high-value automation opportunities."
@@ -33,6 +88,7 @@ const serviceSchema = {
 >
   <!-- JSON-LD structured data -->
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

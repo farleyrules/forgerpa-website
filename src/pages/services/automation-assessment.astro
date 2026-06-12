@@ -21,10 +21,65 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/services/automation-assessment',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is an automation assessment?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'An automation assessment is a short diagnostic that inventories your finance and operations processes, scores each one for automation potential against a six-criterion framework, projects ROI, and hands you a prioritized roadmap. The point is to know exactly what to automate first, and in what order, before you spend a dollar on a build.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do I receive at the end of the assessment?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Five deliverables: a process inventory with time and system estimates, an automation score for each process across six criteria, conservative-to-aggressive ROI projections with payback periods, a technology recommendation matched to each process, and a sequenced implementation roadmap with budget and dependency mapping. Your finance leadership can act on it with or without us.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does the assessment take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The core assessment runs in 2 to 3 business days. Day one is discovery through stakeholder interviews, process observation, SOP review, and a system inventory. Day two is scoring, ROI modeling, and technology matching. Day three is the executive presentation, the detailed report, and the roadmap with Q&A.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What are the six scoring criteria?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Each process is scored on rule complexity, transaction volume, data structure, process stability, error impact, and technology compatibility. Together those produce a weighted score that predicts how successfully a process can be automated and which tool fits it best, from native Microsoft 365 capabilities to targeted RPA and ERP automation.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do we need to involve IT?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Not for the diagnostic itself. The assessment is owned by finance and operations. IT involvement starts later, at implementation, once you have decided which automations to build.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is this priced, and does the fee credit toward a build?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The assessment is a fixed fee scoped to your environment after the discovery call, so you know the full price before we start. If you move forward with an automation build with us, the assessment fee is credited toward that work. Any change orders or advisory time beyond the defined scope are billed hourly and disclosed up front.',
+      },
+    },
+  ],
+};
 ---
 
 <PageLayout
-  title="Automation Assessment for Finance & Ops Teams | Forge RPA"
+  title="Automation Assessment for Finance & Ops Teams"
   description="Data-driven process scoring, ROI projections, and prioritized automation roadmaps. Delivered in 2-3 days."
   heroTitle="Know Exactly What to Automate First"
   heroSubtitle="A data-driven assessment that scores finance and operations processes for automation potential, projects ROI, and delivers a prioritized roadmap, so you invest in the right automations from day one."
@@ -33,6 +88,7 @@ const serviceSchema = {
 >
   <!-- JSON-LD structured data -->
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

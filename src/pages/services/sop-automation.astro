@@ -21,6 +21,61 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/services/sop-automation',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What kinds of processes do you automate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We focus on finance and accounting processes and the operational handoffs that feed them: month-end close, accounts payable, reconciliations, financial reporting, and governed operational workflows. If a process is documented, repeatable, and currently done by hand across spreadsheets and systems, it is a candidate.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What technology do you build the automation with?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We match the tool to the step rather than forcing one platform on everything. That usually means advanced Excel, VBA, and Power Query, with targeted RPA bots where a process has to drive an application that has no API. The goal is the right tool for each step: no over-engineering, no under-engineering, and nothing your team cannot maintain.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does a build take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Most builds deliver working automation in 3 to 7 weeks, which is significantly faster than a traditional consulting engagement. We still hold high standards for testing, error handling, and documentation; the speed comes from a disciplined parse-classify-recommend-generate-review-deploy method, not from cutting corners.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do you hand over at the end?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You receive a process analysis report, a technology recommendation per step, production-ready automation code with error handling and logging, an automated test suite covering every path and exception, and an operations runbook so your team can maintain and extend the automation. You own everything we build.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Will this replace my people?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. The work we automate is data movement, not analysis: manual entry across systems, spreadsheet rebuilds that should have been a query, exception routing that means checking three screens. Automating that gives your senior team back the capacity for variance analysis, FP&A support, and decision support, the work they were hired for. We replace the manual work that keeps people from being the analysts you hired.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you need a fully written SOP before you can start?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A documented SOP helps, but a clear process outline is enough to begin. Part of the early work is parsing what you have into every step, decision point, system interaction, and exception path. Where documentation is thin, we capture the process on the discovery call and in early sessions before any code is written.',
+      },
+    },
+  ],
+};
 ---
 
 <PageLayout
@@ -33,6 +88,7 @@ const serviceSchema = {
 >
   <!-- JSON-LD structured data -->
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

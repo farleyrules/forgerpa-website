@@ -21,10 +21,65 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/services/erp-data-migration',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What source systems can you migrate from?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We migrate from SAP, Oracle, PeopleSoft, ADP, Kronos, NetSuite, QuickBooks, and custom or legacy systems. The mapping methodology works from virtually any source platform, so if your system is not on that list we scope it during the discovery call.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What makes your Workday migration different?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Workday conversion is our deepest specialty. We use 31 pre-built iLoad templates validated across multiple implementations, spanning 8 source systems and 7 Workday modules. Each template handles field mapping, data transformation, validation rules, and error reporting, so your data lands in Workday clean, complete, and audit-ready instead of being hand-built from scratch every time.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do you make sure the converted data is accurate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Every conversion is reconciliation-verified. We follow a disciplined extract, transform, validate, reconcile approach and check the result from both the technical and the accounting perspective. We verify opening balances, sub-ledger ties, and control totals so your auditors do not find surprises in the converted data.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you only migrate to Workday?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. The same methodology works for any ERP transition. Whether the target is Workday, NetSuite, SAP, or another platform, we handle system consolidation after acquisitions, legacy-system retirement, on-premise to cloud moves, and master-data cleanup and enrichment as part of the conversion.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Why use a finance-led team for data migration?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Most data conversion specialists are technicians who can map fields and transform formats but cannot tell you when a journal-entry mapping will create a downstream audit issue or when a cost-center structure will break your reporting hierarchy. Our team brings decades of hands-on experience running ERP financials in production, so we catch the accounting problems a pure-technical team would miss.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is a migration project priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We scope each migration as a fixed-fee project after reviewing your source and target systems, data volume, and cutover constraints, so you know the full price before we start. Change orders and ongoing support beyond the defined scope are billed hourly and disclosed up front.',
+      },
+    },
+  ],
+};
 ---
 
 <PageLayout
-  title="Workday & ERP Data Migration: 31 iLoad Templates | Forge RPA"
+  title="Workday & ERP Data Migration: 31 iLoad Templates"
   description="Template-driven data migration for Workday, NetSuite, SAP, and more. 31 pre-built Workday iLoad templates, 8 source system mappings, and reconciliation-verified accuracy."
   heroTitle="ERP Data Migration Done Right and Done Fast"
   heroSubtitle="Template-driven data conversion with reconciliation-verified accuracy. Whether you are migrating to Workday, consolidating ERP systems, or moving off legacy platforms, we get your data there clean."
@@ -33,6 +88,7 @@ const serviceSchema = {
 >
   <!-- JSON-LD structured data -->
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
