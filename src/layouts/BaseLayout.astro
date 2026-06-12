@@ -23,6 +23,7 @@ const {
 } = Astro.props;
 const siteUrl = 'https://forgerpa.com';
 const canonical = canonicalUrl || Astro.url.href;
+const ogImageResolved = ogImage || `${siteUrl}/og-default.png`;
 
 // --- Tracking / verification env vars (Astro requires PUBLIC_ prefix for client-exposed values) ---
 const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
@@ -45,6 +46,26 @@ const organizationSchema = {
     addressCountry: 'US',
   },
   sameAs: [] as string[],
+};
+
+// --- JSON-LD ProfessionalService (a LocalBusiness subtype) for local/map signals.
+//     Address is city/region only (Frisco, TX); no street is published since none
+//     is shown publicly, so nothing is fabricated. ---
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Forge RPA',
+  legalName: 'Forge RPA LLC',
+  url: 'https://forgerpa.com',
+  image: 'https://forgerpa.com/og-default.png',
+  email: 'info@forgerpa.com',
+  areaServed: 'US',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Frisco',
+    addressRegion: 'TX',
+    addressCountry: 'US',
+  },
 };
 
 // --- BreadcrumbList: derive from canonical URL path. Only emit when depth >= 1. ---
@@ -102,11 +123,11 @@ try {
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Forge RPA" />
-  {ogImage && <meta property="og:image" content={ogImage} />}
-  <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+  <meta property="og:image" content={ogImageResolved} />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  {ogImage && <meta name="twitter:image" content={ogImage} />}
+  <meta name="twitter:image" content={ogImageResolved} />
   <link rel="canonical" href={canonical} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -146,6 +167,9 @@ try {
 
   {/* JSON-LD: Organization (site-wide) */}
   <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+
+  {/* JSON-LD: ProfessionalService / LocalBusiness (site-wide) */}
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)}></script>
 
   {/* JSON-LD: BreadcrumbList (when on a sub-page) */}
   {breadcrumbSchema && (

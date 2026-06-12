@@ -25,7 +25,7 @@ const isComposite = (study: (typeof sortedCaseStudies)[number]) =>
   <!-- Hub: one card per study, each links to its own page (the spoke). -->
   <section class="py-16 lg:py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p class="text-gray-600 mb-8 max-w-3xl">Pick a story below. Studies marked Illustrative are composite patterns, not booked single-client engagements.</p>
+      <p class="text-gray-600 mb-8 text-pretty">Pick a story below. Studies marked Illustrative are composite patterns, not booked single-client engagements.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {sortedCaseStudies.map((study) => (
           <a
