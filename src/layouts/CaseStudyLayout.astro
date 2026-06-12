@@ -1,0 +1,189 @@
+---
+/**
+ * Spoke layout for a single case study.
+ *
+ * Renders the structured Challenge / Approach / Outcome from frontmatter (the
+ * case-study content lives entirely in frontmatter, there is no markdown body),
+ * the related service / industry / sibling-study cross-links, and an Article +
+ * the site-wide auto-emitted BreadcrumbList JSON-LD. Uses PageLayout so the H1
+ * comes from the shared Hero (exactly one H1 per page, matching the rest of the
+ * site). JSON-LD is rendered in the body; Google reads it anywhere in the doc.
+ */
+import PageLayout from './PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+
+interface RelatedLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  slug: string;
+  metaTitle: string;
+  metaDescription: string;
+  title: string;
+  summary: string;
+  industry: string;
+  service: string;
+  challenge: string;
+  approach: string;
+  outcome: string[];
+  tags?: string[];
+  isComposite?: boolean;
+  publishDate?: string;
+  relatedService?: RelatedLink;
+  relatedIndustry?: RelatedLink;
+  relatedStudies?: RelatedLink[];
+}
+
+const {
+  slug,
+  metaTitle,
+  metaDescription,
+  title,
+  summary,
+  industry,
+  service,
+  challenge,
+  approach,
+  outcome,
+  tags = [],
+  isComposite = false,
+  publishDate,
+  relatedService,
+  relatedIndustry,
+  relatedStudies = [],
+} = Astro.props;
+
+// Article schema for SEO. Composites are described as articles about a pattern,
+// not Reviews or testimonials, so no Review/aggregateRating is emitted (that
+// would overclaim for an illustrative composite).
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: summary,
+  about: service,
+  articleSection: industry,
+  ...(publishDate ? { datePublished: publishDate } : {}),
+  author: { '@type': 'Organization', name: 'Forge RPA LLC', url: 'https://forgerpa.com' },
+  publisher: { '@type': 'Organization', name: 'Forge RPA', url: 'https://forgerpa.com' },
+  url: `https://forgerpa.com/case-studies/${slug}`,
+  isAccessibleForFree: true,
+};
+
+const relatedServiceLinks = [
+  ...(relatedService ? [{ kind: 'Service', ...relatedService }] : []),
+  ...(relatedIndustry ? [{ kind: 'Industry', ...relatedIndustry }] : []),
+  ...relatedStudies.map((s) => ({ kind: 'Case Study', ...s })),
+];
+---
+
+<PageLayout
+  title={metaTitle}
+  description={metaDescription}
+  heroTitle={title}
+  heroSubtitle={summary}
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/book?from=case-studies"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <section class="py-16 lg:py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="mb-8 text-sm text-gray-500">
+        <a href="/" class="hover:text-amber-dark transition-colors">Home</a>
+        <span class="mx-2" aria-hidden="true">/</span>
+        <a href="/case-studies" class="hover:text-amber-dark transition-colors">Case Studies</a>
+      </nav>
+
+      <!-- Meta chips -->
+      <div class="flex flex-wrap items-center gap-3 mb-8">
+        <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">{industry}</span>
+        <span class="text-sm text-gray-500">{service}</span>
+        {isComposite && (
+          <span class="px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
+        )}
+      </div>
+
+      {isComposite && (
+        <p class="mb-10 text-sm text-gray-600 bg-slate-light border border-gray-200 rounded-lg p-4">
+          This is an illustrative composite: a pattern drawn from several engagements rather than a single booked client. It shows how we approach the problem. Details are anonymized where client confidentiality requires it.
+        </p>
+      )}
+
+      <div class="space-y-8">
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">The Challenge</h2>
+          <p class="text-gray-700 leading-relaxed">{challenge}</p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">Our Approach</h2>
+          <p class="text-gray-700 leading-relaxed">{approach}</p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-4">The Outcome</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {outcome.map((item) => (
+              <div class="flex items-start gap-2 text-gray-700">
+                <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-sm">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {tags.length > 0 && (
+        <div class="mt-12 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="text-xs font-medium px-3 py-1 bg-amber/10 text-amber-dark rounded-full">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {relatedServiceLinks.length > 0 && (
+        <div class="mt-16 pt-10 border-t border-gray-200">
+          <h2 class="text-xl font-bold text-charcoal mb-6">Explore Related</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedServiceLinks.map((link) => (
+              <a
+                href={link.href}
+                class="group flex items-center justify-between gap-3 p-5 bg-white rounded-xl border border-gray-200 hover:border-amber shadow-sm hover:shadow-lg transition-all duration-300"
+              >
+                <span class="min-w-0">
+                  <span class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{link.kind}</span>
+                  <span class="block font-bold text-charcoal group-hover:text-amber-dark transition-colors truncate">{link.label}</span>
+                </span>
+                <svg class="w-5 h-5 text-amber-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="mt-12">
+        <a href="/case-studies" class="inline-flex items-center gap-2 text-amber-dark hover:text-amber font-semibold transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to All Case Studies
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Let Us Show You What's Possible"
+    subtext="Book a 30-minute discovery call. We will identify your top automation candidates and outline what a structured engagement could look like."
+    ctaText="Book a Discovery Call"
+    ctaLink="/book?from=case-studies"
+  />
+</PageLayout>
