@@ -137,6 +137,10 @@ function showOutcome(tier: FitTier): void {
   const progressBar = $("qualifier-progress-container");
   if (progressBar) progressBar.classList.add("hidden");
 
+  // The secondary "skip the questions" link only makes sense while the wizard
+  // is being answered. Once we're on an outcome screen, hide it.
+  setSkipLinkVisible(false);
+
   // For HIGH and MEDIUM tiers, reveal the booking container + mount the
   // Cal.com inline embed (auto-resizes — no internal scroll on the
   // confirmation screen).
@@ -146,6 +150,53 @@ function showOutcome(tier: FitTier): void {
       calContainer.classList.remove("hidden");
       initCalInlineEmbed();
     }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Skip-to-calendar (secondary escape hatch)                           */
+/* ------------------------------------------------------------------ */
+/*
+ * Lets an impatient but high-intent visitor (one who already clicked through
+ * to /book to grab a discovery call) bypass the six qualifying questions and
+ * go straight to the Cal.com calendar. This is a SECONDARY path: a small text
+ * link under the current step, never the primary CTA. The wizard remains the
+ * default flow for everyone who does not click it.
+ *
+ * The reveal uses the SAME mechanism as the HIGH/MEDIUM outcome path
+ * (un-hide #cal-booking-container + initCalInlineEmbed), so the gclid metadata
+ * still rides into the Cal booking. A skipper who books is then captured by
+ * the Cal webhook as an inbound lead WITH gclid, so the conversion still
+ * tracks even though they answered no qualifying questions.
+ *
+ * We deliberately do NOT compute or assign a fit tier here. The skipper
+ * answered nothing, so there is nothing to score; we just show the calendar.
+ */
+function setSkipLinkVisible(visible: boolean): void {
+  // Toggle the whole row (divider + link), not just the button, so the
+  // separator line disappears with it.
+  const row = $("qualifier-skip-to-calendar-row");
+  if (row) row.classList.toggle("hidden", !visible);
+}
+
+function skipToCalendar(): void {
+  // Hide every wizard step and any outcome block.
+  $$("[data-qualifier-step]").forEach((el) => el.classList.add("hidden"));
+  $$("[data-qualifier-outcome]").forEach((el) => el.classList.add("hidden"));
+  // Hide the progress meter and the skip link itself.
+  const progress = $("qualifier-progress-container");
+  if (progress) progress.classList.add("hidden");
+  setSkipLinkVisible(false);
+
+  // Show the neutral "grab a time" heading, if present.
+  const skipHeading = $("qualifier-skip-heading");
+  if (skipHeading) skipHeading.classList.remove("hidden");
+
+  // Reveal the Cal.com inline embed — identical to the outcome reveal path.
+  const calContainer = $("cal-booking-container");
+  if (calContainer) {
+    calContainer.classList.remove("hidden");
+    initCalInlineEmbed();
   }
 }
 
@@ -222,15 +273,30 @@ function initCalInlineEmbed(): void {
   const Cal = (window as unknown as { Cal?: CalApi }).Cal;
   if (typeof Cal !== "function") return;
   calEmbedMounted = true;
+
+  // Base prefill config (name + email, unchanged).
+  const config: Record<string, unknown> = {
+    name: state.contact.name || "",
+    email: state.contact.email || "",
+    utm_source: "forgerpa-site",
+    utm_medium: "book-page",
+  };
+
+  // Conversion-tracking hardening: carry the gclid into the booking metadata
+  // so the forgerpa-sales webhook (which reads payload.metadata.gclid) can
+  // match the conversion to the Google Ads click even when the booking email
+  // differs from the qualifier email. Captured at page load with a 30-day TTL
+  // (qualifier-state.captureAttribution). Only attach `metadata` when a gclid
+  // is actually present — never send `metadata: { gclid: null }`.
+  const gclid = captureAttribution().gclid;
+  if (gclid) {
+    config.metadata = { gclid };
+  }
+
   Cal("inline", {
     elementOrSelector: "#cal-booking-inline",
     calLink: "david-farley/discovery-call",
-    config: {
-      name: state.contact.name || "",
-      email: state.contact.email || "",
-      utm_source: "forgerpa-site",
-      utm_medium: "book-page",
-    },
+    config,
   });
   Cal("ui", { hideEventTypeDetails: true });
 }
@@ -984,8 +1050,20 @@ export function initDiscoveryQualifier(): void {
   bindStep5();
   bindStep6();
 
+  // Secondary skip-to-calendar link. Visible only while the wizard is being
+  // answered (a returning visitor who already submitted lands on an outcome,
+  // where showOutcome hides it). One click reveals the calendar directly.
+  $("qualifier-skip-to-calendar")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    skipToCalendar();
+  });
+
   // Resume at the saved step (default 1).
   showStep((state.step || 1) as StepIndex);
+
+  // If the visitor already completed the wizard in a prior session (state was
+  // restored as an outcome), don't show the skip link over the calendar.
+  if (state.completedAt) setSkipLinkVisible(false);
 
   // Brave detection runs async + fire-and-forget — the banner appears
   // inside step 6 if the user is on Brave. Showing it on init (vs. only
