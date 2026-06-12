@@ -22,15 +22,14 @@ const isComposite = (study: (typeof sortedCaseStudies)[number]) =>
   heroTitle="Case Studies and Patterns We Build Toward"
   heroSubtitle="Real outcomes from three decades of finance and operations automation, plus illustrative patterns that show how we approach a problem. Anonymized where client confidentiality requires it."
 >
-  <!-- Jump nav: one card per study, anchors to its section below -->
-  <section class="pt-16 lg:pt-20 pb-4">
+  <!-- Hub: one card per study, each links to its own page (the spoke). -->
+  <section class="py-16 lg:py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-charcoal mb-2">Jump to a Case Study</h2>
-      <p class="text-gray-600 mb-8">Pick a story below. Studies marked Illustrative are composite patterns, not booked single-client engagements.</p>
+      <p class="text-gray-600 mb-8 max-w-3xl">Pick a story below. Studies marked Illustrative are composite patterns, not booked single-client engagements.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {sortedCaseStudies.map((study) => (
           <a
-            href={`#${study.id}`}
+            href={`/case-studies/${study.slug}`}
             class="group flex flex-col p-6 bg-white rounded-xl border border-gray-200 hover:border-amber shadow-sm hover:shadow-lg transition-all duration-300"
           >
             <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -39,57 +38,18 @@ const isComposite = (study: (typeof sortedCaseStudies)[number]) =>
                 <span class="inline-block px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
               )}
             </div>
-            <h3 class="text-lg font-bold text-charcoal mb-1 group-hover:text-amber-dark transition-colors">{study.data.title}</h3>
+            <h2 class="text-lg font-bold text-charcoal mb-1 group-hover:text-amber-dark transition-colors">{study.data.title}</h2>
             <span class="text-sm text-gray-500 mb-3">{study.data.service}</span>
-            <p class="text-sm text-gray-600 leading-relaxed mt-auto">{study.data.metric || study.data.summary}</p>
+            <p class="text-sm text-gray-600 leading-relaxed">{study.data.metric || study.data.summary}</p>
+            <span class="mt-6 text-amber-dark font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+              Read Case Study
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
           </a>
         ))}
       </div>
-    </div>
-  </section>
-
-  <section class="py-16 lg:py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-      {sortedCaseStudies.map((study) => (
-        <article class="scroll-mt-24" id={study.id}>
-          <div class="flex flex-wrap items-center gap-3 mb-6">
-            <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">{study.data.industry}</span>
-            <span class="text-sm text-gray-500">{study.data.service}</span>
-            {isComposite(study) && (
-              <span class="px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
-            )}
-          </div>
-
-          <h2 class="text-3xl font-bold text-charcoal mb-4">{study.data.title}</h2>
-          <p class="text-xl text-amber-dark font-semibold mb-8">{study.data.summary}</p>
-
-          <div class="space-y-8">
-            <div>
-              <h3 class="text-xl font-bold text-charcoal mb-3">Challenge</h3>
-              <p class="text-gray-700 leading-relaxed">{study.data.challenge}</p>
-            </div>
-
-            <div>
-              <h3 class="text-xl font-bold text-charcoal mb-3">Approach</h3>
-              <p class="text-gray-700 leading-relaxed">{study.data.approach}</p>
-            </div>
-
-            <div>
-              <h3 class="text-xl font-bold text-charcoal mb-3">Outcome</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {study.data.outcome.map((item) => (
-                  <div class="flex items-start gap-2 text-gray-700">
-                    <svg class="w-5 h-5 text-amber-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span class="text-sm">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </article>
-      ))}
     </div>
   </section>
 
@@ -100,11 +60,3 @@ const isComposite = (study: (typeof sortedCaseStudies)[number]) =>
     ctaLink="/book"
   />
 </PageLayout>
-
-<style is:global>
-  /* Smooth-scroll the jump-nav anchors. scroll-mt-24 on each article already
-     offsets the sticky header so headings are not hidden on jump. */
-  html {
-    scroll-behavior: smooth;
-  }
-</style>

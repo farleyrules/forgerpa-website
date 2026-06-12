@@ -74,7 +74,7 @@ const sortedFeatured = featuredStudies
             industry={study.data.industry}
             metric={study.data.metric || study.data.summary}
             description={study.data.shortDescription || study.data.summary}
-            link={`/case-studies#${study.id}`}
+            link={`/case-studies/${study.slug}`}
           />
         ))}
       </div>

@@ -1,0 +1,56 @@
+---
+import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
+import { getCollection } from 'astro:content';
+import { linksForStudy } from '../../lib/case-study-links';
+
+export async function getStaticPaths() {
+  const studies = await getCollection('case-studies');
+  const titleBySlug = Object.fromEntries(studies.map((s) => [s.slug, s.data.title]));
+
+  return studies.map((study) => {
+    const links = linksForStudy(study.slug);
+    const relatedStudies = (links.related ?? [])
+      .filter((s) => titleBySlug[s])
+      .map((s) => ({ label: titleBySlug[s], href: `/case-studies/${s}` }));
+
+    return {
+      params: { slug: study.slug },
+      props: { study, links, relatedStudies },
+    };
+  });
+}
+
+const { study, links, relatedStudies } = Astro.props;
+const d = study.data;
+const isComposite = (d.tags ?? []).includes('Composite');
+
+// publishDate may be a string or a Date; normalize to YYYY-MM-DD for schema.
+const publishDate =
+  typeof d.publishDate === 'string'
+    ? d.publishDate
+    : d.publishDate
+      ? d.publishDate.toISOString().slice(0, 10)
+      : undefined;
+
+const metaTitle = `${d.title} | Case Study`;
+const metaDescription = d.summary;
+---
+
+<CaseStudyLayout
+  slug={study.slug}
+  metaTitle={metaTitle}
+  metaDescription={metaDescription}
+  title={d.title}
+  summary={d.summary}
+  industry={d.industry}
+  service={d.service}
+  challenge={d.challenge}
+  approach={d.approach}
+  outcome={d.outcome}
+  tags={d.tags}
+  isComposite={isComposite}
+  publishDate={publishDate}
+  relatedService={links.service}
+  relatedIndustry={links.industry}
+  relatedStudies={relatedStudies}
+/>
