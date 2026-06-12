@@ -19,10 +19,66 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/industries/healthcare-finance',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Does this involve PHI or clinical systems?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. This page is intentionally limited to finance-owned and non-clinical operations data: GL, month-end close, supply chain finance interfaces, facilities cost feeds, and structured files. We do not touch bedside, EMR, or clinical workflows here. When a use case touches identifiable patient data or regulated clinical systems, we treat that as a separate security and compliance engagement (BAA, minimum necessary, access controls), not something covered by this finance-scoped work.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do you frame ROI for healthcare finance automation?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We frame value as recovered team capacity and net-revenue improvement, not as clinical outcomes. A revenue-cycle and finance team can typically recover several hundred hours per month of capacity, and the larger benefit usually shows up as a small percentage of net revenue recovered through cleaner prior auth, denial management, and charge-capture workflows. Your specific figures fall out of a discovery or automation assessment against your actual baseline.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which finance and operations processes do you automate for hospitals and payers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Month-end and subledger discipline (reconciliations, intercompany, reporting packs), payer remittance and cash-posting file interfaces, cost-center and facilities rollups, capital vs OpEx and lease accounting support, and non-clinical operations bridges such as supplies and purchased-services accrual support, facilities and work-order cost bridges, and non-clinical vendor catalog hygiene. Everything stays scoped to non-PHI identifiers.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can you work with payer remittance files without accessing our clinical systems?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. File-based or clearinghouse exports are transformed into governed staging tables and exception queues, scoped without accessing clinical systems unless your security team explicitly approves a wider architecture. The goal is to stay in lane on finance-owned extracts your team already controls.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What systems do you typically integrate with in healthcare finance?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Major ERPs, Workday-class HCM and finance boundaries, materials and MM feeds, facilities and work-order exports, and heavy Excel. We use the same automation patterns we apply across industries, with terminology adapted for healthcare finance and adjacent non-clinical operations. Discovery confirms which sources are authoritative before any build.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is the work priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We typically start with a fixed-fee automation assessment so ROI and sequence are clear before any build, then price development as a fixed-fee project per solution or phase. Change orders and ongoing advisory work are billed hourly under an active engagement. We lead with fixed-fee project pricing so you know the scope before committing.',
+      },
+    },
+  ],
+};
 ---
 
 <IndustrySolutions
   serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
   title="Healthcare Finance Automation (non-PHI) | Forge RPA"
   metaDescription="Healthcare finance and non-clinical operations automation: GL, close, supply chain finance, facilities cost feeds, payer file interfaces, non-PHI scope on this page."
   heroTitle="Healthcare Finance &amp; Operations (Non-PHI)"

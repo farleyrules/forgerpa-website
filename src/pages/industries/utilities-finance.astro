@@ -19,10 +19,66 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/industries/utilities-finance',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Which utilities finance processes do you automate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Month-end acceleration (reconciliations, intercompany, close checklists), project and work-order cost rollups into capitalization and OpEx buckets, regulatory reporting extracts, and vendor and contract-driven accruals support. On the field-operations side we handle crew and outage event tagging for finance cutoffs, storeroom and materials issues to project codes, and fleet and contractor time aggregation, all with exception reporting for reviewers.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do you handle the field-to-finance and work-management handoffs?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We automate the governed bridges that drive accruals, WIP, and regulatory support between field operations, work-management systems, and corporate finance. Where your policy allows, operational event logs become period cutoffs, labor distribution previews, or accrual trigger lists. Finance approves; automation prepares. The aim is to reduce reconciliation ping-pong between field and corporate.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you work with SAP, Oracle, and Maximo-class work management?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Common patterns include SAP, Oracle, Maximo-class work management, GIS or outage event exports where finance uses them, and heavy Excel bridges. We integrate only after we map your authoritative sources in discovery, so the system of record stays where it belongs.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you interpret or submit regulatory filings?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Regulatory interpretation and submission sign-off stay with your organization. We build controlled automation and evidence trails around the data you define, and we prepare governed extracts for the teams who own filing and interpretation. FERC, PSC, and rate-case schedule preparation tends to move from a quarterly fire drill to a scheduled cadence with full lineage.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What value does finance automation typically unlock for utilities?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Recovered finance and project-accounting capacity. Single-jurisdiction utilities can typically recover a few hundred hours per month, with the biggest value in monthly project WIP rollups and regulatory extract preparation. Multi-state, multi-subsidiary utilities see more as long-lived asset accounting, multi-jurisdiction reporting, and complex intercompany allocations compound. Your specific figures fall out of a discovery or assessment.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is the work priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We typically begin with a fixed-fee automation assessment so ROI and sequence are explicit before any build, then price development as a fixed-fee project per solution or phase. Change orders and ongoing advisory work are billed hourly under an active engagement. Fixed-fee project pricing is the default.',
+      },
+    },
+  ],
+};
 ---
 
 <IndustrySolutions
   serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
   title="Utilities Finance Automation | Forge RPA"
   metaDescription="Utilities automation for finance and field operations: month-end, work orders, project WIP, regulatory extracts, and governed ERP and work-management bridges."
   heroTitle="Utilities Finance &amp; Field Operations"

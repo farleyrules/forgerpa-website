@@ -19,10 +19,66 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/industries/oil-gas',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Which oil and gas finance processes do you automate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'JV and partner settlement support, production volume to accounting tie-outs, intercompany and eliminations, royalty and revenue statement ingestion, and AFE-vs-actual and project reporting extracts. On the operations side we handle materials and inventory bridges, field-ticket and service-spend accrual support, procurement and contract admin data hygiene, and logistics and dispatch cutoffs for revenue recognition, all with audit trails and rerunnable batches.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you work with SAP and oil and gas systems like Quorum, P2, or OGsys?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. We speak the same languages as your finance stack (SAP and common oil and gas configurations, revenue and land suites, well and volume feeds) and many operations stacks (materials movements, 3PL or pipe-tally exports, procurement workbenches, field-ticketing exports), plus the Excel that still glues it all together. We describe integrations generically until an NDA and discovery define your exact landscape.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Will automation hold up through month-end close?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'That is the design goal. We use sandbox, QA, and production patterns, logging, and rerunnable batches so close-critical jobs behave predictably under high transaction volume and strict controls. Deliverables are built for production: audit columns, robot or service identities, and documentation your finance team can own.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you sign off on reserves or regulatory reporting?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Automation supports your controls; your organization retains sign-off on regulatory, land, and reserve reporting. We do not provide engineering reserves, safety, or environmental compliance advice. We prepare reconciled files and evidence trails; your tax, land, and reserve teams approve what ships.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What value does finance automation typically unlock for operators?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Recovered revenue-cycle capacity. Independent operators can typically recover one to three weeks of revenue-cycle time per month, and larger multi-state operators considerably more as manual reconciliation across SCADA, accounting, and JV settlement systems compounds the per-well overhead. Multi-state severance tax filing benefits disproportionately, since automation makes work that normally scales with state count approximately constant. Your specific numbers fall out of an assessment.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do you start an engagement?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We typically begin with a fixed-fee automation assessment or a focused discovery so ROI, systems, and controls are explicit before any build. Development is then priced as a fixed-fee project per solution or phase. Change orders and ongoing advisory work are billed hourly under an active engagement.',
+      },
+    },
+  ],
+};
 ---
 
 <IndustrySolutions
   serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
   title="Oil & Gas Finance Automation | Forge RPA"
   metaDescription="Oil and gas automation for finance and operations: revenue and JV accounting, volume tie-outs, field-to-finance handoffs, supply chain interfaces, and audit-ready workflows."
   heroTitle="Oil &amp; Gas Finance &amp; Operations"

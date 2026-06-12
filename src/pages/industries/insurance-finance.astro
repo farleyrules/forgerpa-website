@@ -19,10 +19,66 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/industries/insurance-finance',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Which insurance finance processes do you automate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Driver-based allocations and management reporting, subledger-to-GL hygiene across claims, premium, and investment accounting feeds, reinsurance and cession support files, and statutory and regulatory reporting extracts. On the operations-adjacent side we handle claims payment operations finance interfaces, underwriting support packs, and producer and commission operations hygiene, always with versioned inputs and clear audit columns.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you determine actuarial assumptions or file regulatory reports for us?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. We do not determine actuarial assumptions, policy language, or regulatory filing positions. Automation prepares and controls the data; your actuaries, technical accounting team, and filing specialists approve what ships to regulators and retain filing responsibility. We make the preparation repeatable, logged, and audit-ready.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do you handle claims and policy admin systems?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Export-first. We integrate with claims platforms, data warehouses, and policy admin extracts rather than reaching into adjusting judgment or core transaction systems. Discovery defines the authoritative sources and sign-off roles before we wire anything, so the system of record stays exactly where it is.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does this help with exam and audit readiness?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Jobs are rerunnable, logged, and documented for internal audit and external exam readiness. Repeatable evidence (logs, versions, reconciliations) replaces one-off heroics each quarter, and statutory filing preparation tends to move from an all-hands sprint to a scheduled cadence with a full audit trail.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What value does finance automation typically unlock for insurers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Recovered finance capacity and faster, more controlled closes. Single-line insurers can typically recover a hundred to a few hundred hours per month, and the bigger value often shows up in regulatory filing prep compressing from weeks per quarter to days. Multi-line, multi-state insurers see more as multi-entity consolidation and reinsurance support workflows compound. Your specific figures fall out of discovery.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is the work priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We typically begin with a fixed-fee automation assessment so ROI and sequence are explicit before any build, then price development as a fixed-fee project per solution or phase. Change orders and ongoing advisory work are billed hourly under an active engagement. Fixed-fee project pricing is the default.',
+      },
+    },
+  ],
+};
 ---
 
 <IndustrySolutions
   serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
   title="Insurance Finance & Operations Automation | Forge RPA"
   metaDescription="Insurance automation for finance and operations: allocations, subledgers, claims ops finance interfaces, underwriting support files, and audit-ready handoffs."
   heroTitle="Insurance Finance &amp; Operations"

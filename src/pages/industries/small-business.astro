@@ -19,10 +19,66 @@ const serviceSchema = {
   },
   url: 'https://forgerpa.com/industries/small-business',
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Do we need a dedicated IT or automation team to work with you?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. This is built for teams without dedicated automation IT who still need reliable, documented runs. If you do not have IT to operate the automation Hub and schedules, an optional monthly retainer covers monitoring, small fixes, and prioritization. You get the same finance-grade discipline larger enterprises use, scoped to your team.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does pricing work for a smaller business?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A typical path is a fixed-price automation assessment so you know ROI and sequence before you spend on builds, then per-solution or phased development so each go-live is budgeted, and an optional monthly retainer if you want us to run, monitor, and extend the Hub. You request additional automations as separate scoped fees when ready. We scale the same rate logic we use for larger clients to your scope and budget.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which processes do you automate for small and growing businesses?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Month-end, AP, and cash discipline (vendor bills, light three-way match, payment batches, cash application from bank files, close checklists), order-to-cash and invoicing hygiene, reporting packs owners actually read, and light governance you can defend. On the operations side: vendor and customer onboarding packets, inventory and fulfillment interfaces where volume warrants, and non-HR-core scheduling and operations admin.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which systems do you work with?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Common SMB stacks including QuickBooks Online, NetSuite, Microsoft 365, Google Workspace, Shopify, ServiceTitan-class tools, and industry vertical SaaS, plus the Excel that still runs half the company. Discovery confirms which systems are authoritative before we wire anything together.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Are you a CPA firm or tax advisor?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. We are not a CPA firm, law firm, or tax advisor. You remain responsible for filings, payroll law, and system-of-record decisions. We build controlled, documented automation around the rules you supply, with the finance-grade discipline that comes from a deep finance and accounting background.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What happens when staff turns over?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Every automation ships with logging, rerun instructions, and short runbooks, so when staff turns over the next person is not reverse-engineering a macro. That documented, defensible approach is the point: you get evidence and reliable reruns rather than fragile spreadsheets only one person understands.',
+      },
+    },
+  ],
+};
 ---
 
 <IndustrySolutions
   serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
   title="Small and Growing Business Automation | Forge RPA"
   metaDescription="Automation for SMBs: accounting and operations without a large IT shop, assessment first, fixed builds per solution, optional retainer for ongoing support and Hub operations."
   heroTitle="Small and Growing Businesses"
