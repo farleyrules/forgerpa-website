@@ -15,6 +15,13 @@ const serviceLinks = [
   { label: 'Data Lake', href: '/services/data-lake' },
 ];
 
+const assessmentLinks = [
+  { label: 'Month-End Close Assessment', href: '/services/month-end-close-assessment' },
+  { label: 'AP Reconciliation Assessment', href: '/services/ap-reconciliation-assessment' },
+  { label: 'ERP Handoff Assessment', href: '/services/erp-handoff-assessment' },
+  { label: 'Quick Wins', href: '/services/quick-wins' },
+];
+
 const industryLinks = [
   { label: 'Overview', href: '/industries' },
   { label: 'Oil & Gas', href: '/industries/oil-gas' },
@@ -50,6 +57,14 @@ const industryLinks = [
                   {link.label}
                 </a>
               ))}
+              <div class="border-t border-gray-700 mt-2 pt-2">
+                <p class="px-4 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Assessments</p>
+                {assessmentLinks.map((link) => (
+                  <a href={link.href} class="block px-4 py-3 text-sm text-gray-300 hover:text-amber hover:bg-charcoal transition-colors">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
               <div class="border-t border-gray-700 mt-2 pt-2">
                 <a href="/services" class="block px-4 py-3 text-sm text-amber hover:text-amber-light transition-colors font-medium">
                   View All Services
@@ -106,6 +121,11 @@ const industryLinks = [
         <a href="/services" class="block px-4 py-3 text-gray-300 hover:text-amber font-medium">Services</a>
         <div class="pl-6 space-y-1">
           {serviceLinks.map((link) => (
+            <a href={link.href} class="block px-4 py-2 text-sm text-gray-400 hover:text-amber">
+              {link.label}
+            </a>
+          ))}
+          {assessmentLinks.map((link) => (
             <a href={link.href} class="block px-4 py-2 text-sm text-gray-400 hover:text-amber">
               {link.label}
             </a>

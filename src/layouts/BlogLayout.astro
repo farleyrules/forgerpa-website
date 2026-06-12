@@ -19,9 +19,32 @@ const formattedDate = date ? new Date(date + 'T00:00:00').toLocaleDateString('en
   month: 'long',
   day: 'numeric',
 }) : '';
+
+const blogPostingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: description,
+  author: {
+    '@type': 'Person',
+    name: author,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Forge RPA',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://forgerpa.com/logo.png',
+    },
+  },
+  mainEntityOfPage: Astro.url.href,
+  image: 'https://forgerpa.com/og-default.png',
+  ...(date ? { datePublished: date } : {}),
+};
 ---
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
   <Header />
   <main class="py-16 lg:py-24">
     <article class="max-w-3xl mx-auto px-4 sm:px-6">
