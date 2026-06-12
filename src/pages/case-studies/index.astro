@@ -6,26 +6,60 @@ import { getCollection } from 'astro:content';
 const caseStudies = await getCollection('case-studies');
 
 // Sort by order field (lower number = shown first)
-const sortedCaseStudies = caseStudies.sort((a, b) => 
+const sortedCaseStudies = caseStudies.sort((a, b) =>
   (a.data.order || 999) - (b.data.order || 999)
 );
+
+// A study is illustrative/composite when its frontmatter carries the "Composite" tag.
+// These are pattern composites, not booked single-client engagements, so they get a label.
+const isComposite = (study: (typeof sortedCaseStudies)[number]) =>
+  (study.data.tags || []).includes('Composite');
 ---
 
 <PageLayout
   title="Finance & Operations Automation Case Studies | Forge RPA"
   description="Real automation results from real engagements. See how Forge RPA helps companies streamline operations and reduce costs."
-  heroTitle="Results That Speak"
-  heroSubtitle="Real outcomes from real engagements."
+  heroTitle="Case Studies and Patterns We Build Toward"
+  heroSubtitle="Real outcomes from three decades of finance and operations automation, plus illustrative patterns that show how we approach a problem. Anonymized where client confidentiality requires it."
 >
-  <section class="py-20 lg:py-28">
+  <!-- Jump nav: one card per study, anchors to its section below -->
+  <section class="pt-16 lg:pt-20 pb-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-charcoal mb-2">Jump to a Case Study</h2>
+      <p class="text-gray-600 mb-8">Pick a story below. Studies marked Illustrative are composite patterns, not booked single-client engagements.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {sortedCaseStudies.map((study) => (
+          <a
+            href={`#${study.id}`}
+            class="group flex flex-col p-6 bg-white rounded-xl border border-gray-200 hover:border-amber shadow-sm hover:shadow-lg transition-all duration-300"
+          >
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+              <span class="inline-block px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">{study.data.industry}</span>
+              {isComposite(study) && (
+                <span class="inline-block px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
+              )}
+            </div>
+            <h3 class="text-lg font-bold text-charcoal mb-1 group-hover:text-amber-dark transition-colors">{study.data.title}</h3>
+            <span class="text-sm text-gray-500 mb-3">{study.data.service}</span>
+            <p class="text-sm text-gray-600 leading-relaxed mt-auto">{study.data.metric || study.data.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 lg:py-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
       {sortedCaseStudies.map((study) => (
         <article class="scroll-mt-24" id={study.id}>
-          <div class="flex items-center gap-3 mb-6">
+          <div class="flex flex-wrap items-center gap-3 mb-6">
             <span class="px-3 py-1 text-xs font-semibold bg-charcoal text-amber rounded-full">{study.data.industry}</span>
             <span class="text-sm text-gray-500">{study.data.service}</span>
+            {isComposite(study) && (
+              <span class="px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
+            )}
           </div>
-          
+
           <h2 class="text-3xl font-bold text-charcoal mb-4">{study.data.title}</h2>
           <p class="text-xl text-amber-dark font-semibold mb-8">{study.data.summary}</p>
 
@@ -66,3 +100,11 @@ const sortedCaseStudies = caseStudies.sort((a, b) =>
     ctaLink="/book"
   />
 </PageLayout>
+
+<style is:global>
+  /* Smooth-scroll the jump-nav anchors. scroll-mt-24 on each article already
+     offsets the sticky header so headings are not hidden on jump. */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
