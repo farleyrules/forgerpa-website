@@ -1,17 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <!-- Anvil body -->
-  <path d="M6 20h20v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-4z" fill="#f59e0b"/>
-  <!-- Anvil top / working surface -->
-  <path d="M4 16h24a2 2 0 0 1 2 2v2H2v-2a2 2 0 0 1 2-2z" fill="#f59e0b"/>
-  <!-- Anvil horn (left) -->
-  <path d="M2 17c0-1 1-2 2-2h-1l-3 2h2z" fill="#d97706"/>
-  <!-- Base -->
-  <rect x="10" y="26" width="12" height="2" rx="1" fill="#f59e0b"/>
-  <!-- Hammer -->
-  <rect x="14" y="4" width="4" height="10" rx="1" fill="#d97706"/>
-  <rect x="11" y="4" width="10" height="4" rx="1" fill="#f59e0b"/>
-  <!-- Spark lines -->
-  <line x1="22" y1="12" x2="25" y2="10" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="23" y1="15" x2="27" y2="14" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="10" y1="12" x2="7" y2="10" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Forge RPA brand mark (marketing / amber variant). Rounded charcoal square -->
+  <!-- with a bold amber "F" monogram. Sales + app sites reuse this mark with a -->
+  <!-- different fill. Built to read at 16px. -->
+  <rect width="32" height="32" rx="7" fill="#1a1a2e"/>
+  <path d="M10 7h13v4.2h-8.3v3.4h7.2v4.2h-7.2V25H10z" fill="#f59e0b"/>
 </svg>

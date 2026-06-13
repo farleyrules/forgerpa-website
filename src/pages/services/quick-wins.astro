@@ -22,6 +22,10 @@ const faqs = [
     a: "AI is great at producing a spreadsheet that looks right. It cannot tell you the reconciliation doesn't tie, the accrual is backwards, or the number will mislead the CFO. A CPA-trained finance veteran with 30 years in the field can. We use the same AI everyone else has to deliver faster, and we are the accountability layer that catches when the AI is wrong. In finance, the expensive failure is not slow. It is looks right but is quietly wrong."
   },
   {
+    q: "Is this just Excel work, or the whole Microsoft stack?",
+    a: "Excel and Power Query are the entry point because that's where the daily pain usually lives, but the work spans the whole Microsoft Power Platform and Copilot. We build governed Power BI dashboards with automated refresh, approval and data flows in Power Automate, lightweight internal apps in Power Apps, and custom low-code agents over your own data with Copilot Studio, plus Microsoft 365 Copilot rollout where it earns its seat. The through-line is finance and operations: we turn manual, error-prone Microsoft-stack work into automated, governed, audit-ready processes, not generic IT projects."
+  },
+  {
     q: "What's included, and what isn't?",
     a: "Fixed price covers the defined scope, plus a QA tie-out against a known-good baseline and a short Loom walkthrough at handoff. Not included: ongoing maintenance after handoff (that's a separate retainer), net-new data sources discovered mid-build, or work requiring production system credentials we weren't scoped for. We state this plainly up front so there are no surprises."
   },
@@ -40,12 +44,12 @@ const serviceSchema = {
     "name": "Forge RPA LLC",
     "url": "https://forgerpa.com"
   },
-  "serviceType": "Finance Spreadsheet and Report Automation",
+  "serviceType": "Microsoft Power Platform and Copilot Automation for Finance and Operations",
   "areaServed": {
     "@type": "Country",
     "name": "United States"
   },
-  "description": "Fixed-price, fast-turnaround finance automation: spreadsheet rescues, automation assessments, and fractional automation sprints. Built by a CPA-trained finance veteran with 30 years in the field, delivered AI-fast, with a QA tie-out on every job.",
+  "description": "Fixed-price Microsoft Power Platform and Copilot automation for finance and operations back office: Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents. Starts with a spreadsheet rescue and scales to governed, audit-ready processes. Built by a CPA-trained finance veteran with 30 years in the field, delivered AI-fast, with a QA tie-out on every job.",
   "url": "https://forgerpa.com/services/quick-wins"
 };
 
@@ -64,10 +68,10 @@ const faqSchema = {
 ---
 
 <PageLayout
-  title="Forge Quick Wins | Fixed-Price Finance Automation, Fast"
-  description="Turn manual finance spreadsheets and reports into automations that run themselves. Fixed-price packages from $750, built by a CPA-trained finance veteran with 30 years in the field, delivered AI-fast with a QA tie-out on every job."
-  heroTitle="Turn your manual finance spreadsheets into automations that run themselves"
-  heroSubtitle="Senior finance automation. Fixed price. Fast. Built by a CPA-trained finance veteran who's spent 30 years in the field and now delivers AI-fast, and who knows when the number is wrong. Start with a free 15-minute triage call and a flat quote within one business day."
+  title="Power Platform & Copilot Automation for Finance | Forge Quick Wins"
+  description="Microsoft Power Platform and Copilot automation for finance and operations. Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents. Fixed-price, starting with a spreadsheet rescue from $750, delivered AI-fast with a QA tie-out on every job."
+  heroTitle="Turn manual Microsoft-stack work into automated, governed, audit-ready processes"
+  heroSubtitle="Microsoft Power Platform and Copilot automation for the finance and operations back office. Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents over your own data. Fixed price, custom-built, delivered AI-fast by a CPA-trained finance veteran who knows when the number is wrong. Start with a free 15-minute triage call and a flat quote within one business day."
   heroCta="Book a Free 15-Min Triage Call"
   heroCtaLink="/book?from=quick-wins"
 >
@@ -143,11 +147,41 @@ const faqSchema = {
         </div>
       </div>
 
+      <!-- What We Build Across the Microsoft Stack -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Build Across the Microsoft Stack</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-10">
+          A broken spreadsheet is usually the front door, not the whole house. We are a Microsoft Power Platform and Copilot automation partner for the finance and operations back office. The goal is the same at every layer: turn manual, error-prone Microsoft-stack work into automated, governed, audit-ready processes, built around how finance and ops actually run, not generic IT. We match the tool to the job, so you never get more platform than the problem needs.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-light rounded-xl p-6">
+            <h3 class="font-bold text-charcoal mb-2">Excel + Power Query</h3>
+            <p class="text-gray-600 text-sm">Clean it, automate it, schedule it. We turn copy-paste rebuilds into queries that pull, shape, and refresh on a click or a timer, so the monthly report assembles itself and ties every time.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6">
+            <h3 class="font-bold text-charcoal mb-2">Power BI</h3>
+            <p class="text-gray-600 text-sm">Governed dashboards with automated refresh, a documented data model, and one version of the number everyone trusts. Built so the close, AP, or operations view stays current without anyone rebuilding it.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6">
+            <h3 class="font-bold text-charcoal mb-2">Power Automate</h3>
+            <p class="text-gray-600 text-sm">Approval and data flows that move work between systems, route exceptions, and capture an audit trail. The manual hand-offs between three screens become a flow that runs and logs itself.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6">
+            <h3 class="font-bold text-charcoal mb-2">Power Apps</h3>
+            <p class="text-gray-600 text-sm">Lightweight internal apps for the intake forms, trackers, and approvals that don't deserve a spreadsheet shared by twelve people. Custom-built to your process, owned by your team.</p>
+          </div>
+          <div class="bg-slate-light rounded-xl p-6 md:col-span-2">
+            <h3 class="font-bold text-charcoal mb-2">Copilot + Copilot Studio</h3>
+            <p class="text-gray-600 text-sm">Microsoft 365 Copilot rolled out where it earns its seat, and custom low-code agents built in Copilot Studio that answer questions and take action over your own finance and operations data. Grounded in your numbers, with the same accountability layer that catches when the AI is confidently wrong.</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Positioning -->
       <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
-        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">We don't sell Excel help. We sell judgment that AI can't replace.</h2>
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">We don't sell tool licenses. We sell judgment that AI can't replace.</h2>
         <p class="text-lg text-gray-200 leading-relaxed">
-          In finance, the expensive failure mode is not slow. It is looks right but is quietly wrong. Generative AI is excellent at producing a spreadsheet that looks right. It cannot tell you the reconciliation doesn't tie, the accrual is backwards, or the number will mislead the CFO.
+          In finance, the expensive failure mode is not slow. It is looks right but is quietly wrong. Generative AI is excellent at producing a spreadsheet, a dashboard, or a Copilot answer that looks right. It cannot tell you the reconciliation doesn't tie, the accrual is backwards, or the number will mislead the CFO.
         </p>
         <p class="mt-4 text-lg text-gray-200 leading-relaxed">
           A CPA-trained finance veteran with 30 years in the field can. That judgment and accountability layer is exactly what survives the AI wave. We use the same AI everyone else has as a delivery accelerator, so you get senior work at a fair fixed price, faster than a traditional consultant, and you get the person who knows when the AI is wrong.
@@ -221,7 +255,7 @@ const faqSchema = {
           <div class="bg-white border border-gray-200 rounded-xl p-6">
             <h4 class="font-bold text-charcoal mb-1">Automation Workshop</h4>
             <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 / half-day</div>
-            <p class="text-gray-600 text-sm">Hands-on team training on Power Query and Excel automation, so your people can build and maintain the simple things themselves.</p>
+            <p class="text-gray-600 text-sm">Hands-on team training on Power Query, Excel, and the Power Platform, so your people can build and maintain the simple things themselves.</p>
           </div>
         </div>
 
