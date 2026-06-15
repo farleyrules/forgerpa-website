@@ -2,7 +2,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
 
-// Secondary "fast lane" CTA for Rung 1 (Spreadsheet Rescue, $750, pay in full).
+// Secondary "fast lane" CTA for the Spreadsheet Rescue ($750, pay in full).
 // Env-driven so David can paste the live Stripe Payment Link without a code change.
 // Falls back to the booking funnel if the env var is unset, so the button is never dead.
 const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL || '/book?from=quick-wins';
@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: "How do you price a fixed quote so fast?",
-    a: "The free 30-minute discovery call captures the artifact, the outcome, the data sources, and the cadence. That maps cleanly to one of three rungs, so you get a flat price within one business day. Fixed scope means fixed price. New asks become a new package or a change order, never silent scope creep."
+    a: "The free 30-minute discovery call captures the artifact, the outcome, the data sources, and the cadence. That maps cleanly to the right option, so you get a flat price within one business day. Fixed scope means fixed price. New asks become a new package or a change order, never silent scope creep."
   },
   {
     q: "Isn't this just something AI can do now?",
@@ -327,7 +327,7 @@ const faqSchema = {
           <div class="bg-slate-light rounded-xl p-6 text-center">
             <div class="text-2xl font-extrabold text-amber mb-2">2</div>
             <h3 class="font-bold text-charcoal text-sm mb-1">Fixed Quote</h3>
-            <p class="text-gray-600 text-xs">We map the ask to a rung and a flat price within one business day.</p>
+            <p class="text-gray-600 text-xs">We map the ask to the right option and a flat price within one business day.</p>
           </div>
           <div class="bg-slate-light rounded-xl p-6 text-center">
             <div class="text-2xl font-extrabold text-amber mb-2">3</div>
@@ -377,7 +377,7 @@ const faqSchema = {
       <div class="mb-16">
         <h2 class="text-3xl font-bold text-charcoal mb-6">When a quick win uncovers a bigger one</h2>
         <p class="text-lg text-gray-700 leading-relaxed mb-8">
-          Most quick wins surface a larger recurring pain underneath. When that happens, we name it and you decide. There's a clear next rung when the conversation turns to "this whole process should run itself."
+          Most quick wins surface a larger recurring pain underneath. When that happens, we name it and you decide. There's a clear next step when the conversation turns to "this whole process should run itself."
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
@@ -413,8 +413,8 @@ const faqSchema = {
   </section>
 
   <CTASection
-    heading="Tell us the spreadsheet that's costing you"
-    subtext="Book a free 30-minute discovery call. We'll tell you straight which rung fits and quote a flat price within one business day. No pitch."
+    heading="Tell us the manual work that's costing you"
+    subtext="Book a free 30-minute discovery call. We'll tell you straight which option fits and quote a flat price within one business day. No pitch."
     ctaText="Book a Free 30-Min Discovery Call"
     ctaLink="/book?from=quick-wins"
   />
