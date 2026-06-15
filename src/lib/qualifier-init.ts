@@ -87,7 +87,18 @@ let state: WizardState = emptyState(null);
 let turnstileWidgetId: string | null = null;
 let turnstileToken: string | null = null;
 
+// Essentials-path Turnstile is a SEPARATE widget instance (its own container,
+// its own widget id + token). It reuses the exact same mount/fetch/failure
+// machinery as the full wizard via mountTurnstileWidget(containerId), so the
+// Brave-shield warning + retry/failure block behave identically.
+let essentialsTurnstileWidgetId: string | null = null;
+let essentialsTurnstileToken: string | null = null;
+
 const WIZARD_ROOT_ID = "discovery-qualifier-wizard";
+
+/* Container ids for the two Turnstile mounts. */
+const TURNSTILE_WIZARD_CONTAINER = "qualifier-turnstile";
+const TURNSTILE_ESSENTIALS_CONTAINER = "essentials-turnstile";
 
 function $(id: string): HTMLElement | null {
   return document.getElementById(id);
@@ -123,12 +134,25 @@ function showStep(step: StepIndex): void {
   // button OR by restoring saved state on page load (state.step === 6) —
   // ensure the Turnstile mount is at least attempted. Idempotent: the
   // mount function bails early if it already succeeded.
-  if (step === 6 && turnstileMountStatus !== "ok") {
-    void mountTurnstileWidget();
+  if (step === 6 && getTurnstileStatus(TURNSTILE_WIZARD_CONTAINER) !== "ok") {
+    void mountTurnstileWidget(TURNSTILE_WIZARD_CONTAINER);
   }
 }
 
+/**
+ * Hide all three entry paths (fork, essentials, full wizard). Used by the
+ * outcome + skip reveals so only the calendar (and the relevant heading)
+ * remains. The full-wizard's own steps are additionally hidden by callers
+ * that toggle `[data-qualifier-step]`.
+ */
+function hideAllPaths(): void {
+  $("qualifier-entry-fork")?.classList.add("hidden");
+  $("qualifier-essentials-path")?.classList.add("hidden");
+  $("qualifier-full-path")?.classList.add("hidden");
+}
+
 function showOutcome(tier: FitTier): void {
+  hideAllPaths();
   $$("[data-qualifier-step]").forEach((el) => el.classList.add("hidden"));
   $$("[data-qualifier-outcome]").forEach((el) => {
     const target = el.getAttribute("data-qualifier-outcome");
@@ -180,6 +204,8 @@ function setSkipLinkVisible(visible: boolean): void {
 }
 
 function skipToCalendar(): void {
+  // Hide all three entry paths (fork / essentials / full wizard).
+  hideAllPaths();
   // Hide every wizard step and any outcome block.
   $$("[data-qualifier-step]").forEach((el) => el.classList.add("hidden"));
   $$("[data-qualifier-outcome]").forEach((el) => el.classList.add("hidden"));
@@ -198,6 +224,271 @@ function skipToCalendar(): void {
     calContainer.classList.remove("hidden");
     initCalInlineEmbed();
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Entry fork (3-option chooser) + path switching                      */
+/* ------------------------------------------------------------------ */
+/*
+ * On page load the visitor sees the entry fork, NOT step 1. Selecting a card
+ * swaps in one of three paths:
+ *   1. Essentials: a one-screen form (#qualifier-essentials-path) that reuses
+ *      the same Turnstile + consent + validators + POST as the full wizard.
+ *   2. Straight to a time: calls skipToCalendar() (no questions).
+ *   3. Tell us more: the full 6-step wizard (#qualifier-full-path), unchanged.
+ * Each path carries a "Back to options" control back to the fork. Attribution
+ * (gclid) flows into the Cal booking metadata on all three paths because
+ * initCalInlineEmbed() reads captureAttribution() regardless of entry path.
+ */
+
+function showEntryFork(): void {
+  // Reveal the fork, hide the two other paths and any outcome/calendar so a
+  // visitor returning via "Back to options" gets a clean chooser.
+  $("qualifier-entry-fork")?.classList.remove("hidden");
+  $("qualifier-essentials-path")?.classList.add("hidden");
+  $("qualifier-full-path")?.classList.add("hidden");
+  $$("[data-qualifier-outcome]").forEach((el) => el.classList.add("hidden"));
+  $("qualifier-skip-heading")?.classList.add("hidden");
+  // Keep the Cal embed hidden until a path actually books, but do NOT tear
+  // down an already-mounted embed (Cal mounts once); just hide its container.
+  $("cal-booking-container")?.classList.add("hidden");
+}
+
+function showEssentialsPath(): void {
+  $("qualifier-entry-fork")?.classList.add("hidden");
+  $("qualifier-full-path")?.classList.add("hidden");
+  $("qualifier-essentials-path")?.classList.remove("hidden");
+  // Mount the essentials Turnstile widget (idempotent; bails if already ok).
+  void mountTurnstileWidget(TURNSTILE_ESSENTIALS_CONTAINER);
+}
+
+function showFullPathWizard(resumeStep?: StepIndex): void {
+  $("qualifier-entry-fork")?.classList.add("hidden");
+  $("qualifier-essentials-path")?.classList.add("hidden");
+  $("qualifier-full-path")?.classList.remove("hidden");
+  // Make sure the progress meter + skip link are visible again (they may have
+  // been hidden by a prior outcome reveal in the same page view).
+  $("qualifier-progress-container")?.classList.remove("hidden");
+  setSkipLinkVisible(true);
+  // showStep handles progress bar/label + Turnstile mount for step 6.
+  showStep((resumeStep || state.step || 1) as StepIndex);
+}
+
+/* ------------------------------------------------------------------ */
+/* Essentials path: one-screen submit                                  */
+/* ------------------------------------------------------------------ */
+/*
+ * Neutral, allow-list-valid qualifier answers the essentials form does NOT
+ * collect. The server REQUIRES qualifierAnswers (400 "qualifierAnswers is
+ * required.") and validates every field against its allow-lists, AND the
+ * returned fit tier decides whether the calendar reveals. These values are
+ * chosen to:
+ *   - pass validateQualifierAnswers (each is on the server allow-list),
+ *   - compute to MEDIUM (so showOutcome reveals the Cal embed), never
+ *     DISQUALIFY/LOW (which would hide it) and never a falsely-HIGH label.
+ * Reasoning: role "Owner/Founder" is non-senior (so HIGH is impossible) and
+ * non-disqualifying; challenge "Other" + empty systems are honest "unknown"
+ * defaults; teamSize "6-15" avoids the 1-5+Other LOW rule; timeline
+ * "This quarter" avoids the "Just researching" LOW/DISQUALIFY rules. The
+ * visitor's real intent is captured verbatim in additionalNotes. David sees
+ * the lead in #discovery-bookings flagged with their free-text answer.
+ */
+const ESSENTIALS_NEUTRAL_ANSWERS = {
+  role: "Owner/Founder",
+  primaryChallenge: "Other",
+  primarySystems: [] as string[],
+  teamSize: "6-15",
+  timeline: "This quarter",
+};
+
+function bindEssentialsPath(): void {
+  // Consent gate: submit disabled until the box is checked (same pattern as
+  // step 6). Server backstops this so a tampered DOM still gets rejected.
+  const consentBox = $("essentials-consent") as HTMLInputElement | null;
+  const submitBtn = $("essentials-submit") as HTMLButtonElement | null;
+  if (consentBox && submitBtn) {
+    submitBtn.disabled = !consentBox.checked;
+    consentBox.addEventListener("change", () => {
+      submitBtn.disabled = !consentBox.checked;
+      if (consentBox.checked) setError("essentials-consent", null);
+    });
+  }
+  $("essentials-submit")?.addEventListener("click", () => void submitEssentials());
+}
+
+async function submitEssentials(): Promise<void> {
+  const name = ($("essentials-name") as HTMLInputElement | null)?.value.trim() ?? "";
+  const email = ($("essentials-email") as HTMLInputElement | null)?.value.trim() ?? "";
+  const company = ($("essentials-company") as HTMLInputElement | null)?.value.trim() ?? "";
+  const notes = ($("essentials-notes") as HTMLTextAreaElement | null)?.value.trim() ?? "";
+
+  setError("essentials", null);
+  setError("essentials-email", null);
+  setError("essentials-company", null);
+  setError("essentials-notes", null);
+  setError("essentials-consent", null);
+
+  // Consent gate (hard stop). Re-checked here in case the DOM was tampered.
+  const consentBox = $("essentials-consent") as HTMLInputElement | null;
+  if (!consentBox || !consentBox.checked) {
+    setError(
+      "essentials-consent",
+      "Please confirm you have read and agree to the Terms & Conditions and Privacy Policy.",
+    );
+    return;
+  }
+
+  // Required fields (Name / Work Email / Company are server-required; the
+  // free-text "what would you like automated" is required here so the lead
+  // carries intent; it rides into additionalNotes).
+  if (!name) {
+    setError("essentials", "Please enter your name.");
+    return;
+  }
+  if (!email) {
+    setError("essentials-email", "Please enter your work email.");
+    return;
+  }
+  const emailErr = validateEmailFormat(email);
+  if (emailErr) {
+    setError("essentials-email", emailErr);
+    return;
+  }
+  if (!company) {
+    setError("essentials-company", "Please enter your company name.");
+    return;
+  }
+  const companyErr = validateCompanyNotUrl(company);
+  if (companyErr) {
+    setError("essentials-company", companyErr);
+    return;
+  }
+  if (!notes) {
+    setError("essentials-notes", "Tell us in a sentence what you'd like automated.");
+    return;
+  }
+
+  if (!essentialsTurnstileToken) {
+    const widgetActuallyMounted =
+      getTurnstileStatus(TURNSTILE_ESSENTIALS_CONTAINER) === "ok" &&
+      window.turnstile != null &&
+      essentialsTurnstileWidgetId != null;
+    if (!widgetActuallyMounted) {
+      setError(
+        "essentials",
+        "The spam-check widget didn't load (likely a browser shield / privacy extension). See the red box above for fix instructions, then click 'Retry spam-check'.",
+      );
+    } else {
+      setError(
+        "essentials",
+        "Please complete the spam-check above (click the checkbox), then try again.",
+      );
+    }
+    return;
+  }
+
+  const submitBtn = $("essentials-submit") as HTMLButtonElement | null;
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting…";
+  }
+
+  const attribution = captureAttribution();
+
+  // Build the payload reusing submitWizard's shape. qualifierAnswers carries
+  // the neutral allow-list-valid set (see ESSENTIALS_NEUTRAL_ANSWERS rationale);
+  // the visitor's real ask goes in additionalNotes.
+  const payload = {
+    source: "discovery_qualifier",
+    name,
+    email,
+    company,
+    additionalNotes: notes || undefined,
+    qualifierAnswers: {
+      role: ESSENTIALS_NEUTRAL_ANSWERS.role,
+      primaryChallenge: ESSENTIALS_NEUTRAL_ANSWERS.primaryChallenge,
+      primarySystems: ESSENTIALS_NEUTRAL_ANSWERS.primarySystems,
+      teamSize: ESSENTIALS_NEUTRAL_ANSWERS.teamSize,
+      timeline: ESSENTIALS_NEUTRAL_ANSWERS.timeline,
+    },
+    attribution,
+    turnstileToken: essentialsTurnstileToken,
+    fromContext: state.fromContext,
+    consent: {
+      consentGiven: true,
+      termsVersion: TERMS_VERSION,
+      privacyVersion: PRIVACY_VERSION,
+      assentText: CONSENT_ASSENT_TEXT,
+      formName: CONSENT_FORM_NAME,
+      clientTimestamp: new Date().toISOString(),
+    },
+  };
+
+  let serverTier: FitTier | null = null;
+  let serverError: string | null = null;
+  let response: Response | null = null;
+
+  try {
+    response = await fetch(
+      `${COCKPIT_ORIGIN}/api/warm-intake/discovery-qualifier`,
+      {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[discovery-qualifier] essentials fetch failed:", err);
+    serverError =
+      "Couldn't reach the booking service. If you're on Brave or a privacy browser, try lowering Shields for sales.forgerpa.com and retry.";
+  }
+
+  if (response && !serverError) {
+    let parsed: { tier?: FitTier; error?: string } | null = null;
+    try {
+      parsed = (await response.json()) as { tier?: FitTier; error?: string };
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("[discovery-qualifier] essentials response parse failed:", err);
+      serverError = `Booking service responded with HTTP ${response.status} (no JSON body). Please try again, or email sales@forgerpa.com.`;
+    }
+    if (parsed) {
+      if (response.ok && parsed.tier) {
+        serverTier = parsed.tier;
+      } else {
+        serverError =
+          parsed.error ||
+          `Submission failed (HTTP ${response.status}). Please try again.`;
+      }
+    }
+  }
+
+  if (serverError) {
+    setError("essentials", serverError);
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit and book";
+    }
+    if (essentialsTurnstileWidgetId && window.turnstile) {
+      window.turnstile.reset(essentialsTurnstileWidgetId);
+      essentialsTurnstileToken = null;
+    }
+    return;
+  }
+
+  // Success: stash name/email so the Cal.com prefill in initCalInlineEmbed
+  // works, then reveal the calendar via the shared outcome path. We send a
+  // neutral set so the server returns MEDIUM in practice; default to MEDIUM if
+  // for any reason the tier is absent.
+  state.contact.name = name;
+  state.contact.email = email;
+  const finalTier = serverTier || "MEDIUM";
+  state.computedTier = finalTier;
+  state.completedAt = Date.now();
+  showOutcome(finalTier);
+  clearState();
 }
 
 /* ------------------------------------------------------------------ */
@@ -519,13 +810,7 @@ async function detectBrave(): Promise<boolean> {
  * Show the Brave-Shields warning banner inside step 6. Idempotent —
  * checks for an existing banner node before inserting.
  */
-function showBraveWarning(): void {
-  const step6 = $$("[data-qualifier-step]").find(
-    (el) => el.getAttribute("data-qualifier-step") === "6",
-  );
-  if (!step6) return;
-  if (step6.querySelector("[data-brave-warning]")) return; // already shown
-
+function braveWarningNode(): HTMLDivElement {
   const banner = document.createElement("div");
   banner.setAttribute("data-brave-warning", "true");
   banner.className =
@@ -542,8 +827,23 @@ function showBraveWarning(): void {
       below the spam-check will give you a Retry button.
     </p>
   `;
-  // Insert at the very top of step 6's content, before the h3.
-  step6.insertBefore(banner, step6.firstChild);
+  return banner;
+}
+
+function showBraveWarning(): void {
+  // Full wizard: insert at the top of step 6's content.
+  const step6 = $$("[data-qualifier-step]").find(
+    (el) => el.getAttribute("data-qualifier-step") === "6",
+  );
+  if (step6 && !step6.querySelector("[data-brave-warning]")) {
+    step6.insertBefore(braveWarningNode(), step6.firstChild);
+  }
+  // Essentials path: insert at the top of the essentials panel so the warning
+  // appears there too (the essentials submit hits the same Turnstile + POST).
+  const essentials = $("qualifier-essentials-path");
+  if (essentials && !essentials.querySelector("[data-brave-warning]")) {
+    essentials.insertBefore(braveWarningNode(), essentials.firstChild);
+  }
 }
 
 /**
@@ -553,10 +853,24 @@ function showBraveWarning(): void {
  * load from challenges.cloudflare.com).
  */
 type TurnstileMountStatus = "ok" | "site-key-fetch-failed" | "script-blocked" | "render-failed";
-let turnstileMountStatus: TurnstileMountStatus | "pending" = "pending";
 
-function renderTurnstileFailureBlock(reason: TurnstileMountStatus): void {
-  const container = $("qualifier-turnstile");
+// Mount status tracked PER container so the wizard widget and the essentials
+// widget don't clobber each other's state. submitWizard() reads the wizard
+// container's status; submitEssentials() reads the essentials container's.
+const turnstileMountStatusByContainer: Record<string, TurnstileMountStatus | "pending"> = {
+  [TURNSTILE_WIZARD_CONTAINER]: "pending",
+  [TURNSTILE_ESSENTIALS_CONTAINER]: "pending",
+};
+
+function getTurnstileStatus(containerId: string): TurnstileMountStatus | "pending" {
+  return turnstileMountStatusByContainer[containerId] ?? "pending";
+}
+
+function renderTurnstileFailureBlock(
+  reason: TurnstileMountStatus,
+  containerId: string,
+): void {
+  const container = $(containerId);
   if (!container) return;
   // Wipe whatever's in the container (could be empty, could be a previous
   // attempt's residual node).
@@ -591,16 +905,18 @@ function renderTurnstileFailureBlock(reason: TurnstileMountStatus): void {
   retry.textContent = "Retry spam-check";
   retry.addEventListener("click", () => {
     container.innerHTML = "";
-    turnstileMountStatus = "pending";
-    void mountTurnstileWidget();
+    turnstileMountStatusByContainer[containerId] = "pending";
+    void mountTurnstileWidget(containerId);
   });
   container.appendChild(retry);
 }
 
-async function mountTurnstileWidget(): Promise<void> {
-  const container = $("qualifier-turnstile");
+async function mountTurnstileWidget(
+  containerId: string = TURNSTILE_WIZARD_CONTAINER,
+): Promise<void> {
+  const container = $(containerId);
   if (!container) return;
-  if (container.hasChildNodes() && turnstileMountStatus === "ok") return; // already mounted successfully
+  if (container.hasChildNodes() && getTurnstileStatus(containerId) === "ok") return; // already mounted successfully
 
   // Fetch site key from cockpit
   let siteKey: string | null = null;
@@ -616,8 +932,8 @@ async function mountTurnstileWidget(): Promise<void> {
     /* will fall through to failure handling below */
   }
   if (!siteKey) {
-    turnstileMountStatus = "site-key-fetch-failed";
-    renderTurnstileFailureBlock(turnstileMountStatus);
+    turnstileMountStatusByContainer[containerId] = "site-key-fetch-failed";
+    renderTurnstileFailureBlock("site-key-fetch-failed", containerId);
     return;
   }
 
@@ -662,8 +978,8 @@ async function mountTurnstileWidget(): Promise<void> {
       document.head.appendChild(script);
     });
     if (!scriptLoaded) {
-      turnstileMountStatus = "script-blocked";
-      renderTurnstileFailureBlock(turnstileMountStatus);
+      turnstileMountStatusByContainer[containerId] = "script-blocked";
+      renderTurnstileFailureBlock("script-blocked", containerId);
       return;
     }
   }
@@ -672,28 +988,41 @@ async function mountTurnstileWidget(): Promise<void> {
   // because the script body was tampered/blocked. Treat that the same as
   // a script-load failure.
   if (!window.turnstile) {
-    turnstileMountStatus = "script-blocked";
-    renderTurnstileFailureBlock(turnstileMountStatus);
+    turnstileMountStatusByContainer[containerId] = "script-blocked";
+    renderTurnstileFailureBlock("script-blocked", containerId);
     return;
   }
 
   try {
-    turnstileWidgetId = window.turnstile.render(`#${container.id}`, {
+    const widgetId = window.turnstile.render(`#${container.id}`, {
       sitekey: siteKey,
       theme: "light",
       callback: (token: string) => {
-        turnstileToken = token;
+        if (containerId === TURNSTILE_ESSENTIALS_CONTAINER) {
+          essentialsTurnstileToken = token;
+        } else {
+          turnstileToken = token;
+        }
       },
       "error-callback": () => {
-        turnstileToken = null;
+        if (containerId === TURNSTILE_ESSENTIALS_CONTAINER) {
+          essentialsTurnstileToken = null;
+        } else {
+          turnstileToken = null;
+        }
       },
     });
-    turnstileMountStatus = "ok";
+    if (containerId === TURNSTILE_ESSENTIALS_CONTAINER) {
+      essentialsTurnstileWidgetId = widgetId;
+    } else {
+      turnstileWidgetId = widgetId;
+    }
+    turnstileMountStatusByContainer[containerId] = "ok";
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error("[discovery-qualifier] turnstile.render threw:", err);
-    turnstileMountStatus = "render-failed";
-    renderTurnstileFailureBlock(turnstileMountStatus);
+    turnstileMountStatusByContainer[containerId] = "render-failed";
+    renderTurnstileFailureBlock("render-failed", containerId);
     return;
   }
 }
@@ -763,7 +1092,7 @@ async function submitWizard(): Promise<void> {
     // it." The former needs an actionable fix; the latter just needs a
     // nudge to interact with the widget.
     const widgetActuallyMounted =
-      turnstileMountStatus === "ok" &&
+      getTurnstileStatus(TURNSTILE_WIZARD_CONTAINER) === "ok" &&
       window.turnstile != null &&
       turnstileWidgetId != null;
     if (!widgetActuallyMounted) {
@@ -1049,26 +1378,53 @@ export function initDiscoveryQualifier(): void {
   bindStep4();
   bindStep5();
   bindStep6();
+  bindEssentialsPath();
 
-  // Secondary skip-to-calendar link. Visible only while the wizard is being
-  // answered (a returning visitor who already submitted lands on an outcome,
-  // where showOutcome hides it). One click reveals the calendar directly.
+  // Entry-fork buttons.
+  $("qualifier-fork-essentials")?.addEventListener("click", () => showEssentialsPath());
+  $("qualifier-fork-straight")?.addEventListener("click", () => skipToCalendar());
+  $("qualifier-fork-full")?.addEventListener("click", () => showFullPathWizard());
+
+  // "Back to options" links on each path (essentials + full wizard).
+  $$("[data-back-to-options]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      showEntryFork();
+    });
+  });
+
+  // Secondary skip-to-calendar link inside the wizard. Visible only while the
+  // wizard is being answered (showOutcome hides it on any outcome). One click
+  // reveals the calendar directly.
   $("qualifier-skip-to-calendar")?.addEventListener("click", (e) => {
     e.preventDefault();
     skipToCalendar();
   });
 
-  // Resume at the saved step (default 1).
-  showStep((state.step || 1) as StepIndex);
+  // Default view = the entry fork. Exception: a visitor who was MID-WIZARD in
+  // a prior session (has in-progress answers, has NOT completed) resumes the
+  // full wizard at their saved step so they don't lose progress. A completed
+  // prior state does NOT auto-reveal the calendar (a booking needs a fresh
+  // submit), so those visitors also start at the fork.
+  const midWizard =
+    !state.completedAt &&
+    (((state.step ?? 1) > 1) ||
+      !!state.answers.role ||
+      !!state.answers.primaryChallenge ||
+      (state.answers.primarySystems?.length ?? 0) > 0 ||
+      !!state.answers.teamSize ||
+      !!state.answers.timeline);
 
-  // If the visitor already completed the wizard in a prior session (state was
-  // restored as an outcome), don't show the skip link over the calendar.
-  if (state.completedAt) setSkipLinkVisible(false);
+  if (midWizard) {
+    showFullPathWizard((state.step || 1) as StepIndex);
+  } else {
+    showEntryFork();
+  }
 
-  // Brave detection runs async + fire-and-forget — the banner appears
-  // inside step 6 if the user is on Brave. Showing it on init (vs. only
-  // when they reach step 6) is fine because the step 6 DOM is in the
-  // document from the start, just hidden.
+  // Brave detection runs async + fire-and-forget; the banner appears inside
+  // step 6 AND the essentials panel if the user is on Brave. Showing it on init
+  // (vs. only when those views appear) is fine because both are in the document
+  // from the start, just hidden.
   void detectBrave().then((isBrave) => {
     if (isBrave) showBraveWarning();
   });
