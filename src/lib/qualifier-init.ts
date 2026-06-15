@@ -278,29 +278,15 @@ function showFullPathWizard(resumeStep?: StepIndex): void {
 /* Essentials path: one-screen submit                                  */
 /* ------------------------------------------------------------------ */
 /*
- * Neutral, allow-list-valid qualifier answers the essentials form does NOT
- * collect. The server REQUIRES qualifierAnswers (400 "qualifierAnswers is
- * required.") and validates every field against its allow-lists, AND the
- * returned fit tier decides whether the calendar reveals. These values are
- * chosen to:
- *   - pass validateQualifierAnswers (each is on the server allow-list),
- *   - compute to MEDIUM (so showOutcome reveals the Cal embed), never
- *     DISQUALIFY/LOW (which would hide it) and never a falsely-HIGH label.
- * Reasoning: role "Owner/Founder" is non-senior (so HIGH is impossible) and
- * non-disqualifying; challenge "Other" + empty systems are honest "unknown"
- * defaults; teamSize "6-15" avoids the 1-5+Other LOW rule; timeline
- * "This quarter" avoids the "Just researching" LOW/DISQUALIFY rules. The
- * visitor's real intent is captured verbatim in additionalNotes. David sees
- * the lead in #discovery-bookings flagged with their free-text answer.
+ * The essentials form collects only name / work email / company / free-text
+ * "what would you like automated". It does NOT collect the six qualifier
+ * answers, and it no longer fabricates a synthetic set to satisfy the server.
+ * Instead the POST carries `essentials: true`; the server keys on that to skip
+ * qualifier validation, set the fit tier to MEDIUM directly (the tier that
+ * reveals the calendar), and persist the lead with no fake profile fields. The
+ * visitor's real intent is captured verbatim in additionalNotes, and David sees
+ * the lead in #discovery-bookings with no fabricated role/challenge/systems.
  */
-const ESSENTIALS_NEUTRAL_ANSWERS = {
-  role: "Owner/Founder",
-  primaryChallenge: "Other",
-  primarySystems: [] as string[],
-  teamSize: "6-15",
-  timeline: "This quarter",
-};
-
 function bindEssentialsPath(): void {
   // Consent gate: submit disabled until the box is checked (same pattern as
   // step 6). Server backstops this so a tampered DOM still gets rejected.
@@ -395,22 +381,23 @@ async function submitEssentials(): Promise<void> {
 
   const attribution = captureAttribution();
 
-  // Build the payload reusing submitWizard's shape. qualifierAnswers carries
-  // the neutral allow-list-valid set (see ESSENTIALS_NEUTRAL_ANSWERS rationale);
-  // the visitor's real ask goes in additionalNotes.
+  // Build the payload reusing submitWizard's shape, with two deliberate
+  // differences for the essentials path:
+  //   1. NO qualifierAnswers field at all — the essentials form does not
+  //      collect them, so we no longer fabricate a synthetic allow-list-valid
+  //      set. The visitor's real ask is carried verbatim in additionalNotes.
+  //   2. `essentials: true` — the marker the server keys on to skip qualifier
+  //      validation, set the fit tier to MEDIUM directly (which reveals the
+  //      calendar), and persist the lead with no fake profile fields.
+  // Everything else (name/email/company/additionalNotes/consent/turnstileToken/
+  // attribution(gclid)/fromContext) is identical to the full wizard's submit.
   const payload = {
     source: "discovery_qualifier",
+    essentials: true,
     name,
     email,
     company,
     additionalNotes: notes || undefined,
-    qualifierAnswers: {
-      role: ESSENTIALS_NEUTRAL_ANSWERS.role,
-      primaryChallenge: ESSENTIALS_NEUTRAL_ANSWERS.primaryChallenge,
-      primarySystems: ESSENTIALS_NEUTRAL_ANSWERS.primarySystems,
-      teamSize: ESSENTIALS_NEUTRAL_ANSWERS.teamSize,
-      timeline: ESSENTIALS_NEUTRAL_ANSWERS.timeline,
-    },
     attribution,
     turnstileToken: essentialsTurnstileToken,
     fromContext: state.fromContext,
