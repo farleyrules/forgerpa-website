@@ -1,0 +1,172 @@
+---
+import IndustrySolutions from '../../components/IndustrySolutions.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Manufacturing Finance & Operations Automation',
+  serviceType: 'Manufacturing Finance Automation',
+  description:
+    'Finance and operations automation for manufacturers: plant and month-end close, cost accounting and standard-cost rolls, BOM and WIP variance analysis, inventory valuation, AP and AR, shop-floor-data-to-GL reconciliation, and multi-plant consolidation, with full lineage and audit-ready evidence.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/industries/manufacturing-finance',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Which manufacturing finance processes do you automate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Plant and corporate month-end close, cost accounting automation (standard-cost rolls, cost-center and labor-rate updates), BOM and WIP variance analysis, inventory valuation and reserve support, AP and AR for manufacturers, and shop-floor-data-to-GL reconciliation. On the operations side we handle materials and receiving tie-outs, production-order settlement support, purchase-price-variance and freight-in workflows, and multi-plant consolidation, all with audit columns and rerunnable batches.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you work with ERPs like QAD, Infor, Plex, SAP, and NetSuite?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. We speak the same languages as the systems manufacturers run (QAD, Infor, Plex, SAP, and NetSuite), plus MES and shop-floor data feeds, materials and warehouse movements, and the heavy Excel and Power Query that still glues plant reporting together. We describe integrations generically until an NDA and discovery define your exact landscape and authoritative sources.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Will automation hold up through plant and month-end close?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'That is the design goal. We use sandbox, QA, and production patterns, logging, and rerunnable batches so close-critical jobs (cost rolls, variance packs, inventory valuation, consolidation) behave predictably across plants and under high transaction volume. Deliverables are built for production: audit columns, robot or service identities, and documentation your finance and cost-accounting teams can own.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you set standard costs or sign off on inventory valuation for us?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Automation prepares and controls the data; your cost-accounting and controllership teams set standards and approve inventory valuation, reserves, and the financial statements. We make the standard-cost roll, the variance analysis, and the valuation worksheets repeatable, logged, and audit-ready, so your team reviews evidence instead of rebuilding spreadsheets each period.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What value does finance automation typically unlock for manufacturers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Recovered close-cycle capacity and tighter cost control. A single-plant manufacturer can typically recover one to three weeks of finance and cost-accounting time per month, and multi-plant groups considerably more as consolidation, intercompany, and per-plant variance reconciliation compound. The standard-cost roll and the variance pack, often the most painful recurring exercises, tend to move from a multi-day scramble to a scheduled, reviewable run. Your specific numbers fall out of an assessment.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is the work priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We typically begin with a fixed-fee automation assessment so ROI, systems, and controls are explicit before any build, then price development as a fixed-fee project per solution or phase. Change orders and ongoing advisory work are billed hourly under an active engagement. Fixed-fee project pricing is the default.',
+      },
+    },
+  ],
+};
+---
+
+<IndustrySolutions
+  serviceSchema={serviceSchema}
+  faqSchema={faqSchema}
+  title="Manufacturing Finance Automation | Forge RPA"
+  metaDescription="Manufacturing finance automation: plant and month-end close, cost accounting automation, standard cost roll automation, BOM and WIP automation, inventory valuation, AP and AR, and ERP data flows (QAD, Infor, Plex, SAP, NetSuite)."
+  heroTitle="Manufacturing Finance &amp; Operations"
+  heroSubtitle="Manufacturing finance runs on cost accuracy, tight close cycles, and shop-floor data that has to reconcile to the ledger. We deliver finance-grade manufacturing finance and operations automation, AI-fast: automated close, cost-accounting automation, variance reporting, and the ERP data flows that feed them, with full audit trails and outputs your teams can defend."
+  audience={[
+    'Plant Controller, Corporate Controller, and VP Finance',
+    'Cost accounting and FP&A leads',
+    'AP and AR managers in a manufacturing environment',
+    'Operations and supply chain partners where shop-floor data touches finance',
+    'ERP and finance IT teams bridging plant feeds into the ledger',
+  ]}
+  pains={[
+    {
+      title: 'Plant and Month-End Close',
+      body:
+        'Accelerate manufacturing month-end close with reconciliations, accrual prep, and reporting packs across plants, built so close-critical jobs run predictably and on schedule rather than as a multi-day scramble.',
+    },
+    {
+      title: 'Cost Accounting and Standard-Cost Rolls',
+      body:
+        'Cost accounting automation for recurring standard cost roll automation, cost-center and labor-rate updates, and overhead-rate refreshes, with versioned inputs and clear audit columns so your cost team reviews instead of rebuilds.',
+    },
+    {
+      title: 'BOM and WIP Variance Analysis',
+      body:
+        'BOM and WIP automation that ties bills of material and work-in-process movements to expected cost, surfaces purchase-price, usage, and labor variances, and produces a reviewable variance pack each period.',
+    },
+    {
+      title: 'Inventory Valuation',
+      body:
+        'Inventory valuation automation: scheduled roll-forwards, reserve and obsolescence support worksheets, and tie-outs between perpetual and GL inventory, scoped with your controllership team who retain sign-off.',
+    },
+    {
+      title: 'AP and AR for Manufacturers',
+      body:
+        'Manufacturing AP automation (three-way-match prep, freight-in and PPV handling, vendor statement reconciliation) and AR workflows (cash application, deductions and chargeback prep) built for high transaction volume.',
+    },
+    {
+      title: 'Shop-Floor-Data-to-GL Reconciliation',
+      body:
+        'Scheduled alignment between MES and shop-floor production data and GL or subledger postings, with variance thresholds, lineage, and escalation lists before posting waves.',
+    },
+    {
+      title: 'Multi-Plant Consolidation',
+      body:
+        'Intercompany matching, eliminations support, and consolidated reporting across plants and entities, with clear mapping from each plant export to the consolidated view.',
+    },
+  ]}
+  operationsPains={[
+    {
+      title: 'Materials, Receiving, and Inventory Bridges',
+      body:
+        'Scheduled matches between warehouse or receiving movement files and finance subledger expectations, with exception lists for operations and cost accounting before posting waves.',
+    },
+    {
+      title: 'Production-Order Settlement Support',
+      body:
+        'Aggregating completed production orders and their actual-vs-standard cost into settlement-ready buckets with document references, finance still signs off; automation reduces the month-end scavenger hunt.',
+    },
+    {
+      title: 'Procurement and Vendor Master Hygiene',
+      body:
+        'Vendor master touch-ups, PO closeout sweeps, and recurring catalog extracts that keep procure-to-pay and operations aligned before close.',
+    },
+    {
+      title: 'Governed Power BI Dashboards',
+      body:
+        'Refreshed-on-schedule cost, variance, inventory, and close-status dashboards built on governed extracts, one source of truth for plant and corporate finance instead of competing spreadsheets.',
+    },
+  ]}
+  systemsBlurb="We speak the same languages as the systems manufacturers run (QAD, Infor, Plex, SAP, and NetSuite for ERP data flows), plus MES and shop-floor feeds, materials and warehouse movements, and the heavy Excel, VBA, and Power Query that still glues plant reporting together. We describe integrations generically until an NDA and discovery define your exact landscape and authoritative sources."
+  proofBlurb="Our lead engineer built 100+ intelligent automations across finance and operations at a Fortune 500 manufacturer, so manufacturing close, cost, and shop-floor-to-ledger workflows are home turf. We pair that 30-year finance and accounting background with automation engineering, then begin with an automation assessment or focused discovery so ROI, systems, and controls are explicit before build. Deliverables are designed for production: audit columns, robot or service identities, and documentation your finance and cost-accounting teams can own."
+  disclaimer="Automation supports your controls; your cost-accounting and controllership teams set standard costs and retain sign-off on inventory valuation, reserves, and the financial statements. We do not provide engineering, safety, or environmental compliance advice. We prepare reconciled files and evidence trails; your finance leadership approves what ships."
+  bookingSource="industries-manufacturing-finance"
+  valueHeading="Why automation value shows up differently here"
+  valueBullets={[
+    'Manufacturing finance lives in **cost accuracy and variance control**; leadership cares about a clean standard-cost roll and a defensible variance pack, not “robots for robots’ sake.”',
+    'Shop-floor, materials, and cost data touch **many hands**; governed handoffs reduce rework between operations and finance and keep inventory tied to the ledger.',
+    'Having built **100+ automations at a Fortune 500 manufacturer**, we speak plant-finance and cost-accounting language first, then ROI.',
+  ]}
+  scaleScenarios={{
+    midMarket: {
+      label: 'Single-plant or small-group manufacturers ($50M-$500M revenue)',
+      body: 'A finance and cost-accounting team at this scale can typically recover 1 to 3 weeks of monthly capacity, about $135,000 to $400,000 per year at blended fully-loaded labor cost ($65-$95 per hour). The standard-cost roll, inventory valuation, and the monthly variance pack typically compress from a multi-day scramble to a scheduled, reviewable run.',
+    },
+    enterprise: {
+      label: 'Multi-plant manufacturing groups ($1B+ revenue)',
+      body: 'Recovered capacity at this scale can reach 4 to 8 weeks of monthly team time (about $400,000 to $1.2 million per year) as multi-plant consolidation, intercompany, and per-plant variance reconciliation compound. Standardizing the cost roll and the close calendar across plants, plus earlier financial visibility for capital and sourcing decisions, layers value on top of the recovered hours.',
+    },
+  }}
+/>
