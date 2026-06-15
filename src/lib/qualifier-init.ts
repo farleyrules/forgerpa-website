@@ -90,7 +90,7 @@ let turnstileToken: string | null = null;
 // Essentials-path Turnstile is a SEPARATE widget instance (its own container,
 // its own widget id + token). It reuses the exact same mount/fetch/failure
 // machinery as the full wizard via mountTurnstileWidget(containerId), so the
-// Brave-shield warning + retry/failure block behave identically.
+// retry/failure block behaves identically.
 let essentialsTurnstileWidgetId: string | null = null;
 let essentialsTurnstileToken: string | null = null;
 
@@ -767,73 +767,6 @@ function bindStep6(): void {
 }
 
 /**
- * Brave detection. The Brave browser exposes a `navigator.brave` object
- * with an `isBrave()` async method that returns true on Brave. We use
- * this to show a preemptive warning ABOVE step 6 (before the user hits
- * submit and hits the existing post-failure error message), since
- * Brave Shields aggressively blocks the Cloudflare Turnstile widget AND
- * the cross-origin POST to sales.forgerpa.com.
- *
- * Returns a Promise<boolean>. Resolves false on any error (e.g.,
- * navigator.brave undefined, isBrave throws, etc.) — meaning we err on
- * the side of NOT showing the warning to non-Brave users.
- */
-interface BraveNavigator extends Navigator {
-  brave?: { isBrave?: () => Promise<boolean> };
-}
-
-async function detectBrave(): Promise<boolean> {
-  if (typeof navigator === "undefined") return false;
-  const nav = navigator as BraveNavigator;
-  try {
-    const isBrave = await nav.brave?.isBrave?.();
-    return isBrave === true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Show the Brave-Shields warning banner inside step 6. Idempotent —
- * checks for an existing banner node before inserting.
- */
-function braveWarningNode(): HTMLDivElement {
-  const banner = document.createElement("div");
-  banner.setAttribute("data-brave-warning", "true");
-  banner.className =
-    "mb-6 rounded-lg border border-amber-400 bg-amber-50 px-4 py-3 text-sm text-amber-900";
-  banner.innerHTML = `
-    <p class="font-semibold m-0">Brave browser detected</p>
-    <p class="mt-2 mb-0">
-      Brave Shields blocks the spam-check widget and the form submission.
-      Before you submit, click the
-      <span class="font-semibold">Brave lion icon</span>
-      in your address bar and toggle
-      <span class="font-semibold">Shields OFF for this site</span>.
-      If you submit first and the widget didn't load, a red error box
-      below the spam-check will give you a Retry button.
-    </p>
-  `;
-  return banner;
-}
-
-function showBraveWarning(): void {
-  // Full wizard: insert at the top of step 6's content.
-  const step6 = $$("[data-qualifier-step]").find(
-    (el) => el.getAttribute("data-qualifier-step") === "6",
-  );
-  if (step6 && !step6.querySelector("[data-brave-warning]")) {
-    step6.insertBefore(braveWarningNode(), step6.firstChild);
-  }
-  // Essentials path: insert at the top of the essentials panel so the warning
-  // appears there too (the essentials submit hits the same Turnstile + POST).
-  const essentials = $("qualifier-essentials-path");
-  if (essentials && !essentials.querySelector("[data-brave-warning]")) {
-    essentials.insertBefore(braveWarningNode(), essentials.firstChild);
-  }
-}
-
-/**
  * Status of the Turnstile widget mount. Used by submitWizard() to give a
  * better error message when the widget never actually rendered (most
  * commonly because Brave Shields / a privacy extension blocked the script
@@ -1407,14 +1340,6 @@ export function initDiscoveryQualifier(): void {
   } else {
     showEntryFork();
   }
-
-  // Brave detection runs async + fire-and-forget; the banner appears inside
-  // step 6 AND the essentials panel if the user is on Brave. Showing it on init
-  // (vs. only when those views appear) is fine because both are in the document
-  // from the start, just hidden.
-  void detectBrave().then((isBrave) => {
-    if (isBrave) showBraveWarning();
-  });
 }
 
 // Auto-init when imported.
