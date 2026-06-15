@@ -153,37 +153,28 @@ const defaultHeroSubtitle =
               <div id="essentials-turnstile" class="cf-turnstile inline-block"></div>
             </div>
 
-            <div class="mt-6">
-              <label class="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="essentials-consent"
-                  class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-amber focus:ring-amber"
-                />
-                <span class="text-sm text-charcoal">
-                  I have read and agree to the
-                  <a
-                    href="/terms"
-                    target="_blank"
-                    rel="noopener"
-                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-                    >Terms &amp; Conditions</a>
-                  and
-                  <a
-                    href="/privacy"
-                    target="_blank"
-                    rel="noopener"
-                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-                    >Privacy Policy</a>.
-                  <span class="mt-1 block text-xs text-gray-500">Terms &amp; Conditions v1, effective June 1, 2026 · Privacy Policy last updated June 1, 2026.</span>
-                </span>
-              </label>
-              <p id="essentials-consent-error" class="hidden mt-2 text-xs text-red-600"></p>
-            </div>
-
             <p id="essentials-error" class="hidden mt-4 text-sm text-red-600"></p>
 
-            <div class="mt-6 flex justify-end">
+            <!-- Passive consent notice. Submitting implies agreement; there is
+                 no checkbox gate. The legal record is still captured server-side
+                 (see the `consent` object in submitEssentials). -->
+            <div class="mt-6 flex flex-col items-end gap-3">
+              <p class="text-xs text-gray-500 text-right m-0">
+                By booking, you agree to our
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener"
+                  class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                  >Terms</a>
+                and
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener"
+                  class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                  >Privacy Policy</a>.
+              </p>
               <button type="button" id="essentials-submit" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit and Book
               </button>
@@ -350,37 +341,29 @@ const defaultHeroSubtitle =
               <div id="qualifier-turnstile" class="cf-turnstile inline-block"></div>
             </div>
 
-            <div class="mt-6">
-              <label class="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="qualifier-consent"
-                  class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-amber focus:ring-amber"
-                />
-                <span class="text-sm text-charcoal">
-                  I have read and agree to the
-                  <a
-                    href="/terms"
-                    target="_blank"
-                    rel="noopener"
-                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-                    >Terms &amp; Conditions</a>
-                  and
-                  <a
-                    href="/privacy"
-                    target="_blank"
-                    rel="noopener"
-                    class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-                    >Privacy Policy</a>.
-                  <span class="mt-1 block text-xs text-gray-500">Terms &amp; Conditions v1, effective June 1, 2026 · Privacy Policy last updated June 1, 2026.</span>
-                </span>
-              </label>
-              <p id="qualifier-step6-consent-error" class="hidden mt-2 text-xs text-red-600"></p>
-            </div>
-
             <p id="qualifier-step6-error" class="hidden mt-4 text-sm text-red-600"></p>
 
-            <div class="mt-6 flex justify-between items-center">
+            <!-- Passive consent notice. Submitting implies agreement; there is
+                 no checkbox gate. The legal record is still captured server-side
+                 (see the `consent` object in submitWizard). -->
+            <p class="mt-6 text-xs text-gray-500 m-0">
+              By booking, you agree to our
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Terms</a>
+              and
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Privacy Policy</a>.
+            </p>
+
+            <div class="mt-3 flex justify-between items-center">
               <button type="button" id="qualifier-step6-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
               <button type="button" id="qualifier-step6-submit" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit and Book

@@ -47,11 +47,13 @@ import {
 const COCKPIT_ORIGIN = "https://sales.forgerpa.com";
 
 /**
- * Clickwrap consent constants. The version strings travel with the consent
- * payload so the per-submission consent record references the exact document
- * versions displayed at the moment of acceptance (the courts' "version
- * presented controls" pillar). Keep these in sync with the published /terms
- * and /privacy pages.
+ * Passive consent constants. Consent is now implied by submitting the booking
+ * (a small notice reads "By booking, you agree to our Terms and Privacy
+ * Policy"); there is no longer a checkbox gate or a visible version/date line.
+ * The version strings still travel with the consent payload so the per-
+ * submission consent record references the exact document versions that were
+ * live at the moment of submission (the courts' "version presented controls"
+ * pillar). Keep these in sync with the published /terms and /privacy pages.
  *   - TERMS_VERSION: /terms page, effective 2026-06-01.
  *   - PRIVACY_VERSION: /privacy page's effective date (the live page).
  */
@@ -61,8 +63,10 @@ const TERMS_VERSION = "v1 (2026-06-01)";
 // 2026-06-01 when PR #32 materially revised the policy (retention 24mo →
 // 5-6yr, state-neutral framing, T&C reference).
 const PRIVACY_VERSION = "2026-06-01";
+// Matches the passive notice rendered above the submit button on both booking
+// paths. Recorded verbatim in the consent record server-side.
 const CONSENT_ASSENT_TEXT =
-  "I have read and agree to the Terms & Conditions and Privacy Policy.";
+  "By booking, you agree to our Terms and Privacy Policy.";
 const CONSENT_FORM_NAME = "discovery_qualifier";
 
 declare global {
@@ -288,17 +292,11 @@ function showFullPathWizard(resumeStep?: StepIndex): void {
  * the lead in #discovery-bookings with no fabricated role/challenge/systems.
  */
 function bindEssentialsPath(): void {
-  // Consent gate: submit disabled until the box is checked (same pattern as
-  // step 6). Server backstops this so a tampered DOM still gets rejected.
-  const consentBox = $("essentials-consent") as HTMLInputElement | null;
-  const submitBtn = $("essentials-submit") as HTMLButtonElement | null;
-  if (consentBox && submitBtn) {
-    submitBtn.disabled = !consentBox.checked;
-    consentBox.addEventListener("change", () => {
-      submitBtn.disabled = !consentBox.checked;
-      if (consentBox.checked) setError("essentials-consent", null);
-    });
-  }
+  // Consent is now PASSIVE: a notice above the submit button ("By booking, you
+  // agree to our Terms and Privacy Policy"), no checkbox gate. Submitting
+  // implies agreement and a consent record is still POSTed + stored server-side
+  // (see the `consent` object in submitEssentials). So there is no submit-
+  // disabled-until-checked binding here anymore.
   $("essentials-submit")?.addEventListener("click", () => void submitEssentials());
 }
 
@@ -312,17 +310,9 @@ async function submitEssentials(): Promise<void> {
   setError("essentials-email", null);
   setError("essentials-company", null);
   setError("essentials-notes", null);
-  setError("essentials-consent", null);
 
-  // Consent gate (hard stop). Re-checked here in case the DOM was tampered.
-  const consentBox = $("essentials-consent") as HTMLInputElement | null;
-  if (!consentBox || !consentBox.checked) {
-    setError(
-      "essentials-consent",
-      "Please confirm you have read and agree to the Terms & Conditions and Privacy Policy.",
-    );
-    return;
-  }
+  // Consent is passive (no checkbox gate). Submitting implies agreement; the
+  // consent record still rides the POST payload below and is stored server-side.
 
   // Required fields (Name / Work Email / Company are server-required; the
   // free-text "what would you like automated" is required here so the lead
@@ -747,20 +737,11 @@ function bindStep6(): void {
       saveState(state);
     });
   }
-  // Clickwrap consent checkbox. Unchecked by default (never pre-checked).
-  // The submit button is disabled until the box is checked — a client-side
-  // gate that the server-side gate in the cockpit backstops so it can't be
-  // bypassed by editing the DOM.
-  const consentBox = $("qualifier-consent") as HTMLInputElement | null;
-  const submitBtn = $("qualifier-step6-submit") as HTMLButtonElement | null;
-  if (consentBox && submitBtn) {
-    // Reflect the initial (unchecked) state on the button.
-    submitBtn.disabled = !consentBox.checked;
-    consentBox.addEventListener("change", () => {
-      submitBtn.disabled = !consentBox.checked;
-      if (consentBox.checked) setError("qualifier-step6-consent", null);
-    });
-  }
+  // Consent is now PASSIVE: a notice above the submit button ("By booking, you
+  // agree to our Terms and Privacy Policy"), no checkbox gate. Submitting
+  // implies agreement and a consent record is still POSTed + stored server-side
+  // (see the `consent` object in submitWizard). So the submit button is no
+  // longer disabled-until-checked.
 
   $("qualifier-step6-back")?.addEventListener("click", () => showStep(5));
   $("qualifier-step6-submit")?.addEventListener("click", () => void submitWizard());
@@ -960,19 +941,9 @@ async function submitWizard(): Promise<void> {
   setError("qualifier-step6-email", null);
   setError("qualifier-step6-company", null);
   setError("qualifier-step6-phone", null);
-  setError("qualifier-step6-consent", null);
 
-  // Clickwrap consent gate (hard stop). The submit button is disabled until
-  // the box is checked, but re-check here in case the DOM was tampered with.
-  // The cockpit also enforces this server-side.
-  const consentBox = $("qualifier-consent") as HTMLInputElement | null;
-  if (!consentBox || !consentBox.checked) {
-    setError(
-      "qualifier-step6-consent",
-      "Please confirm you have read and agree to the Terms & Conditions and Privacy Policy.",
-    );
-    return;
-  }
+  // Consent is passive (no checkbox gate). Submitting implies agreement; the
+  // consent record still rides the POST payload below and is stored server-side.
 
   // Required fields.
   if (!name) {
