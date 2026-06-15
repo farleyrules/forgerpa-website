@@ -1,0 +1,462 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Audit Automation and Control Testing Services',
+  serviceType: 'Internal Audit and Compliance Automation',
+  description:
+    'Audit automation services for internal audit and compliance teams. SOX automation, control testing automation, audit workflow automation, evidence collection, and continuous monitoring. Built around your GRC tooling and your existing systems by a finance-led team.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/audit-automation',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is audit automation?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Audit automation replaces the manual evidence-gathering and sample-testing that consume an internal audit or SOX program with software and bots that pull populations, run the test logic, and assemble work papers. Instead of an auditor emailing for screenshots and re-performing a control on a 25-item sample, the automation extracts the full population from the source system, applies the control test, flags the exceptions, and packages the evidence. The auditor spends time on judgment and exceptions, not on collecting and re-keying data.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What audit and SOX work can actually be automated?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "The high-volume, rules-based parts. Evidence collection (pulling reports, access lists, journal-entry populations, reconciliations). Control testing where the test is a defined rule (three-way-match exceptions, segregation-of-duties conflicts, journal-entry thresholds, terminated-user access). Work paper assembly and tickmark population. Status tracking across the audit calendar. What stays human is the judgment: scoping, risk assessment, evaluating a control's design, and concluding. We automate the data movement so the judgment gets more attention, not less.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does control testing automation work?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We encode the control test as a rule and run it against the full population from the source system rather than a manual sample. A segregation-of-duties test reads the actual role assignments and flags real conflicts. A journal-entry control tests every entry against your thresholds and approval criteria, not a sample of 25. The output is an exception list with full supporting detail, plus the assembled evidence. You move from sample-based assurance toward full-population testing, which is both stronger and faster once it is built.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does this replace our GRC platform or our auditors?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Neither. If you run a GRC platform such as AuditBoard, Workiva, or a SOX module, we automate the feeds into it: populated tests, collected evidence, and exception data, so the platform stays the system of record and your team stops hand-loading it. And we do not replace auditors; we remove the data-gathering and re-performance that keep them from the judgment work. The control conclusion stays with your audit team. Independence and review responsibilities are unchanged.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is continuous monitoring, and how is it different from periodic testing?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Periodic testing checks a control once a quarter or once a year on a sample. Continuous monitoring runs the same control test automatically on a schedule (nightly, weekly, monthly) against the full population, and surfaces exceptions as they arise instead of at year-end. For the controls that suit it, continuous monitoring turns audit from a backward-looking sample into an early-warning system, and dramatically reduces the year-end crunch. We build it for the controls where it adds value and leave the rest on a periodic cadence.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does an audit automation engagement take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We scope it by control set, not as an open-ended program. A focused first-pass automating evidence collection and testing for a defined group of controls typically delivers a working pipeline in 8 to 12 weeks: discovery and control walkthroughs up front, test-logic build and source-system integration in the middle, then validation against a known period, parallel running, and a 30-day defect warranty. We start with the highest-volume, most repeatable controls and expand from there.',
+      },
+    },
+  ],
+};
+---
+
+<PageLayout
+  title="Audit Automation and Control Testing Services"
+  description="Audit automation services for internal audit and compliance teams. SOX automation, control testing automation, audit workflow automation, and continuous monitoring. Built around your GRC tooling and existing systems."
+  heroTitle="Audit Automation and Control Testing"
+  heroSubtitle="Internal audit and SOX programs lose most of their time to gathering evidence and re-performing controls by hand. We automate the data movement: evidence collection, full-population control testing, work paper assembly, and continuous monitoring, built around your GRC tooling and your existing systems. Finance-led team, fixed-fee project pricing, scoped by control set."
+  heroCta="Book a 30-Min Audit Discovery Call"
+  heroCtaLink="/book?from=audit-automation"
+>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- The pain we solve -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The Audit Pain We Solve</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Internal audit and SOX programs run on manual data movement. An auditor emails a control owner for evidence. The owner exports a report and sends a screenshot. The auditor re-keys it into a work paper, pulls a sample of 25, re-performs the control by hand, and assembles tickmarks. Multiply that across hundreds of controls and a fixed year-end calendar, and most of the team's hours go to collecting and re-formatting data rather than evaluating risk.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          The cost is more than hours. Sample-based testing of 25 items leaves the other thousands unexamined. Evidence requested by email arrives late and stalls the close of an audit. Exceptions surface at year-end, when they are most expensive to remediate. Work papers are inconsistent because every auditor formats them differently. And the senior people you hired for judgment spend their busy season doing data entry.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Audit automation done right pulls the full population, runs the control test, flags the exceptions, and assembles the evidence, on a schedule, into your GRC tooling. It does not replace your auditors' judgment or their independence. It removes the manual gathering and re-performance that keep them from the work only they can do. It requires a partner who understands both the controls and the systems they live in.
+        </p>
+      </div>
+
+      <!-- What we automate -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Automate</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          A working audit automation pipeline has six parts. We deliver them integrated, around your GRC tooling and your existing systems.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            {
+              title: 'Evidence Collection',
+              desc: 'Reports, access lists, journal-entry populations, and reconciliations pulled directly from source systems on a schedule. No more emailing control owners for screenshots that arrive late and re-keying them by hand.',
+            },
+            {
+              title: 'Control Testing',
+              desc: 'The test encoded as a rule and run against the full population, not a sample of 25. Three-way-match exceptions, journal-entry thresholds, approval-evidence checks. The control runs the same way every time, fully documented.',
+            },
+            {
+              title: 'Segregation-of-Duties Testing',
+              desc: 'Actual role and access assignments read from your ERP and applications, then tested against your conflict matrix. Real SoD conflicts and toxic combinations surfaced with full supporting detail, not inferred from a spreadsheet.',
+            },
+            {
+              title: 'Work Paper Assembly',
+              desc: 'Standardized work papers populated automatically: population, test steps, results, exceptions, and tickmarks. Consistent formatting across the whole program, with the source evidence linked, so review is faster and cleaner.',
+            },
+            {
+              title: 'Continuous Monitoring',
+              desc: 'For controls that suit it, the test runs nightly, weekly, or monthly against the full population and surfaces exceptions as they arise, instead of at year-end. Audit shifts from backward-looking sample to early warning.',
+            },
+            {
+              title: 'GRC and System Integration',
+              desc: 'Populated tests, collected evidence, and exception data fed into AuditBoard, Workiva, a SOX module, or your tracker. API-based where supported, RPA-based where it is not. Your GRC platform stays the system of record.',
+            },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Outcomes / ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-4">What Audit Automation Done Right Delivers</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          The outcomes below reflect what audit and compliance teams typically see in the first cycle after automating a control set. They are what we engineer toward, not a promise; your actuals depend on the controls you start with, your source-system access, and the state of the underlying data.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Full-population testing instead of small samples</h3>
+              <p class="text-gray-700 mt-1">Controls run against every transaction, not a sample of 25. Assurance gets stronger and exceptions that a sample would have missed become visible.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">A much lighter evidence-gathering burden</h3>
+              <p class="text-gray-700 mt-1">Evidence is pulled from source systems automatically. The email-and-screenshot cycle largely disappears, and control owners get their time back too.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Exceptions caught early, not at year-end</h3>
+              <p class="text-gray-700 mt-1">Continuous monitoring surfaces control failures as they happen, so remediation starts months earlier and the year-end crunch shrinks.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Consistent, review-ready work papers</h3>
+              <p class="text-gray-700 mt-1">Standardized, auto-populated work papers with linked evidence make review faster, external-audit reliance easier, and the whole program more defensible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How we differ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How This Differs from a GRC Platform Alone</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          If you came here comparing GRC and audit-management platforms, you are weighing systems of record. They are valuable for organizing controls, tracking status, and storing evidence. But they do not pull the evidence from your source systems or run the control tests for you; that work still lands on the audit team. That gap is exactly what we build for: the automation that feeds the platform, not the platform itself. Here is the honest comparison.
+        </p>
+
+        <!-- Desktop table -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Approach</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Best Fit</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Cost Model</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">What It Does for Testing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">GRC / Audit Platform</td>
+                <td class="py-4 px-4 text-gray-700">Organizing controls, tracking status, storing evidence</td>
+                <td class="py-4 px-4 text-gray-700">Annual license per module or seat</td>
+                <td class="py-4 px-4 text-gray-700">Holds the results. Your team still gathers evidence and runs the tests.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Big-4 / Co-Source</td>
+                <td class="py-4 px-4 text-gray-700">Enterprise programs, capacity gaps</td>
+                <td class="py-4 px-4 text-gray-700">Hourly or fixed engagement, often six figures</td>
+                <td class="py-4 px-4 text-gray-700">People do the testing manually. The cost recurs every cycle.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">DIY Scripts and Macros</td>
+                <td class="py-4 px-4 text-gray-700">A motivated analyst on one or two controls</td>
+                <td class="py-4 px-4 text-gray-700">Internal time, hidden maintenance cost</td>
+                <td class="py-4 px-4 text-gray-700">Works until it breaks or its author leaves. Rarely documented or tested.</td>
+              </tr>
+              <tr class="bg-amber/5 border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">
+                  Forge RPA
+                  <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+                </td>
+                <td class="py-4 px-4 text-gray-700"><strong>Internal audit and SOX teams</strong> with high-volume, repeatable control testing</td>
+                <td class="py-4 px-4 text-gray-700">Fixed-fee project, scoped by control set</td>
+                <td class="py-4 px-4 text-gray-700">Automates collection and full-population testing, fed into your platform. You own it.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card stack -->
+        <div class="md:hidden space-y-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">GRC / Audit Platform</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Organizing controls, storing evidence</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Annual license per module or seat</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Testing</dt><dd class="text-gray-700">Holds results; your team still tests</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Big-4 / Co-Source</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Enterprise programs, capacity gaps</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Hourly or fixed, often six figures</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Testing</dt><dd class="text-gray-700">Manual, and the cost recurs each cycle</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">DIY Scripts and Macros</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">A motivated analyst on a few controls</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Internal time, hidden maintenance</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Testing</dt><dd class="text-gray-700">Breaks when its author leaves</dd></div>
+            </dl>
+          </div>
+          <div class="bg-amber/5 border-2 border-amber rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">
+              Forge RPA
+              <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+            </h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700"><strong>Internal audit and SOX teams</strong> with repeatable testing</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Fixed-fee project, scoped by control set</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Testing</dt><dd class="text-gray-700">Automated full-population, fed to your platform. You own it.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement process -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How the Engagement Runs</h2>
+        <div class="space-y-8">
+          {[
+            {
+              step: 'Discovery and Walkthroughs',
+              desc: 'Two-to-three-week pass. Walk through the target controls, document the test logic and evidence sources, inventory the systems and access required, and confirm GRC-tooling fit. Output is a fixed-scope SOW with a control-by-control plan.',
+            },
+            {
+              step: 'Build',
+              desc: 'Evidence collection, test logic, and work paper assembly built and tested against a known period. Weekly demo cadence. We write tests as we build, not at the end. You see working pieces every Friday.',
+            },
+            {
+              step: 'Validation and Cutover',
+              desc: 'Run the automation against a closed period and reconcile to the manual results, then parallel-run for a cycle. Cutover is gated on your audit team signing off, not on a project calendar. Independence and review stay with your team.',
+            },
+            {
+              step: 'Warranty and Hypercare',
+              desc: '30-day defect warranty after cutover. Hourly support after that as you need it. We do not require a retainer to take a support ticket.',
+            },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.step}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Who you're working with -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">Who You're Working With</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          Three decades in financial operations and controllership stand behind this work: the close, reconciliations, internal controls, and the audits, internal and external, that test them. We have sat on both sides of the evidence request, we know which controls are genuinely automatable and which need judgment, and we know which "audit automation" promises survive contact with a real SOX program and a real external auditor.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          The build itself uses Python, API-based integration to your ERP and applications where supported, RPA bots that drive existing screens where it is not, and feeds into your GRC tooling. The work is led by a CPA-trained finance veteran, documented to support auditor reliance, and handed over with the code. You own everything we build.
+        </p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common Audit Automation Questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is audit automation?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Audit automation replaces the manual evidence-gathering and sample-testing that consume an internal audit or SOX program with software and bots that pull populations, run the test logic, and assemble work papers. Instead of an auditor emailing for screenshots and re-performing a control on a 25-item sample, the automation extracts the full population from the source system, applies the control test, flags the exceptions, and packages the evidence. The auditor spends time on judgment and exceptions, not on collecting and re-keying data.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What audit and SOX work can actually be automated?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              The high-volume, rules-based parts. Evidence collection (pulling reports, access lists, journal-entry populations, reconciliations). Control testing where the test is a defined rule (three-way-match exceptions, segregation-of-duties conflicts, journal-entry thresholds, terminated-user access). Work paper assembly and tickmark population. Status tracking across the audit calendar. What stays human is the judgment: scoping, risk assessment, evaluating a control's design, and concluding. We automate the data movement so the judgment gets more attention, not less.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How does control testing automation work?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We encode the control test as a rule and run it against the full population from the source system rather than a manual sample. A segregation-of-duties test reads the actual role assignments and flags real conflicts. A journal-entry control tests every entry against your thresholds and approval criteria, not a sample of 25. The output is an exception list with full supporting detail, plus the assembled evidence. You move from sample-based assurance toward full-population testing, which is both stronger and faster once it is built.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Does this replace our GRC platform or our auditors?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Neither. If you run a GRC platform such as AuditBoard, Workiva, or a SOX module, we automate the feeds into it: populated tests, collected evidence, and exception data, so the platform stays the system of record and your team stops hand-loading it. And we do not replace auditors; we remove the data-gathering and re-performance that keep them from the judgment work. The control conclusion stays with your audit team. Independence and review responsibilities are unchanged.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is continuous monitoring, and how is it different from periodic testing?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Periodic testing checks a control once a quarter or once a year on a sample. Continuous monitoring runs the same control test automatically on a schedule (nightly, weekly, monthly) against the full population, and surfaces exceptions as they arise instead of at year-end. For the controls that suit it, continuous monitoring turns audit from a backward-looking sample into an early-warning system, and dramatically reduces the year-end crunch. We build it for the controls where it adds value and leave the rest on a periodic cadence.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How long does an audit automation engagement take?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We scope it by control set, not as an open-ended program. A focused first-pass automating evidence collection and testing for a defined group of controls typically delivers a working pipeline in 8 to 12 weeks: discovery and control walkthroughs up front, test-logic build and source-system integration in the middle, then validation against a known period, parallel running, and a 30-day defect warranty. We start with the highest-volume, most repeatable controls and expand from there.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Related services -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Related Services</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Audit automation draws on the same engagements below. Strong controls testing depends on understanding how the underlying processes really run, and on the evidence those processes produce.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="/services/process-mining" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Process Mining</h3>
+            <p class="text-gray-600 text-sm mb-4">See how a controlled process actually executes, including the workarounds and exceptions that controls testing needs to account for. Real event data, not the documented ideal.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/accounts-payable-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Accounts Payable Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">A well-controlled AP pipeline produces clean, structured approval and match evidence, which makes the related controls far easier to test automatically.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Automation Assessment</h3>
+            <p class="text-gray-600 text-sm mb-4">Data-driven scoring across the finance and compliance surface. Where you want a ranked, defensible view of which controls and processes to automate first.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Industries -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Industries We Serve for Audit Automation</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Control environments look different in every industry. The regulatory regime, the control density, and the systems vary by sector. Here is how we approach audit automation in each.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a href="/industries/healthcare-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Healthcare Finance</h3>
+            <p class="text-gray-600 text-sm">Multi-entity control environments with high transaction volume and access-governance complexity.</p>
+          </a>
+          <a href="/industries/oil-gas" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Oil and Gas</h3>
+            <p class="text-gray-600 text-sm">JIB and AFE controls, revenue and joint-interest testing, and operator and non-operator evidence.</p>
+          </a>
+          <a href="/industries/utilities-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Utilities</h3>
+            <p class="text-gray-600 text-sm">Regulated controls with project-coded testing and rate-case-supporting evidence requirements.</p>
+          </a>
+          <a href="/industries/insurance-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Insurance</h3>
+            <p class="text-gray-600 text-sm">Statutory-reporting controls, reserve testing, and claims-process control evidence.</p>
+          </a>
+          <a href="/industries/small-business" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Small and Growing Businesses</h3>
+            <p class="text-gray-600 text-sm">Right-sized control testing for teams facing their first SOX readiness or audit without a large internal audit function.</p>
+          </a>
+          <a href="/industries" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">More Industries</h3>
+            <p class="text-gray-600 text-sm">Manufacturing, transportation, restaurants and multi-unit, professional services. See the full overview.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to Automate Evidence Collection and Control Testing?"
+    subtext="Book a free 30-minute discovery call. We will walk through your control set, where the manual testing hours go, and which controls are the fastest wins to automate. You leave with a clear picture even if we never work together."
+    ctaText="Book a 30-Min Audit Discovery Call"
+    ctaLink="/book?from=audit-automation"
+  />
+</PageLayout>

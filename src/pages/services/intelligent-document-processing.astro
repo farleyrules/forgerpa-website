@@ -1,0 +1,462 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Intelligent Document Processing (IDP) Services',
+  serviceType: 'Intelligent Document Processing and Data Extraction',
+  description:
+    'Intelligent document processing services for finance and operations. Invoice OCR, receipt and PDF extraction, AI document classification, and validated data into your ERP. Built with Azure Document Intelligence and targeted models around your existing systems.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/intelligent-document-processing',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is intelligent document processing (IDP)?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Intelligent document processing is the combination of OCR, machine learning, and business rules that turns an unstructured document into validated, structured data your systems can use. Plain OCR reads characters off a page. IDP goes further: it classifies the document type, finds the fields that matter, validates them against your data and your rules, and routes anything it is not confident about to a human. The output is clean data in your ERP, not a pile of scanned images.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is IDP different from plain OCR?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'OCR converts an image into text. That is the easy 60 percent. The hard part is everything after: knowing this is an invoice and not a remittance, finding the invoice number when every vendor formats it differently, reading line items off a table, matching the vendor to your master, and catching the one document in fifty where the total does not foot. IDP wraps OCR in classification, field extraction, validation, and confidence-based human review. The OCR engine is a component; the pipeline around it is the product.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What documents can you extract data from?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The common finance and operations documents: vendor invoices, receipts and expense documents, purchase orders, remittance advices, bills of lading and packing slips, bank and brokerage statements, W-9s and tax forms, and contracts where specific terms need to be captured. If a document arrives by email, portal, EDI, or scan and someone currently keys data off it, it is a candidate. On the discovery call we sort your document mix into clean wins and genuine edge cases.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What technology do you build IDP on?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We build primarily on Azure Document Intelligence (formerly Form Recognizer) for its prebuilt invoice, receipt, and ID models and its custom-model training, and we add targeted models or rules where a document type needs them. We are not locked to one engine; where another OCR or extraction service fits a document class better, we use it. The orchestration, validation, and ERP integration around the model is custom-built to your stack and your rules.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How accurate is the extraction?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Accuracy depends on document quality and how variable your formats are, so we do not quote a single headline number. What matters more is the design: every extracted field carries a confidence score, clean high-confidence documents flow straight through, and anything below your threshold routes to a human review tray before it ever posts. You decide the threshold. That means the pipeline never silently posts a low-confidence guess; the trade-off between automation rate and review volume is a dial you control.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does an IDP engagement take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A focused first-pass engagement on one or two document types, with validation and ERP integration, typically delivers a working pipeline in 6 to 10 weeks. The first 2 to 3 weeks cover discovery, document-sample collection, and model selection. The middle weeks build extraction, validation, and routing against your real documents. The final stretch covers UAT, cutover, and a 30-day defect warranty. Adding more document types or higher-variability formats extends the timeline; we size that in discovery.',
+      },
+    },
+  ],
+};
+---
+
+<PageLayout
+  title="Intelligent Document Processing (IDP) Services"
+  description="Intelligent document processing services for finance and operations. Invoice OCR, receipt and PDF extraction, AI document classification, and validated data into your ERP. Built with Azure Document Intelligence."
+  heroTitle="Intelligent Document Processing"
+  heroSubtitle="Stop keying data off invoices, receipts, and PDFs. We build intelligent document processing around your existing systems: AI document classification, invoice OCR, line-item extraction, validation against your data, and clean output into your ERP. Finance-led team, fixed-fee project pricing, no per-document subscription on the pipeline itself."
+  heroCta="Book a 30-Min IDP Discovery Call"
+  heroCtaLink="/book?from=intelligent-document-processing"
+>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- The pain we solve -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The Document Pain We Solve</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Finance and operations run on documents that arrive in every format imaginable. Invoices come by email, portal, EDI, and paper. Receipts come as phone photos. Statements come as PDFs. Remittances come as faxes someone scans. And for each one, a person opens it, reads it, and keys the fields into a system, because the document does not match a template and no rule quite fits.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          The cost is the keying time, but it is also the keying errors that surface three steps downstream, the cycle-time drag when a backlog of documents waits for a human, and the senior staff who end up doing data entry because they are the only ones who can resolve the ambiguous ones. Most teams have tried a basic OCR tool and found it reads the characters but cannot tell an invoice from a credit memo, cannot find the right total, and cannot be trusted to post unattended.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Intelligent document processing done right classifies the document, extracts the fields that matter, validates them against your data, and posts the clean ones straight through while routing the uncertain ones to a human. It does not require ripping out your ERP. It does not require one rigid template per vendor. It requires a partner who builds the validation and the integration, not just the OCR call.
+        </p>
+      </div>
+
+      <!-- What we automate -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Build</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          A working IDP pipeline has six stages. We ship them integrated, around your existing systems and your real rules.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            {
+              title: 'Document Ingestion',
+              desc: 'Email-in, portal pull, EDI feed, shared-folder drop, and scanned paper land in one queue. Multi-page PDFs split into the right document boundaries. Nothing depends on a vendor sending a perfect file.',
+            },
+            {
+              title: 'AI Classification',
+              desc: 'Each document is identified by type: invoice, receipt, remittance, PO, statement, tax form. Misrouted and mixed-batch documents get sorted before extraction, so the right model runs on the right page.',
+            },
+            {
+              title: 'Field and Line-Item Extraction',
+              desc: 'Header fields and table line items pulled with Azure Document Intelligence prebuilt and custom models. Vendor-agnostic, so a new vendor format does not require a new template. Every field carries a confidence score.',
+            },
+            {
+              title: 'Validation and Business Rules',
+              desc: 'Totals footed, dates sanity-checked, vendor matched to your master, GL coding suggested, duplicates caught. The data is checked against your rules before it is trusted, not after a problem surfaces downstream.',
+            },
+            {
+              title: 'Confidence-Based Human Review',
+              desc: 'High-confidence documents flow straight through. Anything below your threshold routes to a review tray with the document and the extracted fields side by side. You set the dial between automation rate and review volume.',
+            },
+            {
+              title: 'ERP and System Integration',
+              desc: 'Validated data posted to your ERP or downstream system by API where supported, by RPA bot where it is not. NetSuite, SAP, Oracle, Workday, Sage Intacct, Microsoft Dynamics, and others. Your system stays the record.',
+            },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Outcomes / ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-4">What Intelligent Document Processing Done Right Delivers</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          The targets below reflect what teams typically achieve in the first 90 days after cutover with a well-built pipeline. They are the outcomes we engineer toward, not a promise; your actuals depend on your document quality, how variable your formats are, and the confidence threshold you choose.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">The bulk of documents processed without a human touch</h3>
+              <p class="text-gray-700 mt-1">Clean, high-confidence documents flow from ingestion to posting automatically. The team handles exceptions and edge cases, which is where human judgment actually adds value.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Sharply lower keying-error rates</h3>
+              <p class="text-gray-700 mt-1">Validation catches mis-footed totals, transposed numbers, and vendor mismatches before they post. Errors caught at intake cost far less than errors caught at reconciliation or audit.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Faster cycle time on document-driven processes</h3>
+              <p class="text-gray-700 mt-1">Documents no longer wait in a queue for a person to key them. Straight-through extraction compresses the lag between a document arriving and the data being usable.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">A controlled, auditable extraction trail</h3>
+              <p class="text-gray-700 mt-1">Every document keeps its source image, its extracted fields, its confidence scores, and its review decision. Audit evidence is a query, not an archaeology project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How we differ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How This Differs from an Off-the-Shelf OCR Tool</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          If you came here comparing OCR products, you are likely looking at template-based capture tools or a generic document API. They are useful components, and for one clean, consistent document type they may be enough. But the moment your document mix is varied, your formats keep changing, and the extracted data has to be validated and posted into a real system, you end up writing the hard part yourself. That gap is exactly what we build for: the classification, validation, and integration around the OCR engine, not a tool you wire up alone. Here is the honest comparison.
+        </p>
+
+        <!-- Desktop table -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Approach</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Best Fit</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Cost Model</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Customization Ceiling</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Template-Based OCR Tool</td>
+                <td class="py-4 px-4 text-gray-700">One clean, consistent document layout</td>
+                <td class="py-4 px-4 text-gray-700">Per-page or per-document subscription</td>
+                <td class="py-4 px-4 text-gray-700">A new layout means a new template. Validation and posting are on you.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Generic Document API</td>
+                <td class="py-4 px-4 text-gray-700">Developers building their own pipeline</td>
+                <td class="py-4 px-4 text-gray-700">Per-call pricing, plus your build cost</td>
+                <td class="py-4 px-4 text-gray-700">Unlimited, but you build classification, validation, review, and integration.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Enterprise IDP Platform</td>
+                <td class="py-4 px-4 text-gray-700">High volume, many document types, big budget</td>
+                <td class="py-4 px-4 text-gray-700">License plus a significant implementation</td>
+                <td class="py-4 px-4 text-gray-700">High, but you configure to the platform and staff around it.</td>
+              </tr>
+              <tr class="bg-amber/5 border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">
+                  Forge RPA
+                  <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+                </td>
+                <td class="py-4 px-4 text-gray-700"><strong>Finance and ops teams</strong> with varied documents and an existing ERP that stays</td>
+                <td class="py-4 px-4 text-gray-700">Fixed-fee project, no per-document subscription on the pipeline itself</td>
+                <td class="py-4 px-4 text-gray-700">Custom classification, validation, and posting to your stack. You own the code.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card stack -->
+        <div class="md:hidden space-y-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Template-Based OCR Tool</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">One clean, consistent layout</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Per-page or per-document subscription</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">New layout means a new template</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Generic Document API</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Developers building their own pipeline</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Per-call, plus your build cost</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Unlimited, but you build everything around it</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Enterprise IDP Platform</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">High volume, many document types</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">License plus significant implementation</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">High, but you configure to the platform</dd></div>
+            </dl>
+          </div>
+          <div class="bg-amber/5 border-2 border-amber rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">
+              Forge RPA
+              <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+            </h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700"><strong>Finance and ops teams</strong> with varied documents</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Fixed-fee project, no per-document subscription</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Custom classification + validation + posting. You own the code.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement process -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How the Engagement Runs</h2>
+        <div class="space-y-8">
+          {[
+            {
+              step: 'Discovery',
+              desc: 'Two-to-three-week scoping pass. Document-type inventory, sample collection across your real format variety, volume by type, model selection, and validation-rule documentation. Output is a fixed-scope SOW with a working-day timeline.',
+            },
+            {
+              step: 'Build',
+              desc: 'Ingestion, classification, extraction, validation, review, and posting built and tested against your real documents. Weekly demo cadence. We write tests as we build, not at the end. You see working pieces every Friday.',
+            },
+            {
+              step: 'UAT and Cutover',
+              desc: 'Parallel run against live document flow for two to four weeks. Side-by-side checks against the current keying process. Cutover is gated on your team signing off, not on a project calendar.',
+            },
+            {
+              step: 'Warranty and Hypercare',
+              desc: '30-day defect warranty after cutover. Hourly support after that as you need it. We do not require a retainer to take a support ticket.',
+            },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.step}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Who you're working with -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">Who You're Working With</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          Three decades in financial operations and controllership stand behind this work: AP, the close, reconciliations, and the document-driven processes that feed them. We have lived the keying, we know which fields actually matter on an invoice or a statement, and we know which "AI extraction" promises survive contact with a vendor's worst PDF.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          The build itself uses Azure Document Intelligence, Python, targeted custom models where a document type needs them, API-based posting where the ERP supports it, and RPA bots that drive your existing screens where it does not. The work is led by a CPA-trained finance veteran, documented, and handed over with the code. You own everything we build.
+        </p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common Intelligent Document Processing Questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is intelligent document processing (IDP)?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Intelligent document processing is the combination of OCR, machine learning, and business rules that turns an unstructured document into validated, structured data your systems can use. Plain OCR reads characters off a page. IDP goes further: it classifies the document type, finds the fields that matter, validates them against your data and your rules, and routes anything it is not confident about to a human. The output is clean data in your ERP, not a pile of scanned images.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How is IDP different from plain OCR?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              OCR converts an image into text. That is the easy 60 percent. The hard part is everything after: knowing this is an invoice and not a remittance, finding the invoice number when every vendor formats it differently, reading line items off a table, matching the vendor to your master, and catching the one document in fifty where the total does not foot. IDP wraps OCR in classification, field extraction, validation, and confidence-based human review. The OCR engine is a component; the pipeline around it is the product.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What documents can you extract data from?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              The common finance and operations documents: vendor invoices, receipts and expense documents, purchase orders, remittance advices, bills of lading and packing slips, bank and brokerage statements, W-9s and tax forms, and contracts where specific terms need to be captured. If a document arrives by email, portal, EDI, or scan and someone currently keys data off it, it is a candidate. On the discovery call we sort your document mix into clean wins and genuine edge cases.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What technology do you build IDP on?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We build primarily on Azure Document Intelligence (formerly Form Recognizer) for its prebuilt invoice, receipt, and ID models and its custom-model training, and we add targeted models or rules where a document type needs them. We are not locked to one engine; where another OCR or extraction service fits a document class better, we use it. The orchestration, validation, and ERP integration around the model is custom-built to your stack and your rules.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How accurate is the extraction?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Accuracy depends on document quality and how variable your formats are, so we do not quote a single headline number. What matters more is the design: every extracted field carries a confidence score, clean high-confidence documents flow straight through, and anything below your threshold routes to a human review tray before it ever posts. You decide the threshold. That means the pipeline never silently posts a low-confidence guess; the trade-off between automation rate and review volume is a dial you control.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How long does an IDP engagement take?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              A focused first-pass engagement on one or two document types, with validation and ERP integration, typically delivers a working pipeline in 6 to 10 weeks. The first 2 to 3 weeks cover discovery, document-sample collection, and model selection. The middle weeks build extraction, validation, and routing against your real documents. The final stretch covers UAT, cutover, and a 30-day defect warranty. Adding more document types or higher-variability formats extends the timeline; we size that in discovery.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Related services -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Related Services</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Intelligent document processing is the capture layer under several broader engagements. It most often shows up first inside an AP automation project, then expands to the other document-driven processes below.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="/services/accounts-payable-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Accounts Payable Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">IDP is the invoice-capture front end. Pair it with three-way match, approval routing, and ERP posting for an end-to-end AP pipeline.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/sop-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Finance and Operations Process Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">Once documents become clean data, the downstream SOP steps that consume them become automatable too. We build the full process, not just the extraction.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Automation Assessment</h3>
+            <p class="text-gray-600 text-sm mb-4">Data-driven scoring across the full finance and ops surface. Where document processing is one of several candidates and you want a ranked roadmap before committing budget.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Industries -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Industries We Serve for Document Processing</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Document mix looks different in every industry. Volume, format variety, and the fields that matter vary by sector. Here is how we approach document processing in each.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a href="/industries/healthcare-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Healthcare Finance</h3>
+            <p class="text-gray-600 text-sm">High-volume clinical-supply invoices, remittances, and EOB-adjacent documents across many vendors.</p>
+          </a>
+          <a href="/industries/oil-gas" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Oil and Gas</h3>
+            <p class="text-gray-600 text-sm">Field tickets, JIB statements, and operator invoices with well-level coding and varied formats.</p>
+          </a>
+          <a href="/industries/utilities-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Utilities</h3>
+            <p class="text-gray-600 text-sm">Project-coded contractor invoices and regulatory documents with rate-case-supporting detail.</p>
+          </a>
+          <a href="/industries/insurance-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Insurance</h3>
+            <p class="text-gray-600 text-sm">Claims documents, vendor invoices, and forms with statutory-reporting touchpoints.</p>
+          </a>
+          <a href="/industries/small-business" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Small and Growing Businesses</h3>
+            <p class="text-gray-600 text-sm">Right-sized capture for teams drowning in invoices and receipts but unable to justify an enterprise IDP platform.</p>
+          </a>
+          <a href="/industries" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">More Industries</h3>
+            <p class="text-gray-600 text-sm">Manufacturing, transportation, restaurants and multi-unit, professional services. See the full overview.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to Stop Keying Data Off Documents?"
+    subtext="Book a free 30-minute discovery call. We will walk through your document mix, your volumes, where the keying time goes, and which document types are the fastest wins. You leave with a clear picture even if we never work together."
+    ctaText="Book a 30-Min IDP Discovery Call"
+    ctaLink="/book?from=intelligent-document-processing"
+  />
+</PageLayout>

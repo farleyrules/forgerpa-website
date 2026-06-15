@@ -1,0 +1,462 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Treasury Management Automation Services',
+  serviceType: 'Treasury and Cash Management Automation',
+  description:
+    'Treasury management automation services for finance teams. Cash flow forecasting, bank reconciliation, cash positioning, liquidity management, and wire and payment automation. Built around your banks, your TMS, and your ERP by a finance-led team.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/treasury-automation',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is treasury automation?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Treasury automation replaces the manual spreadsheet work that drives daily cash management: pulling prior-day bank balances, building the cash position, forecasting near-term liquidity, reconciling bank activity against the ledger, and releasing wires and ACH. Software and bots gather the bank data, apply your rules, and surface a position and a forecast every morning instead of mid-afternoon. The goal is an accurate cash picture earlier in the day, fewer keying errors, and a forecast your treasurer can actually trust.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I need a treasury management system (TMS) first?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Many mid-market finance teams run treasury out of Excel and bank portals and are not ready to license a full TMS. We build the automation around what you have today: direct bank connectivity or BAI2 and MT940 file ingestion, your ERP, and your spreadsheets. If you already run a TMS such as Kyriba, GTreasury, or a bank-provided portal, we automate the feeds into and out of it instead of replacing it. Either way, your bank and your ERP stay the systems of record.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does cash flow forecasting automation work?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We pull actuals from your bank activity, open AP and AR from your ERP, payroll calendars, debt-service schedules, and known recurring items, then assemble a rolling daily and weekly forecast. The forecast refreshes automatically as new bank data and ledger activity land, so the variance between forecast and actual narrows over time instead of being rebuilt by hand each Monday. You keep full control of the assumptions; the automation handles the data gathering and the math.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can you automate bank reconciliation across multiple banks and accounts?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Multi-bank, multi-account, multi-currency reconciliation is the most common starting point. We ingest statements from each bank by API or by BAI2 and MT940 file, match transactions against the GL and against open items using your tolerance rules, auto-clear the clean matches, and route exceptions to a review queue with full context. The accounts that take a treasury analyst all morning typically reconcile before the analyst finishes coffee.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is automated wire and payment release safe?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Payment automation is built to tighten controls, not loosen them. We encode your approval matrix, dual-control thresholds, sanctioned-counterparty checks, and beneficiary validation into the release flow, and we generate positive-pay and payment files against approved runs only. A human still authorizes release where your policy requires it. The automation removes the manual file-building and the copy-paste between portals, which is where most payment errors and fraud exposure actually originate.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does a treasury automation engagement take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A focused first-pass engagement, typically daily cash positioning plus multi-bank reconciliation, usually delivers a working pipeline in 6 to 10 weeks. The first 2 to 3 weeks cover discovery, bank-connectivity setup, and design. The middle weeks build the position, reconciliation, and forecast flows against your real data. The final stretch covers parallel running, cutover, and a 30-day defect warranty. Adding payment automation or a multi-entity liquidity view extends the timeline; we size that in discovery.',
+      },
+    },
+  ],
+};
+---
+
+<PageLayout
+  title="Treasury Management Automation Services"
+  description="Treasury automation services for finance teams. Cash flow forecasting, bank reconciliation, cash positioning, liquidity management, and wire and payment automation. Built around your banks, TMS, and ERP."
+  heroTitle="Treasury Management Automation"
+  heroSubtitle="Not a rigid platform you bend to fit. We build treasury automation around your banks, your TMS, and your ERP: daily cash positioning, cash flow forecasting, bank reconciliation, liquidity management, and wire and payment automation. Finance-led team, fixed-fee project pricing, no per-seat subscription on the pipeline itself."
+  heroCta="Book a 30-Min Treasury Discovery Call"
+  heroCtaLink="/book?from=treasury-automation"
+>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- The pain we solve -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The Treasury Pain We Solve</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Treasury teams spend the first hours of every day rebuilding the same workbook. Someone logs into each bank portal, downloads prior-day activity, and keys the balances into a cash-position template. Someone pulls open AP and AR from the ERP, layers in payroll and debt service, and stitches together a forecast that is stale by lunch. Bank statements get reconciled against the ledger by hand, account by account. Wires get assembled by copy-paste between a spreadsheet and a banking portal.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          The cost is not just the analyst hours. It is decisions made on a cash position that is half a day old. It is idle balances that should have been swept or invested because the liquidity picture arrived too late to act on. It is a forecast nobody fully trusts, so the company carries a larger buffer than it needs. It is the operational and fraud risk that lives in manual payment file-building. It is the treasurer who knows the process is fragile but cannot get a full TMS funded for what the manual work actually costs.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Treasury automation done right gathers the bank data, builds the position, runs the forecast, reconciles the accounts, and stages payments under your controls. It does not require ripping out your ERP or signing a multi-year platform contract. It requires a partner who has lived the close and the cash cycle and knows where the real friction sits.
+        </p>
+      </div>
+
+      <!-- What we automate -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Automate</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          A working treasury automation pipeline has six moving parts. We ship them integrated, around your existing banks, TMS, and ERP.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            {
+              title: 'Daily Cash Positioning',
+              desc: 'Prior-day and intraday balances pulled from every bank by API or BAI2 and MT940 file. One consolidated position across accounts, entities, and currencies, ready before the morning meeting instead of after it.',
+            },
+            {
+              title: 'Cash Flow Forecasting',
+              desc: 'A rolling daily and weekly forecast assembled from bank actuals, open AP and AR, payroll, and debt service. Refreshes as new data lands. Forecast-versus-actual variance tracked so accuracy improves over time.',
+            },
+            {
+              title: 'Bank Reconciliation',
+              desc: 'Multi-bank, multi-account, multi-currency matching against the GL and open items using your tolerance rules. Clean items auto-clear. Exceptions route to a review queue with full context, not back to a spreadsheet.',
+            },
+            {
+              title: 'Liquidity Management',
+              desc: 'A consolidated view of available liquidity across operating, reserve, and investment accounts. Target-balance and sweep logic surfaced so idle cash gets put to work and shortfalls are flagged before they bite.',
+            },
+            {
+              title: 'Wire and Payment Automation',
+              desc: 'Payment files generated against approved runs only, with your approval matrix, dual-control thresholds, and beneficiary validation encoded. Positive-pay output to the bank. Release stays under human authorization where policy requires.',
+            },
+            {
+              title: 'TMS and ERP Integration',
+              desc: 'Feeds into and out of a TMS such as Kyriba or GTreasury where you run one, or a lightweight Excel-and-bank-portal stack where you do not. API-based where supported, bot-based where it is not. Your bank and ERP stay the systems of record.',
+            },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Outcomes / ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-4">What Treasury Automation Done Right Delivers</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          The targets below reflect what treasury teams typically achieve in the first 90 days after cutover with a well-built pipeline. They are the outcomes we engineer toward, not a promise; your actuals depend on your starting baseline, your bank connectivity, and how clean your ledger data is going in.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">A cash position ready hours earlier each day</h3>
+              <p class="text-gray-700 mt-1">Automated bank-balance ingestion and position assembly compress a multi-hour morning task to minutes, so funding and investment decisions are made on current data, not yesterday's.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Tighter forecast accuracy and a smaller cash buffer</h3>
+              <p class="text-gray-700 mt-1">A forecast that refreshes against actuals narrows variance over time. A forecast the treasurer trusts means the company can carry less idle precautionary cash and put more to work.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Same-day, multi-bank reconciliation</h3>
+              <p class="text-gray-700 mt-1">Statement-to-ledger matching that ran across the morning becomes a straight-through process on clean items, with the team touching only genuine exceptions.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Lower payment risk and a cleaner control trail</h3>
+              <p class="text-gray-700 mt-1">Encoded approval thresholds, beneficiary validation, and positive-pay output remove the manual file-building where errors and fraud exposure live, and leave an auditable trail behind every release.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How we differ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How This Differs from a Full TMS Rollout</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          If you came here comparing treasury management systems, you are weighing enterprise platforms. They are strong products, and for a large multi-entity treasury with the budget and the implementation runway, the right one may be the right call. But many mid-market teams do not need the full platform; they need the manual morning work to stop. That gap is exactly what we build for: automation shaped to your banks and your process, not a platform you adapt to and staff around. Here is the honest comparison.
+        </p>
+
+        <!-- Desktop table -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Approach</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Best Fit</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Cost Model</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Customization Ceiling</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Enterprise TMS</td>
+                <td class="py-4 px-4 text-gray-700">Large multi-entity treasury, global banking, long runway</td>
+                <td class="py-4 px-4 text-gray-700">Annual license plus a six-figure implementation</td>
+                <td class="py-4 px-4 text-gray-700">Deep, but configured to the product model. Your edge cases live in side spreadsheets.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Bank Portal Plus Excel</td>
+                <td class="py-4 px-4 text-gray-700">Small treasury, few accounts, low volume</td>
+                <td class="py-4 px-4 text-gray-700">No license, but heavy on analyst hours</td>
+                <td class="py-4 px-4 text-gray-700">Whatever you can build by hand, rebuilt every morning.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">DIY In-House Build</td>
+                <td class="py-4 px-4 text-gray-700">Strong internal IT, slow timeline acceptable</td>
+                <td class="py-4 px-4 text-gray-700">Internal labor plus contractor time</td>
+                <td class="py-4 px-4 text-gray-700">Unlimited, but most projects stall at the bank-connectivity step.</td>
+              </tr>
+              <tr class="bg-amber/5 border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">
+                  Forge RPA
+                  <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+                </td>
+                <td class="py-4 px-4 text-gray-700"><strong>Finance teams</strong> that need the manual cash work to stop, with or without a TMS</td>
+                <td class="py-4 px-4 text-gray-700">Fixed-fee project, no per-seat subscription on the pipeline itself</td>
+                <td class="py-4 px-4 text-gray-700">Custom to your banks, your controls, your forecast logic. You own the code.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card stack -->
+        <div class="md:hidden space-y-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Enterprise TMS</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Large multi-entity, global banking</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">License plus six-figure implementation</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Deep, but to the product model</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Bank Portal Plus Excel</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Small treasury, few accounts</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">No license, heavy on analyst hours</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Rebuilt by hand every morning</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">DIY In-House Build</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Strong IT, slow timeline OK</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Internal labor + contractor</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Unlimited, often stalls on connectivity</dd></div>
+            </dl>
+          </div>
+          <div class="bg-amber/5 border-2 border-amber rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">
+              Forge RPA
+              <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+            </h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700"><strong>Finance teams</strong> needing the manual cash work to stop</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Fixed-fee project, no per-seat subscription</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Customization</dt><dd class="text-gray-700">Custom to your banks + controls. You own the code.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement process -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How the Engagement Runs</h2>
+        <div class="space-y-8">
+          {[
+            {
+              step: 'Discovery',
+              desc: 'Two-to-three-week scoping pass. Bank and account inventory, connectivity options (API, BAI2, MT940), TMS and ERP review, forecast-driver mapping, and control-matrix documentation. Output is a fixed-scope SOW with a working-day timeline.',
+            },
+            {
+              step: 'Build',
+              desc: 'Positioning, reconciliation, forecasting, and payment staging built and tested against your real bank and ledger data. Weekly demo cadence. We write tests as we build, not at the end. You see working pieces every Friday.',
+            },
+            {
+              step: 'UAT and Cutover',
+              desc: 'Parallel run against live bank activity for two to four weeks. Side-by-side checks against the current spreadsheets. Cutover is gated on your treasury team signing off, not on a project calendar.',
+            },
+            {
+              step: 'Warranty and Hypercare',
+              desc: '30-day defect warranty after cutover. Hourly support after that as you need it. We do not require a retainer to take a support ticket.',
+            },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.step}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Who you're working with -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">Who You're Working With</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          Three decades in financial operations and controllership stand behind this work: the close, cash management, reconciliations, and the reporting that treasury feeds. We have lived the morning cash scramble, we know where the keying happens, and we know which automation promises survive contact with a real bank feed and a real audit.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          The build itself uses Python, API-based bank and ERP integration where supported, file-based ingestion (BAI2, MT940) where it is not, and RPA bots that drive your existing portals where neither is available. The work is led by a CPA-trained finance veteran, documented, and handed over with the code. You own everything we build.
+        </p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common Treasury Automation Questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is treasury automation?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Treasury automation replaces the manual spreadsheet work that drives daily cash management: pulling prior-day bank balances, building the cash position, forecasting near-term liquidity, reconciling bank activity against the ledger, and releasing wires and ACH. Software and bots gather the bank data, apply your rules, and surface a position and a forecast every morning instead of mid-afternoon. The goal is an accurate cash picture earlier in the day, fewer keying errors, and a forecast your treasurer can actually trust.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Do I need a treasury management system (TMS) first?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              No. Many mid-market finance teams run treasury out of Excel and bank portals and are not ready to license a full TMS. We build the automation around what you have today: direct bank connectivity or BAI2 and MT940 file ingestion, your ERP, and your spreadsheets. If you already run a TMS such as Kyriba, GTreasury, or a bank-provided portal, we automate the feeds into and out of it instead of replacing it. Either way, your bank and your ERP stay the systems of record.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How does cash flow forecasting automation work?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We pull actuals from your bank activity, open AP and AR from your ERP, payroll calendars, debt-service schedules, and known recurring items, then assemble a rolling daily and weekly forecast. The forecast refreshes automatically as new bank data and ledger activity land, so the variance between forecast and actual narrows over time instead of being rebuilt by hand each Monday. You keep full control of the assumptions; the automation handles the data gathering and the math.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Can you automate bank reconciliation across multiple banks and accounts?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Yes. Multi-bank, multi-account, multi-currency reconciliation is the most common starting point. We ingest statements from each bank by API or by BAI2 and MT940 file, match transactions against the GL and against open items using your tolerance rules, auto-clear the clean matches, and route exceptions to a review queue with full context. The accounts that take a treasury analyst all morning typically reconcile before the analyst finishes coffee.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Is automated wire and payment release safe?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Payment automation is built to tighten controls, not loosen them. We encode your approval matrix, dual-control thresholds, sanctioned-counterparty checks, and beneficiary validation into the release flow, and we generate positive-pay and payment files against approved runs only. A human still authorizes release where your policy requires it. The automation removes the manual file-building and the copy-paste between portals, which is where most payment errors and fraud exposure actually originate.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How long does a treasury automation engagement take?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              A focused first-pass engagement, typically daily cash positioning plus multi-bank reconciliation, usually delivers a working pipeline in 6 to 10 weeks. The first 2 to 3 weeks cover discovery, bank-connectivity setup, and design. The middle weeks build the position, reconciliation, and forecast flows against your real data. The final stretch covers parallel running, cutover, and a 30-day defect warranty. Adding payment automation or a multi-entity liquidity view extends the timeline; we size that in discovery.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Related services -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Related Services</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Treasury automation often pairs with one or more of the engagements below. Many treasury projects surface a reconciliation question that AP automation answers, or a data-quality question that a process-mining pass clarifies first.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="/services/accounts-payable-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Accounts Payable Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">The payment side of the house. Invoice capture, three-way match, approval routing, and ERP posting feed the payment runs treasury releases.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Automation Assessment</h3>
+            <p class="text-gray-600 text-sm mb-4">Data-driven scoring across the full finance surface. Where treasury is one of several candidates and you want a ranked, defensible roadmap before committing budget.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/process-mining" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Process Mining</h3>
+            <p class="text-gray-600 text-sm mb-4">Discover how cash, AP, and reconciliation activity actually flow today. Bottlenecks and rework loops surfaced from real event data before we build.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Industries -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Industries We Serve for Treasury Automation</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Cash management looks different in every industry. Banking complexity, entity count, and liquidity rhythm vary by sector. Here is how we approach treasury in each.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a href="/industries/healthcare-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Healthcare Finance</h3>
+            <p class="text-gray-600 text-sm">Multi-entity hospital and DSO cash pooling with high account counts and payer-driven inflow timing.</p>
+          </a>
+          <a href="/industries/oil-gas" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Oil and Gas</h3>
+            <p class="text-gray-600 text-sm">Joint-venture cash calls, AFE-funded outflows, and operator and non-operator account splits.</p>
+          </a>
+          <a href="/industries/utilities-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Utilities</h3>
+            <p class="text-gray-600 text-sm">Regulated treasury with project-funded outflows and rate-case-supporting cash documentation.</p>
+          </a>
+          <a href="/industries/insurance-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Insurance</h3>
+            <p class="text-gray-600 text-sm">Premium-and-claims cash flows with statutory-reserve and trust-account considerations.</p>
+          </a>
+          <a href="/industries/small-business" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Small and Growing Businesses</h3>
+            <p class="text-gray-600 text-sm">Right-sized cash positioning and forecasting for teams that have outgrown a single spreadsheet but cannot justify a full TMS.</p>
+          </a>
+          <a href="/industries" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">More Industries</h3>
+            <p class="text-gray-600 text-sm">Manufacturing, transportation, restaurants and multi-unit, professional services. See the full overview.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to See What Your Treasury Automation Could Look Like?"
+    subtext="Book a free 30-minute discovery call. We will walk through your banks, your cash-positioning routine, your forecast drivers, and where the biggest time and risk wins live. You leave with a clear picture even if we never work together."
+    ctaText="Book a 30-Min Treasury Discovery Call"
+    ctaLink="/book?from=treasury-automation"
+  />
+</PageLayout>

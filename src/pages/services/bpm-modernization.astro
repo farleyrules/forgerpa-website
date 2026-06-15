@@ -1,0 +1,462 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'BPM Modernization and Hyperautomation Services',
+  serviceType: 'Business Process Management Modernization',
+  description:
+    'BPM modernization services for finance and operations. Business process automation, process orchestration, low-code automation, and hyperautomation across your back office. We modernize aging workflow engines and manual processes around your existing systems.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Forge RPA LLC',
+    url: 'https://forgerpa.com',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  url: 'https://forgerpa.com/services/bpm-modernization',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is BPM modernization?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "BPM modernization is the work of bringing aging or manual business processes up to a current automation standard: replacing brittle macros and email-driven approvals, retiring or wrapping a legacy workflow engine, orchestrating the steps that today live in people's heads, and connecting the systems a process touches. It is less about buying one new platform and more about making the end-to-end process reliable, observable, and maintainable. For most finance and operations teams that means a mix of process orchestration, targeted automation, and selective low-code, shaped to the process rather than to a product.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is this different from just buying a BPM or workflow platform?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A platform gives you a workflow engine and a form builder. It does not give you the integration to your ERP, the encoded business rules, the data cleanup the process actually needs, or the migration off whatever you run today. Those are the expensive 80 percent, and they are exactly what we do. We are platform-pragmatic: where a low-code orchestration tool fits, we use it; where the process needs code or RPA, we build that; and we connect the moving parts into one observable flow. You are not buying a license and a year of self-implementation.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is hyperautomation, and do we need it?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Hyperautomation is the industry term for combining several techniques (process orchestration, RPA, document AI, business rules, and integration) to automate an end-to-end process rather than a single task. You do not need to adopt it as a buzzword or a big-bang program. The practical version is what we do anyway: pick a high-friction back-office process, mine how it really runs, then apply whichever combination of techniques the process actually calls for. The label matters less than picking the right tool for each step and stitching them into one reliable flow.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What does low-code automation mean here?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Low-code platforms (Power Automate, Power Apps, and similar) let you build forms, approvals, and simple integrations quickly, with a lighter maintenance burden for your team. We use them where they genuinely fit, and we are candid where they do not: complex logic, high-volume processing, and tricky integrations often outgrow a low-code tool and are better served by code or RPA. The point is to match the tool to the step, so your team can maintain the simple parts while the hard parts stay robust.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do we have to replace our existing systems?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. BPM modernization is usually about the connective tissue between systems, not the systems themselves. Your ERP, your CRM, and your line-of-business applications stay as the systems of record. We modernize the workflow and orchestration layer that runs across them: the approvals, the handoffs, the data movement, and the exception handling. Where a legacy workflow engine is genuinely at end of life, we plan a staged migration rather than a risky big-bang cutover.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does a BPM modernization engagement take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We scope it by process, not as an open-ended program. A focused first-pass on one high-friction back-office process typically delivers a modernized, automated flow in 8 to 14 weeks: discovery and process mapping up front, orchestration and integration in the middle, then UAT, cutover, and a 30-day defect warranty. We deliberately start narrow, prove the pattern on one process, and expand from there, so you see value before committing to a broader roadmap.',
+      },
+    },
+  ],
+};
+---
+
+<PageLayout
+  title="BPM Modernization and Hyperautomation Services"
+  description="BPM modernization and hyperautomation services for finance and operations. Business process automation, process orchestration, and low-code automation across your back office, built around your existing systems."
+  heroTitle="BPM Modernization and Hyperautomation"
+  heroSubtitle="Aging workflow engines, brittle macros, and email-driven approvals hold the back office back. We modernize the processes that run across your systems: process orchestration, business process automation, selective low-code, and targeted RPA, shaped to your process rather than to a product. Finance-led team, fixed-fee project pricing, scoped one process at a time."
+  heroCta="Book a 30-Min BPM Discovery Call"
+  heroCtaLink="/book?from=bpm-modernization"
+>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- The pain we solve -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">The Back-Office Pain We Solve</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Most back-office processes were never designed; they accreted. An approval that started as an email is still an email. A workflow engine bought a decade ago runs three critical processes and nobody remembers how to change it. A spreadsheet macro that one person wrote is now load-bearing, and that person left. The process crosses four systems, and the only thing connecting them is a human copying data between screens.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          The cost is fragility and opacity. Nobody can see where a request actually is. Exceptions get handled by tribal knowledge. Cycle time is whatever the slowest inbox allows. Audit means reconstructing what happened from email threads. And every attempt to fix it stalls, because the obvious answer (buy a BPM platform) turns out to be 20 percent platform and 80 percent integration, rules, and migration that nobody scoped.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          BPM modernization done right makes the end-to-end process reliable, observable, and maintainable: orchestrated steps, encoded rules, connected systems, and exceptions that route instead of stall. It does not require ripping out your ERP or betting the back office on one big-bang platform rollout. It requires a partner who does the unglamorous 80 percent and starts with one process, not a two-year program.
+        </p>
+      </div>
+
+      <!-- What we do -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What We Modernize</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          A modernized back-office process has six parts working together. We deliver them integrated, around your existing systems and your real rules.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            {
+              title: 'Process Orchestration',
+              desc: 'One engine that runs the end-to-end flow across systems and people: the sequence, the parallel paths, the waits, the retries. The process stops living in inboxes and starts living in something you can see and change.',
+            },
+            {
+              title: 'Business Rules Encoding',
+              desc: "Routing, thresholds, eligibility, and exception logic captured once, in one place, instead of scattered across macros, spreadsheets, and people's memory. Change a rule in one spot, not in six.",
+            },
+            {
+              title: 'System Integration',
+              desc: 'The connective tissue between your ERP, CRM, and line-of-business apps. API-based where supported, RPA-based where it is not. The systems stay the record; the process flows across them without a human ferrying data.',
+            },
+            {
+              title: 'Low-Code Where It Fits',
+              desc: 'Forms, approvals, and lightweight apps built on Power Automate, Power Apps, or similar where they genuinely fit, so your team can own and maintain the simpler parts. We are candid about where low-code outgrows its usefulness.',
+            },
+            {
+              title: 'Legacy Workflow Migration',
+              desc: 'A staged path off an end-of-life workflow engine: map what it does, rebuild it on a maintainable foundation, run in parallel, then retire it. No risky big-bang cutover of processes the business depends on.',
+            },
+            {
+              title: 'Observability and Audit',
+              desc: 'Status visibility, SLA tracking, and a full audit trail built into the flow. You can see where any request sits, where time is lost, and exactly what happened, without reconstructing it from email.',
+            },
+          ].map((item) => (
+            <div class="bg-slate-light rounded-xl p-6">
+              <h3 class="font-bold text-charcoal mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Outcomes / ROI -->
+      <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-charcoal mb-4">What BPM Modernization Done Right Delivers</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          The outcomes below reflect what teams typically see in the first few months after modernizing a high-friction process. They are what we engineer toward, not a promise; your actuals depend on the process you start with, how many systems it crosses, and the state of the data going in.
+        </p>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Cycle time that no longer depends on an inbox</h3>
+              <p class="text-gray-700 mt-1">Orchestrated routing, reminders, and escalations replace email-driven handoffs. Requests move on rules and SLAs instead of waiting for someone to notice them.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Full visibility into where work actually sits</h3>
+              <p class="text-gray-700 mt-1">Status, bottlenecks, and aging are visible in real time instead of buried in threads. Leadership can see the process, and so can audit.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">Less key-person and legacy-tool risk</h3>
+              <p class="text-gray-700 mt-1">Rules and logic move out of one person's macros and memory into a documented, maintainable system. The process survives turnover and the retirement of an aging engine.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="text-charcoal font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-charcoal">A pattern you can extend to the next process</h3>
+              <p class="text-gray-700 mt-1">The orchestration, integration, and observability foundation built for the first process is reusable. Each subsequent process is faster and cheaper to modernize.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How we differ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How This Differs from Buying a BPM Platform</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          If you came here comparing BPM and workflow platforms, you are weighing engines and form builders. They are real tools, and a good one can be part of the answer. But the platform is the visible 20 percent; the integration, the encoded rules, the data work, and the migration are the 80 percent that decides whether the project succeeds. That gap is exactly what we build for: the end-to-end process, with the platform as one component rather than the whole plan. Here is the honest comparison.
+        </p>
+
+        <!-- Desktop table -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Approach</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Best Fit</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">Cost Model</th>
+                <th class="text-left py-4 px-4 text-charcoal font-bold">What You Actually Get</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">BPM Platform License</td>
+                <td class="py-4 px-4 text-gray-700">Teams with internal capacity to implement it</td>
+                <td class="py-4 px-4 text-gray-700">Annual license, then self-implementation</td>
+                <td class="py-4 px-4 text-gray-700">An engine and a form builder. The integration and rules are on you.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">Big-4 Transformation</td>
+                <td class="py-4 px-4 text-gray-700">Enterprise, multi-process, big budget</td>
+                <td class="py-4 px-4 text-gray-700">Large fixed program plus the platform license</td>
+                <td class="py-4 px-4 text-gray-700">Broad scope, but the partner leaves and you maintain it.</td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">DIY Low-Code Build</td>
+                <td class="py-4 px-4 text-gray-700">Simple processes, strong internal champion</td>
+                <td class="py-4 px-4 text-gray-700">Platform seats plus internal labor</td>
+                <td class="py-4 px-4 text-gray-700">Quick wins early, then a ceiling on complex logic and integration.</td>
+              </tr>
+              <tr class="bg-amber/5 border-b border-gray-100">
+                <td class="py-4 px-4 font-semibold text-charcoal">
+                  Forge RPA
+                  <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+                </td>
+                <td class="py-4 px-4 text-gray-700"><strong>Finance and ops teams</strong> with high-friction processes across existing systems</td>
+                <td class="py-4 px-4 text-gray-700">Fixed-fee project, scoped one process at a time</td>
+                <td class="py-4 px-4 text-gray-700">The end-to-end flow: orchestration, rules, integration, migration. You own it.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card stack -->
+        <div class="md:hidden space-y-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">BPM Platform License</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Teams with capacity to implement it</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">License, then self-implementation</dd></div>
+              <div><dt class="text-gray-500 font-semibold">What You Get</dt><dd class="text-gray-700">An engine; integration and rules on you</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">Big-4 Transformation</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Enterprise, multi-process</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Large program plus license</dd></div>
+              <div><dt class="text-gray-500 font-semibold">What You Get</dt><dd class="text-gray-700">Broad scope, but you maintain it</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">DIY Low-Code Build</h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700">Simple processes, strong champion</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Platform seats plus internal labor</dd></div>
+              <div><dt class="text-gray-500 font-semibold">What You Get</dt><dd class="text-gray-700">Quick wins, then a complexity ceiling</dd></div>
+            </dl>
+          </div>
+          <div class="bg-amber/5 border-2 border-amber rounded-xl p-5">
+            <h4 class="font-bold text-charcoal mb-3">
+              Forge RPA
+              <span class="ml-2 inline-block bg-amber text-charcoal text-xs font-bold px-2 py-1 rounded">Services</span>
+            </h4>
+            <dl class="space-y-2 text-sm">
+              <div><dt class="text-gray-500 font-semibold">Best Fit</dt><dd class="text-gray-700"><strong>Finance and ops teams</strong> with cross-system friction</dd></div>
+              <div><dt class="text-gray-500 font-semibold">Cost Model</dt><dd class="text-gray-700">Fixed-fee project, one process at a time</dd></div>
+              <div><dt class="text-gray-500 font-semibold">What You Get</dt><dd class="text-gray-700">The end-to-end flow. You own it.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement process -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">How the Engagement Runs</h2>
+        <div class="space-y-8">
+          {[
+            {
+              step: 'Discovery and Mapping',
+              desc: 'Two-to-three-week pass. Map how the target process really runs today (often with a process-mining assist), inventory the systems it touches, document the rules and exceptions, and choose the orchestration and low-code fit. Output is a fixed-scope SOW.',
+            },
+            {
+              step: 'Build',
+              desc: 'Orchestration, rules, integration, and any low-code or RPA components built and tested against your real flow. Weekly demo cadence. We write tests as we build, not at the end. You see working pieces every Friday.',
+            },
+            {
+              step: 'UAT and Cutover',
+              desc: 'Parallel run against live process volume for two to four weeks, including a staged migration off any legacy engine. Cutover is gated on your team signing off, not on a project calendar.',
+            },
+            {
+              step: 'Warranty and Hypercare',
+              desc: '30-day defect warranty after cutover. Hourly support after that as you need it. We do not require a retainer to take a support ticket.',
+            },
+          ].map((item, i) => (
+            <div class="flex items-start gap-6">
+              <div class="w-12 h-12 bg-amber rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-charcoal font-bold">{i + 1}</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-charcoal">{item.step}</h3>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Who you're working with -->
+      <div class="mb-16 bg-gradient-to-br from-charcoal to-charcoal-light rounded-xl p-8 lg:p-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-amber mb-6">Who You're Working With</h2>
+        <p class="text-lg text-gray-200 leading-relaxed">
+          Three decades in financial operations and controllership stand behind this work: the close, AP, reconciliations, and the cross-system back-office processes that hold them together. We have lived the email-driven approval and the load-bearing macro, we know where processes actually break, and we know which "modernization" promises survive contact with a real audit and a real migration.
+        </p>
+        <p class="mt-4 text-lg text-gray-200 leading-relaxed">
+          The build itself uses process-orchestration tooling, Python, low-code platforms (Power Automate, Power Apps) where they fit, API-based integration where systems support it, and RPA bots that drive existing screens where they do not. The work is led by a CPA-trained finance veteran, documented, and handed over. You own everything we build.
+        </p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Common BPM Modernization Questions</h2>
+        <div class="space-y-4">
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is BPM modernization?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              BPM modernization is the work of bringing aging or manual business processes up to a current automation standard: replacing brittle macros and email-driven approvals, retiring or wrapping a legacy workflow engine, orchestrating the steps that today live in people's heads, and connecting the systems a process touches. It is less about buying one new platform and more about making the end-to-end process reliable, observable, and maintainable. For most finance and operations teams that means a mix of process orchestration, targeted automation, and selective low-code, shaped to the process rather than to a product.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How is this different from just buying a BPM or workflow platform?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              A platform gives you a workflow engine and a form builder. It does not give you the integration to your ERP, the encoded business rules, the data cleanup the process actually needs, or the migration off whatever you run today. Those are the expensive 80 percent, and they are exactly what we do. We are platform-pragmatic: where a low-code orchestration tool fits, we use it; where the process needs code or RPA, we build that; and we connect the moving parts into one observable flow. You are not buying a license and a year of self-implementation.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What is hyperautomation, and do we need it?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Hyperautomation is the industry term for combining several techniques (process orchestration, RPA, document AI, business rules, and integration) to automate an end-to-end process rather than a single task. You do not need to adopt it as a buzzword or a big-bang program. The practical version is what we do anyway: pick a high-friction back-office process, mine how it really runs, then apply whichever combination of techniques the process actually calls for. The label matters less than picking the right tool for each step and stitching them into one reliable flow.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>What does low-code automation mean here?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              Low-code platforms (Power Automate, Power Apps, and similar) let you build forms, approvals, and simple integrations quickly, with a lighter maintenance burden for your team. We use them where they genuinely fit, and we are candid where they do not: complex logic, high-volume processing, and tricky integrations often outgrow a low-code tool and are better served by code or RPA. The point is to match the tool to the step, so your team can maintain the simple parts while the hard parts stay robust.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>Do we have to replace our existing systems?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              No. BPM modernization is usually about the connective tissue between systems, not the systems themselves. Your ERP, your CRM, and your line-of-business applications stay as the systems of record. We modernize the workflow and orchestration layer that runs across them: the approvals, the handoffs, the data movement, and the exception handling. Where a legacy workflow engine is genuinely at end of life, we plan a staged migration rather than a risky big-bang cutover.
+            </p>
+          </details>
+          <details class="bg-slate-light rounded-xl p-6 group">
+            <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+              <span>How long does a BPM modernization engagement take?</span>
+              <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-700 mt-4 leading-relaxed">
+              We scope it by process, not as an open-ended program. A focused first-pass on one high-friction back-office process typically delivers a modernized, automated flow in 8 to 14 weeks: discovery and process mapping up front, orchestration and integration in the middle, then UAT, cutover, and a 30-day defect warranty. We deliberately start narrow, prove the pattern on one process, and expand from there, so you see value before committing to a broader roadmap.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Related services -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Related Services</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          BPM modernization works hand in hand with the engagements below. Most modernization projects start with a process-mining pass to see how the work really runs, then reuse the same automation building blocks.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="/services/process-mining" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Process Mining</h3>
+            <p class="text-gray-600 text-sm mb-4">See how the process actually runs before redesigning it. Bottlenecks, rework loops, and exception patterns surfaced from real event data drive the modernization plan.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/sop-automation" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Finance and Operations Process Automation</h3>
+            <p class="text-gray-600 text-sm mb-4">The task-level automation inside a modernized process. Where individual steps need advanced Excel, Power Query, or RPA rather than orchestration alone.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+          <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Automation Assessment</h3>
+            <p class="text-gray-600 text-sm mb-4">Data-driven scoring across the full back-office surface. Where you want a ranked, defensible view of which processes to modernize first before committing budget.</p>
+            <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Industries -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-6">Industries We Serve for BPM Modernization</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Back-office processes look different in every industry. The systems, the approvals, and the compliance pressure vary by sector. Here is how we approach modernization in each.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a href="/industries/healthcare-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Healthcare Finance</h3>
+            <p class="text-gray-600 text-sm">Multi-entity back-office workflows with clinical-supply approvals and high cross-system handoff volume.</p>
+          </a>
+          <a href="/industries/oil-gas" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Oil and Gas</h3>
+            <p class="text-gray-600 text-sm">AFE approvals, JIB workflows, and field-to-back-office handoffs spread across multiple systems.</p>
+          </a>
+          <a href="/industries/utilities-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Utilities</h3>
+            <p class="text-gray-600 text-sm">Regulated approval workflows and project-coded processes with rate-case-supporting documentation.</p>
+          </a>
+          <a href="/industries/insurance-finance" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Insurance</h3>
+            <p class="text-gray-600 text-sm">Claims-adjacent and vendor workflows with statutory-reporting touchpoints and legacy workflow engines.</p>
+          </a>
+          <a href="/industries/small-business" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">Small and Growing Businesses</h3>
+            <p class="text-gray-600 text-sm">Right-sized orchestration for teams whose processes have outgrown email and spreadsheets but cannot justify an enterprise BPM suite.</p>
+          </a>
+          <a href="/industries" class="block bg-slate-light rounded-xl p-6 hover:bg-amber/5 transition-colors">
+            <h3 class="font-bold text-charcoal mb-2">More Industries</h3>
+            <p class="text-gray-600 text-sm">Manufacturing, transportation, restaurants and multi-unit, professional services. See the full overview.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to Modernize a High-Friction Process?"
+    subtext="Book a free 30-minute discovery call. We will walk through one process that is holding the back office back, the systems it crosses, and what a modernized flow would look like. You leave with a clear picture even if we never work together."
+    ctaText="Book a 30-Min BPM Discovery Call"
+    ctaLink="/book?from=bpm-modernization"
+  />
+</PageLayout>
