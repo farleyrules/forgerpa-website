@@ -188,99 +188,14 @@ const faqSchema = {
         ctaLink="/book?from=quick-wins"
       />
 
-      <!-- What It Costs (no price ladder; the number is set on the call) -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">What It Costs</h2>
-        <p class="text-lg text-gray-700 leading-relaxed">
-          Most of this work has a definable outcome, so we work fixed-price: you know the number before we start, and new asks become a new package or a change order, never silent scope creep. Every engagement begins with a free 30-minute discovery call where we map your ask to the right option and quote a flat price, usually within one business day. When the work is bigger than a single project, we start with a fixed-price assessment that scopes the build, projects the ROI, and is credited toward it.
-        </p>
-        <div class="mt-6 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6">
-          <p class="text-gray-700">
-            <strong class="text-charcoal">Start free.</strong> The 30-minute discovery call is your entry point. You leave with a clear recommendation and a flat quote. No pitch, no obligation.
-          </p>
-        </div>
-      </div>
-
-      <!-- What You Get -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">What You Get</h2>
-        <p class="text-lg text-gray-700 leading-relaxed mb-10">
-          Every package ships the same way: senior work, validated, and handed off so your team can run it without us.
-        </p>
-        <div class="space-y-6">
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span class="text-amber-dark font-bold">1</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-charcoal">The working deliverable</h3>
-              <p class="text-gray-600 mt-1">The fixed, rebuilt, or automated artifact: a dependable workbook, a refresh-on-click report, or the automation block of work you scoped.</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span class="text-amber-dark font-bold">2</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-charcoal">A QA tie-out you can trust</h3>
-              <p class="text-gray-600 mt-1">Validation against a known-good baseline, with edge-case and exception checks. This is the accountability step, and we never skip it.</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span class="text-amber-dark font-bold">3</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-charcoal">A short Loom walkthrough</h3>
-              <p class="text-gray-600 mt-1">A recorded tour of how it works and how to refresh it, so the knowledge lives with your team, not in one person's head.</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span class="text-amber-dark font-bold">4</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-charcoal">A one-page how-it-works note</h3>
-              <p class="text-gray-600 mt-1">Plain-language documentation of the logic and the refresh steps. No black box, no lock-in.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- How It Works -->
-      <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">How It Works</h2>
-        <p class="text-lg text-gray-700 leading-relaxed mb-10">
-          Five steps, days not months. You always know the price before we build.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div class="bg-slate-light rounded-xl p-6 text-center">
-            <div class="text-2xl font-extrabold text-amber mb-2">1</div>
-            <h3 class="font-bold text-charcoal text-sm mb-1">Discovery</h3>
-            <p class="text-gray-600 text-xs">Free 30-minute call. We capture the artifact, the pain, the cadence, and the deadline.</p>
-          </div>
-          <div class="bg-slate-light rounded-xl p-6 text-center">
-            <div class="text-2xl font-extrabold text-amber mb-2">2</div>
-            <h3 class="font-bold text-charcoal text-sm mb-1">Fixed Quote</h3>
-            <p class="text-gray-600 text-xs">We map the ask to the right option and a flat price within one business day.</p>
-          </div>
-          <div class="bg-slate-light rounded-xl p-6 text-center">
-            <div class="text-2xl font-extrabold text-amber mb-2">3</div>
-            <h3 class="font-bold text-charcoal text-sm mb-1">Build</h3>
-            <p class="text-gray-600 text-xs">AI-accelerated delivery. David is the judgment layer, not the keystroke layer.</p>
-          </div>
-          <div class="bg-slate-light rounded-xl p-6 text-center">
-            <div class="text-2xl font-extrabold text-amber mb-2">4</div>
-            <h3 class="font-bold text-charcoal text-sm mb-1">QA Tie-Out</h3>
-            <p class="text-gray-600 text-xs">Validation against a known-good baseline. The step that catches what AI misses.</p>
-          </div>
-          <div class="bg-slate-light rounded-xl p-6 text-center">
-            <div class="text-2xl font-extrabold text-amber mb-2">5</div>
-            <h3 class="font-bold text-charcoal text-sm mb-1">Handoff + Loom</h3>
-            <p class="text-gray-600 text-xs">Deliverable, walkthrough video, and a one-page how-it-works note.</p>
-          </div>
-        </div>
-      </div>
+      {/*
+        INTRO-PAGE SIMPLICITY (David, 2026-06-16). Removed the "What It Costs",
+        "What You Get", and "How It Works" sections. On a first-touch intro page
+        that detail is too exhaustive; a prospect gets it on the discovery call
+        or in the assessment. Keep intro/service pages lean: what we do -> proof
+        -> talk to us. This treatment likely applies to the other service and
+        industry pages too (apply when revisiting them).
+      */}
 
       <!-- Proof / Trust signals -->
       <div class="mb-16 bg-amber/5 border-l-4 border-amber rounded-r-xl p-8 lg:p-10">
