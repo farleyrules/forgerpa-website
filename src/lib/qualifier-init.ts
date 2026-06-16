@@ -247,43 +247,37 @@ function skipToCalendar(): void {
 }
 
 /* ------------------------------------------------------------------ */
-/* Entry fork (3-option chooser) + path switching                      */
+/* Primary inquiry view + path switching                               */
 /* ------------------------------------------------------------------ */
 /*
- * On page load the visitor sees the entry fork, NOT step 1. Selecting a card
- * swaps in one of three paths:
- *   1. Essentials: a one-screen form (#qualifier-essentials-path) that reuses
- *      the same Turnstile + consent + validators + POST as the full wizard.
- *   2. Straight to a time: calls skipToCalendar() (no questions).
- *   3. Tell us more: the full 6-step wizard (#qualifier-full-path), unchanged.
- * Each path carries a "Back to options" control back to the fork. Attribution
- * (gclid) flows into the Cal booking metadata on all three paths because
- * initCalInlineEmbed() reads captureAttribution() regardless of entry path.
+ * On page load the visitor sees the short inquiry form (#qualifier-essentials-
+ * path), NOT a chooser and NOT step 1. Two inline links beneath it offer the
+ * other paths:
+ *   - "Grab a time now": calls skipToCalendar() (no questions, no form).
+ *   - "Tell us more first": opens the full 6-step wizard (#qualifier-full-path).
+ * A third inline link ("just ask a question") navigates to /contact. The full
+ * wizard's "Back to the quick form" control returns here. Attribution (gclid)
+ * flows into the Cal booking metadata on every path because initCalInlineEmbed()
+ * reads captureAttribution() regardless of entry path.
  */
 
-function showEntryFork(): void {
-  // Reveal the fork, hide the two other paths and any outcome/calendar so a
-  // visitor returning via "Back to options" gets a clean chooser.
-  $("qualifier-entry-fork")?.classList.remove("hidden");
-  $("qualifier-essentials-path")?.classList.add("hidden");
+function showInquiryPrimary(): void {
+  // The default /book view: lead with the short inquiry form (the path formerly
+  // reached only by picking the "essentials" card). Hide the full wizard and any
+  // outcome/calendar so a visitor returning via "Back to the quick form" gets a
+  // clean form.
+  $("qualifier-essentials-path")?.classList.remove("hidden");
   $("qualifier-full-path")?.classList.add("hidden");
   $$("[data-qualifier-outcome]").forEach((el) => el.classList.add("hidden"));
   $("qualifier-skip-heading")?.classList.add("hidden");
   // Keep the Cal embed hidden until a path actually books, but do NOT tear
   // down an already-mounted embed (Cal mounts once); just hide its container.
   $("cal-booking-container")?.classList.add("hidden");
-}
-
-function showEssentialsPath(): void {
-  $("qualifier-entry-fork")?.classList.add("hidden");
-  $("qualifier-full-path")?.classList.add("hidden");
-  $("qualifier-essentials-path")?.classList.remove("hidden");
-  // Mount the essentials Turnstile widget (idempotent; bails if already ok).
+  // Mount the inquiry Turnstile widget (idempotent; bails if already ok).
   void mountTurnstileWidget(TURNSTILE_ESSENTIALS_CONTAINER);
 }
 
 function showFullPathWizard(resumeStep?: StepIndex): void {
-  $("qualifier-entry-fork")?.classList.add("hidden");
   $("qualifier-essentials-path")?.classList.add("hidden");
   $("qualifier-full-path")?.classList.remove("hidden");
   // Make sure the progress meter + skip link are visible again (they may have
@@ -1300,25 +1294,28 @@ export function initDiscoveryQualifier(): void {
   bindStep6();
   bindEssentialsPath();
 
-  // Entry-fork buttons.
-  $("qualifier-fork-essentials")?.addEventListener("click", () => {
-    track("book_option_selected", { option: "essentials" });
-    showEssentialsPath();
-  });
-  $("qualifier-fork-straight")?.addEventListener("click", () => {
+  // Inline secondary paths shown beneath the primary inquiry form.
+  //   - "Grab a time now" -> reveal the calendar directly (no form, no questions)
+  //   - "Tell us more first" -> open the full 6-step wizard
+  // Both fire the same GA4 funnel event the entry-fork cards used to, so the
+  // /book micro-funnel keeps recording how visitors entered.
+  $("qualifier-inquiry-skip")?.addEventListener("click", (e) => {
+    e.preventDefault();
     track("book_option_selected", { option: "straight_to_time" });
     skipToCalendar();
   });
-  $("qualifier-fork-full")?.addEventListener("click", () => {
+  $("qualifier-inquiry-tellmore")?.addEventListener("click", (e) => {
+    e.preventDefault();
     track("book_option_selected", { option: "tell_us_more" });
     showFullPathWizard();
   });
 
-  // "Back to options" links on each path (essentials + full wizard).
+  // "Back to the quick form" links (on the full wizard) return to the primary
+  // inquiry form.
   $$("[data-back-to-options]").forEach((el) => {
     el.addEventListener("click", (e) => {
       e.preventDefault();
-      showEntryFork();
+      showInquiryPrimary();
     });
   });
 
@@ -1330,11 +1327,11 @@ export function initDiscoveryQualifier(): void {
     skipToCalendar();
   });
 
-  // Default view = the entry fork. Exception: a visitor who was MID-WIZARD in
-  // a prior session (has in-progress answers, has NOT completed) resumes the
-  // full wizard at their saved step so they don't lose progress. A completed
-  // prior state does NOT auto-reveal the calendar (a booking needs a fresh
-  // submit), so those visitors also start at the fork.
+  // Default view = the short inquiry form (the primary path). Exception: a
+  // visitor who was MID-WIZARD in a prior session (has in-progress answers, has
+  // NOT completed) resumes the full wizard at their saved step so they don't
+  // lose progress. A completed prior state does NOT auto-reveal the calendar (a
+  // booking needs a fresh submit), so those visitors also start at the form.
   const midWizard =
     !state.completedAt &&
     (((state.step ?? 1) > 1) ||
@@ -1347,7 +1344,8 @@ export function initDiscoveryQualifier(): void {
   if (midWizard) {
     showFullPathWizard((state.step || 1) as StepIndex);
   } else {
-    showEntryFork();
+    track("book_option_selected", { option: "inquiry" });
+    showInquiryPrimary();
   }
 }
 

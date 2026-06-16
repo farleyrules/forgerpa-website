@@ -38,7 +38,7 @@ const defaultHeroSubtitle =
             might help reduce manual work and deliver measurable ROI for your team.
           </p>
           <p class="text-lg text-gray-700 leading-relaxed mt-4">
-            Answer six short questions below so we can route your call to the right slot and come prepared.
+            Tell us a little about the manual work you'd like to hand off, then pick a time. It takes about a minute, and we'll come prepared.
           </p>
         </div>
 
@@ -54,77 +54,23 @@ const defaultHeroSubtitle =
         <!-- ===================== Discovery Qualifier Wizard ===================== -->
         <div id="discovery-qualifier-wizard" class="mb-12 rounded-2xl border border-gray-200 bg-slate-light p-6 sm:p-8">
 
-          <!-- ===================== Entry Fork =====================
-               The initial view on page load. Lets the visitor choose how to
-               start: a one-screen essentials form (recommended), straight to
-               the calendar, or the full six-question wizard. qualifier-init.ts
-               shows this by default and swaps in the chosen path. Every path
-               keeps the existing submit / Turnstile / consent / Cal machinery;
-               the fork only routes which path is visible. -->
-          <div id="qualifier-entry-fork">
-            <h2 class="text-2xl font-bold text-charcoal m-0 mb-2">How Would You Like to Start?</h2>
-            <p class="text-sm text-gray-600 mb-6">Pick whatever fits. You can switch at any time.</p>
-            <div class="grid gap-4 sm:grid-cols-3">
-              <!-- Option 1: Essentials (recommended / primary) -->
-              <!-- The "Recommended" badge sits in its own flow row ABOVE the
-                   title (not absolutely positioned) so it can never overlap the
-                   heading text at any width. The other two cards carry a matching
-                   empty badge-row spacer so all three titles stay vertically
-                   aligned. -->
-              <button
-                type="button"
-                id="qualifier-fork-essentials"
-                class="group flex flex-col rounded-xl border-2 border-amber bg-white p-5 text-left shadow-sm ring-1 ring-amber/30 transition-colors hover:border-amber/80 hover:bg-amber/5 focus:outline-none focus:ring-2 focus:ring-amber"
-              >
-                <span class="mb-2 flex h-5 items-center">
-                  <span class="rounded-full bg-amber px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-charcoal">Recommended</span>
-                </span>
-                <span class="text-base font-bold text-charcoal">Just the Essentials</span>
-                <span class="mt-2 text-sm text-gray-600">Four quick fields, then pick a time. The fastest way to get on the calendar.</span>
-                <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-amber-700 group-hover:text-amber-800">Start Here →</span>
-              </button>
-              <!-- Option 2: Straight to a Time -->
-              <button
-                type="button"
-                id="qualifier-fork-straight"
-                class="group flex flex-col rounded-xl border border-gray-300 bg-white p-5 text-left shadow-sm transition-colors hover:border-amber focus:outline-none focus:ring-2 focus:ring-amber"
-              >
-                <span class="mb-2 h-5" aria-hidden="true"></span>
-                <span class="text-base font-bold text-charcoal">Straight to a Time</span>
-                <span class="mt-2 text-sm text-gray-600">Skip the questions and grab a slot now. We'll cover the details on the call.</span>
-                <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gray-700 group-hover:text-charcoal">Pick a Time →</span>
-              </button>
-              <!-- Option 3: Tell Us More (full wizard) -->
-              <button
-                type="button"
-                id="qualifier-fork-full"
-                class="group flex flex-col rounded-xl border border-gray-300 bg-white p-5 text-left shadow-sm transition-colors hover:border-amber focus:outline-none focus:ring-2 focus:ring-amber"
-              >
-                <span class="mb-2 h-5" aria-hidden="true"></span>
-                <span class="text-base font-bold text-charcoal">Tell Us More</span>
-                <span class="mt-2 text-sm text-gray-600">Answer six short questions so we route your call and come fully prepared.</span>
-                <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gray-700 group-hover:text-charcoal">Answer Questions →</span>
-              </button>
-            </div>
-          </div>
-          <!-- ===================== End Entry Fork ===================== -->
-
-          <!-- ===================== Essentials (one-screen) path =====================
-               A single-screen form: Name, Work Email, Company, and a free-text
-               "what would you like automated?". Reuses the SAME Turnstile mount
-               pattern, the SAME clickwrap consent gate, the SAME validators, and
+          <!-- ===================== Inquiry form (primary path) =====================
+               The default view on page load (qualifier-init.ts showInquiryPrimary).
+               A short, inquiry-framed form (Name, Work Email, Company, and a
+               free-text "what would you like automated?"). It reuses the SAME
+               Turnstile mount, the SAME passive consent, the SAME validators, and
                POSTs to the SAME endpoint as the full wizard. It sends NO qualifier
                answers; instead it sets `essentials: true` so the server skips
                qualifier validation, returns MEDIUM, and stores the lead with no
                fake profile (the visitor's real ask rides in additionalNotes). On
                success it reveals the Cal embed exactly like a full submit, gclid
-               carried in the booking metadata. -->
+               carried in the booking metadata. The 3-card entry fork was removed
+               in favor of leading with this form (CRO: one focused CTA; an
+               inquiry-framed form converts far better than a chooser). Its three
+               destinations now live as inline secondary links below the form. -->
           <div id="qualifier-essentials-path" class="hidden">
-            <div class="mb-6 flex items-center justify-between">
-              <h2 class="text-2xl font-bold text-charcoal m-0">Just the Essentials</h2>
-              <button type="button" data-back-to-options class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">← Back to options</button>
-            </div>
-            <p class="text-sm text-gray-600 mb-6">Four quick fields and you're on the calendar. We keep everything confidential.</p>
+            <h2 class="text-2xl font-bold text-charcoal m-0 mb-2">Tell Us What You'd Like Automated</h2>
+            <p class="text-sm text-gray-600 mb-6">A few quick details, then pick a time. About a minute, and we keep everything confidential.</p>
 
             <div class="grid sm:grid-cols-2 gap-4">
               <label class="block">
@@ -179,16 +125,35 @@ const defaultHeroSubtitle =
                 Submit and Book
               </button>
             </div>
+
+            <!-- Inline secondary paths. One focused primary CTA stays the inquiry
+                 form above; these offer (a) immediate booking for a high-intent
+                 visitor, (b) a genuinely low-commitment "just ask a question" path
+                 for the ~75% not ready to book, and (c) the full six-question
+                 wizard for anyone who wants to tell us more first. gclid + the GA4
+                 funnel are preserved on every path. -->
+            <div class="mt-8 border-t border-gray-200 pt-5 flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-8">
+              <button type="button" id="qualifier-inquiry-skip" class="text-sm font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">
+                Short on time? Grab a time now.
+              </button>
+              <a href="/contact" class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">
+                Not ready to book? Just ask a question.
+              </a>
+              <button type="button" id="qualifier-inquiry-tellmore" class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">
+                Want to tell us more first?
+              </button>
+            </div>
           </div>
           <!-- ===================== End Essentials path ===================== -->
 
           <!-- ===================== Full 6-step wizard (path 3) =====================
-               Unchanged behavior. Hidden until the visitor picks "Tell Us More"
-               (or is restored mid-wizard from a prior session). The skip-to-time
-               and "Back to options" controls live inside. -->
+               Unchanged behavior. Hidden until the visitor clicks "Want to tell
+               us more first?" beneath the inquiry form (or is restored mid-wizard
+               from a prior session). The skip-to-time and "Back to the quick form"
+               controls live inside. -->
           <div id="qualifier-full-path" class="hidden">
           <div id="qualifier-full-path-back" class="mb-4">
-            <button type="button" data-back-to-options class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">← Back to options</button>
+            <button type="button" data-back-to-options class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">← Back to the quick form</button>
           </div>
           <div id="qualifier-progress-container" class="mb-6">
             <div class="flex justify-between items-center mb-2">
@@ -461,10 +426,10 @@ const defaultHeroSubtitle =
   </section>
 
   <CTASection
-    heading="Prefer to Send an Email?"
-    subtext="If scheduling a call isn't convenient right now, feel free to reach out directly."
-    ctaText="Email Us"
-    ctaLink="mailto:info@forgerpa.com"
+    heading="Not Ready to Book?"
+    subtext="If a call isn't convenient right now, send us a question and we'll reply within one business day. No commitment."
+    ctaText="Ask a Question"
+    ctaLink="/contact"
   />
 </PageLayout>
 

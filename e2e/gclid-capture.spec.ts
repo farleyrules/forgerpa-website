@@ -118,6 +118,14 @@ test("captures gclid and forwards it in the (aborted) lead submission", async ({
   expect(stored, "attribution record should be persisted to localStorage").not.toBeNull();
   expect(stored?.params?.gclid).toBe(SYNTH_GCLID);
 
+  // ---- Open the full wizard ----
+  // The default /book view is now the short inquiry form (the 3-card entry fork
+  // was removed in favor of leading with it). The full 6-step wizard — the path
+  // this test walks — is reached via the inline "tell us more" link beneath the
+  // form. gclid forwarding is identical on every path (submitWizard reads
+  // captureAttribution() regardless of entry).
+  await page.click("#qualifier-inquiry-tellmore");
+
   // ---- Walk the 6-step wizard to the submit step ----
   // Step 1: role
   await page.check('input[name="qualifier-role"][value="Controller"]');
@@ -140,7 +148,7 @@ test("captures gclid and forwards it in the (aborted) lead submission", async ({
   await page.fill("#qualifier-contact-name", "Synthetic Tester");
   await page.fill("#qualifier-contact-email", "synthetic.tester@example.com");
   await page.fill("#qualifier-contact-company", "Synthetic Co");
-  await page.check("#qualifier-consent");
+  // Consent is now passive (no checkbox gate); submitting implies agreement.
 
   // Wait until the stubbed Turnstile has actually fired its callback (the mount
   // is async: site-key fetch -> render). The submit handler bails early without
