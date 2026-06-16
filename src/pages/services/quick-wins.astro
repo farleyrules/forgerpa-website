@@ -3,16 +3,10 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
 import InlineCta from '../../components/InlineCta.astro';
 
-// Secondary "fast lane" CTA for the Spreadsheet Rescue ($750, pay in full).
-// Env-driven so David can paste the live Stripe Payment Link without a code change.
-// Falls back to the booking funnel if the env var is unset, so the button is never dead.
-const rescueCheckoutUrl = import.meta.env.PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL || '/book?from=quick-wins';
-// TODO: David pastes the Stripe Payment Link for the $750 Spreadsheet Rescue into PUBLIC_STRIPE_QUICK_WINS_RESCUE_URL
-
 const faqs = [
   {
     q: "What's a Spreadsheet Rescue versus an Automation Assessment?",
-    a: "A Spreadsheet Rescue ($750 flat, 2 business days) fixes or rebuilds one workbook with a single defined outcome: it's broken, it's slow, or it's fragile and you need it dependable. When the job is bigger than one workbook (a whole recurring process you want automated end to end), we start with a flat $2,000 Automation Assessment that scopes the build, projects ROI, and is credited toward the resulting statement of work. There is one assessment for every build."
+    a: "A spreadsheet rescue is a fast, fixed-price fix or rebuild of one workbook with a single defined outcome: it's broken, it's slow, or it's fragile and you need it dependable. When the job is bigger than one workbook (a whole recurring process you want automated end to end), we start with a fixed-price automation assessment that scopes the build, projects ROI, and is credited toward the resulting statement of work. There is one assessment for every build."
   },
   {
     q: "How do you price a fixed quote so fast?",
@@ -32,7 +26,7 @@ const faqs = [
   },
   {
     q: "How do I pay?",
-    a: "Spreadsheet Rescue ($750) can be paid in full up front through the fast-lane checkout. The Automation Assessment is a flat $2,000, paid up front and credited toward your statement of work if you proceed with the build. Automation Sprint hours are billed in 15-minute increments against a prepaid 10-hour block."
+    a: "Everything is quoted as a fixed price up front from the free discovery call, so you approve the number before any work begins. Larger builds start with a fixed-price assessment that's credited toward the statement of work if you proceed. No metered hours, no surprise invoices."
   }
 ];
 
@@ -70,7 +64,7 @@ const faqSchema = {
 
 <PageLayout
   title="Power Platform & Copilot Automation for Finance | Forge Quick Wins"
-  description="Microsoft Power Platform and Copilot automation for finance and operations. Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents. Fixed-price, starting with a spreadsheet rescue from $750, delivered AI-fast with a QA tie-out on every job."
+  description="Microsoft Power Platform and Copilot automation for finance and operations. Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents. Fixed-price, starting with a spreadsheet rescue, delivered AI-fast with a QA tie-out on every job."
   heroTitle="Turn manual Microsoft-stack work into automated, governed, audit-ready processes"
   heroSubtitle="Microsoft Power Platform and Copilot automation for the finance and operations back office. Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents over your own data. Fixed price, custom-built, delivered AI-fast by a CPA-trained finance veteran who knows when the number is wrong. Start with a free 30-minute discovery call (often shorter) and a flat quote within one business day."
   heroCta="Book a Free 30-Min Discovery Call"
@@ -78,20 +72,6 @@ const faqSchema = {
 >
   <section class="py-20 lg:py-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <!-- Fast-lane secondary CTA (Rung 1 pay-in-full) -->
-      <div class="mb-16 -mt-4">
-        <div class="bg-amber/5 border border-amber rounded-xl p-6 lg:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <p class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-1">Fast lane</p>
-            <h2 class="text-xl lg:text-2xl font-bold text-charcoal">One workbook to rescue? Skip the call.</h2>
-            <p class="text-gray-700 mt-2">Pay for a $750 Spreadsheet Rescue up front and we start within two business days. Fixed price, defined outcome, QA tie-out included.</p>
-          </div>
-          <a href={rescueCheckoutUrl} class="inline-flex items-center justify-center px-6 py-3 bg-charcoal hover:bg-charcoal-light text-white font-bold rounded-lg transition-colors shadow-lg flex-shrink-0">
-            Start a $750 Rescue
-          </a>
-        </div>
-      </div>
 
       <!-- The Pain -->
       <div class="mb-16">
@@ -195,80 +175,15 @@ const faqSchema = {
         ctaLink="/book?from=quick-wins"
       />
 
-      <!-- Pricing Ladder -->
+      <!-- What It Costs (no price ladder; the number is set on the call) -->
       <div class="mb-16">
-        <h2 class="text-3xl font-bold text-charcoal mb-6">Pick the way in that fits</h2>
-        <p class="text-lg text-gray-700 leading-relaxed mb-10">
-          Most of this work has a definable outcome, so we lead with fixed-price packages. You know the price before we start. Every engagement begins with a free 30-minute discovery call where we tell you straight which option fits.
+        <h2 class="text-3xl font-bold text-charcoal mb-6">What It Costs</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Most of this work has a definable outcome, so we work fixed-price: you know the number before we start, and new asks become a new package or a change order, never silent scope creep. Every engagement begins with a free 30-minute discovery call where we map your ask to the right option and quote a flat price, usually within one business day. When the work is bigger than a single project, we start with a fixed-price assessment that scopes the build, projects the ROI, and is credited toward it.
         </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Spreadsheet Rescue -->
-          <div class="bg-slate-light rounded-xl p-8 flex flex-col">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Fixed price</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Spreadsheet Rescue</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$750</div>
-            <div class="text-sm text-gray-500 mb-4">flat / 2 business days</div>
-            <p class="text-gray-600 text-sm mb-4">One workbook, one defined outcome. Fix what's broken or slow, or rebuild a fragile manual sheet into something dependable.</p>
-            <ul class="space-y-2 text-sm text-gray-700">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Pay in full, fast-lane start</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>QA tie-out included</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Loom walkthrough at handoff</span></li>
-            </ul>
-          </div>
-
-          <!-- Quick Win Project -->
-          <div class="bg-slate-light rounded-xl p-8 flex flex-col border-2 border-amber">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">Most popular</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Quick Win Project</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$1,500 to $12,000</div>
-            <div class="text-sm text-gray-500 mb-4">flat / no SOW / days to ~2 weeks</div>
-            <p class="text-gray-600 text-sm mb-4">A defined-scope build, quoted flat from the discovery call and delivered without SOW ceremony. For when it's more than a rescue but you don't want a big project.</p>
-            <ul class="space-y-2 text-sm text-gray-700">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Light</strong> one report automated, one workbook hardened</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Standard</strong> multi-source consolidation or a recurring reconciliation</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">→</span><span><strong class="text-charcoal">Heavy</strong> several stitched automations</span></li>
-            </ul>
-          </div>
-
-          <!-- Automation Assessment -->
-          <div class="bg-slate-light rounded-xl p-8 flex flex-col">
-            <div class="text-sm font-bold text-amber-dark uppercase tracking-wide mb-2">For bigger builds</div>
-            <h3 class="text-xl font-bold text-charcoal mb-1">Automation Assessment</h3>
-            <div class="text-3xl font-extrabold text-charcoal mb-1">$2,000</div>
-            <div class="text-sm text-gray-500 mb-4">flat / credited to your SOW</div>
-            <p class="text-gray-600 text-sm mb-4">When the work is bigger than a single project, or the scope isn't clear yet. We scope it, project the ROI, and map the build, credited toward the statement of work.</p>
-            <ul class="space-y-2 text-sm text-gray-700">
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Process scoped and ROI projected</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Fully credited toward your SOW</span></li>
-              <li class="flex items-start gap-2"><span class="text-amber-dark mt-0.5">✓</span><span>Leads straight into the build</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- More ways to work together -->
-        <h3 class="text-xl font-bold text-charcoal mt-12 mb-4">More Ways to Work Together</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <h4 class="font-bold text-charcoal mb-1">Automation Sprint</h4>
-            <div class="text-lg font-extrabold text-charcoal mb-2">$150/hr</div>
-            <p class="text-gray-600 text-sm">Prepaid 10-hour blocks ($1,500). Also $1,200/day or $6,000/week for short-term embedded work. For scope that's genuinely open-ended.</p>
-          </div>
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <h4 class="font-bold text-charcoal mb-1">Automation-on-Call</h4>
-            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 to $2,500/mo</div>
-            <p class="text-gray-600 text-sm">A monthly block of priority hours for teams with a steady trickle of small automation needs. Predictable, and we stay close to your stack.</p>
-          </div>
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <h4 class="font-bold text-charcoal mb-1">Automation Workshop</h4>
-            <div class="text-lg font-extrabold text-charcoal mb-2">$1,500 / half-day</div>
-            <p class="text-gray-600 text-sm">Hands-on team training on Power Query, Excel, and the Power Platform, so your people can build and maintain the simple things themselves.</p>
-          </div>
-        </div>
-
-        <div class="mt-8 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6">
+        <div class="mt-6 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6">
           <p class="text-gray-700">
-            <strong class="text-charcoal">Start free.</strong> The 30-minute discovery call is your entry point. You leave with a one-line verdict on which option fits, or a recommendation to step up to a full Automation Assessment. No pitch, no obligation.
+            <strong class="text-charcoal">Start free.</strong> The 30-minute discovery call is your entry point. You leave with a clear recommendation and a flat quote. No pitch, no obligation.
           </p>
         </div>
       </div>
@@ -388,7 +303,7 @@ const faqSchema = {
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <a href="/services/automation-assessment" class="block bg-white border border-gray-200 rounded-xl p-6 hover:border-amber transition-colors">
-            <h3 class="font-bold text-charcoal mb-2">What the $2,000 Assessment covers</h3>
+            <h3 class="font-bold text-charcoal mb-2">What the Assessment Covers</h3>
             <p class="text-gray-600 text-sm mb-4">A focused diagnostic that scores the whole process for automation potential, projects ROI, and hands you a prioritized roadmap. Credited toward your build.</p>
             <span class="text-amber-dark font-semibold text-sm">Learn More →</span>
           </a>
