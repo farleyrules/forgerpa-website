@@ -267,6 +267,10 @@ function showInquiryPrimary(): void {
   // outcome/calendar so a visitor returning via "Back to the quick form" gets a
   // clean form.
   $("qualifier-essentials-path")?.classList.remove("hidden");
+  // Always show the form body and hide any stale reach-out confirmation when
+  // returning to this view (e.g. via "Back to the quick form").
+  $("essentials-form-body")?.classList.remove("hidden");
+  $("essentials-confirmation")?.classList.add("hidden");
   $("qualifier-full-path")?.classList.add("hidden");
   $$("[data-qualifier-outcome]").forEach((el) => el.classList.add("hidden"));
   $("qualifier-skip-heading")?.classList.add("hidden");
@@ -302,15 +306,58 @@ function showFullPathWizard(resumeStep?: StepIndex): void {
  * the lead in #discovery-bookings with no fabricated role/challenge/systems.
  */
 function bindEssentialsPath(): void {
-  // Consent is now PASSIVE: a notice above the submit button ("By booking, you
-  // agree to our Terms and Privacy Policy"), no checkbox gate. Submitting
-  // implies agreement and a consent record is still POSTed + stored server-side
-  // (see the `consent` object in submitEssentials). So there is no submit-
-  // disabled-until-checked binding here anymore.
-  $("essentials-submit")?.addEventListener("click", () => void submitEssentials());
+  // Consent is PASSIVE (a notice above the buttons, no checkbox gate). The two
+  // buttons share the SAME fields, validation, Turnstile, consent record, and
+  // POST; they differ only in what happens after a successful submit:
+  //   - "Send it over" (reach_out): show a "we'll be in touch" confirmation.
+  //   - "Pick a time"  (book):      reveal the Cal embed, prefilled.
+  $("essentials-send")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "reach_out" });
+    void submitInquiry("reach_out");
+  });
+  $("essentials-book")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "book" });
+    void submitInquiry("book");
+  });
+  // From the reach-out confirmation: a changed-mind visitor can still grab a
+  // time. Their name + email are already in `state`, so the Cal prefill works
+  // without re-entering anything.
+  $("essentials-confirm-book")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "book_after_reach_out" });
+    showOutcome("MEDIUM");
+  });
 }
 
-async function submitEssentials(): Promise<void> {
+type InquiryMode = "reach_out" | "book";
+
+/**
+ * Disable both submit buttons while a request is in flight; show "Submitting…"
+ * on the one that was clicked, and restore its label afterward.
+ */
+function setEssentialsBusy(busy: boolean, activeBtnId: string): void {
+  for (const id of ["essentials-send", "essentials-book"]) {
+    const b = $(id) as HTMLButtonElement | null;
+    if (b) b.disabled = busy;
+  }
+  const active = $(activeBtnId) as HTMLButtonElement | null;
+  if (!active) return;
+  if (busy) {
+    active.dataset.label = active.textContent ?? "";
+    active.textContent = "Submitting…";
+  } else if (active.dataset.label) {
+    active.textContent = active.dataset.label;
+  }
+}
+
+/**
+ * Submit the short inquiry form. Both buttons land here; `mode` decides the
+ * post-success behavior. The POST is unchanged (essentials: true, no
+ * qualifierAnswers, gclid + consent ride along). Company is now OPTIONAL, and
+ * the reach-out path tags the note so David can tell a callback request apart
+ * from a booking in the cockpit.
+ */
+async function submitInquiry(mode: InquiryMode): Promise<void> {
+  const activeBtnId = mode === "book" ? "essentials-book" : "essentials-send";
   const name = ($("essentials-name") as HTMLInputElement | null)?.value.trim() ?? "";
   const email = ($("essentials-email") as HTMLInputElement | null)?.value.trim() ?? "";
   const company = ($("essentials-company") as HTMLInputElement | null)?.value.trim() ?? "";
@@ -321,18 +368,14 @@ async function submitEssentials(): Promise<void> {
   setError("essentials-company", null);
   setError("essentials-notes", null);
 
-  // Consent is passive (no checkbox gate). Submitting implies agreement; the
-  // consent record still rides the POST payload below and is stored server-side.
-
-  // Required fields (Name / Work Email / Company are server-required; the
-  // free-text "what would you like automated" is required here so the lead
-  // carries intent; it rides into additionalNotes).
+  // Required: name, a valid-format email (work OR personal, the label is just
+  // "Email"), and the free-text ask. Company is OPTIONAL; validate only if given.
   if (!name) {
     setError("essentials", "Please enter your name.");
     return;
   }
   if (!email) {
-    setError("essentials-email", "Please enter your work email.");
+    setError("essentials-email", "Please enter your email.");
     return;
   }
   const emailErr = validateEmailFormat(email);
@@ -340,14 +383,12 @@ async function submitEssentials(): Promise<void> {
     setError("essentials-email", emailErr);
     return;
   }
-  if (!company) {
-    setError("essentials-company", "Please enter your company name.");
-    return;
-  }
-  const companyErr = validateCompanyNotUrl(company);
-  if (companyErr) {
-    setError("essentials-company", companyErr);
-    return;
+  if (company) {
+    const companyErr = validateCompanyNotUrl(company);
+    if (companyErr) {
+      setError("essentials-company", companyErr);
+      return;
+    }
   }
   if (!notes) {
     setError("essentials-notes", "Tell us in a sentence what you'd like automated.");
@@ -359,45 +400,34 @@ async function submitEssentials(): Promise<void> {
       getTurnstileStatus(TURNSTILE_ESSENTIALS_CONTAINER) === "ok" &&
       window.turnstile != null &&
       essentialsTurnstileWidgetId != null;
-    if (!widgetActuallyMounted) {
-      setError(
-        "essentials",
-        "The spam-check widget didn't load (likely a browser shield / privacy extension). See the red box above for fix instructions, then click 'Retry spam-check'.",
-      );
-    } else {
-      setError(
-        "essentials",
-        "Please complete the spam-check above (click the checkbox), then try again.",
-      );
-    }
+    setError(
+      "essentials",
+      widgetActuallyMounted
+        ? "Please complete the spam-check above (click the checkbox), then try again."
+        : "The spam-check widget didn't load (likely a browser shield / privacy extension). See the red box above for fix instructions, then click 'Retry spam-check'.",
+    );
     return;
   }
 
-  const submitBtn = $("essentials-submit") as HTMLButtonElement | null;
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting…";
-  }
+  setEssentialsBusy(true, activeBtnId);
 
   const attribution = captureAttribution();
 
-  // Build the payload reusing submitWizard's shape, with two deliberate
-  // differences for the essentials path:
-  //   1. NO qualifierAnswers field at all — the essentials form does not
-  //      collect them, so we no longer fabricate a synthetic allow-list-valid
-  //      set. The visitor's real ask is carried verbatim in additionalNotes.
-  //   2. `essentials: true` — the marker the server keys on to skip qualifier
-  //      validation, set the fit tier to MEDIUM directly (which reveals the
-  //      calendar), and persist the lead with no fake profile fields.
-  // Everything else (name/email/company/additionalNotes/consent/turnstileToken/
-  // attribution(gclid)/fromContext) is identical to the full wizard's submit.
+  // Reach-out has no booking, so tag the note that the lead asked for a callback.
+  // Book leaves the note clean (a Cal booking follows). Company is omitted from
+  // the payload when blank.
+  const additionalNotes =
+    mode === "reach_out"
+      ? `${notes}\n\n[Visitor asked us to reach out; no time booked.]`
+      : notes;
+
   const payload = {
     source: "discovery_qualifier",
     essentials: true,
     name,
     email,
-    company,
-    additionalNotes: notes || undefined,
+    company: company || undefined,
+    additionalNotes: additionalNotes || undefined,
     attribution,
     turnstileToken: essentialsTurnstileToken,
     fromContext: state.fromContext,
@@ -427,7 +457,7 @@ async function submitEssentials(): Promise<void> {
     );
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error("[discovery-qualifier] essentials fetch failed:", err);
+    console.error("[discovery-qualifier] inquiry fetch failed:", err);
     serverError =
       "Couldn't reach the booking service. If you're on Brave or a privacy browser, try lowering Shields for sales.forgerpa.com and retry.";
   }
@@ -438,7 +468,7 @@ async function submitEssentials(): Promise<void> {
       parsed = (await response.json()) as { tier?: FitTier; error?: string };
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error("[discovery-qualifier] essentials response parse failed:", err);
+      console.error("[discovery-qualifier] inquiry response parse failed:", err);
       serverError = `Booking service responded with HTTP ${response.status} (no JSON body). Please try again, or email sales@forgerpa.com.`;
     }
     if (parsed) {
@@ -454,10 +484,7 @@ async function submitEssentials(): Promise<void> {
 
   if (serverError) {
     setError("essentials", serverError);
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Submit and book";
-    }
+    setEssentialsBusy(false, activeBtnId);
     if (essentialsTurnstileWidgetId && window.turnstile) {
       window.turnstile.reset(essentialsTurnstileWidgetId);
       essentialsTurnstileToken = null;
@@ -465,17 +492,21 @@ async function submitEssentials(): Promise<void> {
     return;
   }
 
-  // Success: stash name/email so the Cal.com prefill in initCalInlineEmbed
-  // works, then reveal the calendar via the shared outcome path. We send a
-  // neutral set so the server returns MEDIUM in practice; default to MEDIUM if
-  // for any reason the tier is absent.
+  // Success. Stash name/email so the Cal.com prefill works (the book path, or a
+  // changed-mind booking from the reach-out confirmation).
   state.contact.name = name;
   state.contact.email = email;
-  const finalTier = serverTier || "MEDIUM";
-  state.computedTier = finalTier;
+  state.computedTier = serverTier || "MEDIUM";
   state.completedAt = Date.now();
-  showOutcome(finalTier);
   clearState();
+
+  if (mode === "book") {
+    showOutcome(state.computedTier);
+  } else {
+    track("inquiry_submitted", { method: "reach_out" });
+    $("essentials-form-body")?.classList.add("hidden");
+    $("essentials-confirmation")?.classList.remove("hidden");
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1294,16 +1325,9 @@ export function initDiscoveryQualifier(): void {
   bindStep6();
   bindEssentialsPath();
 
-  // Inline secondary paths shown beneath the primary inquiry form.
-  //   - "Grab a time now" -> reveal the calendar directly (no form, no questions)
-  //   - "Tell us more first" -> open the full 6-step wizard
-  // Both fire the same GA4 funnel event the entry-fork cards used to, so the
-  // /book micro-funnel keeps recording how visitors entered.
-  $("qualifier-inquiry-skip")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    track("book_option_selected", { option: "straight_to_time" });
-    skipToCalendar();
-  });
+  // Tertiary path beneath the inquiry form: "tell us more first" opens the full
+  // 6-step wizard. (The two primary buttons, "Send it over" / "Pick a time",
+  // are bound in bindEssentialsPath; "just ask a question" is a plain link.)
   $("qualifier-inquiry-tellmore")?.addEventListener("click", (e) => {
     e.preventDefault();
     track("book_option_selected", { option: "tell_us_more" });
@@ -1344,7 +1368,6 @@ export function initDiscoveryQualifier(): void {
   if (midWizard) {
     showFullPathWizard((state.step || 1) as StepIndex);
   } else {
-    track("book_option_selected", { option: "inquiry" });
     showInquiryPrimary();
   }
 }

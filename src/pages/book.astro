@@ -70,21 +70,22 @@ const defaultHeroSubtitle =
                destinations now live as inline secondary links below the form. -->
           <div id="qualifier-essentials-path" class="hidden">
             <h2 class="text-2xl font-bold text-charcoal m-0 mb-2">Tell Us What You'd Like Automated</h2>
-            <p class="text-sm text-gray-600 mb-6">A few quick details, then pick a time. About a minute, and we keep everything confidential.</p>
+            <p class="text-sm text-gray-600 mb-6">A few quick details, then choose how you'd like to start. About a minute, and we keep everything confidential.</p>
 
+            <div id="essentials-form-body">
             <div class="grid sm:grid-cols-2 gap-4">
               <label class="block">
                 <span class="text-sm font-semibold text-charcoal">Name *</span>
                 <input type="text" id="essentials-name" autocomplete="name" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
               </label>
               <label class="block">
-                <span class="text-sm font-semibold text-charcoal">Work email *</span>
+                <span class="text-sm font-semibold text-charcoal">Email *</span>
                 <input type="email" id="essentials-email" autocomplete="email" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
                 <p id="essentials-email-error" class="hidden mt-1 text-xs text-red-600"></p>
               </label>
               <label class="block sm:col-span-2">
-                <span class="text-sm font-semibold text-charcoal">Company *</span>
-                <input type="text" id="essentials-company" autocomplete="organization" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <span class="text-sm font-semibold text-charcoal">Company <span class="font-normal text-gray-500">(optional)</span></span>
+                <input type="text" id="essentials-company" autocomplete="organization" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
                 <p id="essentials-company-error" class="hidden mt-1 text-xs text-red-600"></p>
               </label>
               <label class="block sm:col-span-2">
@@ -102,46 +103,64 @@ const defaultHeroSubtitle =
             <p id="essentials-error" class="hidden mt-4 text-sm text-red-600"></p>
 
             <!-- Passive consent notice. Submitting implies agreement; there is
-                 no checkbox gate. The legal record is still captured server-side
-                 (see the `consent` object in submitEssentials). -->
-            <div class="mt-6 flex flex-col items-end gap-3">
-              <p class="text-xs text-gray-500 text-right m-0">
-                By booking, you agree to our
-                <a
-                  href="/terms"
-                  target="_blank"
-                  rel="noopener"
-                  class="underline decoration-1 underline-offset-2 hover:text-charcoal"
-                  >Terms</a>
-                and
-                <a
-                  href="/privacy"
-                  target="_blank"
-                  rel="noopener"
-                  class="underline decoration-1 underline-offset-2 hover:text-charcoal"
-                  >Privacy Policy</a>.
-              </p>
-              <button type="button" id="essentials-submit" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                Submit and Book
-              </button>
+                 no checkbox gate. The legal record still rides the POST payload
+                 (see the `consent` object in submitInquiry). -->
+            <p class="mt-6 text-xs text-gray-500 m-0">
+              By submitting, you agree to our
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Terms</a>
+              and
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Privacy Policy</a>.
+            </p>
+
+            <!-- Two ways to proceed with the SAME details: have us reach out, or
+                 book a time now (which reuses the name + email entered above).
+                 Small text sits above each button. -->
+            <div class="mt-5 grid gap-4 sm:grid-cols-2">
+              <div class="flex flex-col gap-2">
+                <p class="m-0 text-center text-xs text-gray-500">We'll review it and reply within one business day.</p>
+                <button type="button" id="essentials-send" class="inline-flex items-center justify-center gap-2 bg-amber text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  Send it over
+                </button>
+              </div>
+              <div class="flex flex-col gap-2">
+                <p class="m-0 text-center text-xs text-gray-500">Prefer to talk now? We'll reuse your details.</p>
+                <button type="button" id="essentials-book" class="inline-flex items-center justify-center gap-2 bg-white text-charcoal font-bold px-6 py-3 rounded-lg border border-charcoal hover:bg-slate-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  Pick a time
+                </button>
+              </div>
             </div>
 
-            <!-- Inline secondary paths. One focused primary CTA stays the inquiry
-                 form above; these offer (a) immediate booking for a high-intent
-                 visitor, (b) a genuinely low-commitment "just ask a question" path
-                 for the ~75% not ready to book, and (c) the full six-question
-                 wizard for anyone who wants to tell us more first. gclid + the GA4
-                 funnel are preserved on every path. -->
-            <div class="mt-8 border-t border-gray-200 pt-5 flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-8">
-              <button type="button" id="qualifier-inquiry-skip" class="text-sm font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">
-                Short on time? Grab a time now.
-              </button>
+            <!-- Tertiary paths: a genuinely low-commitment "just ask a question"
+                 link for the not-ready, and the full six-question wizard for
+                 anyone who wants to tell us more first. -->
+            <div class="mt-6 border-t border-gray-200 pt-4 flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-8">
               <a href="/contact" class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">
-                Not ready to book? Just ask a question.
+                Not ready? Just ask a question.
               </a>
               <button type="button" id="qualifier-inquiry-tellmore" class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">
                 Want to tell us more first?
               </button>
+            </div>
+            </div>
+            <!-- ===================== End inquiry form body ===================== -->
+
+            <!-- Reach-out confirmation. Hidden until "Send it over" succeeds; then
+                 the form body above is hidden and this is shown. A changed-mind
+                 visitor can still grab a time (their details are reused). -->
+            <div id="essentials-confirmation" class="hidden rounded-2xl border border-amber/40 bg-amber/10 p-6 text-center">
+              <h3 class="text-xl font-bold text-charcoal m-0">Got it. We'll be in touch.</h3>
+              <p class="text-gray-700 leading-relaxed mt-3 mb-0">Thanks for the details. We'll review them and reach out within one business day.</p>
+              <p class="text-gray-600 leading-relaxed mt-4 mb-0">Would you rather grab a time now? <button type="button" id="essentials-confirm-book" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">Pick a time</button>.</p>
             </div>
           </div>
           <!-- ===================== End Essentials path ===================== -->
