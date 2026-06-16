@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
+import StickyBookCta from '../components/StickyBookCta.astro';
 
 interface Props {
   title: string;
@@ -13,9 +14,15 @@ interface Props {
   heroCtaLink?: string;
   noindex?: boolean;
   ogImage?: string;
+  /** Mobile sticky "Book a call" bar. Shows on any page that has a heroCtaLink;
+   *  pass false to suppress it (e.g. the booking page itself). */
+  stickyCta?: boolean;
 }
 
-const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink, noindex, ogImage } = Astro.props;
+const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink, noindex, ogImage, stickyCta = true } = Astro.props;
+// Show the mobile sticky CTA only when the page actually has a booking target,
+// so /book and the legal pages (which pass no heroCtaLink) never show it.
+const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
 ---
 
 <BaseLayout title={title} description={description} noindex={noindex} ogImage={ogImage}>
@@ -28,8 +35,9 @@ const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink, noind
       ctaLink={heroCtaLink}
     />
   )}
-  <main>
+  <main class={showStickyCta ? 'pb-16 sm:pb-0' : ''}>
     <slot />
   </main>
   <Footer />
+  {showStickyCta && <StickyBookCta link={heroCtaLink} />}
 </BaseLayout>
