@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import InlineCta from '../../components/InlineCta.astro';
 
 // Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
 const serviceSchema = {
@@ -83,7 +84,7 @@ const faqSchema = {
   description="Accounts payable automation services for finance teams. Invoice capture, three-way match, approval routing, and ERP posting. Implemented around your existing ERP."
   heroTitle="Accounts Payable Automation Software & Services"
   heroSubtitle="Not a rigid, off-the-shelf SaaS product you bend to fit. We build accounts payable automation around your existing ERP and your real approval rules: invoice capture, three-way match, approval routing, vendor master sync, and ERP posting. Finance-led team, fixed-fee project pricing, no per-invoice subscription."
-  heroCta="Book a 30-Min AP Discovery Call"
+  heroCta="Book a Free 30-Min AP Discovery Call"
   heroCtaLink="/book?from=ap-automation"
 >
   <!-- JSON-LD structured data -->
@@ -193,6 +194,12 @@ const faqSchema = {
           </div>
         </div>
       </div>
+
+      <InlineCta
+        text="Want your AP cycle in days, not weeks?"
+        ctaText="Book a Free 30-Min AP Call"
+        ctaLink="/book?from=ap-automation"
+      />
 
       <!-- How we differ from AP automation software -->
       <div class="mb-16">
@@ -456,7 +463,7 @@ const faqSchema = {
   <CTASection
     heading="Ready to see what your AP automation could look like?"
     subtext="Book a free 30-minute discovery call. We will walk through your invoice volume, your ERP, your approval routing, and where the biggest cycle-time wins live. You leave with a clear picture even if we never work together."
-    ctaText="Book a 30-Min AP Discovery Call"
+    ctaText="Book a Free 30-Min AP Discovery Call"
     ctaLink="/book?from=ap-automation"
   />
 </PageLayout>

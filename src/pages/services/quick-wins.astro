@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import InlineCta from '../../components/InlineCta.astro';
 
 // Secondary "fast lane" CTA for the Spreadsheet Rescue ($750, pay in full).
 // Env-driven so David can paste the live Stripe Payment Link without a code change.
@@ -187,6 +188,12 @@ const faqSchema = {
           A CPA-trained finance veteran with 30 years in the field can. That judgment and accountability layer is exactly what survives the AI wave. We use the same AI everyone else has as a delivery accelerator, so you get senior work at a fair fixed price, faster than a traditional consultant, and you get the person who knows when the AI is wrong.
         </p>
       </div>
+
+      <InlineCta
+        text="Have a workbook quietly eating your week?"
+        ctaText="Book a Free 30-Min Call"
+        ctaLink="/book?from=quick-wins"
+      />
 
       <!-- Pricing Ladder -->
       <div class="mb-16">

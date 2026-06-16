@@ -1,0 +1,41 @@
+---
+/**
+ * Compact mid-page CTA band for long landing pages.
+ *
+ * Why it exists: the long service pages only carry a CTA in the hero (top) and
+ * the CTASection (very bottom). The mobile sticky bar covers mobile, but on
+ * DESKTOP a reader convinced halfway down has no CTA in reach until they scroll
+ * to the end. GA4 showed the highest-traffic paid pages (quick-wins, AP) drove
+ * ~0 visitors to /book, and their CTA copy is already strong, so placement is
+ * the gap. Drop this once mid-page (after the value is established) to catch the
+ * desktop reader at the moment of conviction. Carries the page's ?from= tag.
+ */
+interface Props {
+  /** The lead-in line; keep it specific to the page's pain. */
+  text?: string;
+  /** Button label; benefit-first + low-friction (free, 30 min). */
+  ctaText?: string;
+  /** /book?from=... so landing-page -> /book attribution stays intact. */
+  ctaLink?: string;
+}
+
+const {
+  text = "Ready to see what this looks like for your team?",
+  ctaText = "Book a Free 30-Min Call",
+  ctaLink = "/book",
+} = Astro.props;
+---
+
+<div class="my-12 lg:my-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="rounded-xl bg-charcoal text-white px-6 py-8 sm:px-10 shadow-lg sm:flex sm:items-center sm:justify-between sm:gap-6">
+      <p class="text-lg sm:text-xl font-semibold">{text}</p>
+      <a
+        href={ctaLink}
+        class="mt-4 sm:mt-0 inline-flex shrink-0 items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+      >
+        {ctaText}
+      </a>
+    </div>
+  </div>
+</div>
