@@ -1,60 +1,87 @@
 ---
+// Working contact form that emails David.
+//
+// Submissions are delivered by Web3Forms (https://web3forms.com), a hosted
+// form-to-email service. The access key is PUBLIC by design: it lives in the
+// client HTML and only authorizes delivery to the inbox it was registered to,
+// so it is safe to read from a PUBLIC_ env var or even commit. Set it as
+// PUBLIC_WEB3FORMS_KEY in the Cloudflare Pages environment (Settings ->
+// Environment variables) to turn the form on.
+//
+// Graceful fallback: when the key is unset the form degrades to a mailto:
+// compose to info@forgerpa.com, so the "ask a question" path is never dead.
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY || '';
+const fallbackEmail = 'info@forgerpa.com';
 ---
 
-<form action="https://formspree.io/f/placeholder" method="POST" class="space-y-6" data-email="info@forgerpa.com">
+<form
+  id="contact-form"
+  data-access-key={accessKey}
+  data-fallback-email={fallbackEmail}
+  class="space-y-6"
+>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     <div>
-      <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+      <label for="contact-name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
       <input
         type="text"
-        id="name"
+        id="contact-name"
         name="name"
         required
+        autocomplete="name"
         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber focus:border-amber outline-none transition-colors"
         placeholder="Your name"
       />
     </div>
     <div>
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+      <label for="contact-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
       <input
         type="email"
-        id="email"
+        id="contact-email"
         name="email"
         required
+        autocomplete="email"
         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber focus:border-amber outline-none transition-colors"
         placeholder="you@company.com"
       />
     </div>
   </div>
   <div>
-    <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+    <label for="contact-company" class="block text-sm font-medium text-gray-700 mb-2">Company</label>
     <input
       type="text"
-      id="company"
+      id="contact-company"
       name="company"
+      autocomplete="organization"
       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber focus:border-amber outline-none transition-colors"
       placeholder="Your company"
     />
   </div>
   <div>
-    <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+    <label for="contact-message" class="block text-sm font-medium text-gray-700 mb-2">Your question or message</label>
     <textarea
-      id="message"
+      id="contact-message"
       name="message"
       rows="5"
       required
+      maxlength="2000"
       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber focus:border-amber outline-none transition-colors resize-y"
-      placeholder="Tell us about the processes you'd like to automate..."
+      placeholder="Ask a question, or tell us about the manual work you'd like to hand off. No commitment."
     ></textarea>
   </div>
 
+  {/* Web3Forms control fields. `subject`/`from_name` shape the email David
+      receives; the honeypot `botcheck` is hidden from humans and only filled by
+      bots (Web3Forms rejects the submission when it is set). */}
+  <input type="hidden" name="subject" value="New inquiry from forgerpa.com" />
+  <input type="hidden" name="from_name" value="Forge RPA website" />
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
   {/*
-    Clickwrap consent — attorney-required (2026-05-29 consult), mirrors the
-    discovery-qualifier wizard. The checkbox is `required`, so native HTML
-    form validation blocks submission until it's checked (no JS needed). The
-    hidden fields record the document versions + literal assent text shown so
-    the Formspree submission carries a consent record; Formspree additionally
-    captures the submit timestamp + submitter IP server-side.
+    Passive consent record — mirrors the /book discovery flow (consent is implied
+    by submitting; there is no blocking checkbox). The hidden fields travel with
+    the submission so the emailed record references the document versions and the
+    literal assent text that were shown. Keep in sync with /terms and /privacy.
   */}
   <input type="hidden" name="consent_form_name" value="contact" />
   <input type="hidden" name="consent_terms_version" value="v1 (2026-06-01)" />
@@ -62,42 +89,97 @@
   <input
     type="hidden"
     name="consent_assent_text"
-    value="I have read and agree to the Terms & Conditions and Privacy Policy."
+    value="By submitting, you agree to the Terms and Privacy Policy."
   />
-  <div>
-    <label class="flex items-start gap-3 cursor-pointer">
-      <input
-        type="checkbox"
-        id="consent"
-        name="consent_given"
-        value="true"
-        required
-        class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-amber focus:ring-amber"
-      />
-      <span class="text-sm text-gray-700">
-        I have read and agree to the
-        <a
-          href="/terms"
-          target="_blank"
-          rel="noopener"
-          class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-          >Terms &amp; Conditions</a>
-        and
-        <a
-          href="/privacy"
-          target="_blank"
-          rel="noopener"
-          class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800"
-          >Privacy Policy</a>.
-        <span class="mt-1 block text-xs text-gray-500">Terms &amp; Conditions v1, effective June 1, 2026 &middot; Privacy Policy last updated June 1, 2026.</span>
-      </span>
-    </label>
-  </div>
 
-  <button
-    type="submit"
-    class="w-full sm:w-auto px-8 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-lg rounded-lg transition-colors shadow-lg shadow-amber/20"
-  >
-    Send Message
-  </button>
+  <p id="contact-status" class="hidden text-sm" role="status" aria-live="polite"></p>
+
+  <div class="flex flex-col items-start gap-4">
+    <p class="text-xs text-gray-500 m-0">
+      By submitting, you agree to our
+      <a href="/terms" target="_blank" rel="noopener" class="underline decoration-1 underline-offset-2 hover:text-charcoal">Terms</a>
+      and
+      <a href="/privacy" target="_blank" rel="noopener" class="underline decoration-1 underline-offset-2 hover:text-charcoal">Privacy Policy</a>.
+    </p>
+    <button
+      type="submit"
+      id="contact-submit"
+      class="w-full sm:w-auto px-8 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-lg rounded-lg transition-colors shadow-lg shadow-amber/20 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Send Message
+    </button>
+  </div>
 </form>
+
+<script>
+  // Progressive enhancement. When a Web3Forms access key is configured, submit
+  // via fetch and show inline success/failure (no page navigation). When it is
+  // NOT configured, fall back to a mailto: compose so the form is never dead.
+  const form = document.getElementById('contact-form');
+  if (form instanceof HTMLFormElement) {
+    const accessKey = form.dataset.accessKey || '';
+    const fallbackEmail = form.dataset.fallbackEmail || 'info@forgerpa.com';
+    const statusEl = document.getElementById('contact-status');
+    const submitBtn = document.getElementById('contact-submit');
+
+    const setStatus = (msg, ok) => {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.classList.remove('hidden');
+      statusEl.classList.toggle('text-green-700', ok);
+      statusEl.classList.toggle('text-red-600', !ok);
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const name = String(data.get('name') || '').trim();
+      const email = String(data.get('email') || '').trim();
+      const company = String(data.get('company') || '').trim();
+      const message = String(data.get('message') || '').trim();
+
+      // No key configured yet -> open the visitor's mail client with the message
+      // pre-filled. Reliable everywhere, no backend, nothing to break.
+      if (!accessKey) {
+        const subject = encodeURIComponent('Website inquiry from ' + (name || 'a visitor'));
+        const body = encodeURIComponent(
+          'Name: ' + name + '\nEmail: ' + email + '\nCompany: ' + company + '\n\n' + message,
+        );
+        window.location.href = 'mailto:' + fallbackEmail + '?subject=' + subject + '&body=' + body;
+        return;
+      }
+
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
+      }
+
+      const payload = Object.fromEntries(data.entries());
+      payload.access_key = accessKey;
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.success) {
+          form.reset();
+          setStatus("Thanks. Your message is on its way and we'll reply within one business day.", true);
+        } else {
+          setStatus(json.message || ('Something went wrong. Please email ' + fallbackEmail + ' directly.'), false);
+        }
+      } catch {
+        setStatus("Couldn't send right now. Please email " + fallbackEmail + ' directly.', false);
+      } finally {
+        if (submitBtn instanceof HTMLButtonElement) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message';
+        }
+      }
+    });
+  }
+</script>
