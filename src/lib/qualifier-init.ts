@@ -200,6 +200,22 @@ function showOutcome(tier: FitTier): void {
  * We deliberately do NOT compute or assign a fit tier here. The skipper
  * answered nothing, so there is nothing to score; we just show the calendar.
  */
+/**
+ * Fire a GA4 event via the site-wide gtag (loaded in BaseLayout). No-op and
+ * never throws if gtag is absent (ad-blockers / consent tools), so analytics can
+ * never break the booking flow. These events power the /book micro-funnel on the
+ * Anvil Campaign Performance cockpit: book_option_selected -> book_widget_shown
+ * -> book_submitted.
+ */
+function track(event: string, params?: Record<string, unknown>): void {
+  try {
+    const g = (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag;
+    if (typeof g === "function") g("event", event, params ?? {});
+  } catch {
+    /* analytics must never break the booking flow */
+  }
+}
+
 function setSkipLinkVisible(visible: boolean): void {
   // Toggle the whole row (divider + link), not just the button, so the
   // separator line disappears with it.
@@ -567,6 +583,19 @@ function initCalInlineEmbed(): void {
     config,
   });
   Cal("ui", { hideEventTypeDetails: true });
+
+  // Funnel instrumentation (paid /book micro-funnel in the Anvil cockpit): the
+  // scheduler became visible, and a callback for a completed booking. Mounts
+  // once (calEmbedMounted guard), so each fires at most once per page view.
+  track("book_widget_shown");
+  try {
+    Cal("on", {
+      action: "bookingSuccessful",
+      callback: () => track("book_submitted"),
+    });
+  } catch {
+    /* instrumentation only — never affect booking */
+  }
 }
 
 function setError(stepId: string, message: string | null): void {
@@ -1272,9 +1301,18 @@ export function initDiscoveryQualifier(): void {
   bindEssentialsPath();
 
   // Entry-fork buttons.
-  $("qualifier-fork-essentials")?.addEventListener("click", () => showEssentialsPath());
-  $("qualifier-fork-straight")?.addEventListener("click", () => skipToCalendar());
-  $("qualifier-fork-full")?.addEventListener("click", () => showFullPathWizard());
+  $("qualifier-fork-essentials")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "essentials" });
+    showEssentialsPath();
+  });
+  $("qualifier-fork-straight")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "straight_to_time" });
+    skipToCalendar();
+  });
+  $("qualifier-fork-full")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "tell_us_more" });
+    showFullPathWizard();
+  });
 
   // "Back to options" links on each path (essentials + full wizard).
   $$("[data-back-to-options]").forEach((el) => {
