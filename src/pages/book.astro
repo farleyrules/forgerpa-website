@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import CTASection from '../components/CTASection.astro';
 import {
   ALLOWED_ROLES,
   ALLOWED_CHALLENGES,
@@ -10,14 +9,15 @@ import {
 } from '../lib/qualifier-types.ts';
 
 
-const defaultTitle = 'Book a Discovery Call';
+const defaultTitle = 'Get Started';
 const defaultDescription =
-  'Schedule a 30-minute discovery call to discuss your finance and operational challenges. Proven in finance but applicable to other operational processes.';
+  'Tell us what you would like automated. We will reply within one business day, or you can grab a time now. No pitch, no pressure.';
+const defaultHeroTitle = "Let's get the manual work off your plate";
 const defaultHeroSubtitle =
-  '30 minutes. No sales pitch. Just an honest conversation about where automation can make the biggest impact for your team.';
+  "Tell us what you'd like automated below. We'll reply within one business day, or you can grab a time now. No pitch, no pressure.";
 ---
 
-<PageLayout title={defaultTitle} description={defaultDescription} heroTitle={defaultTitle} heroSubtitle={defaultHeroSubtitle}>
+<PageLayout title={defaultTitle} description={defaultDescription} heroTitle={defaultHeroTitle} heroSubtitle={defaultHeroSubtitle}>
   <section class="py-20 lg:py-28 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="prose max-w-none">
@@ -27,18 +27,6 @@ const defaultHeroSubtitle =
           <p class="mt-3 mb-0 text-xs text-gray-600">
             Please mention this context when you book so we can prepare. If your scheduling tool asks how you heard about us,
             reference the page you came from.
-          </p>
-        </div>
-
-        <div class="mb-12">
-          <h2 class="text-3xl font-bold text-charcoal mb-6">What to Expect</h2>
-          <p id="book-expect-lead" class="text-lg text-gray-700 leading-relaxed">
-            During this 30-minute call, we will discuss your specific challenges in finance and operational processes. We will
-            explore how our proprietary automation framework, proven in finance but applicable to other operational areas,
-            might help reduce manual work and deliver measurable ROI for your team.
-          </p>
-          <p class="text-lg text-gray-700 leading-relaxed mt-4">
-            Tell us a little about the manual work you'd like to hand off, then pick a time. It takes about a minute, and we'll come prepared.
           </p>
         </div>
 
@@ -127,13 +115,13 @@ const defaultHeroSubtitle =
                  Small text sits above each button. -->
             <div class="mt-5 grid gap-4 sm:grid-cols-2">
               <div class="flex flex-col gap-2">
-                <p class="m-0 text-center text-xs text-gray-500">We'll review it and reply within one business day.</p>
+                <p class="m-0 text-center text-xs text-gray-500">We'll read your note and email you back within one business day. No meeting required.</p>
                 <button type="button" id="essentials-send" class="inline-flex items-center justify-center gap-2 bg-amber text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   Send it over
                 </button>
               </div>
               <div class="flex flex-col gap-2">
-                <p class="m-0 text-center text-xs text-gray-500">Prefer to talk now? We'll reuse your details.</p>
+                <p class="m-0 text-center text-xs text-gray-500">Book a 30-minute call now. We'll come prepared with your note.</p>
                 <button type="button" id="essentials-book" class="inline-flex items-center justify-center gap-2 bg-white text-charcoal font-bold px-6 py-3 rounded-lg border border-charcoal hover:bg-slate-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   Pick a time
                 </button>
@@ -439,17 +427,10 @@ const defaultHeroSubtitle =
       </div>
 
       <div class="text-center mt-12 text-sm text-gray-500">
-        All calls are confidential. We respect your time and will come prepared with relevant insights based on your responses.
+        Everything you share is confidential. We respect your time and come prepared with relevant insights based on what you tell us.
       </div>
     </div>
   </section>
-
-  <CTASection
-    heading="Not Ready to Book?"
-    subtext="If a call isn't convenient right now, send us a question and we'll reply within one business day. No commitment."
-    ctaText="Ask a Question"
-    ctaLink="/contact"
-  />
 </PageLayout>
 
 <!-- Existing `?from=` context-banner machinery — PRESERVED. Runs independently of the wizard. -->
