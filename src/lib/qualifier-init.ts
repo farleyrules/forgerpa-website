@@ -424,6 +424,8 @@ async function submitInquiry(mode: InquiryMode): Promise<void> {
   const payload = {
     source: "discovery_qualifier",
     essentials: true,
+    // Which button was pressed: drives the reach-out confirmation emails server-side.
+    contactPreference: mode,
     name,
     email,
     company: company || undefined,

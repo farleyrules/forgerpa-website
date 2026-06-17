@@ -11,10 +11,10 @@ import {
 
 const defaultTitle = 'Get Started';
 const defaultDescription =
-  'Tell us what you would like automated. We will reply within one business day, or you can grab a time now. No pitch, no pressure.';
+  'Tell us what you would like automated and we will be in touch, or grab a time now. No pitch, no pressure.';
 const defaultHeroTitle = "Let's get the manual work off your plate";
 const defaultHeroSubtitle =
-  "Tell us what you'd like automated below. We'll reply within one business day, or you can grab a time now. No pitch, no pressure.";
+  "Tell us what you'd like automated below and we'll be in touch, or grab a time now. No pitch, no pressure.";
 ---
 
 <PageLayout title={defaultTitle} description={defaultDescription} heroTitle={defaultHeroTitle} heroSubtitle={defaultHeroSubtitle}>
@@ -115,7 +115,7 @@ const defaultHeroSubtitle =
                  Small text sits above each button. -->
             <div class="mt-5 grid gap-4 sm:grid-cols-2">
               <div class="flex flex-col gap-2">
-                <p class="m-0 flex-1 flex items-center justify-center text-center text-xs text-gray-500">No meeting required. We will contact you.</p>
+                <p class="m-0 flex-1 flex items-center justify-center text-center text-xs text-gray-500">No meeting required. We'll be in touch.</p>
                 <button type="button" id="essentials-send" class="inline-flex items-center justify-center gap-2 bg-amber text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   Send Your Request
                 </button>
@@ -147,7 +147,7 @@ const defaultHeroSubtitle =
                  visitor can still grab a time (their details are reused). -->
             <div id="essentials-confirmation" class="hidden rounded-2xl border border-amber/40 bg-amber/10 p-6 text-center">
               <h3 class="text-xl font-bold text-charcoal m-0">Got it. We'll be in touch.</h3>
-              <p class="text-gray-700 leading-relaxed mt-3 mb-0">Thanks for the details. We'll review them and reach out within one business day.</p>
+              <p class="text-gray-700 leading-relaxed mt-3 mb-0">Thanks for the details. We'll review them and be in touch.</p>
               <p class="text-gray-600 leading-relaxed mt-4 mb-0">Would you rather book a call? <button type="button" id="essentials-confirm-book" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">Book a call</button>.</p>
             </div>
           </div>
