@@ -251,14 +251,14 @@ function skipToCalendar(): void {
 /* ------------------------------------------------------------------ */
 /*
  * On page load the visitor sees the short inquiry form (#qualifier-essentials-
- * path), NOT a chooser and NOT step 1. Two inline links beneath it offer the
- * other paths:
- *   - "Grab a time now": calls skipToCalendar() (no questions, no form).
- *   - "Tell us more first": opens the full 6-step wizard (#qualifier-full-path).
- * A third inline link ("just ask a question") navigates to /contact. The full
- * wizard's "Back to the quick form" control returns here. Attribution (gclid)
- * flows into the Cal booking metadata on every path because initCalInlineEmbed()
- * reads captureAttribution() regardless of entry path.
+ * path), NOT a chooser and NOT step 1. SINGLE INTENT: the form has ONE primary
+ * button, "Send Your Request", which always submits (we capture the email). The
+ * secondary paths — book a 30-minute call and "add more details" (the full
+ * 6-step wizard) — appear only AFTER a successful submit, on the confirmation
+ * screen (#essentials-confirmation), so they never compete with the form up
+ * front. The full wizard's "Back to the quick form" control returns here.
+ * Attribution (gclid) flows into the Cal booking metadata on every path because
+ * initCalInlineEmbed() reads captureAttribution() regardless of entry path.
  */
 
 function showInquiryPrimary(): void {
@@ -306,25 +306,39 @@ function showFullPathWizard(resumeStep?: StepIndex): void {
  * the lead in #discovery-bookings with no fabricated role/challenge/systems.
  */
 function bindEssentialsPath(): void {
-  // Consent is PASSIVE (a notice above the buttons, no checkbox gate). The two
-  // buttons share the SAME fields, validation, Turnstile, consent record, and
-  // POST; they differ only in what happens after a successful submit:
-  //   - "Send it over" (reach_out): show a "we'll be in touch" confirmation.
-  //   - "Pick a time"  (book):      reveal the Cal embed, prefilled.
+  // SINGLE INTENT: one primary button, "Send Your Request" (#essentials-send),
+  // which submits in reach_out mode and shows the "we'll be in touch"
+  // confirmation. Consent is PASSIVE (a notice above the button, no checkbox).
   $("essentials-send")?.addEventListener("click", () => {
     track("book_option_selected", { option: "reach_out" });
     void submitInquiry("reach_out");
   });
+  // Legacy hook (no longer rendered): the old up-front "Pick a time" button that
+  // submitted in book mode. Kept null-safe in case of a cached page; booking now
+  // lives on the post-submit confirmation below.
   $("essentials-book")?.addEventListener("click", () => {
     track("book_option_selected", { option: "book" });
     void submitInquiry("book");
   });
-  // From the reach-out confirmation: a changed-mind visitor can still grab a
-  // time. Their name + email are already in `state`, so the Cal prefill works
-  // without re-entering anything.
+  // From the reach-out confirmation (post-submit secondary options): a visitor
+  // can still grab a time. Their name + email are already in `state`, so the Cal
+  // prefill works without re-entering anything.
   $("essentials-confirm-book")?.addEventListener("click", () => {
     track("book_option_selected", { option: "book_after_reach_out" });
     showOutcome("MEDIUM");
+  });
+  // Or open the full 6-step wizard to "add more details". The name + email
+  // already captured carry over (restorePriorState reflected them into state and
+  // the wizard reads state.contact), so the visitor only adds the extra answers.
+  $("essentials-confirm-tellmore")?.addEventListener("click", () => {
+    track("book_option_selected", { option: "tell_us_more_after_reach_out" });
+    // Carry the essentials name/email into the wizard's contact fields so the
+    // visitor doesn't retype them on step 6.
+    const nameEl = $("qualifier-contact-name") as HTMLInputElement | null;
+    const emailEl = $("qualifier-contact-email") as HTMLInputElement | null;
+    if (nameEl && state.contact.name) nameEl.value = state.contact.name;
+    if (emailEl && state.contact.email) emailEl.value = state.contact.email;
+    showFullPathWizard(1);
   });
 }
 
@@ -1327,9 +1341,10 @@ export function initDiscoveryQualifier(): void {
   bindStep6();
   bindEssentialsPath();
 
-  // Tertiary path beneath the inquiry form: "tell us more first" opens the full
-  // 6-step wizard. (The two primary buttons, "Send it over" / "Pick a time",
-  // are bound in bindEssentialsPath; "just ask a question" is a plain link.)
+  // Legacy hook (no longer rendered on the single-intent contact page): the old
+  // "tell us more first" link beneath the inquiry form. Kept null-safe in case a
+  // cached page still has it; the "add more details" path now lives on the
+  // post-submit confirmation (bound in bindEssentialsPath).
   $("qualifier-inquiry-tellmore")?.addEventListener("click", (e) => {
     e.preventDefault();
     track("book_option_selected", { option: "tell_us_more" });

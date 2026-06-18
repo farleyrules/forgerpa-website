@@ -1,58 +1,507 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import ContactForm from '../components/ContactForm.astro';
-import CalEmbed from '../components/CalEmbed.astro';
+import {
+  ALLOWED_ROLES,
+  ALLOWED_CHALLENGES,
+  ALLOWED_SYSTEMS,
+  ALLOWED_TEAM_SIZES,
+  ALLOWED_TIMELINES,
+} from '../lib/qualifier-types.ts';
+
+// HERO HEADLINE - David is choosing final wording; single source of truth.
+// The coordinator will set the final value here before deploy.
+const HERO_HEADLINE = "Let's get your time back.";
+
+const defaultTitle = 'Contact Us';
+const defaultDescription =
+  "Tell us what you would like automated and we'll be in touch.";
+const defaultHeroSubtitle =
+  "Tell us what you'd like automated below and we'll be in touch.";
 ---
 
-<PageLayout
-  title="Contact or Book a Call | Forge RPA"
-  description="Book your discovery call or send us a message. Primary scheduling is now via our dedicated booking page."
-  heroTitle="Let's Talk Automation"
-  heroSubtitle="Book a 30-minute discovery call on our dedicated /book page or send us a message below. We respond within 24 hours."
->
-  <section class="py-20 lg:py-28">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <!-- Contact Form -->
-        <div>
-          <h2 class="text-2xl font-bold text-charcoal mb-6">Send a Message</h2>
-          <ContactForm />
+<PageLayout title={defaultTitle} description={defaultDescription} heroTitle={HERO_HEADLINE} heroSubtitle={defaultHeroSubtitle}>
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="prose max-w-none">
+        <div id="book-context-banner" class="mb-10 hidden rounded-2xl border border-amber/40 bg-amber/10 px-5 py-4 text-sm text-charcoal">
+          <p class="m-0 font-semibold">Context</p>
+          <p id="book-context-banner-body" class="mt-2 mb-0 text-gray-800"></p>
+          <p class="mt-3 mb-0 text-xs text-gray-600">
+            Please mention this context when you reach out so we can prepare. If you book a call, reference the page you came from.
+          </p>
         </div>
 
-        <!-- Contact Info + Cal Embed -->
-        <div class="space-y-8">
-          <div>
-            <h2 class="text-2xl font-bold text-charcoal mb-6">Contact Information</h2>
-            <div class="space-y-4">
-              <div class="flex items-start gap-4">
-                <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium text-charcoal">Email</h3>
-                  <a href="mailto:info@forgerpa.com" class="text-amber-dark hover:underline">info@forgerpa.com</a>
-                </div>
+        <!-- ===================== Discovery Qualifier Wizard ===================== -->
+        <div id="discovery-qualifier-wizard" class="mb-12 rounded-2xl border border-gray-200 bg-slate-light p-6 sm:p-8">
+
+          <!-- ===================== Inquiry form (primary, single-intent path) =====
+               The default view on page load (qualifier-init.ts showInquiryPrimary).
+               A short, inquiry-framed form (Name, Email, Company, and a free-text
+               "what would you like automated?"). It reuses the SAME Turnstile
+               mount, the SAME passive consent, the SAME validators, and POSTs to
+               the SAME endpoint as the full wizard. It sends NO qualifier answers;
+               instead it sets `essentials: true` so the server skips qualifier
+               validation, returns MEDIUM, and stores the lead with no fake profile
+               (the visitor's real ask rides in additionalNotes).
+
+               SINGLE INTENT: there is ONE primary button, "Send Your Request",
+               which always submits so we capture the email. Booking + "tell us
+               more" are NOT competing CTAs up front; they appear AFTER a
+               successful submit (see #essentials-confirmation). -->
+          <div id="qualifier-essentials-path" class="hidden">
+            <h2 class="text-2xl font-bold text-charcoal m-0 mb-2">Tell Us What You'd Like Automated</h2>
+            <p class="text-sm text-gray-600 mb-6">A few quick details and we'll be in touch. About a minute, and we keep everything confidential.</p>
+
+            <div id="essentials-form-body">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Name *</span>
+                <input type="text" id="essentials-name" autocomplete="name" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Email *</span>
+                <input type="email" id="essentials-email" autocomplete="email" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <p id="essentials-email-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">Company <span class="font-normal text-gray-500">(optional)</span></span>
+                <input type="text" id="essentials-company" autocomplete="organization" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <p id="essentials-company-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">What would you like automated? *</span>
+                <textarea id="essentials-notes" rows="3" maxlength="1000" placeholder="A sentence or two about the manual work you'd most like to hand off. The more specific, the better we can prepare." class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"></textarea>
+                <p id="essentials-notes-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+            </div>
+
+            <div class="mt-6">
+              <p class="text-sm font-semibold text-charcoal mb-2">Spam check</p>
+              <div id="essentials-turnstile" class="cf-turnstile inline-block"></div>
+            </div>
+
+            <p id="essentials-error" class="hidden mt-4 text-sm text-red-600"></p>
+
+            <!-- Passive consent notice. Submitting implies agreement; there is
+                 no checkbox gate. The legal record still rides the POST payload
+                 (see the `consent` object in submitInquiry). -->
+            <p class="mt-6 text-xs text-gray-500 m-0">
+              By submitting, you agree to our
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Terms</a>
+              and
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Privacy Policy</a>.
+            </p>
+
+            <!-- ONE primary action. Submitting always emails us the request; the
+                 secondary options (book a call / tell us more) appear after a
+                 successful send, in #essentials-confirmation. -->
+            <div class="mt-5">
+              <button type="button" id="essentials-send" class="inline-flex items-center justify-center gap-2 bg-amber text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Send Your Request
+              </button>
+              <p class="mt-2 text-xs text-gray-500">No meeting required. We'll be in touch.</p>
+            </div>
+            </div>
+            <!-- ===================== End inquiry form body ===================== -->
+
+            <!-- Reach-out confirmation + POST-SUBMIT secondary options. Hidden
+                 until "Send Your Request" succeeds; then the form body above is
+                 hidden and this is shown. Booking and "tell us more" live HERE
+                 (after submit), so they never compete with the form up front. -->
+            <div id="essentials-confirmation" class="hidden rounded-2xl border border-amber/40 bg-amber/10 p-6 sm:p-8">
+              <h3 class="text-xl font-bold text-charcoal m-0">Got it. We'll be in touch.</h3>
+              <p class="text-gray-700 leading-relaxed mt-3 mb-0">Thanks for the details. We'll review them and be in touch, usually within one business day.</p>
+
+              <!-- Secondary options, offered only AFTER we have the request. -->
+              <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <button type="button" id="essentials-confirm-book" class="flex flex-col items-start gap-1 rounded-xl border border-charcoal/20 bg-white px-5 py-4 text-left transition-colors hover:border-amber">
+                  <span class="font-bold text-charcoal">Book a 30-Minute Call</span>
+                  <span class="text-sm text-gray-600">Grab a time now. Your name and email are already filled in.</span>
+                </button>
+                <button type="button" id="essentials-confirm-tellmore" class="flex flex-col items-start gap-1 rounded-xl border border-charcoal/20 bg-white px-5 py-4 text-left transition-colors hover:border-amber">
+                  <span class="font-bold text-charcoal">Add More Details</span>
+                  <span class="text-sm text-gray-600">Answer a few quick questions so we come even better prepared.</span>
+                </button>
               </div>
-              <div class="flex items-start gap-4">
-                <div class="w-10 h-10 bg-amber/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium text-charcoal">Location</h3>
-                  <p class="text-gray-600">Frisco, Texas</p>
-                </div>
+
+              <!-- Direct contact, folded in from the old contact page. -->
+              <div class="mt-6 border-t border-amber/30 pt-4 text-sm text-gray-600">
+                <p class="m-0">
+                  Prefer email? Reach us at
+                  <a href="mailto:info@forgerpa.com" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">info@forgerpa.com</a>.
+                  We're based in Frisco, Texas.
+                </p>
               </div>
             </div>
           </div>
+          <!-- ===================== End Essentials path ===================== -->
 
-          <CalEmbed />
+          <!-- ===================== Full 6-step wizard ("Add more details") =======
+               Unchanged behavior. Hidden until the visitor clicks "Add More
+               Details" on the post-submit confirmation (or is restored mid-wizard
+               from a prior session). The skip-to-time and "Back to the quick form"
+               controls live inside. -->
+          <div id="qualifier-full-path" class="hidden">
+          <div id="qualifier-full-path-back" class="mb-4">
+            <button type="button" data-back-to-options class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">← Back to the quick form</button>
+          </div>
+          <div id="qualifier-progress-container" class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+              <h2 class="text-2xl font-bold text-charcoal m-0">Tell Us About Your Team</h2>
+              <span id="qualifier-progress-label" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Step 1 of 6</span>
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div id="qualifier-progress-bar" class="h-full bg-amber transition-all duration-300" style="width: 17%"></div>
+            </div>
+          </div>
+
+          <!-- ----- Step 1: Role ----- -->
+          <div data-qualifier-step="1">
+            <h3 class="text-xl font-semibold text-charcoal mb-4">What's your primary role?</h3>
+            <div class="grid sm:grid-cols-2 gap-2">
+              {ALLOWED_ROLES.map((role) => (
+                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 cursor-pointer hover:border-amber transition-colors">
+                  <input type="radio" name="qualifier-role" value={role} class="text-amber focus:ring-amber" />
+                  <span class="text-sm text-charcoal">{role}</span>
+                </label>
+              ))}
+            </div>
+            <p id="qualifier-step1-error" class="hidden mt-3 text-sm text-red-600"></p>
+            <div class="mt-6 flex justify-end">
+              <button type="button" id="qualifier-step1-next" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors">
+                Next →
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Step 2: Primary challenge ----- -->
+          <div data-qualifier-step="2" class="hidden">
+            <h3 class="text-xl font-semibold text-charcoal mb-4">What's your biggest current challenge?</h3>
+            <div class="grid sm:grid-cols-2 gap-2">
+              {ALLOWED_CHALLENGES.map((challenge) => (
+                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 cursor-pointer hover:border-amber transition-colors">
+                  <input type="radio" name="qualifier-challenge" value={challenge} class="text-amber focus:ring-amber" />
+                  <span class="text-sm text-charcoal">{challenge}</span>
+                </label>
+              ))}
+            </div>
+            <p id="qualifier-step2-error" class="hidden mt-3 text-sm text-red-600"></p>
+            <div class="mt-6 flex justify-between">
+              <button type="button" id="qualifier-step2-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
+              <button type="button" id="qualifier-step2-next" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors">
+                Next →
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Step 3: Primary systems (multi-select) ----- -->
+          <div data-qualifier-step="3" class="hidden">
+            <h3 class="text-xl font-semibold text-charcoal mb-2">Which systems do you use?</h3>
+            <p class="text-sm text-gray-600 mb-4">Pick all that apply — even Excel counts.</p>
+            <div id="qualifier-systems-list" class="grid sm:grid-cols-2 gap-2">
+              {ALLOWED_SYSTEMS.map((system) => (
+                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 cursor-pointer hover:border-amber transition-colors">
+                  <input type="checkbox" name="qualifier-systems" value={system} class="text-amber focus:ring-amber" />
+                  <span class="text-sm text-charcoal">{system}</span>
+                </label>
+              ))}
+            </div>
+            <p id="qualifier-step3-error" class="hidden mt-3 text-sm text-red-600"></p>
+            <div class="mt-6 flex justify-between">
+              <button type="button" id="qualifier-step3-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
+              <button type="button" id="qualifier-step3-next" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors">
+                Next →
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Step 4: Team size ----- -->
+          <div data-qualifier-step="4" class="hidden">
+            <h3 class="text-xl font-semibold text-charcoal mb-4">How many people are affected by this workflow?</h3>
+            <div class="grid sm:grid-cols-2 gap-2">
+              {ALLOWED_TEAM_SIZES.map((size) => (
+                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 cursor-pointer hover:border-amber transition-colors">
+                  <input type="radio" name="qualifier-team-size" value={size} class="text-amber focus:ring-amber" />
+                  <span class="text-sm text-charcoal">{size} people</span>
+                </label>
+              ))}
+            </div>
+            <p id="qualifier-step4-error" class="hidden mt-3 text-sm text-red-600"></p>
+            <div class="mt-6 flex justify-between">
+              <button type="button" id="qualifier-step4-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
+              <button type="button" id="qualifier-step4-next" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors">
+                Next →
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Step 5: Timeline ----- -->
+          <div data-qualifier-step="5" class="hidden">
+            <h3 class="text-xl font-semibold text-charcoal mb-4">When are you looking to act?</h3>
+            <div class="grid sm:grid-cols-2 gap-2">
+              {ALLOWED_TIMELINES.map((tl) => (
+                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 cursor-pointer hover:border-amber transition-colors">
+                  <input type="radio" name="qualifier-timeline" value={tl} class="text-amber focus:ring-amber" />
+                  <span class="text-sm text-charcoal">{tl}</span>
+                </label>
+              ))}
+            </div>
+            <p id="qualifier-step5-error" class="hidden mt-3 text-sm text-red-600"></p>
+            <div class="mt-6 flex justify-between">
+              <button type="button" id="qualifier-step5-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
+              <button type="button" id="qualifier-step5-next" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors">
+                Next →
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Step 6: Contact + Turnstile ----- -->
+          <div data-qualifier-step="6" class="hidden">
+            <h3 class="text-xl font-semibold text-charcoal mb-2">A few last details</h3>
+            <p class="text-sm text-gray-600 mb-6">So we can prepare and follow up. We keep everything confidential.</p>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Name *</span>
+                <input type="text" id="qualifier-contact-name" autocomplete="name" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Work email *</span>
+                <input type="email" id="qualifier-contact-email" autocomplete="email" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <p id="qualifier-step6-email-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Company *</span>
+                <input type="text" id="qualifier-contact-company" autocomplete="organization" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <p id="qualifier-step6-company-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-charcoal">Phone <span class="font-normal text-gray-500">(optional)</span></span>
+                <input type="tel" id="qualifier-contact-phone" autocomplete="tel" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+                <p id="qualifier-step6-phone-error" class="hidden mt-1 text-xs text-red-600"></p>
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">LinkedIn URL <span class="font-normal text-gray-500">(optional)</span></span>
+                <input type="url" id="qualifier-contact-linkedinUrl" placeholder="https://www.linkedin.com/in/…" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">What would you most like to focus on, or anything else we should know? <span class="font-normal text-gray-500">(optional)</span></span>
+                <textarea id="qualifier-contact-additionalNotes" rows="3" maxlength="1000" placeholder="What you&rsquo;d most like to get out of the call, specific deadlines, systems context, or anything that helps us prepare." class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"></textarea>
+                <span class="mt-1 block text-xs text-gray-500">We&rsquo;ll have this ahead of the call. You won&rsquo;t need to re-enter anything when you pick a time.</span>
+              </label>
+            </div>
+
+            <div class="mt-6">
+              <p class="text-sm font-semibold text-charcoal mb-2">Spam check</p>
+              <div id="qualifier-turnstile" class="cf-turnstile inline-block"></div>
+            </div>
+
+            <p id="qualifier-step6-error" class="hidden mt-4 text-sm text-red-600"></p>
+
+            <!-- Passive consent notice. Submitting implies agreement; there is
+                 no checkbox gate. The legal record is still captured server-side
+                 (see the `consent` object in submitWizard). -->
+            <p class="mt-6 text-xs text-gray-500 m-0">
+              By booking, you agree to our
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Terms</a>
+              and
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener"
+                class="underline decoration-1 underline-offset-2 hover:text-charcoal"
+                >Privacy Policy</a>.
+            </p>
+
+            <div class="mt-3 flex justify-between items-center">
+              <button type="button" id="qualifier-step6-back" class="text-sm text-gray-600 hover:text-charcoal">← Back</button>
+              <button type="button" id="qualifier-step6-submit" class="inline-flex items-center gap-2 bg-amber text-charcoal font-bold px-6 py-2.5 rounded-lg hover:bg-amber/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Submit and Book
+              </button>
+            </div>
+          </div>
+
+          <!-- ----- Secondary skip-to-calendar link -----
+               Shown only while the wizard is being answered (qualifier-init.ts
+               hides it on any outcome). Deliberately a small, secondary text
+               link, NOT a primary button. One click reveals the Cal.com calendar
+               directly so a high-intent visitor can grab a time without answering
+               the six questions. The gclid still rides into the booking metadata. -->
+          <div id="qualifier-skip-to-calendar-row" class="mt-6 border-t border-gray-200 pt-4 text-center">
+            <button type="button" id="qualifier-skip-to-calendar" class="text-sm text-gray-500 underline decoration-1 underline-offset-2 hover:text-charcoal">
+              Short on time? Skip the questions and grab a time.
+            </button>
+          </div>
+
+          </div>
+          <!-- ===================== End Full 6-step wizard ===================== -->
+
+          <!-- Shared reveal targets. These live OUTSIDE the path wrappers so they are
+               reachable from the essentials path, the straight-to-time path, AND
+               the full wizard. showOutcome() un-hides the matching outcome block
+               and (for HIGH/MEDIUM) reveals the Cal embed below. skipToCalendar()
+               reveals #qualifier-skip-heading instead, then the same Cal embed. -->
+
+          <!-- ----- Neutral heading shown above the calendar when the visitor
+               skips the questions (no fit tier is computed for a skipper). -->
+          <div id="qualifier-skip-heading" class="hidden">
+            <h3 class="text-2xl font-bold text-charcoal mb-3">Pick a time below.</h3>
+            <p class="text-gray-700 leading-relaxed">
+              Grab whatever slot works. If you can, add a line about what you'd like to cover so we come prepared.
+            </p>
+          </div>
+
+          <!-- ----- Outcome: HIGH ----- -->
+          <div data-qualifier-outcome="HIGH" class="hidden">
+            <h3 class="text-2xl font-bold text-charcoal mb-3">Great — let's book it.</h3>
+            <p class="text-gray-700 leading-relaxed">
+              Pick a time below. We'll come prepared with notes based on your answers.
+            </p>
+          </div>
+
+          <!-- ----- Outcome: MEDIUM ----- -->
+          <div data-qualifier-outcome="MEDIUM" class="hidden">
+            <h3 class="text-2xl font-bold text-charcoal mb-3">Thanks — here's the calendar.</h3>
+            <p class="text-gray-700 leading-relaxed">
+              Pick a time below. We'll use your answers to make the conversation useful.
+            </p>
+          </div>
+
+          <!-- ----- Outcome: LOW ----- -->
+          <div data-qualifier-outcome="LOW" class="hidden">
+            <h3 class="text-2xl font-bold text-charcoal mb-3">Thanks for the context.</h3>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              Based on where you are today, the most useful starting point is probably our
+              <a href="/downloads/forge-rpa-readiness-checklist.html" class="underline text-amber-700 hover:text-amber-800" target="_blank" rel="noopener noreferrer">Automation Readiness Checklist</a>
+              and our published <a href="/resources" class="underline text-amber-700 hover:text-amber-800">case studies and resources</a>. They'll help you scope what's worth automating before we talk.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              If your situation changes and a specific project comes up, please come back and book a call. We're happy to talk when there's a concrete need.
+            </p>
+          </div>
+
+          <!-- ----- Outcome: DISQUALIFY ----- -->
+          <div data-qualifier-outcome="DISQUALIFY" class="hidden">
+            <h3 class="text-2xl font-bold text-charcoal mb-3">Thanks for stopping by.</h3>
+            <p class="text-gray-700 leading-relaxed">
+              This flow is for internal finance and operations teams looking to evaluate automation in their own environment.
+              For partnership or referral inquiries, please email
+              <a href="mailto:partnerships@forgerpa.com" class="underline text-amber-700 hover:text-amber-800">partnerships@forgerpa.com</a>.
+            </p>
+          </div>
         </div>
+        <!-- ===================== End wizard ===================== -->
+      </div>
+
+      <!-- Cal.com inline embed — hidden by default, revealed for HIGH/MEDIUM
+           outcomes only. The official inline embed (initialized by
+           qualifier-init.ts) AUTO-RESIZES this container to fit whatever Cal
+           is showing — the calendar while picking a time, the (taller) "This
+           meeting is scheduled" confirmation after booking — so there's no
+           internal scroll. Name + email are prefilled via the embed config. -->
+      <div id="cal-booking-container" class="mt-4 hidden">
+        <div id="cal-booking-inline" style="min-width:320px;width:100%"></div>
+      </div>
+
+      <div class="text-center mt-12 text-sm text-gray-500">
+        Everything you share is confidential. We respect your time and come prepared with relevant insights based on what you tell us.
       </div>
     </div>
   </section>
 </PageLayout>
+
+<!-- Existing `?from=` context-banner machinery — PRESERVED. Runs independently of the wizard. -->
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var from = (params.get('from') || '').toLowerCase().trim();
+
+    function setMetaDescription(text) {
+      var m = document.querySelector('meta[name="description"]');
+      if (m) m.setAttribute('content', text);
+      var og = document.querySelector('meta[property="og:description"]');
+      if (og) og.setAttribute('content', text);
+      var tw = document.querySelector('meta[name="twitter:description"]');
+      if (tw) tw.setAttribute('content', text);
+    }
+
+    function setOgTitle(text) {
+      var og = document.querySelector('meta[property="og:title"]');
+      if (og) og.setAttribute('content', text);
+      var tw = document.querySelector('meta[name="twitter:title"]');
+      if (tw) tw.setAttribute('content', text);
+    }
+
+    // NOTE: the hero headline is governed by the single HERO_HEADLINE constant
+    // in this page's frontmatter (single-intent positioning). The `?from=`
+    // machinery below sets only the document title, meta description, and the
+    // context banner — it intentionally does NOT override the hero <h1>.
+    function industryContext(fromKey) {
+      if (!fromKey || fromKey.indexOf('industries-') !== 0) return null;
+      var slug = fromKey.replace(/^industries-/, '').replace(/-/g, ' ');
+      var pretty = {
+        'oil gas': 'Oil & Gas',
+        'healthcare finance': 'Healthcare Finance & Ops (non-PHI)',
+        'insurance finance': 'Insurance finance',
+        'utilities finance': 'Utilities & infrastructure finance',
+        'small business': 'Small and Growing Businesses',
+        overview: 'Industries overview',
+      }[slug];
+      var label = pretty || slug.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+      return {
+        title: 'Contact us',
+        description:
+          'Tell us what you would like automated. We will connect your industry context to concrete finance and operations automation opportunities.',
+        banner: 'You arrived from a Forge RPA industry page (' + label + '). We will use that lens for examples and questions, then confirm fit before any larger commitment.',
+      };
+    }
+
+    var contexts = {
+      assessment: { title: 'Contact us about an assessment', banner: 'You arrived from Automation Assessment. We will prioritize fit, scope, and what a three-week assessment would cover for your environment.' },
+      sop: { title: 'Contact us about your SOPs', banner: 'You arrived from Finance Process Automation. We will emphasize SOP intake, delivery expectations, and how we scope build and handoff.' },
+      'process-mining': { title: 'Contact us about process mining', banner: 'You arrived from Process Mining. We will focus on data sources, timelines, and what a mining engagement typically surfaces for finance and operations teams.' },
+      migration: { title: 'Contact us about a migration', banner: 'You arrived from ERP Data Migration. We will emphasize conversion risk, validation approach, and what information we need to scope accurately.' },
+      'data-lake': { title: 'Contact us about a data lake', banner: 'You arrived from Data Lake. We will focus on source systems, schema planning, and how reporting consolidation drops out of a well-built lake.' },
+      'month-end-close-assessment': { title: 'Contact us about month-end close', banner: 'You arrived from Month-End Close Assessment. We will focus on the specific subroutines (recs, accruals, reporting) where automation pays off fastest.' },
+      'ap-reconciliation-assessment': { title: 'Contact us about AP / reconciliation', banner: 'You arrived from AP / Reconciliation Assessment. We will focus on invoice flow, three-way match, and reconciliation cycles.' },
+      'erp-handoff-assessment': { title: 'Contact us about an ERP handoff', banner: 'You arrived from ERP Handoff Assessment. We will focus on Workday / NetSuite / SAP integration points and where the manual cracks are.' },
+      'oil-gas-diagnostic': { title: 'Contact us about oil & gas operations', banner: 'You arrived from Oil & Gas Diagnostic. We will focus on JIB, AFE, and lease-operating workflows.' },
+    };
+
+    var ctx = contexts[from] || industryContext(from);
+
+    if (ctx) {
+      var fullTitle = (ctx.title || 'Contact Us') + ' | Forge RPA';
+      document.title = fullTitle;
+      setOgTitle(fullTitle);
+      if (ctx.description) setMetaDescription(ctx.description);
+
+      var banner = document.getElementById('book-context-banner');
+      var bannerBody = document.getElementById('book-context-banner-body');
+      if (banner && bannerBody && ctx.banner) {
+        bannerBody.textContent = ctx.banner;
+        banner.classList.remove('hidden');
+      }
+    }
+  })();
+</script>
+
+<!-- Wizard logic — Astro/Vite bundles this TypeScript module. -->
+<script>
+  import '../lib/qualifier-init.ts';
+</script>
