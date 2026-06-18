@@ -1,0 +1,8 @@
+# Cloudflare Pages redirects (https://developers.cloudflare.com/pages/configuration/redirects/)
+#
+# Contact consolidation: /book was merged into the canonical single-intent
+# /contact page. 301 so inbound links and SEO equity transfer. Cloudflare Pages
+# carries the original query string through to the destination, so attribution
+# deep links such as /book?from=assessment land on /contact?from=assessment and
+# the ?from= context banner still fires.
+/book   /contact   301
