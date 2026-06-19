@@ -102,6 +102,14 @@ const defaultHeroSubtitle =
                 >Privacy Policy</a>.
             </p>
 
+            <!-- Optional newsletter/nurture opt-in (Phase 1). Unchecked by
+                 default = explicit affirmative consent; rides the submitInquiry
+                 POST as newsletterOptIn. -->
+            <label class="mt-6 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="essentials-newsletter" class="mt-0.5 rounded border-gray-300 text-amber focus:ring-amber" />
+              <span class="text-sm text-gray-600">Send me occasional automation tips for finance and operations teams (no pitch, unsubscribe anytime).</span>
+            </label>
+
             <!-- ONE primary action. Submitting always emails us the request; the
                  secondary options (book a call / tell us more) appear after a
                  successful send, in #essentials-confirmation. -->
