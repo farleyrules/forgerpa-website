@@ -444,6 +444,9 @@ async function submitInquiry(mode: InquiryMode): Promise<void> {
     email,
     company: company || undefined,
     additionalNotes: additionalNotes || undefined,
+    // Optional newsletter/nurture opt-in (unchecked-by-default checkbox).
+    newsletterOptIn:
+      ($("essentials-newsletter") as HTMLInputElement | null)?.checked ?? false,
     attribution,
     turnstileToken: essentialsTurnstileToken,
     fromContext: state.fromContext,
