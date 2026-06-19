@@ -121,15 +121,26 @@ const defaultHeroSubtitle =
               <h3 class="text-xl font-bold text-charcoal m-0">Got it. We'll be in touch.</h3>
               <p class="text-gray-700 leading-relaxed mt-3 mb-0">Thanks for the details. We'll review them and be in touch, usually within one business day.</p>
 
-              <!-- Secondary options, offered only AFTER we have the request. -->
+              <!-- Secondary options, offered only AFTER we have the request.
+                   Styled to read as clickable actions, not passive cards: each
+                   carries an amber CTA pill with an arrow that slides on hover,
+                   plus a stronger whole-card hover state and cursor-pointer. -->
               <div class="mt-6 grid gap-4 sm:grid-cols-2">
-                <button type="button" id="essentials-confirm-book" class="flex flex-col items-start gap-1 rounded-xl border border-charcoal/20 bg-white px-5 py-4 text-left transition-colors hover:border-amber">
+                <button type="button" id="essentials-confirm-book" class="group flex cursor-pointer flex-col items-start gap-2 rounded-xl border-2 border-charcoal/15 bg-white px-5 py-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber/60">
                   <span class="font-bold text-charcoal">Book a 30-Minute Call</span>
                   <span class="text-sm text-gray-600">Grab a time now. Your name and email are already filled in.</span>
+                  <span class="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-amber px-4 py-2 text-sm font-bold text-charcoal transition-colors group-hover:bg-amber/90">
+                    Book a Time
+                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                  </span>
                 </button>
-                <button type="button" id="essentials-confirm-tellmore" class="flex flex-col items-start gap-1 rounded-xl border border-charcoal/20 bg-white px-5 py-4 text-left transition-colors hover:border-amber">
+                <button type="button" id="essentials-confirm-tellmore" class="group flex cursor-pointer flex-col items-start gap-2 rounded-xl border-2 border-charcoal/15 bg-white px-5 py-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber/60">
                   <span class="font-bold text-charcoal">Add More Details</span>
                   <span class="text-sm text-gray-600">Answer a few quick questions so we come even better prepared.</span>
+                  <span class="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-amber px-4 py-2 text-sm font-bold text-charcoal transition-colors group-hover:bg-amber/90">
+                    Continue
+                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                  </span>
                 </button>
               </div>
 
@@ -415,10 +426,6 @@ const defaultHeroSubtitle =
            internal scroll. Name + email are prefilled via the embed config. -->
       <div id="cal-booking-container" class="mt-4 hidden">
         <div id="cal-booking-inline" style="min-width:320px;width:100%"></div>
-      </div>
-
-      <div class="text-center mt-12 text-sm text-gray-500">
-        Everything you share is confidential.
       </div>
     </div>
   </section>
