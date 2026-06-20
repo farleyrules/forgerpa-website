@@ -25,6 +25,8 @@ const blogCollection = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     date: z.string().or(z.date()).optional(),
+    // Last-substantive-update date. Drives JSON-LD dateModified; falls back to `date` when unset.
+    updated: z.string().or(z.date()).optional(),
     readingTime: z.string().optional(),
     publishDate: z.string().or(z.date()).optional(),
     author: z.string().optional(),

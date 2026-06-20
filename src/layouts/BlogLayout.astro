@@ -8,17 +8,32 @@ interface Props {
   description?: string;
   author?: string;
   date?: string;
+  /** Last-substantive-update date. Drives JSON-LD dateModified; falls back to `date`. */
+  updated?: string;
   tags?: string[];
   readingTime?: string;
 }
 
-const { title, description, author = 'David Farley', date, tags = [], readingTime = '8 min' } = Astro.props;
+const { title, description, author = 'David Farley', date, updated, tags = [], readingTime = '8 min' } = Astro.props;
 
-const formattedDate = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+// Normalize a frontmatter value (string "YYYY-MM-DD" or Date) to an ISO date string (YYYY-MM-DD).
+function toIsoDate(value: string | Date | undefined): string | undefined {
+  if (!value) return undefined;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return value;
+}
+
+const publishedIso = toIsoDate(date);
+const modifiedIso = toIsoDate(updated) || publishedIso;
+
+const formattedDate = publishedIso ? new Date(publishedIso + 'T00:00:00').toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 }) : '';
+
+// Canonical URL for this post (strip any query/hash so the @id is stable).
+const canonicalHref = new URL(Astro.url.pathname, 'https://forgerpa.com').href;
 
 const blogPostingSchema = {
   '@context': 'https://schema.org',
@@ -37,9 +52,14 @@ const blogPostingSchema = {
       url: 'https://forgerpa.com/logo.png',
     },
   },
-  mainEntityOfPage: Astro.url.href,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalHref,
+  },
+  url: canonicalHref,
   image: 'https://forgerpa.com/og-default.png',
-  ...(date ? { datePublished: date } : {}),
+  ...(publishedIso ? { datePublished: publishedIso } : {}),
+  ...(modifiedIso ? { dateModified: modifiedIso } : {}),
 };
 ---
 

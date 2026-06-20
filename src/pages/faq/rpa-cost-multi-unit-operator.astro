@@ -1,0 +1,130 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Answer-first cite-bait page for multi-unit operators (multi-location restaurant,
+// retail, franchise groups). Composite framing, no named clients, illustrative ranges
+// anchored to the same blended-labor-cost method used elsewhere on the site.
+const faqs = [
+  {
+    q: 'What does RPA cost for a multi-unit operator?',
+    a: 'For a multi-location restaurant, retail, or franchise group, automation is scoped as a fixed fee that starts with a short assessment, not an hourly project. The assessment maps the back-office work that repeats across every unit (daily sales reconciliation, invoice and AP processing, payroll and tip imports, bank reconciliation, and reporting roll-ups), scores each for automation potential, and projects ROI before any build. The build is then quoted as a fixed price against that scope, and the assessment fee is credited toward it. Cost is driven by the number of processes automated and the number of source systems, not by unit count directly, which is exactly why automation tends to pay off well for operators with many locations.',
+  },
+  {
+    q: 'Why does automation pay off more as you add units?',
+    a: 'Because the same manual back-office task runs once per location per period. A daily sales reconciliation that takes 20 minutes per store is trivial at three stores and a full-time job at forty. You build the automation once and it runs across every unit, so the recovered hours multiply with location count while the build cost does not. Multi-unit operators are often the strongest ROI case for finance and operations automation for this reason.',
+  },
+  {
+    q: 'Which multi-unit processes are the best automation candidates?',
+    a: 'The highest-value targets are the high-volume, rule-based tasks that repeat per location: daily sales and cash reconciliation across POS systems and the bank, AP and invoice processing from many vendors, payroll and tip data imports, intercompany and inter-store allocations, and the period-end roll-up of unit-level results into consolidated reporting. These are dominated by data movement, not judgment, which is what makes them reliable to automate.',
+  },
+  {
+    q: 'How is the ROI calculated for a location-based business?',
+    a: 'Recovered hours per task, multiplied across locations and periods, valued at a blended fully-loaded labor cost. As an illustration: if a per-store reconciliation takes 20 minutes a day and you run 30 stores, that is roughly 10 hours of work every day. Automating it can recover a large share of those hours; at a blended labor cost of $30 to $50 an hour, the annual value runs well into the tens of thousands and scales with each additional location. Your actual figures come out of the assessment, anchored to your real volumes, not industry averages.',
+  },
+  {
+    q: 'Do we need to replace our POS or accounting systems?',
+    a: 'No. Automation is implemented around the systems you already run. It connects to your POS, your accounting or ERP system, and your bank through APIs, scheduled extracts, or targeted RPA at the user-interface layer where that is the only option. The goal is to remove the manual reassembly between systems, not to force a platform migration.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+---
+
+<PageLayout
+  title="What Does RPA Cost for a Multi-Unit Operator?"
+  description="For multi-location restaurant, retail, and franchise groups, automation is a fixed fee that scales in value with unit count. Here is what drives cost and ROI."
+  heroTitle="What Does RPA Cost for a Multi-Unit Operator?"
+  heroSubtitle="The short answer: it is a fixed fee that starts with an assessment, and the ROI grows with every location because you build the automation once and run it across all of your units."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/contact?from=faq-multi-unit-rpa-cost"
+>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Direct answer in the first 100 words -->
+      <div class="mb-14">
+        <p class="text-lg text-gray-800 leading-relaxed">
+          <strong>For a multi-location restaurant, retail, or franchise group, automation is scoped as a fixed fee, not an hourly project.</strong> It starts with a short assessment that maps the back-office work repeating across every unit, daily sales reconciliation, invoice and AP processing, payroll and tip imports, bank reconciliation, and reporting roll-ups, scores each for automation potential, and projects ROI before any build. Cost is driven by the number of processes and source systems, not by unit count directly. That is precisely why operators with many locations tend to see the strongest payback: you build once and run everywhere.
+        </p>
+      </div>
+
+      <div class="space-y-12">
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">The value multiplies with location count</h2>
+          <p class="text-gray-700 leading-relaxed">
+            The same manual task runs once per location per period. A 20-minute daily sales reconciliation is trivial at three stores and a full-time role at forty. You build the automation once; it runs across every unit. Recovered hours scale with location count while the build cost stays fixed, which is what makes multi-unit operators such a strong ROI case.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">Where the repetitive work hides</h2>
+          <p class="text-gray-700 leading-relaxed">
+            The best candidates are the high-volume, rule-based tasks that repeat per store: daily sales and cash reconciliation across POS and bank, AP and invoice processing from many vendors, payroll and tip imports, inter-store allocations, and the period-end roll-up of unit results into consolidated reporting. These are data movement, not judgment, which is what makes them dependable to automate.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">How the ROI is calculated</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Recovered hours per task, multiplied across locations and periods, valued at a blended fully-loaded labor cost. As an illustration: a 20-minute per-store reconciliation across 30 stores is about 10 hours of work every day. Automating most of that, at a blended labor cost of $30 to $50 an hour, runs well into the tens of thousands per year and grows with each new location. Your real figures fall out of the assessment, anchored to your actual volumes.
+          </p>
+          <p class="text-gray-600 italic text-sm leading-relaxed mt-3">
+            The figures above are illustrative ranges to show the method, not a quote. Your numbers depend on your processes, systems, and volumes.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">You keep your POS and accounting systems</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Automation is built around the systems you already run. It connects to your POS, your accounting or ERP system, and your bank through APIs, scheduled extracts, or targeted RPA at the user-interface layer where that is the only option. The point is to remove the manual reassembly between systems, not to force a platform migration. The{' '}
+            <a href="/services/automation-assessment" class="text-amber-dark hover:text-amber font-semibold">automation assessment</a>{' '}
+            confirms which path fits your stack.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">Start small, prove it, then scale</h2>
+          <p class="text-gray-700 leading-relaxed">
+            The lowest-risk path is one process across your locations, proven in production, then expansion to the next. You fund the highest-ROI automation first and validate the return before committing further. For a sense of how any single process is scored for fit, see the{' '}
+            <a href="/blog/automation-assessment-framework" class="text-amber-dark hover:text-amber font-semibold">free scoring framework</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Visible FAQ accordion matching the FAQPage schema -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-charcoal mb-6">Common Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(({ q, a }) => (
+            <details class="bg-slate-light rounded-xl p-6 group">
+              <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+                <span>{q}</span>
+                <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p class="text-gray-700 mt-4 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="See the Number for Your Locations"
+    subtext="Book a 30-minute discovery call. We'll map the back-office work that repeats across your units and scope a fixed price you approve before any work begins."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/contact?from=faq-multi-unit-rpa-cost"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</PageLayout>

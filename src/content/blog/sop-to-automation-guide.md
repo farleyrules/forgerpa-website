@@ -11,6 +11,8 @@ tags:
 readingTime: "9 min"
 ---
 
+<p>Turning an SOP into a running automation follows four stages: process discovery, automation design, development and testing, then deployment with governance. The traditional path runs 10 to 12 weeks, mostly lost to slow manual discovery and rediscovering exceptions late. AI compresses that to roughly 3 weeks by reading the SOP to draft the process map, surfacing gaps and exceptions early, and generating a first-draft build for a practitioner to refine, not by cutting steps but by making each one smarter. The key is that AI accelerates the work; an experienced finance-and-automation practitioner still owns the judgment, the exception strategy, and the governance. Here is how that pipeline works today.</p>
+
 <h2>Introduction</h2>
 
 <p>You have a 47-page SOP for your month-end close process. It lives in a SharePoint folder that six people can find. It was last updated in 2023, and everyone knows the real process has drifted from what is documented.</p>

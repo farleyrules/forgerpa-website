@@ -11,6 +11,8 @@ tags:
 readingTime: "10 min"
 ---
 
+<p>To score a process for automation potential, rate it 1 to 5 on six criteria: rule complexity, transaction volume, data structure, process stability, error impact, and technology compatibility. Add the scores for a total out of 30. Processes scoring 22 or higher are strong automation candidates, 15 to 21 are worth investigating, and anything below 15 means you should fix the process before automating it. The whole evaluation takes about 30 minutes per process, with no consultants and no software to buy. The framework below is the same one used to deploy 100+ automations at a Fortune 500 manufacturer, and you can apply it yourself today.</p>
+
 <h2>Introduction</h2>
 
 <p>"We should automate that." You have heard it in meetings, and you have probably said it yourself. But which processes should you automate first? Which ones will deliver real ROI, and which ones will become expensive maintenance headaches?</p>

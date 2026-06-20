@@ -1,0 +1,127 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Answer-first cite-bait page. Numbers mirror figures published elsewhere on the site
+// (month-end-close-assessment) so nothing here is fabricated.
+const faqs = [
+  {
+    q: 'What does it cost to automate month-end close?',
+    a: 'Month-end close automation is almost always scoped as a fixed fee, not an hourly project. The typical path starts with a fixed-fee automation assessment, scoped to your environment after a discovery call, that maps your close, scores each step, and projects ROI before any build. The build that follows is then quoted as a fixed price against that scope, and the assessment fee is credited toward it if you proceed. Cost scales with the number of close steps automated, the number of entities, and how clean the source systems are, not with hourly meters.',
+  },
+  {
+    q: 'What drives the price up or down?',
+    a: 'Three things. First, scope: automating two high-friction steps costs far less than the full close. Second, entity count: a single-entity close is simpler than a multi-entity consolidation with intercompany eliminations. Third, source-system cleanliness: well-structured ERP data automates cheaply, while messy exports and undocumented spreadsheets add discovery and exception-handling work. A focused, single-entity engagement is the lowest-cost entry point and the fastest to prove ROI.',
+  },
+  {
+    q: 'What is the ROI, and how fast is payback?',
+    a: 'A single-entity finance team typically loses 30 to 50 hours every close cycle to manual reassembly work; at a blended fully-loaded labor cost of $70 to $100 per hour, that is roughly $25,000 to $60,000 a year of recoverable capacity. Multi-entity organizations can recover 200 to 400 hours per cycle as consolidation and audit-evidence work compounds. Because most close automations target repetitive, high-volume steps, payback periods are usually measured in months, not years.',
+  },
+  {
+    q: 'Why start with an assessment instead of just building?',
+    a: 'Because the most expensive automation is the one you build for the wrong process. The assessment scores each close step on rule complexity, volume, data structure, stability, error impact, and technology compatibility, then sequences the build by ROI. You see the projected return and the price before committing to the build, and the assessment fee is creditable toward it.',
+  },
+  {
+    q: 'Do we need new software to automate the close?',
+    a: 'Usually not. Much of the close can be automated with tools already in your stack, Microsoft 365, Power Query, Power Automate, and your ERP, with targeted RPA only where the UI is the only available interface. Avoiding a new SaaS subscription keeps both the build cost and the run cost down.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+---
+
+<PageLayout
+  title="What Does It Cost to Automate Month-End Close?"
+  description="Month-end close automation is scoped as a fixed fee, starting with an assessment that projects ROI before any build. Here is what drives the price and the payback."
+  heroTitle="What Does It Cost to Automate Month-End Close?"
+  heroSubtitle="The short answer: it is scoped as a fixed fee, not an hourly project, and it starts with an assessment that projects ROI before you commit to a build."
+  heroCta="Book a 30-min discovery call"
+  heroCtaLink="/contact?from=faq-month-end-close-cost"
+>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Direct answer in the first 100 words -->
+      <div class="mb-14">
+        <p class="text-lg text-gray-800 leading-relaxed">
+          <strong>Automating month-end close is almost always a fixed fee, not an hourly engagement.</strong> The usual path starts with a fixed-fee automation assessment, scoped to your environment after a discovery call, that maps your close, scores every step, and projects ROI. The build that follows is quoted as a fixed price against that scope, and the assessment fee is credited toward it if you proceed. What moves the number is how many close steps you automate, how many entities you run, and how clean your source systems are, never an hourly meter.
+        </p>
+      </div>
+
+      <div class="space-y-12">
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">It is priced by scope, not by the hour</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Automating two high-friction steps (say, bank reconciliation matching and AP aging distribution) costs far less than automating the full close. You choose the scope, and the price is fixed to it. Larger work is sequenced into phases so you fund the highest-ROI automations first and validate the return before expanding.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">Entity count is the biggest cost lever</h2>
+          <p class="text-gray-700 leading-relaxed">
+            A single-entity close is the lowest-cost entry point. Multi-entity consolidations add intercompany eliminations, cross-entity reconciliations, and more audit evidence to gather, all of which expand scope. The automation discipline is identical at every scale; the sequencing and governance are what change.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">The ROI is recovered capacity</h2>
+          <p class="text-gray-700 leading-relaxed">
+            A single-entity finance team typically loses 30 to 50 hours per close to manual reassembly work, roughly $25,000 to $60,000 a year at a blended fully-loaded labor cost of $70 to $100 per hour. Multi-entity organizations can recover 200 to 400 hours per cycle. Your specific figures fall out of the assessment, anchored to your actual baseline rather than industry averages.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">The assessment de-risks the spend</h2>
+          <p class="text-gray-700 leading-relaxed">
+            The most expensive automation is the one built for the wrong process. A 2 to 3 day assessment scores each close step, projects conservative-to-aggressive ROI, and hands you a sequenced 90-day roadmap, so you approve the build price knowing the expected return. The fee is creditable toward the build. See the{' '}
+            <a href="/services/month-end-close-assessment" class="text-amber-dark hover:text-amber font-semibold">month-end close assessment</a>{' '}
+            for the full deliverable.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">You usually do not need new software</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Much of the close can be automated with tools already in your stack: Microsoft 365, Power Query, Power Automate, and your ERP, with targeted RPA only where the user interface is the only way in. Skipping a new SaaS subscription keeps both build and run costs down. For the underlying tasks, the guide on{' '}
+            <a href="/blog/month-end-close-automation" class="text-amber-dark hover:text-amber font-semibold">the five close tasks to automate first</a>{' '}
+            walks through each one.
+          </p>
+        </div>
+      </div>
+
+      <!-- Visible FAQ accordion matching the FAQPage schema -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-charcoal mb-6">Common Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(({ q, a }) => (
+            <details class="bg-slate-light rounded-xl p-6 group">
+              <summary class="font-bold text-charcoal cursor-pointer flex items-center justify-between">
+                <span>{q}</span>
+                <span class="text-amber-dark text-2xl group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p class="text-gray-700 mt-4 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Get a Fixed Number for Your Close"
+    subtext="Book a 30-minute discovery call. We'll walk through your close cycle and what a 2-3 day assessment could surface, then scope a fixed price you approve before any work begins."
+    ctaText="Book a 30-min discovery call"
+    ctaLink="/contact?from=faq-month-end-close-cost"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</PageLayout>
