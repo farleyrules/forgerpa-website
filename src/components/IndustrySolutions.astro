@@ -22,7 +22,7 @@ interface Props {
   systemsBlurb: string;
   disclaimer: string;
   proofBlurb?: string;
-  /** Pass-through for analytics / n8n (e.g. industries-oil-gas) → `/book?from=…` */
+  /** Pass-through for analytics / n8n (e.g. industries-oil-gas) → `/contact?from=…` */
   bookingSource?: string;
   /** Short industry-specific “why value feels different here” copy */
   valueHeading?: string;
@@ -72,8 +72,8 @@ const defaultBeyondExamples =
 const beyondExamplesHtml = beyondExamplesNote ?? defaultBeyondExamples;
 
 const bookHref = bookingSource
-  ? `/book?from=${encodeURIComponent(bookingSource)}`
-  : '/book';
+  ? `/contact?from=${encodeURIComponent(bookingSource)}`
+  : '/contact';
 ---
 
 <PageLayout
@@ -81,7 +81,7 @@ const bookHref = bookingSource
   description={metaDescription}
   {heroTitle}
   heroSubtitle={heroSubtitle}
-  heroCta="See How We Can Help"
+  heroCta="Get Your Time Back"
   heroCtaLink={bookHref}
 >
   {/* JSON-LD structured data (emitted only when the page supplies it) */}
@@ -203,7 +203,7 @@ const bookHref = bookingSource
   <CTASection
     heading="Discuss Your Roadmap"
     subtext="Start with a low-risk automation assessment or a discovery call. We will help you prioritize what to automate first and how to govern it."
-    ctaText="See How We Can Help"
+    ctaText="Start the Conversation"
     ctaLink={bookHref}
   />
 </PageLayout>
