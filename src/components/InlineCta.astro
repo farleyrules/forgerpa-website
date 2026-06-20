@@ -6,7 +6,7 @@
  * the CTASection (very bottom). The mobile sticky bar covers mobile, but on
  * DESKTOP a reader convinced halfway down has no CTA in reach until they scroll
  * to the end. GA4 showed the highest-traffic paid pages (quick-wins, AP) drove
- * ~0 visitors to /book, and their CTA copy is already strong, so placement is
+ * ~0 visitors to /contact, and their CTA copy is already strong, so placement is
  * the gap. Drop this once mid-page (after the value is established) to catch the
  * desktop reader at the moment of conviction. Carries the page's ?from= tag.
  */
@@ -15,14 +15,14 @@ interface Props {
   text?: string;
   /** Button label; benefit-first + low-friction (free, 30 min). */
   ctaText?: string;
-  /** /book?from=... so landing-page -> /book attribution stays intact. */
+  /** /contact?from=... so landing-page -> /contact attribution stays intact. */
   ctaLink?: string;
 }
 
 const {
   text = "Ready to see what this looks like for your team?",
-  ctaText = "See How We Can Help",
-  ctaLink = "/book",
+  ctaText = "Tell Us What to Automate",
+  ctaLink = "/contact",
 } = Astro.props;
 ---
 
