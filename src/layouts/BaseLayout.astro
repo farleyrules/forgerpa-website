@@ -74,6 +74,14 @@ const organizationSchema = {
     addressRegion: 'TX',
     addressCountry: 'US',
   },
+  founder: {
+    '@type': 'Person',
+    name: 'David Farley',
+    jobTitle: 'President and Founder',
+    description: '30 years in finance and accounting; Certified UiPath Developer.',
+  },
+  // `sameAs` is intentionally empty until the company LinkedIn URL (or another
+  // verified Forge RPA profile) is confirmed. Do not populate with a guessed URL.
   sameAs: [] as string[],
 };
 
