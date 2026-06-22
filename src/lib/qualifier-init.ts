@@ -376,6 +376,10 @@ async function submitInquiry(mode: InquiryMode): Promise<void> {
   const email = ($("essentials-email") as HTMLInputElement | null)?.value.trim() ?? "";
   const company = ($("essentials-company") as HTMLInputElement | null)?.value.trim() ?? "";
   const notes = ($("essentials-notes") as HTMLTextAreaElement | null)?.value.trim() ?? "";
+  // Optional attribution: how the visitor first heard about Forge RPA + an
+  // optional free-text detail. Neither blocks submission (both can be empty).
+  const howDidYouHear = ($("essentials-hear") as HTMLSelectElement | null)?.value.trim() ?? "";
+  const howDidYouHearDetail = ($("essentials-hear-detail") as HTMLInputElement | null)?.value.trim() ?? "";
 
   setError("essentials", null);
   setError("essentials-email", null);
@@ -444,6 +448,10 @@ async function submitInquiry(mode: InquiryMode): Promise<void> {
     email,
     company: company || undefined,
     additionalNotes: additionalNotes || undefined,
+    // Optional "how did you first hear about us?" attribution. Sent only when
+    // the visitor picked something; the optional detail rides alongside.
+    how_did_you_hear: howDidYouHear || undefined,
+    how_did_you_hear_detail: howDidYouHearDetail || undefined,
     // Optional newsletter/nurture opt-in (unchecked-by-default checkbox).
     newsletterOptIn:
       ($("essentials-newsletter") as HTMLInputElement | null)?.checked ?? false,

@@ -73,6 +73,24 @@ const defaultHeroSubtitle =
                 <textarea id="essentials-notes" rows="3" maxlength="1000" placeholder="A sentence or two about the manual work you'd most like to hand off. The more specific, the better we can prepare." class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"></textarea>
                 <p id="essentials-notes-error" class="hidden mt-1 text-xs text-red-600"></p>
               </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">How Did You First Hear About Forge RPA? <span class="font-normal text-gray-500">(optional)</span></span>
+                <select id="essentials-hear" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber">
+                  <option value="">Select one (optional)</option>
+                  <option value="A referral or colleague">A referral or colleague</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="A LinkedIn post or article">A LinkedIn post or article</option>
+                  <option value="A networking event">A networking event</option>
+                  <option value="Web search">Web search</option>
+                  <option value="An AI assistant (ChatGPT, Perplexity, etc.)">An AI assistant (ChatGPT, Perplexity, etc.)</option>
+                  <option value="Podcast or YouTube">Podcast or YouTube</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="text-sm font-semibold text-charcoal">Tell Us More <span class="font-normal text-gray-500">(optional)</span></span>
+                <input type="text" id="essentials-hear-detail" maxlength="200" placeholder="If a person, event, or post pointed you our way, we'd love to know." class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+              </label>
             </div>
 
             <div class="mt-6">

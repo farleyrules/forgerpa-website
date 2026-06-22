@@ -8,7 +8,7 @@ Forge RPA strips the manual, repetitive data-movement work out of finance and op
 
 ## Who it serves
 
-Controllers, CFOs, finance-operations leaders, and the operations partners whose work feeds the ledger, at mid-market through enterprise organizations. Industries served include manufacturing, utilities, healthcare, insurance, financial services, oil and gas, and multi-unit operators. Best fit: teams that have outgrown manual processes and spreadsheets and want a real automation in production, not a pilot that never ships.
+Controllers, CFOs, finance-operations leaders, and the operations partners whose work feeds the ledger, at companies of all sizes. Industries served include manufacturing, utilities, healthcare, insurance, financial services, oil and gas, and multi-unit operators. Best fit: teams that have outgrown manual processes and spreadsheets and want a real automation in production, not a pilot that never ships.
 
 ## Differentiators
 

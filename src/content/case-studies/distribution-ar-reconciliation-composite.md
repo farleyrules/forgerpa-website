@@ -2,7 +2,7 @@
 title: "From Spreadsheet Reconciliation to Repeatable Cash Application"
 industry: "Distribution"
 service: "Accounts Receivable"
-summary: "Composite pattern from mid-market distribution engagements, faster cash application, fewer disputes, audit-ready evidence without naming any single client."
+summary: "Composite pattern from distribution engagements, faster cash application, fewer disputes, audit-ready evidence without naming any single client."
 metric: "Days-of-unapplied cash materially reduced"
 shortDescription: "Composite AR reconciliation and deduction-handling pattern shaped by beverage-style route-to-cash complexity."
 challenge: "A multi-branch distributor relied on daily spreadsheet reconciliations between the ERP cash receipts ledger and carrier remittance files. Analysts chased deductions (pricing, returns, promotional allowances) in email threads; month-end often reopened prior-week exceptions because ownership was unclear."

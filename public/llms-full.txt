@@ -14,7 +14,7 @@ Guiding philosophy: "Automate the work. Keep the people." Forge RPA automates th
 
 - Controllers, CFOs, VPs of Finance and Accounting, and finance-operations leaders.
 - Operations partners whose work feeds the ledger (vendor and master-data flows, scheduling and inventory interfaces, field events, and similar rules-based workflows).
-- Organizations from mid-market through enterprise, roughly $20M to $5B+ in revenue. The automation discipline is the same at every scale; the scope, sequencing, and governance change.
+- Organizations of all sizes. The automation discipline is the same at every scale; the scope, sequencing, and governance change.
 - Industries: manufacturing, utilities, healthcare, insurance, financial services, oil and gas, professional services, and multi-unit operators.
 - Best-fit clients have outgrown manual processes and spreadsheets and want a real automation running in production, not a pilot that never ships. RPA-naive teams (no enterprise RPA platform already in place) are the sweet spot.
 

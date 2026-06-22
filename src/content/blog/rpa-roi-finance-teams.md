@@ -84,6 +84,8 @@ readingTime: "8 min"
 | Maintenance (annual) | 15-20% of development cost |
 | Change management & training | $2,000 - $5,000 |
 
+<p><em>The dollar figures above are illustrative industry ranges to show how to work through an ROI calculation, not Forge RPA pricing. Forge quotes every engagement up front from a free call.</em></p>
+
 <h3>Step 4: Compute Payback Period</h3>
 
 <p><strong>Payback Period = Total Investment / Annual Savings</strong></p>
