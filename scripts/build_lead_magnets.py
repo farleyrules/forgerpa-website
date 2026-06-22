@@ -11,8 +11,7 @@ import textwrap
 from pathlib import Path
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment, Font
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,12 +76,11 @@ HIGH_ROI_GUIDE_MARKDOWN = textwrap.dedent(
 
         ---
 
-        ## How to use this list with the Assessment Framework
+        ## How to use this list
 
-        1. Shortlist processes that match the patterns above in *your* environment.  
-        2. Score each with the Excel framework (`forgerpa-finance-automation-assessment-framework.xlsx`).  
-        3. Size hours, loaded cost, and adoption conservatively in the ROI calculator.  
-        4. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
+        1. Shortlist processes that match the patterns above in *your* environment.
+        2. Size hours, loaded cost, and adoption conservatively in the ROI calculator.
+        3. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
 
         ---
 
@@ -96,102 +94,6 @@ def ensure_fpdf() -> None:
         import fpdf  # noqa: F401
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "fpdf2", "-q"])
-
-
-def style_header(cell, *, bold: bool = True, fill: str | None = "FFF4E6") -> None:
-    cell.font = Font(bold=bold)
-    if fill:
-        cell.fill = PatternFill("solid", fgColor=fill)
-    cell.alignment = Alignment(vertical="top", wrap_text=True)
-
-
-def build_assessment_workbook() -> None:
-    wb = Workbook()
-    # --- Instructions ---
-    ws = wb.active
-    ws.title = "Instructions"
-    ws["A1"] = "Forge RPA — Finance Automation Assessment Framework"
-    ws["A1"].font = Font(size=16, bold=True)
-    ws["A3"] = textwrap.dedent(
-        """
-        How to use this workbook
-        1. List each candidate process on the \"Processes\" sheet (one row per process).
-        2. Enter estimated manual hours per month and primary systems.
-        3. Score each criterion from 1 (weak fit) to 5 (strong fit). Be honest about exceptions and judgment-heavy steps.
-        4. The Weighted Score uses the default weights on the Processes sheet (you may change weights in row 2; keep them as positive decimals).
-        5. Sort or filter by Weighted Score to build a defensible automation backlog.
-
-        Criteria (columns D–I on Processes)
-        • Volume & frequency — How often the work runs and how much labor it consumes.
-        • Rule stability — How much is repeatable rules vs. case-by-case judgment.
-        • Data & system accessibility — Can data be reached reliably (exports, APIs, controlled UI)?
-        • Exception load — Volume and complexity of true exceptions.
-        • Risk / control impact — Cost of error (misstatement, late filing, compliance).
-        • Urgency / deadline pressure — Month-end, regulatory, or management time sensitivity.
-
-        Disclaimer: Scores are directional planning aids, not guarantees of ROI or feasibility.
-        """
-    ).strip()
-    ws["A3"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 100
-
-    # --- Processes ---
-    wp = wb.create_sheet("Processes")
-    headers = [
-        "Process name",
-        "Est. manual hours / month",
-        "Primary systems / evidence",
-        "Volume & frequency (1-5)",
-        "Rule stability (1-5)",
-        "Data & system access (1-5)",
-        "Exception load (1-5) — higher score = fewer exceptions",
-        "Risk / control impact (1-5)",
-        "Urgency / deadlines (1-5)",
-        "Weighted score",
-        "Notes / next action",
-    ]
-    weights = [0.20, 0.25, 0.20, 0.10, 0.15, 0.10]
-    for col, h in enumerate(headers, start=1):
-        c = wp.cell(row=1, column=col, value=h)
-        style_header(c)
-    for i, w in enumerate(weights, start=4):
-        wp.cell(row=2, column=i, value=w)
-        wp.cell(row=2, column=i).number_format = "0.00"
-    wp.cell(row=2, column=1, value="Default weights (edit D2:I2; positive numbers):")
-    wp.cell(row=2, column=1).font = Font(bold=True)
-
-    for col in range(1, 12):
-        wp.column_dimensions[get_column_letter(col)].width = 22 if col <= 3 else 14
-    wp.column_dimensions["A"].width = 28
-    wp.column_dimensions["C"].width = 32
-    wp.column_dimensions["K"].width = 36
-
-    for r in range(5, 35):
-        formula = (
-            f'=IF(COUNT(D{r}:I{r})<6,"",SUMPRODUCT(D{r}:I{r},$D$2:$I$2)/SUM($D$2:$I$2))'
-        )
-        wp.cell(row=r, column=10, value=formula)
-
-    # --- Interpretation ---
-    wi = wb.create_sheet("Score guide")
-    wi["A1"] = "Weighted score (approximate interpretation)"
-    wi["A1"].font = Font(bold=True, size=14)
-    rows = [
-        ("4.3 – 5.0", "Strong candidate — prioritize for discovery / deeper sizing."),
-        ("3.5 – 4.2", "Good candidate — validate exceptions, data, and ownership."),
-        ("2.5 – 3.4", "Possible — often needs process cleanup or scope split first."),
-        ("1.0 – 2.4", "Defer or redesign — high judgment, brittle data, or unclear ROI."),
-    ]
-    for i, (rng, txt) in enumerate(rows, start=3):
-        wi.cell(row=i, column=1, value=rng)
-        wi.cell(row=i, column=2, value=txt)
-    wi.column_dimensions["A"].width = 14
-    wi.column_dimensions["B"].width = 70
-
-    OUT.mkdir(parents=True, exist_ok=True)
-    path = OUT / "forgerpa-finance-automation-assessment-framework.xlsx"
-    wb.save(path)
-    print("Wrote", path)
 
 
 def build_roi_workbook() -> None:
@@ -377,12 +279,11 @@ def build_guide_pdf() -> None:
     pdf.set_x(pdf.l_margin)
     pdf.set_font("Helvetica", "B", 12)
     pdf.set_text_color(*CHARCOAL)
-    pdf.cell(ew, 6, "How to use this list with the Assessment Framework", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(ew, 6, "How to use this list", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(30, 41, 59)
     steps = [
         "Shortlist processes that match the patterns above in your environment.",
-        "Score each with the Excel workbook forgerpa-finance-automation-assessment-framework.xlsx.",
         "Size hours, loaded cost, and adoption conservatively in forgerpa-finance-automation-roi-calculator.xlsx.",
         "Book a discovery call if you want a second opinion on sequencing.",
     ]
@@ -633,7 +534,6 @@ def build_checklist_html() -> None:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    build_assessment_workbook()
     build_roi_workbook()
     build_guide_markdown()
     build_guide_pdf()

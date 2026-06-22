@@ -3,7 +3,6 @@ import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 
 const downloads = {
-  assessment: '/downloads/forgerpa-finance-automation-assessment-framework.xlsx',
   checklist: '/downloads/forgerpa-month-end-close-checklist.html',
   guide: '/downloads/forgerpa-5-high-roi-finance-processes.pdf',
   roi: '/downloads/forgerpa-finance-automation-roi-calculator.xlsx',
@@ -31,25 +30,6 @@ const downloads = {
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
-          <div class="text-amber text-4xl mb-6">📋</div>
-          <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation Assessment Framework</h3>
-          <p class="text-gray-600 mb-6">
-            Six-criterion weighted scoring to evaluate finance processes for automation potential, plus a short interpretation
-            guide. Includes process inventory rows and calculated weighted scores.
-          </p>
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <span class="text-sm text-gray-500">Microsoft Excel (.xlsx)</span>
-            <a
-              href={downloads.assessment}
-              download
-              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
-            >
-              Download Framework
-            </a>
-          </div>
-        </div>
-
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📊</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Month-End Close Optimization Checklist</h3>
