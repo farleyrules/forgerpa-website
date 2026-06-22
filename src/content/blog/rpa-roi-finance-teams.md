@@ -2,7 +2,7 @@
 title: "The Real ROI of RPA for Finance Teams: A Practitioner's Perspective"
 author: "David Farley"
 date: "2026-03-11"
-description: "Learn to calculate RPA ROI finance leaders actually trust. Real savings data, a DIY framework, and lessons from 100+ automations."
+description: "Learn to calculate RPA ROI finance leaders actually trust. Real savings data, a DIY framework, and lessons from hundreds of automations."
 tags:
   - "RPA ROI"
   - "Finance Automation"
@@ -11,15 +11,15 @@ tags:
 readingTime: "8 min"
 ---
 
-<p>RPA pays off fastest in finance because finance work is dominated by high-volume, rule-based tasks on structured data: data transfers between systems, reconciliations, recurring report generation, and compliance checks. The honest return is not the 300% every vendor quotes. It shows up as recovered staff hours, fewer errors, faster closes, and senior accountants redeployed from data movement to analysis. The strongest payback comes from automating a handful of the most repetitive, error-prone tasks rather than the entire function. This is a practitioner view from someone who has built and measured the returns on 100+ automations, including at a Fortune 500 manufacturer, after a decade in the Controller's chair.</p>
+<p>RPA pays off fastest in finance because finance work is dominated by high-volume, rule-based tasks on structured data: data transfers between systems, reconciliations, recurring report generation, and compliance checks. The honest return is not the 300% every vendor quotes. It shows up as recovered staff hours, fewer errors, faster closes, and senior accountants redeployed from data movement to analysis. The strongest payback comes from automating a handful of the most repetitive, error-prone tasks rather than the entire function. This is a practitioner view from someone who has built and measured the returns on hundreds of automations, including at a Fortune 500 manufacturer.</p>
 
 <h2>Introduction</h2>
 
-<p>RPA ROI finance leaders can trust, that is what this article delivers. <strong>Not vendor projections. Not theoretical models.</strong> Actual results from someone who has built and measured the returns on over 100 automations.</p>
+<p>RPA ROI finance leaders can trust, that is what this article delivers. <strong>Not vendor projections. Not theoretical models.</strong> Actual results from someone who has built and measured the returns on hundreds of automations.</p>
 
 <p>Every vendor will tell you that RPA delivers 300% ROI. But what does ROI in a finance team actually look like when the implementation is over and the bots are running? After deploying automations at a Fortune 500 manufacturer and building custom systems for companies across industries, I can tell you the real numbers are both <em>more nuanced and more compelling</em> than the brochures suggest.</p>
 
-<p>This is not a vendor pitch. I have sat in the Controller's chair, closed the books every month, and then spent decades automating the exact processes I used to do manually. Here is how RPA ROI for finance departments actually works.</p>
+<p>This is not a vendor pitch. I have worked inside finance and controllership operations, closed the books every month, and then spent decades automating the exact processes I used to do manually. Here is how RPA ROI for finance departments actually works.</p>
 
 <h2>Why Finance Teams Get the Best ROI from RPA</h2>
 
@@ -54,7 +54,7 @@ readingTime: "8 min"
 
 <h3>The Pattern at a Fortune 500 Manufacturer</h3>
 
-<p>Over eight years at a Fortune 500 automotive manufacturer, I architected and deployed 100+ intelligent automations. The pattern is consistent: well-targeted automations in finance processes deliver <strong>200-500% ROI in the first year</strong>, with compounding returns as maintenance costs drop and process stability increases.</p>
+<p>Over eight years at a Fortune 500 automotive manufacturer, I designed and deployed more than 100 intelligent automations. The pattern is consistent: well-targeted automations in finance processes deliver <strong>200-500% ROI in the first year</strong>, with compounding returns as maintenance costs drop and process stability increases.</p>
 
 <h2>The ROI Framework: Calculate It Yourself</h2>
 
@@ -129,8 +129,8 @@ readingTime: "8 min"
 
 <p><a href="/book">Schedule a Discovery Call →</a></p>
 
-<p>Or, if you want to run the numbers yourself first, download our <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment Worksheet</a>, the same framework I have used across 100+ automation projects. If you are weighing the close specifically, the FAQ on <a href="/faq/automate-month-end-close-cost">what it costs to automate month-end close</a> walks through what drives the price and the payback.</p>
+<p>Or, if you want a structured way to find your highest-ROI candidates, our <a href="https://forgerpa.com/services/automation-assessment">Automation Assessment</a> applies the same framework I have used across hundreds of automation projects. If you are weighing the close specifically, the FAQ on <a href="/faq/automate-month-end-close-cost">what it costs to automate month-end close</a> walks through what drives the price and the payback.</p>
 
 <hr />
 
-<p><em>David Farley is the President and Founder of Forge RPA, a 30-year finance and accounting veteran and Certified UiPath Developer. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the President and Founder of Forge RPA. A 30-year finance and accounting veteran and Certified UiPath Developer, he helps companies automate business processes, from advanced Excel and VBA solutions to enterprise RPA, while keeping costs under control.</em></p>

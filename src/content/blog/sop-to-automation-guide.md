@@ -92,7 +92,7 @@ readingTime: "9 min"
 
 <h2>Traditional vs AI-Accelerated Timelines</h2>
 
-<p>Here is the comparison, based on my experience across 100+ automation projects:</p>
+<p>Here is the comparison, based on my experience across hundreds of automation projects:</p>
 
 | Phase | Traditional | AI-Accelerated | Time Saved |
 |---|---|---|---|
@@ -183,4 +183,4 @@ readingTime: "9 min"
 
 <hr />
 
-<p><em>David Farley is the President and Founder of Forge RPA, a 30-year finance and accounting veteran and Certified UiPath Developer. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the President and Founder of Forge RPA. A 30-year finance and accounting veteran and Certified UiPath Developer, he helps companies automate business processes, from advanced Excel and VBA solutions to enterprise RPA, while keeping costs under control.</em></p>
