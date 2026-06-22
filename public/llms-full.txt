@@ -55,7 +55,7 @@ What it is: data-driven discovery of how finance and operations processes actual
 
 ### Forge Quick Wins
 URL: https://forgerpa.com/services/quick-wins
-What it is: fixed-price, fast-turnaround finance automation on the Microsoft stack. Spreadsheet rescues start at $750; report automation and fractional sprints are scoped to the job. Every job gets a QA tie-out. Larger work starts with a fixed-price assessment credited toward the statement of work. Quoted up front from a free discovery call; no metered hours.
+What it is: fixed-price, fast-turnaround finance automation on the Microsoft stack. Spreadsheet rescues, report automation, and fractional sprints are scoped to the job. Every job gets a QA tie-out. Larger work starts with a fixed-price assessment credited toward the statement of work. Quoted up front from a free discovery call; no metered hours.
 
 ## Industries
 
@@ -69,7 +69,7 @@ What it is: fixed-price, fast-turnaround finance automation on the Microsoft sta
 
 ## How Forge RPA prices and engages
 
-Pricing is fixed-fee and scoped per engagement after a discovery call, so the client approves the number before work begins. The one published floor is spreadsheet rescues from $750. Automation assessment fees are creditable toward a resulting build if the client engages within 60 days. Engagements are scoped to de-risk: a single finance team, a defined process, a sequenced 90-day roadmap, with phased expansion for multi-entity organizations. Every automation includes a 30-day defect warranty.
+Pricing is fixed-fee and scoped per engagement after a discovery call, so the client approves the number before work begins. Pricing is quoted up front from a free call, with no public price list. Automation assessment fees are creditable toward a resulting build if the client engages within 60 days. Engagements are scoped to de-risk: a single finance team, a defined process, a sequenced 90-day roadmap, with phased expansion for multi-entity organizations. Every automation includes a 30-day defect warranty.
 
 ## Frequently asked questions
 
