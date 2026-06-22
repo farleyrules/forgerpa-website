@@ -1,0 +1,79 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Lightweight catalog of the answer-first FAQ pages. Add new entries here as they ship.
+const faqPages = [
+  {
+    title: 'What Does It Cost to Automate Month-End Close?',
+    href: '/faq/automate-month-end-close-cost',
+    summary:
+      'A plain-language breakdown of what month-end close automation costs, what drives the number, and the ROI a finance team can expect.',
+  },
+  {
+    title: 'What Does RPA Cost for a Multi-Unit Operator?',
+    href: '/faq/rpa-cost-multi-unit-operator',
+    summary:
+      'How automation is priced for multi-location restaurant, retail, and franchise groups, and where the payback comes from across many units.',
+  },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Forge RPA Automation FAQ',
+  description:
+    'Direct, practitioner answers to common questions about the cost and ROI of finance and operations automation.',
+  url: 'https://forgerpa.com/faq',
+  hasPart: faqPages.map((p) => ({
+    '@type': 'WebPage',
+    name: p.title,
+    url: `https://forgerpa.com${p.href}`,
+  })),
+};
+---
+
+<PageLayout
+  title="Automation FAQ"
+  description="Direct answers to common questions about what finance and operations automation costs and the ROI it delivers, from a 30-year finance practitioner who also builds the automation."
+  heroTitle="Automation Questions, Answered Straight"
+  heroSubtitle="Short, honest answers to the questions finance and operations leaders actually ask before they automate: what it costs, what the ROI looks like, and how the work is scoped. Written by a 30-year finance and accounting practitioner who also builds the automation."
+  heroCta="Get Your Time Back"
+  heroCtaLink="/contact"
+>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-charcoal mb-8">Cost and ROI Questions</h2>
+      <div class="space-y-6">
+        {faqPages.map((p) => (
+          <a
+            href={p.href}
+            class="block bg-white rounded-2xl border border-gray-100 p-8 hover:border-amber transition-colors"
+          >
+            <h3 class="text-xl font-bold text-charcoal mb-2">{p.title}</h3>
+            <p class="text-gray-600 leading-relaxed mb-3">{p.summary}</p>
+            <span class="text-amber-dark font-semibold">Read the answer →</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="mt-10 text-gray-600 leading-relaxed">
+        Looking for something more specific? The{' '}
+        <a href="/services/automation-assessment" class="text-amber-dark hover:text-amber font-semibold">automation assessment</a>{' '}
+        page explains how Forge RPA scopes a build and projects ROI, and the{' '}
+        <a href="/blog" class="text-amber-dark hover:text-amber font-semibold">blog</a>{' '}
+        goes deeper on individual processes. Or just{' '}
+        <a href="/contact" class="text-amber-dark hover:text-amber font-semibold">ask us directly</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Have a Question We Haven't Answered?"
+    subtext="Book a 30-minute discovery call. No pitch. We'll talk through your processes and tell you straight what's worth automating and what it would take."
+    ctaText="Start the Conversation"
+    ctaLink="/contact"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)}></script>
+</PageLayout>

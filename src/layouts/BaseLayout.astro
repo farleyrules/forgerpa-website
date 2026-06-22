@@ -31,20 +31,57 @@ const gscVerificationToken = import.meta.env.PUBLIC_GSC_VERIFICATION_TOKEN;
 const googleAdsConversionId = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_ID;
 
 // --- JSON-LD Organization schema (site-wide) ---
+// NOTE: `sameAs` is intentionally empty until a verified Forge RPA profile URL
+// (e.g. the LinkedIn company page) is confirmed. Do not populate with a guessed URL.
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': 'https://forgerpa.com/#organization',
   name: 'Forge RPA',
   legalName: 'Forge RPA LLC',
   url: 'https://forgerpa.com',
   logo: 'https://forgerpa.com/logo.png',
-  description: 'Enterprise finance and operations automation',
+  description:
+    'Forge RPA is a finance-led automation firm that builds intelligent automation for finance, accounting, and operations teams. Work includes month-end close automation, accounts payable, reconciliations, reporting, ERP data migration, process mining, and automation assessments, implemented around an organization\'s existing ERP and Microsoft 365 stack. Led by a 30-year finance and accounting practitioner who also builds the automation.',
+  slogan: 'Automate the work. Keep the people.',
   email: 'info@forgerpa.com',
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  knowsAbout: [
+    'Robotic Process Automation',
+    'Month-End Close Automation',
+    'Accounts Payable Automation',
+    'Account Reconciliation Automation',
+    'Financial Reporting Automation',
+    'ERP Data Migration',
+    'Process Mining',
+    'Intelligent Document Processing',
+    'Finance Transformation',
+    'Microsoft 365 Automation',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'sales',
+    email: 'info@forgerpa.com',
+    areaServed: 'US',
+    availableLanguage: 'English',
+  },
   address: {
     '@type': 'PostalAddress',
+    addressLocality: 'Frisco',
     addressRegion: 'TX',
     addressCountry: 'US',
   },
+  founder: {
+    '@type': 'Person',
+    name: 'David Farley',
+    jobTitle: 'President and Founder',
+    description: '30 years in finance and accounting; Certified UiPath Developer.',
+  },
+  // `sameAs` is intentionally empty until the company LinkedIn URL (or another
+  // verified Forge RPA profile) is confirmed. Do not populate with a guessed URL.
   sameAs: [] as string[],
 };
 

@@ -11,6 +11,8 @@ tags:
 readingTime: "9 min"
 ---
 
+<p>The five month-end close tasks with the fastest, lowest-risk automation payback are: AP aging report generation and distribution, bank reconciliation matching, recurring journal entries, intercompany reconciliations, and financial report assembly. Each is high-volume and rule-based, the work runs on data movement rather than judgment, so a bot can take it over without taking over the accounting. You do not need to automate the whole close to feel the difference; start with these and a typical finance team recovers meaningful hours every cycle. This guidance comes from a 30-year finance and accounting practitioner who has lived the close as a Controller and built 100+ automations, including at a Fortune 500 manufacturer.</p>
+
 <h2>Introduction</h2>
 
 <p>If you want to automate month-end close tasks, start here. The monthly close is the accounting team's recurring nightmare, three to seven days of high-pressure, error-prone work where your best people are stuck copying data between systems, reconciling spreadsheets, and formatting reports instead of analyzing results and advising the business.</p>
@@ -140,4 +142,4 @@ readingTime: "9 min"
 
 <hr />
 
-<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the President and Founder of Forge RPA, a 30-year finance and accounting veteran and Certified UiPath Developer. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>

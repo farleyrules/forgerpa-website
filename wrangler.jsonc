@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers Static Assets config for forgerpa.com.
+  // The project's build pipeline runs `astro build` (static output to ./dist)
+  // then `npx wrangler versions upload`, which needs this file to know the
+  // assets directory. Without it the deploy step fails with
+  // "Missing entry-point to Worker script or to assets directory".
+  "name": "forgerpa-website",
+  "compatibility_date": "2026-06-22",
+  "assets": {
+    "directory": "./dist"
+  }
+}
