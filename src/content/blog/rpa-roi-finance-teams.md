@@ -129,7 +129,7 @@ readingTime: "8 min"
 
 <p><a href="/book">Schedule a Discovery Call →</a></p>
 
-<p>Or, if you want to run the numbers yourself first, download our <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment Worksheet</a>, the same framework I have used across 100+ automation projects.</p>
+<p>Or, if you want to run the numbers yourself first, download our <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment Worksheet</a>, the same framework I have used across 100+ automation projects. If you are weighing the close specifically, the FAQ on <a href="/faq/automate-month-end-close-cost">what it costs to automate month-end close</a> walks through what drives the price and the payback.</p>
 
 <hr />
 
