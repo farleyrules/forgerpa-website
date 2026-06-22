@@ -50,12 +50,11 @@
 
 ---
 
-## How to use this list with the Assessment Framework
+## How to use this list
 
-1. Shortlist processes that match the patterns above in *your* environment.  
-2. Score each with the Excel framework (`forgerpa-finance-automation-assessment-framework.xlsx`).  
-3. Size hours, loaded cost, and adoption conservatively in the ROI calculator.  
-4. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
+1. Shortlist processes that match the patterns above in *your* environment.
+2. Size hours, loaded cost, and adoption conservatively in the ROI calculator.
+3. Book a discovery call on [forgerpa.com/book](https://forgerpa.com/book) if you want a second opinion on sequencing.
 
 ---
 

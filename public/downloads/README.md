@@ -7,7 +7,6 @@ Branded lead magnets and reference PDFs.
 | Deliverable | Web (print-friendly) | Source markdown (repo) |
 |-------------|----------------------|-------------------------|
 | Discovery Call Prep Worksheet | [/downloads/forge-rpa-discovery-prep.html](https://forgerpa.com/downloads/forge-rpa-discovery-prep.html) | `enterprise-automation-framework/docs/2026-04-29-b6a-discovery-call-prep-worksheet.md` |
-| Automation Readiness Checklist | [/downloads/forge-rpa-readiness-checklist.html](https://forgerpa.com/downloads/forge-rpa-readiness-checklist.html) | `enterprise-automation-framework/docs/2026-04-29-b6b-automation-readiness-checklist.md` |
 
 ### Saving as PDF
 
@@ -20,7 +19,6 @@ Optional: from the repo root, generate PDFs locally with Puppeteer-based tooling
 ```bash
 cd enterprise-automation-framework/docs
 npx md-to-pdf 2026-04-29-b6a-discovery-call-prep-worksheet.md
-npx md-to-pdf 2026-04-29-b6b-automation-readiness-checklist.md
 ```
 
 Then copy the generated `.pdf` files next to the Markdown sources into `forgerpa-website/public/downloads/` if you want versioned binary artifacts in Git.
