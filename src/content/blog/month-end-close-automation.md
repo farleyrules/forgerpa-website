@@ -142,4 +142,4 @@ readingTime: "9 min"
 
 <hr />
 
-<p><em>David Farley is the founder of Forge RPA and a 30-year finance and operations veteran turned Automation Architect. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
+<p><em>David Farley is the President and Founder of Forge RPA, a 30-year finance and accounting veteran and Certified UiPath Developer. With 30 years of business process automation experience, from advanced Excel and VBA solutions to enterprise RPA, he helps companies automate business processes while keeping costs under control.</em></p>
