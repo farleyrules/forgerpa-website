@@ -31,8 +31,7 @@ const gscVerificationToken = import.meta.env.PUBLIC_GSC_VERIFICATION_TOKEN;
 const googleAdsConversionId = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_ID;
 
 // --- JSON-LD Organization schema (site-wide) ---
-// NOTE: `sameAs` is intentionally empty until a verified Forge RPA profile URL
-// (e.g. the LinkedIn company page) is confirmed. Do not populate with a guessed URL.
+// NOTE: `sameAs` lists verified Forge RPA profile URLs (the LinkedIn company page).
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -80,9 +79,8 @@ const organizationSchema = {
     jobTitle: 'President and Founder',
     description: '30 years in finance and accounting; Certified UiPath Developer.',
   },
-  // `sameAs` is intentionally empty until the company LinkedIn URL (or another
-  // verified Forge RPA profile) is confirmed. Do not populate with a guessed URL.
-  sameAs: [] as string[],
+  // Verified Forge RPA profiles. Add other official channels (X, etc.) here as they launch.
+  sameAs: ['https://www.linkedin.com/company/forge-rpa'] as string[],
 };
 
 // --- JSON-LD ProfessionalService (a LocalBusiness subtype) for local/map signals.
