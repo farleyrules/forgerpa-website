@@ -42,7 +42,7 @@ readingTime: "9 min"
 
 <h3>Phase 2: Solution Design (2-3 weeks)</h3>
 
-<p>An automation architect reviews the documentation and decides which technology fits. UiPath for desktop applications? Power Automate for Office 365 workflows? Python for data processing? Each choice has implications for cost, maintenance, and scalability.</p>
+<p>An automation specialist reviews the documentation and decides which technology fits. UiPath for desktop applications? Power Automate for Office 365 workflows? Python for data processing? Each choice has implications for cost, maintenance, and scalability.</p>
 
 <h3>Phase 3: Development and Testing (4-8 weeks)</h3>
 
