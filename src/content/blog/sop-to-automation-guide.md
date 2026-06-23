@@ -179,7 +179,7 @@ readingTime: "9 min"
 
 <p>Want expert eyes on your evaluation? We offer a complimentary <a href="https://forgerpa.com/services/automation-assessment">SOP-to-Automation Assessment</a> where we analyze your top processes and deliver a prioritized roadmap with timeline and ROI estimates.</p>
 
-<p><a href="/book">Book Your Free Assessment →</a></p>
+<p><a href="/contact?from=blog-sop-to-automation-guide">Book Your Free Assessment →</a></p>
 
 <hr />
 

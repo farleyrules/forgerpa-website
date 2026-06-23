@@ -138,7 +138,7 @@ readingTime: "9 min"
 
 <p>Want to identify which of your month-end close tasks will deliver the fastest payback? We offer a free <a href="https://forgerpa.com/services/automation-assessment">Close Process Assessment</a> where we map your close timeline, identify bottlenecks, and recommend a phased automation roadmap.</p>
 
-<p><a href="/book">Book Your Free Close Assessment →</a></p>
+<p><a href="/contact?from=blog-month-end-close-automation">Book Your Free Close Assessment →</a></p>
 
 <hr />
 

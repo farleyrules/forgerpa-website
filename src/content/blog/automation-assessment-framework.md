@@ -205,7 +205,7 @@ readingTime: "10 min"
 
 <p>No sales pitch. Just data-driven recommendations from a finance veteran who has done this hundreds of times.</p>
 
-<p><a href="/book">Get Your Free Assessment →</a></p>
+<p><a href="/contact?from=blog-automation-assessment-framework">Get Your Free Assessment →</a></p>
 
 <hr />
 

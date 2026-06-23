@@ -55,4 +55,4 @@ readingTime: "7 min"
 
 <hr />
 
-<p><strong>Ready to explore this for your team?</strong> <a href="/book">Book a discovery call →</a></p>
+<p><strong>Ready to explore this for your team?</strong> <a href="/contact?from=blog-ar-reconciliation-automation">Book a discovery call →</a></p>

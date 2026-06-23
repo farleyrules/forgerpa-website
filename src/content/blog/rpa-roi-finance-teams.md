@@ -127,7 +127,7 @@ readingTime: "8 min"
 
 <p>Want to know what your top finance processes could save with automation? I offer a free 30-minute discovery call where we identify your three highest-ROI automation candidates and estimate payback periods using real numbers.</p>
 
-<p><a href="/book">Schedule a Discovery Call →</a></p>
+<p><a href="/contact?from=blog-rpa-roi-finance-teams">Schedule a Discovery Call →</a></p>
 
 <p>Or, if you want a structured way to find your highest-ROI candidates, our <a href="https://forgerpa.com/services/automation-assessment">Automation Assessment</a> applies the same framework I have used across hundreds of automation projects. If you are weighing the close specifically, the FAQ on <a href="/faq/automate-month-end-close-cost">what it costs to automate month-end close</a> walks through what drives the price and the payback.</p>
 
