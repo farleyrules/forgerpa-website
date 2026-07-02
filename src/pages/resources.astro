@@ -30,6 +30,7 @@ const downloads = {
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Month-End Close Checklist — UNGATED by design (open reach). -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📊</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Month-End Close Optimization Checklist</h3>
@@ -48,6 +49,7 @@ const downloads = {
           </div>
         </div>
 
+        <!-- 5 High-ROI Finance Processes — GATED behind an email opt-in. -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">🎯</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">5 High-ROI Finance Processes to Automate</h3>
@@ -55,18 +57,38 @@ const downloads = {
             A concise guide covering five process families that routinely produce strong returns when data and ownership are
             aligned: AP match, reconciliations, close packs, intercompany support, and operational reporting pulls.
           </p>
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <span class="text-sm text-gray-500">PDF guide</span>
-            <a
-              href={downloads.guide}
-              download
-              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+          <div
+            class="lead-magnet-gate"
+            data-asset="five-roi-processes"
+            data-download={downloads.guide}
+            data-filename="forgerpa-5-high-roi-finance-processes.pdf"
+          >
+            <span class="mb-3 block text-sm text-gray-500">PDF guide</span>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Work Email</span>
+              <input
+                type="email"
+                name="email"
+                autocomplete="email"
+                required
+                placeholder="you@company.com"
+                class="lead-magnet-email mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+              />
+            </label>
+            <p class="lead-magnet-error hidden mt-1 text-xs text-red-600"></p>
+            <button
+              type="button"
+              class="lead-magnet-submit mt-4 inline-flex w-full items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
             >
-              Download Guide
-            </a>
+              Email Me the Guide
+            </button>
+            <p class="mt-3 text-xs text-gray-500">
+              We will send you the Forge newsletter along with your download. Unsubscribe anytime.
+            </p>
           </div>
         </div>
 
+        <!-- Finance Automation ROI Calculator — GATED behind an email opt-in. -->
         <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:border-amber transition-colors">
           <div class="text-amber text-4xl mb-6">📈</div>
           <h3 class="text-2xl font-bold text-charcoal mb-3">Finance Automation ROI Calculator</h3>
@@ -75,23 +97,42 @@ const downloads = {
             annual run-state costs. Outputs monthly and annual labor savings, year-one net, and simple payback on
             implementation.
           </p>
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <span class="text-sm text-gray-500">Microsoft Excel (.xlsx)</span>
-            <a
-              href={downloads.roi}
-              download
-              class="inline-flex items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors"
+          <div
+            class="lead-magnet-gate"
+            data-asset="roi-calculator"
+            data-download={downloads.roi}
+            data-filename="forgerpa-finance-automation-roi-calculator.xlsx"
+          >
+            <span class="mb-3 block text-sm text-gray-500">Microsoft Excel (.xlsx)</span>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Work Email</span>
+              <input
+                type="email"
+                name="email"
+                autocomplete="email"
+                required
+                placeholder="you@company.com"
+                class="lead-magnet-email mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+              />
+            </label>
+            <p class="lead-magnet-error hidden mt-1 text-xs text-red-600"></p>
+            <button
+              type="button"
+              class="lead-magnet-submit mt-4 inline-flex w-full items-center justify-center px-6 py-3 bg-amber hover:bg-amber-dark text-charcoal font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
             >
-              Get the Calculator
-            </a>
+              Email Me the Calculator
+            </button>
+            <p class="mt-3 text-xs text-gray-500">
+              We will send you the Forge newsletter along with your download. Unsubscribe anytime.
+            </p>
           </div>
         </div>
       </div>
 
       <div class="mt-12 text-center">
         <p class="text-gray-600 mb-4">
-          All files above are free, instant, and <strong class="text-charcoal">ungated</strong>. Use them on your own timeline.
-          When you are ready to discuss priorities, book a discovery call, we will use the contact details you provide in Cal.com.
+          The checklist is free and instant. The guide and calculator are yours the moment you enter your email; we
+          add you to the Forge newsletter so the follow-up finds you, and you can unsubscribe at any time.
         </p>
         <p class="text-sm text-gray-500">
           These tools were developed from real finance operations experience and refined through our proprietary framework.
@@ -111,3 +152,8 @@ const downloads = {
     ctaLink="/contact"
   />
 </PageLayout>
+
+<!-- Lead-magnet email gate — Astro/Vite bundles this TypeScript module. -->
+<script>
+  import '../lib/lead-magnet-gate.ts';
+</script>
