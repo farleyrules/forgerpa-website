@@ -5,14 +5,16 @@ import CTASection from '../../components/CTASection.astro';
 // Sensible defaults so the calculator shows a real result the moment the page
 // loads. These match the worked example in the page copy:
 //   40 hrs x $50 x 90% adoption = $1,800/mo, $21,600/yr
-//   minus $15,000 implementation minus $2,000 run-state = $4,600 year-one net
+//   minus $15,000 implementation minus $0 run-state = $6,600 year-one net
 //   payback = $15,000 / $1,800 = ~8.3 months
+//   (Run-state defaults to $0: Forge builds are client-owned code with minimal
+//    licensing and optional hosting, so ongoing cost is at or near zero.)
 const defaults = {
   hoursPerMonth: 40,
   loadedHourlyCost: 50,
   adoptionPct: 90,
   implementationSpend: 15000,
-  annualRunState: 2000,
+  annualRunState: 0,
 } as const;
 ---
 
@@ -68,7 +70,7 @@ const defaults = {
 
             <label class="block">
               <span class="text-sm font-semibold text-charcoal">Adoption Rate (percent)</span>
-              <span class="block text-xs text-gray-500 mb-1">Share of the eligible work that actually runs through the automation. 100 is rare in year one.</span>
+              <span class="block text-xs text-gray-500 mb-1">Share of the eligible work that actually runs through the automation. Well-scoped builds often reach 100. Size it to how much of the task will really flow through.</span>
               <input
                 type="number"
                 id="roi-adoption"
@@ -97,7 +99,7 @@ const defaults = {
 
             <label class="block">
               <span class="text-sm font-semibold text-charcoal">Annual Run-State Cost (USD)</span>
-              <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running: hosting, licenses, and light maintenance.</span>
+              <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. With Forge this is usually at or near zero: you own the code, licensing is minimal, and hosting is optional if you want us to run it.</span>
               <input
                 type="number"
                 id="roi-runstate"
@@ -240,7 +242,7 @@ const defaults = {
       rate: 50,
       adoption: 90,
       implementation: 15000,
-      runstate: 2000,
+      runstate: 0,
     };
 
     // Parse a field to a safe, non-negative number. Blank / NaN / negative all
