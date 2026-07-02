@@ -220,7 +220,7 @@ const faqs = [
 
       <p class="text-center text-sm text-gray-500 mt-8">
         Questions about the program? Email
-        <a href="mailto:david@forgerpa.com" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">david@forgerpa.com</a>.
+        <a href="mailto:sales@forgerpa.com" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">sales@forgerpa.com</a>.
       </p>
     </div>
   </section>
@@ -312,7 +312,7 @@ const faqs = [
       } catch (err) {
         console.error('[referral] fetch failed:', err);
         serverError =
-          "Couldn't reach us just now. If you're on a privacy browser, try lowering shields for sales.forgerpa.com, or email david@forgerpa.com.";
+          "Couldn't reach us just now. If you're on a privacy browser, try lowering shields for sales.forgerpa.com, or email sales@forgerpa.com.";
       }
 
       if (response && !serverError) {
@@ -321,7 +321,7 @@ const faqs = [
           parsed = await response.json();
         } catch (err) {
           console.error('[referral] response parse failed:', err);
-          serverError = `We hit a snag (HTTP ${response.status}). Please try again, or email david@forgerpa.com.`;
+          serverError = `We hit a snag (HTTP ${response.status}). Please try again, or email sales@forgerpa.com.`;
         }
         if (parsed && !(response.ok && parsed.ok)) {
           serverError = (parsed && parsed.error) || `Submission failed (HTTP ${response.status}). Please try again.`;
