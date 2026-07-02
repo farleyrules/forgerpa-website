@@ -4,7 +4,10 @@ import CTASection from '../../components/CTASection.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  // Exclude draft posts (the content-engine writes anchor-post skeletons as
+  // drafts): a draft produces no route until its prose is written and
+  // `draft: false` is set.
+  const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },

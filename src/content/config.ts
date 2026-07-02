@@ -31,6 +31,13 @@ const blogCollection = defineCollection({
     publishDate: z.string().or(z.date()).optional(),
     author: z.string().optional(),
     tags: z.array(z.string()).optional().default([]),
+    // Optional slug echo written by the content-engine generator. Astro derives
+    // the real route slug from the filename; this is informational only.
+    slug: z.string().optional(),
+    // Draft flag. The weekly content-engine writes anchor-post skeletons as
+    // drafts; a draft is excluded from the blog listing and produces no route
+    // until the prose is written and this is flipped to false.
+    draft: z.boolean().optional().default(false),
   }),
 });
 
