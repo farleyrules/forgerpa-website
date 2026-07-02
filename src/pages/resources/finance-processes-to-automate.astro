@@ -1,0 +1,174 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Five process families, each mapped to the matching Forge service page so a
+// reader who recognizes their pain can go straight to how we build for it.
+// NOTE ON PUNCTUATION: the source guide used em dashes and a "30-50%" range with
+// an en dash. This page is authored with ZERO em or en dashes: hyphens for
+// ranges, periods and colons for breaks.
+const processes = [
+  {
+    n: 1,
+    title: 'Accounts Payable: Intake, Coding, and Three-Way Match',
+    why: 'High transaction volume, structured data (PO, receipt, invoice), and clear exception paths. That combination is where automation pays off first.',
+    savings: 'Dozens to hundreds of hours per month in larger AP teams when match and follow-up are still manual.',
+    approach: 'Stabilize the matching rules and the exception taxonomy, automate the happy path, and queue exceptions for specialists.',
+    caveat: 'Vendor master quality and tax or VAT complexity can dominate the effort. Fix the data before scaling bots.',
+    serviceHref: '/services/accounts-payable-automation',
+    serviceLabel: 'See How We Automate Accounts Payable',
+  },
+  {
+    n: 2,
+    title: 'Bank and GL Reconciliations',
+    why: 'Recurring, deadline-driven, repetitive tie-outs across many accounts. The work is high-volume and rules-based.',
+    savings: 'Material close compression and fewer late-night corrections.',
+    approach: 'Standardize the supporting workpapers, automate download, matching, and variance narratives where it is safe to, and escalate the true breaks.',
+    caveat: 'One-off restructuring or new accounts need controlled onboarding into the automation library.',
+    serviceHref: '/services/ap-reconciliation-assessment',
+    serviceLabel: 'See the AP and Reconciliation Assessment',
+  },
+  {
+    n: 3,
+    title: 'Month-End Journal Entry and Consolidation Support Packs',
+    why: 'The same calendar-driven steps every period, with heavy copy-paste between the ERP and Excel.',
+    savings: 'Often 30 to 50 percent or more of manual pack time when reporting is template-driven.',
+    approach: 'Treat packs as products: fixed inputs, fixed outputs, explicit validation checks, and controlled overrides for the judgment lines.',
+    caveat: 'Spreadsheet archaeology should be replaced with governed models, not more hidden formulas.',
+    serviceHref: '/services/month-end-close-assessment',
+    serviceLabel: 'See the Month-End Close Assessment',
+  },
+  {
+    n: 4,
+    title: 'Intercompany Billings, Allocations, and Eliminations Support',
+    why: 'The rules repeat across entities, and the errors are painful to unwind.',
+    savings: 'Fewer reversals and a faster intercompany true-up during close.',
+    approach: 'Document the entity logic once, automate calculation and posting where policy is stable, and keep the audit trail explicit.',
+    caveat: 'Legal entity changes and tax-driven adjustments need governance gates.',
+    serviceHref: '/services/month-end-close-assessment',
+    serviceLabel: 'See the Month-End Close Assessment',
+  },
+  {
+    n: 5,
+    title: 'Management and Operational Reporting from ERP Subledgers',
+    why: 'Reporting pulls are constant, and many are structured pivots and reconciliations to a single source of truth.',
+    savings: 'Frees FP&A and accounting from repetitive pulls into consistent dashboards.',
+    approach: 'Lock the definitions (a metrics dictionary), automate the extract-transform-load into reporting models, and add reconciliation back to the GL.',
+    caveat: 'Bad mappings multiply. Invest in data definitions before visual polish.',
+    serviceHref: '/services/data-lake',
+    serviceLabel: 'See How a Data Lake Consolidates Reporting',
+  },
+];
+---
+
+<PageLayout
+  title="Five Finance Processes to Automate First"
+  description="A plain guide to the five finance and accounting processes that most often produce strong returns from automation: AP match, reconciliations, month-end packs, intercompany, and operational reporting. Proven in finance, applicable to other high-volume operational work."
+  heroTitle="Five Finance Processes to Automate First"
+  heroSubtitle="Not every process is worth automating. These five families come up again and again because the volume is high, the data is structured, and the exceptions are manageable. Here is why each one pays off, what it typically saves, how we approach it, and the honest caveats. Proven in finance, and applicable to other high-volume operational work."
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/contact?from=finance-processes"
+>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Intro -->
+      <div class="mb-14">
+        <p class="text-lg text-gray-700 leading-relaxed">
+          The fastest way to waste an automation budget is to automate the wrong thing well. The processes below share
+          three traits that make them good first candidates: high, repeating volume; structured inputs the software can
+          read; and exception paths a person can still own. Where those three line up, the return tends to be real. Where
+          they do not, no amount of tooling saves you.
+        </p>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+          Read each one against your own environment. The savings figures are ranges from real finance teams, not a
+          promise. Your actuals depend on your starting baseline, your data quality, and how much of the work actually
+          flows through the automation once it is live.
+        </p>
+      </div>
+
+      <!-- The five processes -->
+      <div class="space-y-8">
+        {processes.map((p) => (
+          <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:border-amber transition-colors">
+            <div class="flex items-start gap-4">
+              <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-amber">
+                <span class="font-bold text-charcoal">{p.n}</span>
+              </div>
+              <div class="min-w-0">
+                <h2 class="text-2xl font-bold text-charcoal">{p.title}</h2>
+              </div>
+            </div>
+
+            <dl class="mt-6 space-y-4">
+              <div>
+                <dt class="text-sm font-semibold uppercase tracking-wide text-amber-dark">Why the ROI Is High</dt>
+                <dd class="mt-1 text-gray-700 leading-relaxed">{p.why}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold uppercase tracking-wide text-amber-dark">Typical Savings</dt>
+                <dd class="mt-1 text-gray-700 leading-relaxed">{p.savings}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold uppercase tracking-wide text-amber-dark">How We Approach It</dt>
+                <dd class="mt-1 text-gray-700 leading-relaxed">{p.approach}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold uppercase tracking-wide text-amber-dark">The Honest Caveat</dt>
+                <dd class="mt-1 text-gray-700 leading-relaxed">{p.caveat}</dd>
+              </div>
+            </dl>
+
+            <a
+              href={p.serviceHref}
+              class="mt-6 inline-flex items-center gap-1.5 font-semibold text-amber-dark hover:text-amber"
+            >
+              {p.serviceLabel}
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <!-- How to use this list -->
+      <div class="mt-14 bg-amber/5 border-l-4 border-amber rounded-r-xl p-6 sm:p-8">
+        <h2 class="text-2xl font-bold text-charcoal mb-4">How to Use This List</h2>
+        <ol class="space-y-3 text-gray-700 leading-relaxed">
+          <li class="flex gap-3">
+            <span class="font-bold text-amber-dark">1.</span>
+            <span>Shortlist the processes that match the patterns above in your own environment, not in the abstract.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="font-bold text-amber-dark">2.</span>
+            <span>
+              Size the hours, loaded cost, and adoption conservatively. Our
+              <a href="/tools/roi-calculator" class="underline text-amber-dark hover:text-amber font-semibold">free ROI calculator</a>
+              turns those inputs into monthly savings, year-one net, and simple payback in a few seconds.
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="font-bold text-amber-dark">3.</span>
+            <span>Book a discovery call if you want a second opinion on sequencing before you commit a budget.</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Honest closing note -->
+      <div class="mt-10 border-t border-gray-200 pt-6">
+        <p class="text-sm text-gray-500 leading-relaxed">
+          This guide is provided for planning purposes. It is not legal, tax, or investment advice. The savings ranges
+          reflect what finance teams commonly see with a well-built automation and clean data going in. Your results
+          depend on your process, your systems, and your team.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Not Sure Which One to Start With?"
+    subtext="Book a free 30-minute discovery call. We will look at your close, your AP, and your reporting, and tell you honestly where the first win is. You leave with a clearer picture even if we never work together."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact?from=finance-processes"
+  />
+</PageLayout>
