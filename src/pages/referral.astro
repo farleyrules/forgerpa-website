@@ -1,0 +1,347 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+
+// The public referral intake lives in the sales cockpit. This page POSTs the
+// form to it cross-origin (same pattern as the /contact discovery form).
+const COCKPIT_ORIGIN = 'https://sales.forgerpa.com';
+
+const title = 'Referral Program';
+const description =
+  'Know a finance or operations team buried in manual work? Refer them to Forge RPA. We take good care of the people who send business our way.';
+const heroTitle = 'Refer a Team We Can Help';
+const heroSubtitle =
+  "If you know a finance or operations team drowning in manual work, send them our way. We do the work; you get taken care of.";
+
+const steps = [
+  {
+    n: '1',
+    title: 'Send Us a Name',
+    body: 'Tell us who to talk to and how to reach them. It takes about a minute.',
+  },
+  {
+    n: '2',
+    title: 'We Take It From Here',
+    body: 'We reach out, understand their situation, and scope the automation that would actually help. No pressure on them, and none on you.',
+  },
+  {
+    n: '3',
+    title: 'You Get Taken Care Of',
+    body: 'If they become a client and pay their first invoice, we take care of you. See the reward section below.',
+  },
+];
+
+const goodFits = [
+  'Finance or accounting teams doing manual data entry, reconciliation, or reporting by hand.',
+  'Controllers or CFOs frustrated with how long month-end close takes.',
+  'Companies evaluating or fighting with RPA tools (UiPath, Power Automate, Automation Anywhere).',
+  'Growing companies whose processes never scaled with headcount.',
+  'Any team spending ten or more hours a week on repetitive spreadsheet work.',
+];
+
+const faqs = [
+  {
+    q: 'When do I get taken care of?',
+    a: 'After the team you referred signs an engagement and pays their first invoice. That protects everyone: we only reward a referral once it has actually become paying work.',
+  },
+  {
+    q: 'Is there a limit to how many people I can refer?',
+    a: 'No. Refer as many teams as you like.',
+  },
+  {
+    q: 'What if you are already talking to them?',
+    a: 'First referrer wins. We track by company and referral date, so if you are the first to send them our way, it counts.',
+  },
+  {
+    q: 'Do I have to be a current client?',
+    a: 'No. Clients, partners, former colleagues, anyone. If you know a team we can help, we want to hear from you.',
+  },
+  {
+    q: 'How will I know what happened?',
+    a: 'We will keep you posted as your referral moves along: received, contacted, and if it signs, paid.',
+  },
+];
+---
+
+<PageLayout title={title} description={description} heroTitle={heroTitle} heroSubtitle={heroSubtitle} heroCtaLink="#referral-form" heroCta="Refer Someone">
+  <!-- ===================== How It Works ===================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-charcoal text-center mb-4">How It Works</h2>
+      <p class="text-lg text-gray-600 text-center max-w-2xl mx-auto mb-14">
+        Three steps. You make the introduction; we do the rest.
+      </p>
+      <div class="grid gap-8 md:grid-cols-3">
+        {steps.map((step) => (
+          <div class="relative rounded-2xl border border-gray-200 bg-slate-light p-8">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber text-xl font-bold text-charcoal mb-5">
+              {step.n}
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-3">{step.title}</h3>
+            <p class="text-gray-700 leading-relaxed m-0">{step.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Reward =====================
+       APPROVAL BLOCK (reward terms): the specific reward amounts and
+       percentages below are carried VERBATIM from the original referral page
+       spec (docs/content/referral-page-spec.md). They have NOT been reviewed
+       by David for this rebuild. If they are wrong, change this section only.
+       The rest of the page reads fine without a specific number (the hero and
+       steps just say "we take care of the people who refer us"). -->
+  <section class="py-20 lg:py-28 bg-charcoal">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">The Reward</h2>
+      <p class="text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto mb-10">
+        We take good care of the people who send business our way. When a team you refer
+        signs and pays their first invoice, here is how that works:
+      </p>
+      <div class="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto text-left">
+        <div class="rounded-2xl border border-amber/30 bg-charcoal-light p-7">
+          <p class="text-2xl font-bold text-amber mb-2">$500 to $1,000</p>
+          <p class="text-gray-300 m-0">Flat reward per signed client, based on the size of the engagement.</p>
+        </div>
+        <div class="rounded-2xl border border-amber/30 bg-charcoal-light p-7">
+          <p class="text-2xl font-bold text-amber mb-2">Or 5% to 10%</p>
+          <p class="text-gray-300 m-0">Of the first engagement's revenue, by agreement, whichever works out better.</p>
+        </div>
+      </div>
+      <p class="text-sm text-gray-400 mt-8 max-w-2xl mx-auto">
+        No cap on how many teams you refer. Paid after the referred client pays their first
+        invoice, which keeps it clean for everyone.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== Who Makes a Good Referral ===================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-charcoal text-center mb-4">Who Makes a Good Referral?</h2>
+      <p class="text-lg text-gray-600 text-center max-w-2xl mx-auto mb-12">
+        You know the pattern when you see it. Manual work that should not still be manual.
+      </p>
+      <ul class="space-y-4 max-w-3xl mx-auto">
+        {goodFits.map((fit) => (
+          <li class="flex items-start gap-3">
+            <svg class="mt-1 h-5 w-5 flex-shrink-0 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-700 leading-relaxed">{fit}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== Referral Form ===================== -->
+  <section id="referral-form" class="py-20 lg:py-28 bg-slate-light">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-charcoal text-center mb-4">Refer Someone</h2>
+      <p class="text-lg text-gray-600 text-center mb-10">
+        A few quick details and we will take it from there. We keep everything confidential.
+      </p>
+
+      <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm">
+        <!-- Form body: hidden after a successful submit. -->
+        <div id="referral-form-body">
+          <p class="text-sm font-semibold text-charcoal uppercase tracking-wide mb-4">About You</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Your Name *</span>
+              <input type="text" id="ref-referrerName" autocomplete="name" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Your Email *</span>
+              <input type="email" id="ref-referrerEmail" autocomplete="email" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+          </div>
+
+          <p class="text-sm font-semibold text-charcoal uppercase tracking-wide mt-8 mb-4">Who You're Referring</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Their Name *</span>
+              <input type="text" id="ref-refereeName" required class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Their Company <span class="font-normal text-gray-500">(optional)</span></span>
+              <input type="text" id="ref-refereeCompany" autocomplete="organization" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Their Email</span>
+              <input type="email" id="ref-refereeEmail" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-semibold text-charcoal">Their LinkedIn URL</span>
+              <input type="url" id="ref-refereeLinkedIn" placeholder="https://www.linkedin.com/in/…" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber" />
+            </label>
+          </div>
+          <p class="mt-2 text-xs text-gray-500">Give us at least one way to reach them: an email or a LinkedIn URL.</p>
+
+          <label class="block mt-6">
+            <span class="text-sm font-semibold text-charcoal">Why They'd Benefit <span class="font-normal text-gray-500">(optional)</span></span>
+            <textarea id="ref-note" rows="3" maxlength="4000" placeholder="A sentence or two on the manual work they'd most want to hand off. Context helps us come prepared." class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"></textarea>
+          </label>
+
+          <!-- Honeypot: hidden from real users; a filled value marks a bot. -->
+          <div class="absolute left-[-9999px]" aria-hidden="true">
+            <label>Website<input type="text" id="ref-website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <p id="ref-error" class="hidden mt-5 text-sm text-red-600"></p>
+
+          <p class="mt-6 text-xs text-gray-500 m-0">
+            By submitting, you agree to our
+            <a href="/terms" target="_blank" rel="noopener" class="underline decoration-1 underline-offset-2 hover:text-charcoal">Terms</a>
+            and
+            <a href="/privacy" target="_blank" rel="noopener" class="underline decoration-1 underline-offset-2 hover:text-charcoal">Privacy Policy</a>.
+          </p>
+
+          <div class="mt-6">
+            <button type="button" id="ref-submit" class="inline-flex items-center justify-center gap-2 bg-amber text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-amber-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              Submit Referral
+            </button>
+          </div>
+        </div>
+
+        <!-- Thank-you state: revealed on a successful submit. -->
+        <div id="referral-confirmation" class="hidden text-center py-6">
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber/15">
+            <svg class="h-7 w-7 text-amber-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-charcoal mb-3">Thank You. We Have It.</h3>
+          <p class="text-gray-700 leading-relaxed max-w-md mx-auto m-0">
+            We will reach out to the person you referred and keep you posted as it moves along.
+            If you think of anyone else, come back any time.
+          </p>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-gray-500 mt-8">
+        Questions about the program? Email
+        <a href="mailto:david@forgerpa.com" class="font-semibold text-amber-700 underline decoration-1 underline-offset-2 hover:text-amber-800">david@forgerpa.com</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-charcoal text-center mb-12">Common Questions</h2>
+      <div class="space-y-8">
+        {faqs.map((faq) => (
+          <div>
+            <h3 class="text-lg font-bold text-charcoal mb-2">{faq.q}</h3>
+            <p class="text-gray-700 leading-relaxed m-0">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<!-- Referral form submission. Astro/Vite serves this inline script; the POST
+     mirrors the /contact discovery form's cross-origin call to the cockpit. -->
+<script define:vars={{ COCKPIT_ORIGIN }}>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const submitBtn = $('ref-submit');
+    if (!submitBtn) return;
+
+    function setError(msg) {
+      const el = $('ref-error');
+      if (!el) return;
+      if (msg) {
+        el.textContent = msg;
+        el.classList.remove('hidden');
+      } else {
+        el.textContent = '';
+        el.classList.add('hidden');
+      }
+    }
+
+    function isEmail(s) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+    }
+
+    async function submit() {
+      const referrerName = ($('ref-referrerName')?.value || '').trim();
+      const referrerEmail = ($('ref-referrerEmail')?.value || '').trim();
+      const refereeName = ($('ref-refereeName')?.value || '').trim();
+      const refereeCompany = ($('ref-refereeCompany')?.value || '').trim();
+      const refereeEmail = ($('ref-refereeEmail')?.value || '').trim();
+      const refereeLinkedIn = ($('ref-refereeLinkedIn')?.value || '').trim();
+      const note = ($('ref-note')?.value || '').trim();
+      const website = ($('ref-website')?.value || '').trim();
+
+      setError(null);
+
+      if (!referrerName) return setError('Please enter your name.');
+      if (!referrerEmail) return setError('Please enter your email.');
+      if (!isEmail(referrerEmail)) return setError('That email does not look right.');
+      if (!refereeName) return setError("Please enter the name of the person you're referring.");
+      if (refereeEmail && !isEmail(refereeEmail)) return setError("The referred contact's email does not look right.");
+      if (!refereeEmail && !refereeLinkedIn) {
+        return setError('Give us at least an email or a LinkedIn URL for the person you are referring.');
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      const payload = {
+        referrerName,
+        referrerEmail,
+        refereeName,
+        refereeCompany: refereeCompany || undefined,
+        refereeEmail: refereeEmail || undefined,
+        refereeLinkedIn: refereeLinkedIn || undefined,
+        note: note || undefined,
+        website: website || undefined,
+      };
+
+      let response = null;
+      let serverError = null;
+      try {
+        response = await fetch(`${COCKPIT_ORIGIN}/api/warm-intake/referral`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } catch (err) {
+        console.error('[referral] fetch failed:', err);
+        serverError =
+          "Couldn't reach us just now. If you're on a privacy browser, try lowering shields for sales.forgerpa.com, or email david@forgerpa.com.";
+      }
+
+      if (response && !serverError) {
+        let parsed = null;
+        try {
+          parsed = await response.json();
+        } catch (err) {
+          console.error('[referral] response parse failed:', err);
+          serverError = `We hit a snag (HTTP ${response.status}). Please try again, or email david@forgerpa.com.`;
+        }
+        if (parsed && !(response.ok && parsed.ok)) {
+          serverError = (parsed && parsed.error) || `Submission failed (HTTP ${response.status}). Please try again.`;
+        }
+      }
+
+      if (serverError) {
+        setError(serverError);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Referral';
+        return;
+      }
+
+      // Success: swap the form body for the thank-you state.
+      $('referral-form-body')?.classList.add('hidden');
+      $('referral-confirmation')?.classList.remove('hidden');
+    }
+
+    submitBtn.addEventListener('click', submit);
+  })();
+</script>
