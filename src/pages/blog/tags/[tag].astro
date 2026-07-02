@@ -4,7 +4,9 @@ import BlogPostCard from '../../../components/BlogPostCard.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  // Drafts are excluded so a not-yet-written anchor skeleton never shows on a
+  // tag page or mints a tag route of its own.
+  const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
   const allTags = [...new Set(posts.flatMap((post) => post.data.tags))];
 
   return allTags.map((tag) => ({
