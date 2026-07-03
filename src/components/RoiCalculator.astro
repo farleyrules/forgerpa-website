@@ -1,0 +1,520 @@
+---
+/**
+ * Reusable finance-automation ROI calculator.
+ *
+ * One source of truth for the labor-savings model used both on the standalone
+ * /tools/roi-calculator page (full mode, with the scenario selector) and embedded
+ * inline on the finance services pages (compact mode, pre-set to one scenario).
+ *
+ * Self-scoping: every instance gets a unique `uid`. All element ids are
+ * namespaced with that uid and the inline script resolves its own root via a
+ * `data-roi-root` attribute, so two calculators on one page never share ids or
+ * cross-wire their event handlers. The script is emitted once per instance with
+ * its uid injected through define:vars.
+ *
+ * Model (matches the copy on the page):
+ *   monthly savings   = hours x loaded rate x (adoption / 100)
+ *   annual savings    = monthly x 12
+ *   cumulative net(N) = N x annual savings - implementation - N x run-state
+ *   payback (months)  = implementation / monthly savings
+ * Run-state defaults to $0 per the Forge model: client-owned code, minimal
+ * licensing, optional hosting, so ongoing cost is at or near zero.
+ */
+interface Props {
+  /** Which scenario pre-fills the inputs + descriptor. */
+  scenario?: 'general' | 'ap' | 'reconciliations' | 'month-end-close';
+  /**
+   * Compact embed mode: hides the preset selector and the optional email
+   * capture, and trims the outer chrome so the calculator sits cleanly inside a
+   * services-page section. Defaults to false (full standalone mode).
+   */
+  compact?: boolean;
+  /**
+   * Whether to render the "What Are You Automating?" preset selector. Defaults
+   * to the inverse of `compact` (shown in full mode, hidden when compact) but can
+   * be overridden explicitly.
+   */
+  showPresetSelector?: boolean;
+  /** Show the optional soft email capture. Defaults to full (non-compact) mode. */
+  showEmailCapture?: boolean;
+}
+
+const {
+  scenario = 'general',
+  compact = false,
+  showPresetSelector = !compact,
+  showEmailCapture = !compact,
+} = Astro.props;
+
+// Scenario presets. Each pre-fills the five inputs with conservative, defensible
+// numbers and sets a one-line descriptor. Numbers are anchored to the ranges
+// published on the matching services pages, held at the conservative end so the
+// case is easy to defend. Run-state stays 0 across the board per the Forge model.
+// This is the single source shared by the frontmatter (first paint) and the
+// inline script (live recompute + selector), so the two can never drift.
+const SCENARIOS = {
+  general: {
+    hours: 40,
+    rate: 50,
+    adoption: 90,
+    implementation: 15000,
+    runstate: 0,
+    note: 'A general finance or operations automation. Adjust every field to your own process. Run-state defaults to zero because Forge builds are code you own, with minimal licensing and optional hosting.',
+  },
+  ap: {
+    hours: 40,
+    rate: 60,
+    adoption: 85,
+    implementation: 18000,
+    runstate: 0,
+    note: 'Accounts payable automation for a single-entity team: invoice capture, three-way match, approval routing, and posting. Conservative starting point of about 40 hours a month recovered at a blended loaded cost. Adjust to your invoice volume and approval complexity.',
+  },
+  reconciliations: {
+    hours: 35,
+    rate: 65,
+    adoption: 85,
+    implementation: 15000,
+    runstate: 0,
+    note: 'Reconciliation automation: exception routing, match logic, and the lookups your team repeats every close. Conservative starting point of about 35 hours a month recovered. Adjust to your account count and exception rate.',
+  },
+  'month-end-close': {
+    hours: 40,
+    rate: 85,
+    adoption: 85,
+    implementation: 20000,
+    runstate: 0,
+    note: 'Month-end close automation: manual journal entries, reconciliations, and intercompany work rebuilt each cycle. Conservative starting point of about 40 hours a month of senior-accountant time at a blended loaded cost. Adjust to your close length and entity count.',
+  },
+} as const;
+
+// Resolve the starting scenario for first paint. Unknown values fall back to
+// general. The inline script may still override this from a ?scenario= URL param
+// on the standalone page.
+const startKey = (Object.prototype.hasOwnProperty.call(SCENARIOS, scenario)
+  ? scenario
+  : 'general') as keyof typeof SCENARIOS;
+const start = SCENARIOS[startKey];
+
+// Unique instance id so multiple calculators on one page never collide.
+const uid = 'roi-' + Math.random().toString(36).slice(2, 10);
+
+// Serialize the presets for the inline script (define:vars can only pass simple
+// serializable values, which this object is).
+const scenariosJson = JSON.stringify(SCENARIOS);
+---
+
+<div data-roi-root={uid} class={compact ? '' : 'w-full'}>
+
+  {showPresetSelector && (
+    <!-- Scenario preset selector: pre-fills the inputs for a common use case.
+         A services page can deep-link with ?scenario=ap|reconciliations|month-end-close
+         to open this calculator already configured. -->
+    <div class="mb-8 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <label class="block">
+        <span class="text-lg font-bold text-charcoal">What Are You Automating?</span>
+        <span class="block text-sm text-gray-600 mt-1 mb-3">
+          Pick a starting point and we will pre-fill conservative numbers you can adjust. Every scenario is a starting estimate, not a quote.
+        </span>
+        <select
+          id={`${uid}-scenario`}
+          class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-charcoal focus:border-amber focus:ring-amber sm:max-w-md"
+        >
+          <option value="general">General Finance or Ops Automation</option>
+          <option value="ap">Accounts Payable Automation</option>
+          <option value="reconciliations">Reconciliations</option>
+          <option value="month-end-close">Month-End Close</option>
+        </select>
+      </label>
+      <p id={`${uid}-scenario-note`} class="mt-3 text-sm text-gray-600 leading-relaxed">{start.note}</p>
+    </div>
+  )}
+
+  <!-- Calculator card: inputs on the left, live outputs on the right. -->
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+
+    <!-- ----- Inputs ----- -->
+    <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <h3 class="text-2xl font-bold text-charcoal mb-2">Your Inputs</h3>
+      <p class="text-sm text-gray-600 mb-6">
+        Size everything conservatively. It is easier to be pleasantly surprised than to defend an inflated case.
+      </p>
+
+      <div class="space-y-5">
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Hours Removed per Month</span>
+          <span class="block text-xs text-gray-500 mb-1">Manual hours the automation takes off the team each month.</span>
+          <input
+            type="number"
+            id={`${uid}-hours`}
+            data-roi-input="hours"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={start.hours}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Loaded Hourly Cost (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">Fully loaded cost per hour: salary plus benefits and overhead.</span>
+          <input
+            type="number"
+            id={`${uid}-rate`}
+            data-roi-input="rate"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={start.rate}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Adoption Rate (percent)</span>
+          <span class="block text-xs text-gray-500 mb-1">Share of the eligible work that actually runs through the automation. Well-scoped builds often reach 100. Size it to how much of the task will really flow through.</span>
+          <input
+            type="number"
+            id={`${uid}-adoption`}
+            data-roi-input="adoption"
+            min="0"
+            max="100"
+            step="1"
+            inputmode="decimal"
+            value={start.adoption}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">One-Time Implementation Spend (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">The build cost: your fixed-fee project to design, build, and ship it.</span>
+          <input
+            type="number"
+            id={`${uid}-implementation`}
+            data-roi-input="implementation"
+            min="0"
+            step="100"
+            inputmode="decimal"
+            value={start.implementation}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Annual Run-State Cost (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. With Forge this is usually at or near zero: you own the code, licensing is minimal, and hosting is optional if you want us to run it.</span>
+          <input
+            type="number"
+            id={`${uid}-runstate`}
+            data-roi-input="runstate"
+            min="0"
+            step="100"
+            inputmode="decimal"
+            value={start.runstate}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+      </div>
+
+      <button
+        type="button"
+        id={`${uid}-reset`}
+        class="mt-6 text-sm text-amber-dark hover:text-amber font-semibold underline decoration-1 underline-offset-2"
+      >
+        Reset to Scenario Numbers
+      </button>
+    </div>
+
+    <!-- ----- Live outputs ----- -->
+    <div class="bg-charcoal text-white rounded-2xl p-6 sm:p-8 shadow-lg">
+      <h3 class="text-2xl font-bold text-amber mb-2">Your Result</h3>
+      <p class="text-sm text-gray-300 mb-6">Updates as you type.</p>
+
+      <div class="space-y-5">
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300">Monthly Labor Savings</p>
+          <p id={`${uid}-monthly`} class="text-2xl font-bold text-white">$0</p>
+        </div>
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300">Annual Labor Savings</p>
+          <p id={`${uid}-annual`} class="text-2xl font-bold text-white">$0</p>
+        </div>
+
+        <!-- Multi-year cumulative net: the headline of the model. Three figures
+             side by side so the buyer sees the return compound. -->
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300 mb-1">Cumulative Net After</p>
+          <p class="text-xs text-gray-400 mb-3">Annual savings across the period, minus implementation, minus run-state.</p>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">Year 1</p>
+              <p id={`${uid}-netyear1`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">3 Years</p>
+              <p id={`${uid}-netyear3`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">5 Years</p>
+              <p id={`${uid}-netyear5`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm text-gray-300">Simple Payback</p>
+          <p class="text-xs text-gray-400 mb-1">Implementation spend divided by monthly savings.</p>
+          <p id={`${uid}-payback`} class="text-2xl font-bold text-white">--</p>
+        </div>
+      </div>
+
+      <!-- Book-a-call CTA, primary action off the result. -->
+      <a
+        href="/contact?from=roi-calculator"
+        class="mt-8 inline-flex w-full items-center justify-center px-6 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+      >
+        Book a Discovery Call
+      </a>
+      <p class="mt-3 text-xs text-gray-400 text-center">
+        We will pressure-test these numbers against your real process, free.
+      </p>
+    </div>
+  </div>
+
+  {showEmailCapture && (
+    <!-- Optional soft email capture. Never required, never blocks the tool. -->
+    <div class="mt-8 bg-slate-light border border-gray-200 rounded-2xl p-6 sm:p-8">
+      <div
+        id={`${uid}-capture`}
+        class="lead-magnet-soft-capture"
+        data-asset="roi-calculator"
+      >
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Want These Numbers Plus Our Monthly Automation Tips? (optional)</span>
+          <span class="block text-xs text-gray-500 mb-2">Drop your email and we will send a copy of your result. Optional, and it never blocks the calculator.</span>
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <input
+              type="email"
+              id={`${uid}-email`}
+              autocomplete="email"
+              placeholder="you@company.com"
+              class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber sm:flex-1"
+            />
+            <button
+              type="button"
+              id={`${uid}-email-submit`}
+              class="inline-flex shrink-0 items-center justify-center rounded-lg bg-amber px-6 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-amber-dark disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Email My Results
+            </button>
+          </div>
+        </label>
+        <p id={`${uid}-email-msg`} class="mt-2 hidden text-xs"></p>
+        <p class="mt-3 text-xs text-gray-500">
+          A short automation tip most weeks. Unsubscribe anytime. We never sell your address.
+        </p>
+      </div>
+    </div>
+  )}
+
+</div>
+
+<!-- Calculator logic, scoped to this instance's root by uid. Plain inline
+     script, no build-time deps: reads the inputs, computes on every keystroke,
+     and (in full mode) fire-and-forgets the optional email POST. Multiple
+     instances each run their own copy against their own root, so nothing
+     cross-wires. -->
+<script is:inline define:vars={{ uid, scenariosJson, startKey, hasSelector: showPresetSelector, hasEmail: showEmailCapture }}>
+  (function () {
+    var root = document.querySelector('[data-roi-root="' + uid + '"]');
+    if (!root) return;
+    var el = function (suffix) { return document.getElementById(uid + suffix); };
+
+    var SCENARIOS = JSON.parse(scenariosJson);
+
+    var inputs = {
+      hours: el('-hours'),
+      rate: el('-rate'),
+      adoption: el('-adoption'),
+      implementation: el('-implementation'),
+      runstate: el('-runstate'),
+    };
+    var out = {
+      monthly: el('-monthly'),
+      annual: el('-annual'),
+      netyear1: el('-netyear1'),
+      netyear3: el('-netyear3'),
+      netyear5: el('-netyear5'),
+      payback: el('-payback'),
+    };
+    var scenarioSelect = hasSelector ? el('-scenario') : null;
+    var scenarioNote = hasSelector ? el('-scenario-note') : null;
+
+    // The set of inputs currently loaded, so Reset restores the active scenario
+    // rather than always snapping back to general.
+    var currentKey = SCENARIOS[startKey] ? startKey : 'general';
+
+    // Parse a field to a safe, non-negative number. Blank / NaN / negative all
+    // collapse to 0 so the math never blows up. Adoption is clamped to 0-100.
+    function num(node, opts) {
+      opts = opts || {};
+      var v = parseFloat(node && node.value);
+      if (!isFinite(v) || v < 0) v = 0;
+      if (typeof opts.max === 'number' && v > opts.max) v = opts.max;
+      return v;
+    }
+
+    var usd = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    });
+
+    function compute() {
+      var hours = num(inputs.hours);
+      var rate = num(inputs.rate);
+      var adoption = num(inputs.adoption, { max: 100 });
+      var implementation = num(inputs.implementation);
+      var runstate = num(inputs.runstate);
+
+      var monthly = hours * rate * (adoption / 100);
+      var annual = monthly * 12;
+
+      // Cumulative net after N years = N x annual savings, minus the one-time
+      // implementation, minus N years of run-state.
+      function cumulativeNet(years) {
+        return years * annual - implementation - years * runstate;
+      }
+
+      out.monthly.textContent = usd.format(monthly);
+      out.annual.textContent = usd.format(annual);
+      out.netyear1.textContent = usd.format(cumulativeNet(1));
+      out.netyear3.textContent = usd.format(cumulativeNet(3));
+      out.netyear5.textContent = usd.format(cumulativeNet(5));
+
+      // Payback only makes sense with positive monthly savings.
+      if (monthly > 0) {
+        var months = implementation / monthly;
+        var rounded = Math.round(months * 10) / 10;
+        out.payback.textContent = rounded + (rounded === 1 ? ' month' : ' months');
+      } else {
+        out.payback.textContent = '--';
+      }
+    }
+
+    // Load a scenario's numbers into the inputs and descriptor.
+    function applyScenario(key) {
+      var s = SCENARIOS[key] || SCENARIOS.general;
+      currentKey = SCENARIOS[key] ? key : 'general';
+      inputs.hours.value = s.hours;
+      inputs.rate.value = s.rate;
+      inputs.adoption.value = s.adoption;
+      inputs.implementation.value = s.implementation;
+      inputs.runstate.value = s.runstate;
+      if (scenarioNote) scenarioNote.textContent = s.note;
+      compute();
+    }
+
+    // Recompute on every edit of any input.
+    Object.keys(inputs).forEach(function (k) {
+      var node = inputs[k];
+      if (node) node.addEventListener('input', compute);
+    });
+
+    // Scenario selector (full mode only) swaps the whole input set.
+    if (scenarioSelect) {
+      scenarioSelect.addEventListener('change', function () {
+        applyScenario(scenarioSelect.value);
+      });
+    }
+
+    // Reset button restores the currently active scenario's numbers.
+    var resetBtn = el('-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        applyScenario(scenarioSelect ? scenarioSelect.value : currentKey);
+      });
+    }
+
+    // ---- Optional soft email capture (full mode only) ----
+    // Fire-and-forget POST to the sales cockpit lead-magnet endpoint. Never
+    // blocks, never throws, always confirms to the visitor. The calculator works
+    // fully without ever touching this.
+    if (hasEmail) {
+      var COCKPIT_ORIGIN = 'https://sales.forgerpa.com';
+      var isValidEmail = function (value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      };
+
+      var emailInput = el('-email');
+      var emailBtn = el('-email-submit');
+      var emailMsg = el('-email-msg');
+
+      var showMsg = function (text, ok) {
+        if (!emailMsg) return;
+        emailMsg.textContent = text;
+        emailMsg.className = 'mt-2 text-xs ' + (ok ? 'text-green-700' : 'text-red-600');
+        emailMsg.classList.remove('hidden');
+      };
+
+      var submitEmail = function () {
+        if (!emailInput) return;
+        var email = (emailInput.value || '').trim();
+        if (!email || !isValidEmail(email)) {
+          showMsg('Please enter a valid email address.', false);
+          emailInput.focus();
+          return;
+        }
+        // Never hold anything hostage to the POST: confirm immediately, send in
+        // the background, swallow any failure silently.
+        try {
+          fetch(COCKPIT_ORIGIN + '/api/warm-intake/lead-magnet', {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, asset: 'roi-calculator' }),
+          }).catch(function () {});
+        } catch (e) {
+          /* ignore */
+        }
+        showMsg('Thanks. Your results are on the way.', true);
+        if (emailBtn) {
+          emailBtn.disabled = true;
+          emailBtn.textContent = 'Sent';
+        }
+      };
+
+      if (emailBtn) emailBtn.addEventListener('click', submitEmail);
+      if (emailInput) {
+        emailInput.addEventListener('input', function () {
+          if (emailMsg) emailMsg.classList.add('hidden');
+        });
+        emailInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            submitEmail();
+          }
+        });
+      }
+    }
+
+    // ---- Initial scenario ----
+    // In full mode a page can deep-link ?scenario=ap|reconciliations|month-end-close
+    // to open pre-configured; unknown or absent values fall back to the prop
+    // default. In compact mode the scenario is fixed by the prop.
+    var initial = currentKey;
+    if (hasSelector) {
+      try {
+        var q = new URLSearchParams(window.location.search).get('scenario');
+        if (q && Object.prototype.hasOwnProperty.call(SCENARIOS, q)) {
+          initial = q;
+        }
+      } catch (e) {
+        /* ignore, keep default */
+      }
+      if (scenarioSelect) scenarioSelect.value = initial;
+    }
+    applyScenario(initial);
+  })();
+</script>

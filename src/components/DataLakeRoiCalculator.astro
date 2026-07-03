@@ -1,0 +1,366 @@
+---
+/**
+ * Reusable data-lake ROI calculator.
+ *
+ * One source of truth for the data-lake labor model, used both on the standalone
+ * /tools/data-lake-roi page and embedded inline on /services/data-lake.
+ *
+ * The value model differs from the finance-automation calculator: a data lake's
+ * honest lever is the recurring hand-work of pulling, consolidating, and
+ * reconciling reports across systems. It does not claim to eliminate that work
+ * entirely, so an "automation share" caps the savings at a conservative fraction,
+ * and the copy is explicit that it leaves out the larger value of faster
+ * decisions and a shorter close.
+ *
+ * Self-scoping: every instance gets a unique `uid`; all element ids are
+ * namespaced with it and the inline script resolves its own root via
+ * `data-dl-root`, so it never collides with another calculator on the page.
+ *
+ * Model:
+ *   monthly hours saved = hours x people x (share / 100)
+ *   annual hours saved  = monthly hours saved x 12
+ *   annual savings      = annual hours saved x loaded rate
+ *   cumulative net(N)   = N x annual savings - build - N x run-state
+ *   payback (months)    = build / monthly savings
+ */
+interface Props {
+  /**
+   * Compact embed mode: trims the outer framing note so the calculator sits
+   * cleanly inside a services-page section. Defaults to false (full standalone).
+   */
+  compact?: boolean;
+  /** Show the "What This Estimates" framing note. Defaults to full mode. */
+  showIntro?: boolean;
+}
+
+const { compact = false, showIntro = !compact } = Astro.props;
+
+// Example defaults describing a mid-size multi-unit operator; they produce a real
+// result on first paint and are mirrored into the inline script so Reset restores
+// them. Single source of truth shared by both.
+const DEFAULTS = {
+  locations: 30,
+  hours: 40,
+  people: 3,
+  rate: 55,
+  share: 80,
+  build: 60000,
+  runstate: 0,
+} as const;
+
+// Unique instance id so multiple calculators on one page never collide.
+const uid = 'dl-' + Math.random().toString(36).slice(2, 10);
+const defaultsJson = JSON.stringify(DEFAULTS);
+---
+
+<div data-dl-root={uid} class={compact ? '' : 'w-full'}>
+
+  {showIntro && (
+    <!-- Intro note framing the labor model. -->
+    <div class="mb-8 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <h3 class="text-lg font-bold text-charcoal mb-2">What This Estimates</h3>
+      <p class="text-sm text-gray-600 leading-relaxed">
+        This calculator focuses on the labor a data lake takes off your team: the recurring hours spent pulling
+        exports, stitching them together, and reconciling them into reports by hand. It does not try to price the
+        faster decisions, the tighter close, or the labor and food-cost points a unified view helps you win. Those
+        are real, and usually larger, but they depend on your baseline and execution, so we size them with you on a
+        call. Treat what you see here as the conservative floor.
+      </p>
+    </div>
+  )}
+
+  <!-- Calculator card: inputs on the left, live outputs on the right. -->
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+
+    <!-- ----- Inputs ----- -->
+    <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <h3 class="text-2xl font-bold text-charcoal mb-2">Your Inputs</h3>
+      <p class="text-sm text-gray-600 mb-6">
+        Size everything conservatively. It is easier to be pleasantly surprised than to defend an inflated case.
+      </p>
+
+      <div class="space-y-5">
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Locations or Entities Reported On</span>
+          <span class="block text-xs text-gray-500 mb-1">How many locations, stores, or legal entities roll up into your reporting. Context for the scale of the consolidation.</span>
+          <input
+            type="number"
+            id={`${uid}-locations`}
+            data-dl-input="locations"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={DEFAULTS.locations}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Hours per Month Pulling and Reconciling Reports</span>
+          <span class="block text-xs text-gray-500 mb-1">Per person, per month, spent pulling exports, consolidating, and reconciling reports by hand.</span>
+          <input
+            type="number"
+            id={`${uid}-hours`}
+            data-dl-input="hours"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={DEFAULTS.hours}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">People Doing That Work</span>
+          <span class="block text-xs text-gray-500 mb-1">How many people spend those hours on manual reporting each month.</span>
+          <input
+            type="number"
+            id={`${uid}-people`}
+            data-dl-input="people"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={DEFAULTS.people}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Loaded Hourly Cost (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">Fully loaded cost per hour: salary plus benefits and overhead.</span>
+          <input
+            type="number"
+            id={`${uid}-rate`}
+            data-dl-input="rate"
+            min="0"
+            step="1"
+            inputmode="decimal"
+            value={DEFAULTS.rate}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Share of That Work Automated (percent)</span>
+          <span class="block text-xs text-gray-500 mb-1">How much of the manual pulling and reconciling the data lake takes over. Rarely all of it, so we default to a conservative share.</span>
+          <input
+            type="number"
+            id={`${uid}-share`}
+            data-dl-input="share"
+            min="0"
+            max="100"
+            step="1"
+            inputmode="decimal"
+            value={DEFAULTS.share}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">One-Time Build Cost (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">The fixed-fee project to connect your systems and stand up the warehouse and reports.</span>
+          <input
+            type="number"
+            id={`${uid}-build`}
+            data-dl-input="build"
+            min="0"
+            step="1000"
+            inputmode="decimal"
+            value={DEFAULTS.build}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-charcoal">Annual Run-State Cost (USD)</span>
+          <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. You own the code and it runs in your own cloud, so this is usually just your provider's compute and storage, sized in discovery. Defaults to zero; add your cloud estimate if you want it in the number.</span>
+          <input
+            type="number"
+            id={`${uid}-runstate`}
+            data-dl-input="runstate"
+            min="0"
+            step="1000"
+            inputmode="decimal"
+            value={DEFAULTS.runstate}
+            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
+          />
+        </label>
+      </div>
+
+      <button
+        type="button"
+        id={`${uid}-reset`}
+        class="mt-6 text-sm text-amber-dark hover:text-amber font-semibold underline decoration-1 underline-offset-2"
+      >
+        Reset to Example Numbers
+      </button>
+    </div>
+
+    <!-- ----- Live outputs ----- -->
+    <div class="bg-charcoal text-white rounded-2xl p-6 sm:p-8 shadow-lg">
+      <h3 class="text-2xl font-bold text-amber mb-2">Your Result</h3>
+      <p class="text-sm text-gray-300 mb-6">Updates as you type.</p>
+
+      <div class="space-y-5">
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300">Annual Hours Saved</p>
+          <p id={`${uid}-hours-saved`} class="text-2xl font-bold text-white">0 hours</p>
+        </div>
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300">Annual Labor Savings</p>
+          <p id={`${uid}-annual`} class="text-2xl font-bold text-white">$0</p>
+        </div>
+
+        <!-- Multi-year cumulative net. -->
+        <div class="border-b border-white/10 pb-4">
+          <p class="text-sm text-gray-300 mb-1">Cumulative Net After</p>
+          <p class="text-xs text-gray-400 mb-3">Labor savings across the period, minus the build, minus run-state.</p>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">Year 1</p>
+              <p id={`${uid}-netyear1`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">3 Years</p>
+              <p id={`${uid}-netyear3`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+            <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+              <p class="text-xs text-gray-400">5 Years</p>
+              <p id={`${uid}-netyear5`} class="text-lg sm:text-xl font-bold text-amber">$0</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm text-gray-300">Simple Payback</p>
+          <p class="text-xs text-gray-400 mb-1">Build cost divided by monthly labor savings.</p>
+          <p id={`${uid}-payback`} class="text-2xl font-bold text-white">--</p>
+        </div>
+      </div>
+
+      <!-- Book-a-call CTA, primary action off the result. -->
+      <a
+        href="/contact?from=data-lake-roi"
+        class="mt-8 inline-flex w-full items-center justify-center px-6 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+      >
+        Book a Discovery Call
+      </a>
+      <p class="mt-3 text-xs text-gray-400 text-center">
+        We will size the full picture, including the decisions this speeds up, against your real numbers.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Calculator logic, scoped to this instance's root by uid. Plain inline
+     script, no build-time deps: reads the inputs and computes on every
+     keystroke. Multiple instances each run their own copy. -->
+<script is:inline define:vars={{ uid, defaultsJson }}>
+  (function () {
+    var root = document.querySelector('[data-dl-root="' + uid + '"]');
+    if (!root) return;
+    var el = function (suffix) { return document.getElementById(uid + suffix); };
+
+    var DEFAULTS = JSON.parse(defaultsJson);
+
+    var inputs = {
+      locations: el('-locations'),
+      hours: el('-hours'),
+      people: el('-people'),
+      rate: el('-rate'),
+      share: el('-share'),
+      build: el('-build'),
+      runstate: el('-runstate'),
+    };
+    var out = {
+      hoursSaved: el('-hours-saved'),
+      annual: el('-annual'),
+      netyear1: el('-netyear1'),
+      netyear3: el('-netyear3'),
+      netyear5: el('-netyear5'),
+      payback: el('-payback'),
+    };
+
+    // Parse a field to a safe, non-negative number. Blank / NaN / negative all
+    // collapse to 0 so the math never blows up. Share is clamped to 0-100.
+    function num(node, opts) {
+      opts = opts || {};
+      var v = parseFloat(node && node.value);
+      if (!isFinite(v) || v < 0) v = 0;
+      if (typeof opts.max === 'number' && v > opts.max) v = opts.max;
+      return v;
+    }
+
+    var usd = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    });
+    var numFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+
+    function compute() {
+      var hours = num(inputs.hours);
+      var people = num(inputs.people);
+      var rate = num(inputs.rate);
+      var share = num(inputs.share, { max: 100 });
+      var build = num(inputs.build);
+      var runstate = num(inputs.runstate);
+      // Locations is read for validation but does not multiply the labor model;
+      // the hours entered already reflect the whole consolidation workload.
+      num(inputs.locations);
+
+      var monthlyHoursSaved = hours * people * (share / 100);
+      var annualHoursSaved = monthlyHoursSaved * 12;
+      var monthlySavings = monthlyHoursSaved * rate;
+      var annualSavings = annualHoursSaved * rate;
+
+      // Cumulative net after N years = N x annual savings, minus the one-time
+      // build, minus N years of run-state.
+      function cumulativeNet(years) {
+        return years * annualSavings - build - years * runstate;
+      }
+
+      var roundedHours = Math.round(annualHoursSaved);
+      out.hoursSaved.textContent =
+        numFmt.format(roundedHours) + (roundedHours === 1 ? ' hour' : ' hours');
+      out.annual.textContent = usd.format(annualSavings);
+      out.netyear1.textContent = usd.format(cumulativeNet(1));
+      out.netyear3.textContent = usd.format(cumulativeNet(3));
+      out.netyear5.textContent = usd.format(cumulativeNet(5));
+
+      // Payback only makes sense with positive monthly savings.
+      if (monthlySavings > 0) {
+        var months = build / monthlySavings;
+        var rounded = Math.round(months * 10) / 10;
+        out.payback.textContent = rounded + (rounded === 1 ? ' month' : ' months');
+      } else {
+        out.payback.textContent = '--';
+      }
+    }
+
+    // Recompute on every edit of any input.
+    Object.keys(inputs).forEach(function (k) {
+      var node = inputs[k];
+      if (node) node.addEventListener('input', compute);
+    });
+
+    // Reset button restores the example numbers.
+    var resetBtn = el('-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        inputs.locations.value = DEFAULTS.locations;
+        inputs.hours.value = DEFAULTS.hours;
+        inputs.people.value = DEFAULTS.people;
+        inputs.rate.value = DEFAULTS.rate;
+        inputs.share.value = DEFAULTS.share;
+        inputs.build.value = DEFAULTS.build;
+        inputs.runstate.value = DEFAULTS.runstate;
+        compute();
+      });
+    }
+
+    // First paint with the defaults.
+    compute();
+  })();
+</script>
