@@ -6,6 +6,8 @@ import CTASection from '../../components/CTASection.astro';
 // loads. These match the worked example in the page copy:
 //   40 hrs x $50 x 90% adoption = $1,800/mo, $21,600/yr
 //   minus $15,000 implementation minus $0 run-state = $6,600 year-one net
+//   3-year cumulative net = 3 x $21,600 - $15,000 - 3 x $0 = $49,800
+//   5-year cumulative net = 5 x $21,600 - $15,000 - 5 x $0 = $93,000
 //   payback = $15,000 / $1,800 = ~8.3 months
 //   (Run-state defaults to $0: Forge builds are client-owned code with minimal
 //    licensing and optional hosting, so ongoing cost is at or near zero.)
@@ -20,14 +22,36 @@ const defaults = {
 
 <PageLayout
   title="Finance Automation ROI Calculator"
-  description="A free, interactive ROI calculator for finance and operations automation. Enter hours removed, loaded cost, adoption, and implementation spend to see monthly savings, annual savings, year-one net, and simple payback. No email required."
+  description="A free, interactive ROI calculator for finance and operations automation. Pick a scenario, enter hours removed, loaded cost, adoption, and implementation spend, and see monthly savings, annual savings, year-one net, three-year and five-year cumulative net, and simple payback. No email required."
   heroTitle="Finance Automation ROI Calculator"
-  heroSubtitle="Enter your numbers and see the return live. Hours removed, loaded cost, adoption, implementation spend, and annual run-state, turned into monthly savings, annual savings, year-one net, and simple payback. No sign-up, no email wall. Just the math."
+  heroSubtitle="Pick what you are automating, enter your numbers, and see the return live. Hours removed, loaded cost, adoption, implementation spend, and annual run-state, turned into monthly savings, annual savings, year-one net, three-year and five-year cumulative net, and simple payback. No sign-up, no email wall. Just the math."
   heroCta="Book a Discovery Call"
   heroCtaLink="/contact?from=roi-calculator"
 >
   <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Scenario preset selector: pre-fills the inputs for a common use case.
+           A services page can deep-link with ?scenario=ap|reconciliations|month-end-close
+           to open this calculator already configured. -->
+      <div class="mb-8 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <label class="block">
+          <span class="text-lg font-bold text-charcoal">What Are You Automating?</span>
+          <span class="block text-sm text-gray-600 mt-1 mb-3">
+            Pick a starting point and we will pre-fill conservative numbers you can adjust. Every scenario is a starting estimate, not a quote.
+          </span>
+          <select
+            id="roi-scenario"
+            class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-charcoal focus:border-amber focus:ring-amber sm:max-w-md"
+          >
+            <option value="general">General Finance or Ops Automation</option>
+            <option value="ap">Accounts Payable Automation</option>
+            <option value="reconciliations">Reconciliations</option>
+            <option value="month-end-close">Month-End Close</option>
+          </select>
+        </label>
+        <p id="roi-scenario-note" class="mt-3 text-sm text-gray-600 leading-relaxed"></p>
+      </div>
 
       <!-- Calculator card: inputs on the left, live outputs on the right. -->
       <div id="roi-calculator" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -117,7 +141,7 @@ const defaults = {
             id="roi-reset"
             class="mt-6 text-sm text-amber-dark hover:text-amber font-semibold underline decoration-1 underline-offset-2"
           >
-            Reset to Example Numbers
+            Reset to Scenario Numbers
           </button>
         </div>
 
@@ -135,11 +159,28 @@ const defaults = {
               <p class="text-sm text-gray-300">Annual Labor Savings</p>
               <p id="roi-annual" class="text-2xl font-bold text-white">$0</p>
             </div>
+
+            <!-- Multi-year cumulative net: the headline of the upgrade. Three
+                 figures side by side so the buyer sees the return compound. -->
             <div class="border-b border-white/10 pb-4">
-              <p class="text-sm text-gray-300">Year-One Net</p>
-              <p class="text-xs text-gray-400 mb-1">Annual savings, minus implementation, minus run-state.</p>
-              <p id="roi-netyear1" class="text-2xl font-bold text-amber">$0</p>
+              <p class="text-sm text-gray-300 mb-1">Cumulative Net After</p>
+              <p class="text-xs text-gray-400 mb-3">Annual savings across the period, minus implementation, minus run-state.</p>
+              <div class="grid grid-cols-3 gap-3">
+                <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+                  <p class="text-xs text-gray-400">Year 1</p>
+                  <p id="roi-netyear1" class="text-lg sm:text-xl font-bold text-amber">$0</p>
+                </div>
+                <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+                  <p class="text-xs text-gray-400">3 Years</p>
+                  <p id="roi-netyear3" class="text-lg sm:text-xl font-bold text-amber">$0</p>
+                </div>
+                <div class="rounded-lg bg-white/5 px-3 py-3 text-center">
+                  <p class="text-xs text-gray-400">5 Years</p>
+                  <p id="roi-netyear5" class="text-lg sm:text-xl font-bold text-amber">$0</p>
+                </div>
+              </div>
             </div>
+
             <div>
               <p class="text-sm text-gray-300">Simple Payback</p>
               <p class="text-xs text-gray-400 mb-1">Implementation spend divided by monthly savings.</p>
@@ -198,9 +239,9 @@ const defaults = {
       <div class="mt-10 border-t border-gray-200 pt-6">
         <p class="text-sm text-gray-500 leading-relaxed">
           These outputs are illustrative estimates, not a quote or a guarantee. They use a simple labor-savings model
-          and your own inputs. Real results depend on process fit, data quality, adoption, and the specifics of your
-          environment. Use this to frame a conversation, not to set a budget. When you are ready for a grounded number,
-          book a call and we will scope it against your actual work.
+          and your own inputs, and they assume the savings hold steady each year. Real results depend on process fit,
+          data quality, adoption, and the specifics of your environment. Use this to frame a conversation, not to set a
+          budget. When you are ready for a grounded number, book a call and we will scope it against your actual work.
         </p>
       </div>
 
@@ -233,17 +274,56 @@ const defaults = {
       monthly: el('roi-monthly'),
       annual: el('roi-annual'),
       netyear1: el('roi-netyear1'),
+      netyear3: el('roi-netyear3'),
+      netyear5: el('roi-netyear5'),
       payback: el('roi-payback'),
     };
+    var scenarioSelect = el('roi-scenario');
+    var scenarioNote = el('roi-scenario-note');
 
-    // Example defaults, mirrored from the frontmatter so Reset restores them.
-    var DEFAULTS = {
-      hours: 40,
-      rate: 50,
-      adoption: 90,
-      implementation: 15000,
-      runstate: 0,
+    // Scenario presets. Each pre-fills the five inputs with conservative,
+    // defensible numbers and sets a one-line descriptor. "general" mirrors the
+    // frontmatter defaults. Numbers are anchored to the ranges published on the
+    // matching services pages, held at the conservative end so the case is easy
+    // to defend. Run-state stays 0 across the board per the Forge model.
+    var SCENARIOS = {
+      general: {
+        hours: 40,
+        rate: 50,
+        adoption: 90,
+        implementation: 15000,
+        runstate: 0,
+        note: 'A general finance or operations automation. Adjust every field to your own process. Run-state defaults to zero because Forge builds are code you own, with minimal licensing and optional hosting.',
+      },
+      ap: {
+        hours: 40,
+        rate: 60,
+        adoption: 85,
+        implementation: 18000,
+        runstate: 0,
+        note: 'Accounts payable automation for a single-entity team: invoice capture, three-way match, approval routing, and posting. Conservative starting point of about 40 hours a month recovered at a blended loaded cost. Adjust to your invoice volume and approval complexity.',
+      },
+      reconciliations: {
+        hours: 35,
+        rate: 65,
+        adoption: 85,
+        implementation: 15000,
+        runstate: 0,
+        note: 'Reconciliation automation: exception routing, match logic, and the lookups your team repeats every close. Conservative starting point of about 35 hours a month recovered. Adjust to your account count and exception rate.',
+      },
+      'month-end-close': {
+        hours: 40,
+        rate: 85,
+        adoption: 85,
+        implementation: 20000,
+        runstate: 0,
+        note: 'Month-end close automation: manual journal entries, reconciliations, and intercompany work rebuilt each cycle. Conservative starting point of about 40 hours a month of senior-accountant time at a blended loaded cost. Adjust to your close length and entity count.',
+      },
     };
+
+    // The set of inputs currently loaded, so Reset restores the active scenario
+    // rather than always snapping back to general.
+    var currentScenario = SCENARIOS.general;
 
     // Parse a field to a safe, non-negative number. Blank / NaN / negative all
     // collapse to 0 so the math never blows up. Adoption is clamped to 0-100.
@@ -270,11 +350,18 @@ const defaults = {
 
       var monthly = hours * rate * (adoption / 100);
       var annual = monthly * 12;
-      var netYear1 = annual - implementation - runstate;
+
+      // Cumulative net after N years = N x annual savings, minus the one-time
+      // implementation, minus N years of run-state.
+      function cumulativeNet(years) {
+        return years * annual - implementation - years * runstate;
+      }
 
       out.monthly.textContent = usd.format(monthly);
       out.annual.textContent = usd.format(annual);
-      out.netyear1.textContent = usd.format(netYear1);
+      out.netyear1.textContent = usd.format(cumulativeNet(1));
+      out.netyear3.textContent = usd.format(cumulativeNet(3));
+      out.netyear5.textContent = usd.format(cumulativeNet(5));
 
       // Payback only makes sense with positive monthly savings.
       if (monthly > 0) {
@@ -286,22 +373,37 @@ const defaults = {
       }
     }
 
+    // Load a scenario's numbers into the inputs and descriptor.
+    function applyScenario(key) {
+      var s = SCENARIOS[key] || SCENARIOS.general;
+      currentScenario = s;
+      inputs.hours.value = s.hours;
+      inputs.rate.value = s.rate;
+      inputs.adoption.value = s.adoption;
+      inputs.implementation.value = s.implementation;
+      inputs.runstate.value = s.runstate;
+      if (scenarioNote) scenarioNote.textContent = s.note;
+      compute();
+    }
+
     // Recompute on every edit of any input.
     Object.keys(inputs).forEach(function (k) {
       var node = inputs[k];
       if (node) node.addEventListener('input', compute);
     });
 
-    // Reset button restores the example numbers.
+    // Scenario selector swaps the whole input set.
+    if (scenarioSelect) {
+      scenarioSelect.addEventListener('change', function () {
+        applyScenario(scenarioSelect.value);
+      });
+    }
+
+    // Reset button restores the currently selected scenario's numbers.
     var resetBtn = el('roi-reset');
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
-        inputs.hours.value = DEFAULTS.hours;
-        inputs.rate.value = DEFAULTS.rate;
-        inputs.adoption.value = DEFAULTS.adoption;
-        inputs.implementation.value = DEFAULTS.implementation;
-        inputs.runstate.value = DEFAULTS.runstate;
-        compute();
+        applyScenario(scenarioSelect ? scenarioSelect.value : 'general');
       });
     }
 
@@ -365,7 +467,19 @@ const defaults = {
       });
     }
 
-    // First paint with the defaults.
-    compute();
+    // ---- Initial scenario from the URL, default to general ----
+    // A services page can deep-link ?scenario=ap|reconciliations|month-end-close
+    // to open pre-configured. Unknown or absent values fall back to general.
+    var initial = 'general';
+    try {
+      var q = new URLSearchParams(window.location.search).get('scenario');
+      if (q && Object.prototype.hasOwnProperty.call(SCENARIOS, q)) {
+        initial = q;
+      }
+    } catch (e) {
+      /* ignore, keep general */
+    }
+    if (scenarioSelect) scenarioSelect.value = initial;
+    applyScenario(initial);
   })();
 </script>
