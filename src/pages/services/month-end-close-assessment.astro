@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import RoiCalculator from '../../components/RoiCalculator.astro';
 
 const faqs = [
   {
@@ -202,17 +203,26 @@ const faqSchema = {
           Your specific numbers fall out of the assessment; we anchor every recommendation to your actual baseline, not industry averages. For more on what drives the price, see <a href="/faq/automate-month-end-close-cost" class="text-amber-dark hover:text-amber font-semibold not-italic">what it costs to automate month-end close</a>.
         </p>
 
-        <!-- Deep-link to the ROI calculator, pre-configured for month-end close. -->
-        <div class="mt-8 rounded-xl bg-charcoal text-white px-6 py-6 sm:px-8 sm:flex sm:items-center sm:justify-between sm:gap-6">
-          <div>
-            <p class="text-lg font-semibold">See What a Faster Close Is Worth</p>
-            <p class="mt-1 text-sm text-gray-300">Open the ROI calculator with conservative month-end close numbers already filled in, then adjust to your team. No email required.</p>
-          </div>
+      </div>
+
+      <!-- Inline ROI calculator, pre-set to month-end close and computing on
+           first paint. Replaces the old deep-link band so the prospect sees a
+           faster close pay off without leaving the page. -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-4">See What a Faster Close Is Worth</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Conservative month-end close numbers are filled in below and the return updates live as you type. Adjust the hours of senior-accountant time, loaded cost, and adoption to your own close length and entity count, and watch monthly savings, cumulative net over one, three, and five years, and simple payback move with them. No email required.
+        </p>
+        <RoiCalculator scenario="month-end-close" compact />
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <a
-            href="/tools/roi-calculator?scenario=month-end-close"
-            class="mt-4 sm:mt-0 inline-flex shrink-0 items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+            href="/contact?from=month-end-close-assessment"
+            class="inline-flex items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
           >
-            Calculate Your ROI
+            Book a Discovery Call
+          </a>
+          <a href="/tools/roi-calculator" class="text-sm font-semibold text-amber-dark hover:text-amber underline decoration-1 underline-offset-2">
+            Try Other Scenarios in the Full Calculator
           </a>
         </div>
       </div>

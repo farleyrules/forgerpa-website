@@ -2,6 +2,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
 import InlineCta from '../../components/InlineCta.astro';
+import RoiCalculator from '../../components/RoiCalculator.astro';
 
 // Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
 const serviceSchema = {
@@ -194,17 +195,27 @@ const faqSchema = {
           </div>
         </div>
 
-        <!-- Deep-link to the ROI calculator, pre-configured for AP. -->
-        <div class="mt-8 rounded-xl bg-charcoal text-white px-6 py-6 sm:px-8 sm:flex sm:items-center sm:justify-between sm:gap-6">
-          <div>
-            <p class="text-lg font-semibold">See What AP Automation Is Worth</p>
-            <p class="mt-1 text-sm text-gray-300">Open the ROI calculator with conservative AP numbers already filled in, then adjust to your own volume. No email required.</p>
-          </div>
+      </div>
+
+      <!-- Inline ROI calculator, pre-set to AP and computing on first paint.
+           Replaces the old deep-link band: the prospect sees the dollars move
+           without leaving the page. One text link below points to the full
+           calculator for other scenarios. -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-4">See Your AP Automation ROI</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Conservative AP numbers are filled in below and the return updates live as you type. Adjust the hours, loaded cost, and adoption to your own volume and watch monthly savings, cumulative net over one, three, and five years, and simple payback move with them. No email required.
+        </p>
+        <RoiCalculator scenario="ap" compact />
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <a
-            href="/tools/roi-calculator?scenario=ap"
-            class="mt-4 sm:mt-0 inline-flex shrink-0 items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+            href="/contact?from=ap-automation"
+            class="inline-flex items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
           >
-            Calculate Your ROI
+            Book a Discovery Call
+          </a>
+          <a href="/tools/roi-calculator" class="text-sm font-semibold text-amber-dark hover:text-amber underline decoration-1 underline-offset-2">
+            Try Other Scenarios in the Full Calculator
           </a>
         </div>
       </div>
