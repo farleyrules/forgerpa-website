@@ -1,0 +1,48 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import DataLakeRoiCalculator from '../../components/DataLakeRoiCalculator.astro';
+
+// The calculator itself lives in the reusable DataLakeRoiCalculator component so
+// this standalone page and the inline embed on /services/data-lake share one
+// source of truth for the model and the inputs. This page renders it in full mode
+// (with the "What This Estimates" framing note); the services page renders it
+// compact.
+---
+
+<PageLayout
+  title="Data Lake ROI Calculator"
+  description="A free, interactive ROI calculator for a multi-unit data lake. Enter the hours your team spends pulling, consolidating, and reconciling reports by hand, and see annual hours saved, annual labor savings, year-one, three-year, and five-year cumulative net, and simple payback. No email required."
+  heroTitle="Data Lake ROI Calculator"
+  heroSubtitle="Multi-unit operators rebuild the same picture by hand every week: export from the POS, the payroll system, the accounting system, then consolidate and reconcile it in spreadsheets. Enter what that hand-work costs and see the return of a unified data lake live. Annual hours saved, annual labor savings, and cumulative net over one, three, and five years. No sign-up, no email wall."
+  heroCta="Book a Discovery Call"
+  heroCtaLink="/contact?from=data-lake-roi"
+>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Full-mode calculator: includes the "What This Estimates" framing note. -->
+      <DataLakeRoiCalculator />
+
+      <!-- Honest disclaimer. -->
+      <div class="mt-10 border-t border-gray-200 pt-6">
+        <p class="text-sm text-gray-500 leading-relaxed">
+          This is an illustrative estimate, not a quote or a guarantee. It captures only the recurring manual-reporting
+          labor a data lake removes, using your own inputs and a conservative automation share, and it assumes the
+          savings hold steady each year. It leaves out the larger, harder-to-price value of faster decisions, a shorter
+          close, and the labor and food-cost points a unified view helps you win. Real results depend on your systems,
+          your data quality, and your team. Use this to frame a conversation, not to set a budget. Book a call and we
+          will scope it against your actual work.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want the Full Picture for Your Group?"
+    subtext="Book a 30-minute discovery call. We will walk through your systems, the hours your team loses to manual reporting, and the value beyond labor that a unified data lake unlocks. You leave with a clearer number even if we never work together."
+    ctaText="Book a Discovery Call"
+    ctaLink="/contact?from=data-lake-roi"
+  />
+</PageLayout>

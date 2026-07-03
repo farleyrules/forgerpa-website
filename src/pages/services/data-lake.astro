@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import DataLakeRoiCalculator from '../../components/DataLakeRoiCalculator.astro';
 
 // Service schema for SEO. Rendered in body; Google reads JSON-LD anywhere in the document.
 const serviceSchema = {
@@ -555,6 +556,29 @@ const faqSchema = {
         <p class="mt-6 text-gray-700 leading-relaxed">
           We work the math together in the discovery call, with your actual revenue per location, your current baseline, and the priorities your team would tackle first.
         </p>
+
+      </div>
+
+      <!-- Inline data-lake ROI calculator, computing on first paint. Replaces
+           the old deep-link band so the prospect sees the labor a unified data
+           lake takes off the team without leaving the page. -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-4">Put Your Own Numbers In</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Conservative numbers for a mid-size multi-unit operator are filled in below and the return updates live as you type. Adjust the hours your team spends pulling and reconciling reports, the people doing it, and the loaded cost, and watch annual hours saved, annual labor savings, cumulative net over one, three, and five years, and simple payback move with them. No email required.
+        </p>
+        <DataLakeRoiCalculator compact />
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <a
+            href="/contact?from=data-lake"
+            class="inline-flex items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+          >
+            Book a Discovery Call
+          </a>
+          <a href="/tools/data-lake-roi" class="text-sm font-semibold text-amber-dark hover:text-amber underline decoration-1 underline-offset-2">
+            Open the Full Data Lake Calculator
+          </a>
+        </div>
       </div>
 
       <!-- FAQ -->

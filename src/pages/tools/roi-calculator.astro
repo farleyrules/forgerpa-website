@@ -1,206 +1,38 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import RoiCalculator from '../../components/RoiCalculator.astro';
 
-// Sensible defaults so the calculator shows a real result the moment the page
-// loads. These match the worked example in the page copy:
-//   40 hrs x $50 x 90% adoption = $1,800/mo, $21,600/yr
-//   minus $15,000 implementation minus $0 run-state = $6,600 year-one net
-//   payback = $15,000 / $1,800 = ~8.3 months
-//   (Run-state defaults to $0: Forge builds are client-owned code with minimal
-//    licensing and optional hosting, so ongoing cost is at or near zero.)
-const defaults = {
-  hoursPerMonth: 40,
-  loadedHourlyCost: 50,
-  adoptionPct: 90,
-  implementationSpend: 15000,
-  annualRunState: 0,
-} as const;
+// The calculator itself lives in the reusable RoiCalculator component so this
+// standalone page and the inline embeds on the finance services pages share one
+// source of truth for the model, the inputs, and the scenario presets. This page
+// renders it in full mode (scenario selector + optional email capture shown); a
+// services page renders it compact and pre-set to a single scenario. The initial
+// scenario here still honors a ?scenario=ap|reconciliations|month-end-close deep
+// link, resolved inside the component's script.
 ---
 
 <PageLayout
   title="Finance Automation ROI Calculator"
-  description="A free, interactive ROI calculator for finance and operations automation. Enter hours removed, loaded cost, adoption, and implementation spend to see monthly savings, annual savings, year-one net, and simple payback. No email required."
+  description="A free, interactive ROI calculator for finance and operations automation. Pick a scenario, enter hours removed, loaded cost, adoption, and implementation spend, and see monthly savings, annual savings, year-one net, three-year and five-year cumulative net, and simple payback. No email required."
   heroTitle="Finance Automation ROI Calculator"
-  heroSubtitle="Enter your numbers and see the return live. Hours removed, loaded cost, adoption, implementation spend, and annual run-state, turned into monthly savings, annual savings, year-one net, and simple payback. No sign-up, no email wall. Just the math."
+  heroSubtitle="Pick what you are automating, enter your numbers, and see the return live. Hours removed, loaded cost, adoption, implementation spend, and annual run-state, turned into monthly savings, annual savings, year-one net, three-year and five-year cumulative net, and simple payback. No sign-up, no email wall. Just the math."
   heroCta="Book a Discovery Call"
   heroCtaLink="/contact?from=roi-calculator"
 >
   <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- Calculator card: inputs on the left, live outputs on the right. -->
-      <div id="roi-calculator" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-
-        <!-- ----- Inputs ----- -->
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
-          <h2 class="text-2xl font-bold text-charcoal mb-2">Your Inputs</h2>
-          <p class="text-sm text-gray-600 mb-6">
-            Size everything conservatively. It is easier to be pleasantly surprised than to defend an inflated case.
-          </p>
-
-          <div class="space-y-5">
-            <label class="block">
-              <span class="text-sm font-semibold text-charcoal">Hours Removed per Month</span>
-              <span class="block text-xs text-gray-500 mb-1">Manual hours the automation takes off the team each month.</span>
-              <input
-                type="number"
-                id="roi-hours"
-                min="0"
-                step="1"
-                inputmode="decimal"
-                value={defaults.hoursPerMonth}
-                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
-              />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-charcoal">Loaded Hourly Cost (USD)</span>
-              <span class="block text-xs text-gray-500 mb-1">Fully loaded cost per hour: salary plus benefits and overhead.</span>
-              <input
-                type="number"
-                id="roi-rate"
-                min="0"
-                step="1"
-                inputmode="decimal"
-                value={defaults.loadedHourlyCost}
-                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
-              />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-charcoal">Adoption Rate (percent)</span>
-              <span class="block text-xs text-gray-500 mb-1">Share of the eligible work that actually runs through the automation. Well-scoped builds often reach 100. Size it to how much of the task will really flow through.</span>
-              <input
-                type="number"
-                id="roi-adoption"
-                min="0"
-                max="100"
-                step="1"
-                inputmode="decimal"
-                value={defaults.adoptionPct}
-                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
-              />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-charcoal">One-Time Implementation Spend (USD)</span>
-              <span class="block text-xs text-gray-500 mb-1">The build cost: your fixed-fee project to design, build, and ship it.</span>
-              <input
-                type="number"
-                id="roi-implementation"
-                min="0"
-                step="100"
-                inputmode="decimal"
-                value={defaults.implementationSpend}
-                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
-              />
-            </label>
-
-            <label class="block">
-              <span class="text-sm font-semibold text-charcoal">Annual Run-State Cost (USD)</span>
-              <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. With Forge this is usually at or near zero: you own the code, licensing is minimal, and hosting is optional if you want us to run it.</span>
-              <input
-                type="number"
-                id="roi-runstate"
-                min="0"
-                step="100"
-                inputmode="decimal"
-                value={defaults.annualRunState}
-                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber"
-              />
-            </label>
-          </div>
-
-          <button
-            type="button"
-            id="roi-reset"
-            class="mt-6 text-sm text-amber-dark hover:text-amber font-semibold underline decoration-1 underline-offset-2"
-          >
-            Reset to Example Numbers
-          </button>
-        </div>
-
-        <!-- ----- Live outputs ----- -->
-        <div class="bg-charcoal text-white rounded-2xl p-6 sm:p-8 shadow-lg">
-          <h2 class="text-2xl font-bold text-amber mb-2">Your Result</h2>
-          <p class="text-sm text-gray-300 mb-6">Updates as you type.</p>
-
-          <div class="space-y-5">
-            <div class="border-b border-white/10 pb-4">
-              <p class="text-sm text-gray-300">Monthly Labor Savings</p>
-              <p id="roi-monthly" class="text-2xl font-bold text-white">$0</p>
-            </div>
-            <div class="border-b border-white/10 pb-4">
-              <p class="text-sm text-gray-300">Annual Labor Savings</p>
-              <p id="roi-annual" class="text-2xl font-bold text-white">$0</p>
-            </div>
-            <div class="border-b border-white/10 pb-4">
-              <p class="text-sm text-gray-300">Year-One Net</p>
-              <p class="text-xs text-gray-400 mb-1">Annual savings, minus implementation, minus run-state.</p>
-              <p id="roi-netyear1" class="text-2xl font-bold text-amber">$0</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-300">Simple Payback</p>
-              <p class="text-xs text-gray-400 mb-1">Implementation spend divided by monthly savings.</p>
-              <p id="roi-payback" class="text-2xl font-bold text-white">--</p>
-            </div>
-          </div>
-
-          <!-- Book-a-call CTA, primary action off the result. -->
-          <a
-            href="/contact?from=roi-calculator"
-            class="mt-8 inline-flex w-full items-center justify-center px-6 py-4 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
-          >
-            Book a 30-Minute Discovery Call
-          </a>
-          <p class="mt-3 text-xs text-gray-400 text-center">
-            We will pressure-test these numbers against your real process, free.
-          </p>
-        </div>
-      </div>
-
-      <!-- Optional soft email capture. Never required, never blocks the tool. -->
-      <div class="mt-8 bg-slate-light border border-gray-200 rounded-2xl p-6 sm:p-8">
-        <div
-          id="roi-capture"
-          class="lead-magnet-soft-capture"
-          data-asset="roi-calculator"
-        >
-          <label class="block">
-            <span class="text-sm font-semibold text-charcoal">Want These Numbers Plus Our Monthly Automation Tips? (optional)</span>
-            <span class="block text-xs text-gray-500 mb-2">Drop your email and we will send a copy of your result. Optional, and it never blocks the calculator.</span>
-            <div class="flex flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                id="roi-email"
-                autocomplete="email"
-                placeholder="you@company.com"
-                class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber focus:ring-amber sm:flex-1"
-              />
-              <button
-                type="button"
-                id="roi-email-submit"
-                class="inline-flex shrink-0 items-center justify-center rounded-lg bg-amber px-6 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-amber-dark disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                Email My Results
-              </button>
-            </div>
-          </label>
-          <p id="roi-email-msg" class="mt-2 hidden text-xs"></p>
-          <p class="mt-3 text-xs text-gray-500">
-            A short automation tip most weeks. Unsubscribe anytime. We never sell your address.
-          </p>
-        </div>
-      </div>
+      <!-- Full-mode calculator: preset selector + optional email capture. -->
+      <RoiCalculator />
 
       <!-- Honest disclaimer. -->
       <div class="mt-10 border-t border-gray-200 pt-6">
         <p class="text-sm text-gray-500 leading-relaxed">
           These outputs are illustrative estimates, not a quote or a guarantee. They use a simple labor-savings model
-          and your own inputs. Real results depend on process fit, data quality, adoption, and the specifics of your
-          environment. Use this to frame a conversation, not to set a budget. When you are ready for a grounded number,
-          book a call and we will scope it against your actual work.
+          and your own inputs, and they assume the savings hold steady each year. Real results depend on process fit,
+          data quality, adoption, and the specifics of your environment. Use this to frame a conversation, not to set a
+          budget. When you are ready for a grounded number, book a call and we will scope it against your actual work.
         </p>
       </div>
 
@@ -214,158 +46,3 @@ const defaults = {
     ctaLink="/contact?from=roi-calculator"
   />
 </PageLayout>
-
-<!-- Calculator logic + optional soft email capture. Plain inline script, no
-     build-time deps: it reads the inputs, computes on every keystroke, and
-     fire-and-forgets the email POST to the sales cockpit (never blocking). -->
-<script is:inline>
-  (function () {
-    var el = function (id) { return document.getElementById(id); };
-
-    var inputs = {
-      hours: el('roi-hours'),
-      rate: el('roi-rate'),
-      adoption: el('roi-adoption'),
-      implementation: el('roi-implementation'),
-      runstate: el('roi-runstate'),
-    };
-    var out = {
-      monthly: el('roi-monthly'),
-      annual: el('roi-annual'),
-      netyear1: el('roi-netyear1'),
-      payback: el('roi-payback'),
-    };
-
-    // Example defaults, mirrored from the frontmatter so Reset restores them.
-    var DEFAULTS = {
-      hours: 40,
-      rate: 50,
-      adoption: 90,
-      implementation: 15000,
-      runstate: 0,
-    };
-
-    // Parse a field to a safe, non-negative number. Blank / NaN / negative all
-    // collapse to 0 so the math never blows up. Adoption is clamped to 0-100.
-    function num(node, opts) {
-      opts = opts || {};
-      var v = parseFloat(node && node.value);
-      if (!isFinite(v) || v < 0) v = 0;
-      if (typeof opts.max === 'number' && v > opts.max) v = opts.max;
-      return v;
-    }
-
-    var usd = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    });
-
-    function compute() {
-      var hours = num(inputs.hours);
-      var rate = num(inputs.rate);
-      var adoption = num(inputs.adoption, { max: 100 });
-      var implementation = num(inputs.implementation);
-      var runstate = num(inputs.runstate);
-
-      var monthly = hours * rate * (adoption / 100);
-      var annual = monthly * 12;
-      var netYear1 = annual - implementation - runstate;
-
-      out.monthly.textContent = usd.format(monthly);
-      out.annual.textContent = usd.format(annual);
-      out.netyear1.textContent = usd.format(netYear1);
-
-      // Payback only makes sense with positive monthly savings.
-      if (monthly > 0) {
-        var months = implementation / monthly;
-        var rounded = Math.round(months * 10) / 10;
-        out.payback.textContent = rounded + (rounded === 1 ? ' month' : ' months');
-      } else {
-        out.payback.textContent = '--';
-      }
-    }
-
-    // Recompute on every edit of any input.
-    Object.keys(inputs).forEach(function (k) {
-      var node = inputs[k];
-      if (node) node.addEventListener('input', compute);
-    });
-
-    // Reset button restores the example numbers.
-    var resetBtn = el('roi-reset');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', function () {
-        inputs.hours.value = DEFAULTS.hours;
-        inputs.rate.value = DEFAULTS.rate;
-        inputs.adoption.value = DEFAULTS.adoption;
-        inputs.implementation.value = DEFAULTS.implementation;
-        inputs.runstate.value = DEFAULTS.runstate;
-        compute();
-      });
-    }
-
-    // ---- Optional soft email capture ----
-    // Fire-and-forget POST to the sales cockpit lead-magnet endpoint. Mirrors the
-    // resources lead-magnet gate: never blocks, never throws, always confirms to
-    // the visitor. The calculator works fully without ever touching this.
-    var COCKPIT_ORIGIN = 'https://sales.forgerpa.com';
-    function isValidEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    }
-
-    var emailInput = el('roi-email');
-    var emailBtn = el('roi-email-submit');
-    var emailMsg = el('roi-email-msg');
-
-    function showMsg(text, ok) {
-      if (!emailMsg) return;
-      emailMsg.textContent = text;
-      emailMsg.className = 'mt-2 text-xs ' + (ok ? 'text-green-700' : 'text-red-600');
-      emailMsg.classList.remove('hidden');
-    }
-
-    function submitEmail() {
-      if (!emailInput) return;
-      var email = (emailInput.value || '').trim();
-      if (!email || !isValidEmail(email)) {
-        showMsg('Please enter a valid email address.', false);
-        emailInput.focus();
-        return;
-      }
-      // Never hold anything hostage to the POST: confirm immediately, send in
-      // the background, swallow any failure silently.
-      try {
-        fetch(COCKPIT_ORIGIN + '/api/warm-intake/lead-magnet', {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, asset: 'roi-calculator' }),
-        }).catch(function () {});
-      } catch (e) {
-        /* ignore */
-      }
-      showMsg('Thanks. Your results are on the way.', true);
-      if (emailBtn) {
-        emailBtn.disabled = true;
-        emailBtn.textContent = 'Sent';
-      }
-    }
-
-    if (emailBtn) emailBtn.addEventListener('click', submitEmail);
-    if (emailInput) {
-      emailInput.addEventListener('input', function () {
-        if (emailMsg) emailMsg.classList.add('hidden');
-      });
-      emailInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          submitEmail();
-        }
-      });
-    }
-
-    // First paint with the defaults.
-    compute();
-  })();
-</script>

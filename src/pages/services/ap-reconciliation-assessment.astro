@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import RoiCalculator from '../../components/RoiCalculator.astro';
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -192,6 +193,29 @@ const faqSchema = {
         <p class="text-sm text-gray-600 italic">
           Your specific numbers fall out of the assessment; we anchor every recommendation to your actual baseline, not industry averages.
         </p>
+
+      </div>
+
+      <!-- Inline ROI calculator, pre-set to reconciliations and computing on
+           first paint. Replaces the old deep-link band so the prospect runs the
+           numbers without leaving the page. -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-charcoal mb-4">Run Your Own Reconciliation ROI</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-8">
+          Conservative reconciliation numbers are filled in below and the return updates live as you type. Adjust the hours, loaded cost, and adoption to your own account count and exception rate, and watch monthly savings, cumulative net over one, three, and five years, and simple payback move with them. No email required.
+        </p>
+        <RoiCalculator scenario="reconciliations" compact />
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <a
+            href="/contact?from=ap-reconciliation"
+            class="inline-flex items-center justify-center px-6 py-3.5 bg-amber hover:bg-amber-dark text-charcoal font-bold text-base rounded-lg transition-colors shadow-lg shadow-amber/20"
+          >
+            Book a Discovery Call
+          </a>
+          <a href="/tools/roi-calculator" class="text-sm font-semibold text-amber-dark hover:text-amber underline decoration-1 underline-offset-2">
+            Try Other Scenarios in the Full Calculator
+          </a>
+        </div>
       </div>
 
       <!-- Where the recovered capacity goes -->
