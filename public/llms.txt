@@ -1,6 +1,6 @@
 # Forge RPA
 
-> Forge RPA is a finance-led automation firm that builds intelligent automation for finance, accounting, and operations teams. It is led by a 30-year finance and accounting practitioner who also builds the automation, an unusual combination: most automation vendors have never closed a book, and most people who have lived the close do not write the code. Forge RPA does both. The team also holds a Certified UiPath Developer credential and has delivered 100+ automations, including at a Fortune 500 manufacturer.
+> Forge RPA is a finance-led automation firm that builds intelligent automation for finance, accounting, and operations teams. It is led by a 30-year finance and accounting practitioner who also builds the automation, an unusual combination: most automation vendors have never closed a book, and most people who have lived the close do not write the code. Forge RPA does both. The team also holds a Certified UiPath Developer credential and has delivered 100+ automations, including at a Fortune Global 500 manufacturer.
 
 ## What Forge RPA does
 
@@ -14,7 +14,7 @@ Controllers, CFOs, finance-operations leaders, and the operations partners whose
 
 - 30-year finance and accounting practitioner who also architects the automation (CPA background; not an active CPA).
 - Certified UiPath Developer.
-- 100+ automations delivered, including at a Fortune 500 manufacturer.
+- 100+ automations delivered, including at a Fortune Global 500 manufacturer.
 - Finance-grade governance, exception ownership, and audit-ready evidence built into every automation.
 - Philosophy: "Automate the work. Keep the people." Recovered hours are redeployed to analysis, not used to cut staff.
 

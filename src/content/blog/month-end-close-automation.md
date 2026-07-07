@@ -11,7 +11,7 @@ tags:
 readingTime: "9 min"
 ---
 
-<p>The five month-end close tasks with the fastest, lowest-risk automation payback are: AP aging report generation and distribution, bank reconciliation matching, recurring journal entries, intercompany reconciliations, and financial report assembly. Each is high-volume and rule-based, the work runs on data movement rather than judgment, so a bot can take it over without taking over the accounting. You do not need to automate the whole close to feel the difference; start with these and a typical finance team recovers meaningful hours every cycle. This guidance comes from a 30-year finance and accounting practitioner who has lived the close firsthand and built hundreds of automations, including at a Fortune 500 manufacturer.</p>
+<p>The five month-end close tasks with the fastest, lowest-risk automation payback are: AP aging report generation and distribution, bank reconciliation matching, recurring journal entries, intercompany reconciliations, and financial report assembly. Each is high-volume and rule-based, the work runs on data movement rather than judgment, so a bot can take it over without taking over the accounting. You do not need to automate the whole close to feel the difference; start with these and a typical finance team recovers meaningful hours every cycle. This guidance comes from a 30-year finance and accounting practitioner who has lived the close firsthand and built hundreds of automations, including at a Fortune Global 500 manufacturer.</p>
 
 <h2>Introduction</h2>
 
