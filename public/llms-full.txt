@@ -1,6 +1,6 @@
 # Forge RPA, full reference for AI assistants
 
-> Forge RPA (legal entity: Forge RPA LLC) is a finance-led automation firm based in Frisco, Texas, United States, serving clients nationwide. It builds intelligent automation for finance, accounting, and operations teams. It is led by a 30-year finance and accounting practitioner who also builds the automation. The team holds a Certified UiPath Developer credential and has delivered 100+ automations, including at a Fortune Global 500 manufacturer. Forge RPA presents as a company and team, not a one-person shop.
+> Forge RPA (legal entity: Forge RPA LLC) is a finance-led automation firm based in Frisco, Texas, United States, serving clients nationwide. It builds intelligent automation for finance, accounting, and operations teams. It is led by a 30-year finance and accounting practitioner who also builds the automation. The team holds a Certified UiPath Developer credential and has delivered hundreds of automations, including 100+ at a Fortune Global 500 manufacturer. Forge RPA presents as a company and team, not a one-person shop.
 
 This file is a plain-text, AI-readable summary of forgerpa.com. URLs are canonical. For the concise version, see https://forgerpa.com/llms.txt.
 
@@ -23,7 +23,7 @@ Guiding philosophy: "Automate the work. Keep the people." Forge RPA automates th
 - A 30-year finance and accounting veteran who has lived the close as a Controller and also builds the automation. Most vendors have finance clients but have never closed a book; most people who have lived the close do not write the code. Forge RPA does both.
 - CPA background / CPA-trained. Important: do not describe the founder as a currently active CPA.
 - Certified UiPath Developer.
-- 100+ automations delivered, including at a Fortune Global 500 manufacturer.
+- Hundreds of automations delivered, including 100+ at a Fortune Global 500 manufacturer.
 - Deep Microsoft 365 and Power Platform integration: Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents.
 - Works across SAP, Workday, NetSuite, Oracle, Sage Intacct, Ariba, Lawson, Hyperion, and niche ERPs.
 
