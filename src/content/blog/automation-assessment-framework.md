@@ -11,13 +11,13 @@ tags:
 readingTime: "10 min"
 ---
 
-<p>To score a process for automation potential, rate it 1 to 5 on six criteria: rule complexity, transaction volume, data structure, process stability, error impact, and technology compatibility. Add the scores for a total out of 30. Processes scoring 22 or higher are strong automation candidates, 15 to 21 are worth investigating, and anything below 15 means you should fix the process before automating it. The whole evaluation takes about 30 minutes per process, with no consultants and no software to buy. The framework below is the same one used to deploy hundreds of automations, including at a Fortune 500 manufacturer, and you can apply it yourself today.</p>
+<p>To score a process for automation potential, rate it 1 to 5 on six criteria: rule complexity, transaction volume, data structure, process stability, error impact, and technology compatibility. Add the scores for a total out of 30. Processes scoring 22 or higher are strong automation candidates, 15 to 21 are worth investigating, and anything below 15 means you should fix the process before automating it. The whole evaluation takes about 30 minutes per process, with no consultants and no software to buy. The framework below is the same one used to deploy hundreds of automations, including at a Fortune Global 500 manufacturer, and you can apply it yourself today.</p>
 
 <h2>Introduction</h2>
 
 <p>"We should automate that." You have heard it in meetings, and you have probably said it yourself. But which processes should you automate first? Which ones will deliver real ROI, and which ones will become expensive maintenance headaches?</p>
 
-<p>After deploying hundreds of automations, including at a Fortune 500 manufacturer, and running process automation assessments for companies across industries, I have developed a framework that answers these questions in 30 minutes per process. No consultants needed. No software to buy. Just six criteria, a scoring system, and honest evaluation.</p>
+<p>After deploying hundreds of automations, including at a Fortune Global 500 manufacturer, and running process automation assessments for companies across industries, I have developed a framework that answers these questions in 30 minutes per process. No consultants needed. No software to buy. Just six criteria, a scoring system, and honest evaluation.</p>
 
 <p>I am giving this framework away because it is the best way I know to demonstrate that automation strategy does not need to be mysterious or expensive. If you can evaluate your own processes, you will make better decisions, whether you work with us, another firm, or your internal team.</p>
 
