@@ -1,7 +1,1 @@
-<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- Forge RPA brand mark (marketing / amber variant). Rounded charcoal square -->
-  <!-- with a bold amber "F" monogram. Sales + app sites reuse this mark with a -->
-  <!-- different fill. Built to read at 16px. -->
-  <rect width="32" height="32" rx="7" fill="#1a1a2e"/>
-  <path d="M10 7h13v4.2h-8.3v3.4h7.2v4.2h-7.2V25H10z" fill="#f59e0b"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Forge RPA"><polygon points="84.5,183.1 184.4,145.3 427.5,145.3 427.5,202.0 343.8,202.0 330.2,220.9 330.2,280.3 392.4,331.6 392.4,366.7 149.3,366.7 149.3,331.6 211.4,280.3 211.4,220.9 200.6,202.0 84.5,183.1" fill="#f59e0b"/></svg>
