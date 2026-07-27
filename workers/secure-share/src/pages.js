@@ -80,6 +80,14 @@ textarea:focus,input:focus,select:focus{
 select{font-family:var(--font-sans); cursor:pointer}
 .field{margin-bottom:1.25rem}
 .hint{color:var(--gray-500); font-size:.8rem; margin:.4rem 0 0; font-family:var(--font-sans); line-height:1.45}
+.seg{display:inline-flex; background:var(--slate); border:1px solid var(--gray-300); border-radius:8px; padding:3px; margin-bottom:.7rem; gap:3px}
+.seg-btn{appearance:none; border:none; background:transparent; cursor:pointer; font-family:var(--font-sans); font-weight:600; font-size:.85rem; color:var(--gray-500); padding:.4rem 1rem; border-radius:6px}
+.seg-btn.active{background:#fff; color:var(--charcoal); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+input[type=file]{font-family:var(--font-sans); font-size:.9rem; padding:.6rem .7rem; cursor:pointer}
+.filecard{display:flex; align-items:center; gap:.85rem; background:var(--slate); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; margin-bottom:1rem}
+.filecard svg{flex:none; width:30px; height:30px; color:var(--amber-dark)}
+.filecard .fname{font-weight:600; color:var(--gray-900); word-break:break-all; font-family:var(--font-mono); font-size:.9rem}
+.filecard .fsize{color:var(--gray-500); font-size:.8rem; margin-top:.15rem; font-family:var(--font-sans)}
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
   width:100%; padding:.85rem 1.5rem; border:none; border-radius:8px; cursor:pointer;
@@ -142,6 +150,12 @@ const LOCK_ICON =
   'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
 
+const FILE_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+  '<polyline points="14 2 14 8 20 8"/></svg>';
+
 function shell(title, bodyHtml, scriptSrc) {
   return (
     "<!DOCTYPE html>" +
@@ -191,9 +205,20 @@ export function renderCreatePage() {
     '<p class="lede">Paste a password, key, or connection string. It is encrypted in your ' +
     "browser before it ever leaves this page. The link can be opened once, then it is gone.</p>" +
     '<div class="field">' +
-    '<label for="secret">Secret</label>' +
+    "<label>Secret</label>" +
+    '<div class="seg" id="mode-seg">' +
+    '<button type="button" class="seg-btn active" data-mode="text">Text</button>' +
+    '<button type="button" class="seg-btn" data-mode="file">File</button>' +
+    "</div>" +
+    '<div id="text-field">' +
     '<textarea id="secret" autocomplete="off" autocorrect="off" autocapitalize="off" ' +
     'spellcheck="false" placeholder="Paste the password, key, or connection string to share"></textarea>' +
+    "</div>" +
+    '<div id="file-field" style="display:none">' +
+    '<input id="file-input" type="file">' +
+    '<p class="hint">For keys, certificates, and small config files (under 50 KB). ' +
+    "Encrypted in your browser exactly like text.</p>" +
+    "</div>" +
     "</div>" +
     '<div class="field">' +
     '<label for="ttl">Expires After</label>' +
@@ -283,12 +308,19 @@ export function renderViewPage(env, mode) {
     "</div>" +
     '<div id="secret-panel" style="display:none">' +
     "<h1>Here Is Your Secret</h1>" +
-    '<div class="outbox">' +
+    '<div id="text-out-wrap" class="outbox" style="display:none">' +
     '<label for="secret-out">Secret</label>' +
     '<textarea id="secret-out" readonly spellcheck="false"></textarea>' +
     '<div class="btn-row">' +
     '<button id="copy-secret-btn" class="btn">Copy Secret</button>' +
     "</div>" +
+    "</div>" +
+    '<div id="file-out-wrap" style="display:none">' +
+    '<div class="filecard">' +
+    FILE_ICON +
+    '<div><div class="fname" id="file-name"></div><div class="fsize" id="file-size"></div></div>' +
+    "</div>" +
+    '<button id="download-btn" class="btn">Download File</button>' +
     "</div>" +
     "</div>" +
     '<div id="status" class="msg"></div>' +
@@ -306,6 +338,8 @@ export function renderViewPage(env, mode) {
 export const CREATE_JS = `(function(){
   "use strict";
   var PBKDF2_ITER=210000;
+  var mode="text";
+  var FILE_MAX=51200;
   var $=function(id){return document.getElementById(id);};
   function b64(buf){
     var bytes=new Uint8Array(buf),bin="";
@@ -347,19 +381,34 @@ export const CREATE_JS = `(function(){
     $("link-out").focus();
     $("link-out").select();
   }
+  function buildPayload(){
+    // Returns a Promise for the JSON envelope string to encrypt, or rejects
+    // with a user-facing message string. The server never sees this; it is
+    // encrypted client-side just like a plain secret.
+    if(mode==="file"){
+      var f=$("file-input").files[0];
+      if(!f){return Promise.reject("Choose a file to share.");}
+      if(f.size>FILE_MAX){return Promise.reject("That file is too large. Keep files under 50 KB (keys and small configs).");}
+      return f.arrayBuffer().then(function(buf){
+        return JSON.stringify({k:"f",n:f.name,m:f.type||"application/octet-stream",b:b64(buf)});
+      });
+    }
+    var secret=$("secret").value;
+    if(!secret){return Promise.reject("Enter a secret to share.");}
+    return Promise.resolve(JSON.stringify({k:"t",b:secret}));
+  }
   function onCreate(){
     setError("");
-    var secret=$("secret").value;
-    if(!secret){setError("Enter a secret to share.");return;}
     var passphrase=$("passphrase").value;
     var btn=$("create-btn");
     btn.disabled=true;btn.textContent="Encrypting...";
     (async function(){
       try{
+        var payloadJson=await buildPayload();
         var enc=new TextEncoder();
         var contentKey=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);
         var iv=crypto.getRandomValues(new Uint8Array(12));
-        var ctBuf=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},contentKey,enc.encode(secret));
+        var ctBuf=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},contentKey,enc.encode(payloadJson));
         var rawKey=await crypto.subtle.exportKey("raw",contentKey);
         var ttl=parseInt($("ttl").value,10);
         var res=await fetch("/admin/api/create",{
@@ -369,7 +418,7 @@ export const CREATE_JS = `(function(){
         });
         if(res.status===403){setError("You are not authorized to create links here.");return;}
         if(res.status===429){setError("Too many links were created from here. Wait a few minutes and try again.");return;}
-        if(res.status===413){setError("That secret is too large. Keep it under 100 KB.");return;}
+        if(res.status===413){setError("That is too large. Keep secrets under about 90 KB and files under 50 KB.");return;}
         if(!res.ok){setError("Something went wrong creating the link. Please try again.");return;}
         var data=await res.json();
         var frag;
@@ -385,9 +434,11 @@ export const CREATE_JS = `(function(){
         var link=location.origin+"/s#"+frag;
         $("secret").value="";
         $("passphrase").value="";
+        if($("file-input")){$("file-input").value="";}
         showResult(link,data.ttl||ttl,passphrase);
       }catch(e){
-        setError("Your browser blocked encryption. Secure Share needs a modern browser over HTTPS.");
+        if(typeof e==="string"){setError(e);}
+        else{setError("Your browser blocked encryption. Secure Share needs a modern browser over HTTPS.");}
       }finally{
         btn.disabled=false;btn.textContent="Create Secure Link";
       }
@@ -415,6 +466,17 @@ export const CREATE_JS = `(function(){
     $("copy-btn").addEventListener("click",function(){copyFrom(function(){return $("link-out").value;},"copy-btn","Copy Link");});
     $("copy-pass-btn").addEventListener("click",function(){copyFrom(function(){return $("pass-value").textContent;},"copy-pass-btn","Copy");});
     $("another-btn").addEventListener("click",onAnother);
+    var seg=$("mode-seg");
+    if(seg){seg.addEventListener("click",function(e){
+      var b=e.target.closest("[data-mode]");
+      if(!b)return;
+      mode=b.getAttribute("data-mode");
+      var btns=seg.querySelectorAll(".seg-btn");
+      for(var i=0;i<btns.length;i++){btns[i].classList.toggle("active",btns[i]===b);}
+      $("text-field").style.display=(mode==="text")?"block":"none";
+      $("file-field").style.display=(mode==="file")?"block":"none";
+      setError("");
+    });}
     if(!window.crypto||!window.crypto.subtle){
       setError("This browser does not support the Web Crypto API. Open Secure Share in a modern browser over HTTPS.");
       $("create-btn").disabled=true;
@@ -460,13 +522,39 @@ export const REVEAL_JS = `(function(){
     if(parts.length===5&&parts[1]==="P"&&parts[0]){return {mode:"pass",id:parts[0],salt:parts[2],wrapIv:parts[3],wrapped:parts[4]};}
     return null;
   }
-  function showSecret(plaintext){
+  var fileBlobUrl=null;
+  function showText(text){
+    $("text-out-wrap").style.display="block";
+    // textarea.value, never innerHTML: a hostile secret cannot inject markup.
+    $("secret-out").value=text;
+    var rows=Math.min(14,Math.max(3,text.split("\\n").length+1));
+    $("secret-out").rows=rows;
+  }
+  function humanSize(n){
+    if(n<1024)return n+" B";
+    if(n<1048576)return (n/1024).toFixed(1)+" KB";
+    return (n/1048576).toFixed(1)+" MB";
+  }
+  function showFile(name,mime,dataB64){
+    var bytes=fromB64(dataB64);
+    fileBlobUrl=URL.createObjectURL(new Blob([bytes],{type:mime||"application/octet-stream"}));
+    $("file-out-wrap").style.display="block";
+    $("file-name").textContent=name||"download";
+    $("file-size").textContent=humanSize(bytes.length);
+    $("download-btn").onclick=function(){
+      var a=document.createElement("a");
+      a.href=fileBlobUrl;a.download=name||"download";
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    };
+  }
+  function showPayload(plaintext){
     hideReveal();
     $("secret-panel").style.display="block";
-    // textarea.value, never innerHTML: a hostile secret cannot inject markup.
-    $("secret-out").value=plaintext;
-    var rows=Math.min(14,Math.max(3,plaintext.split("\\n").length+1));
-    $("secret-out").rows=rows;
+    var env=null;
+    try{env=JSON.parse(plaintext);}catch(e){env=null;}
+    if(env&&env.k==="f"){showFile(env.n,env.m,env.b);}
+    else if(env&&env.k==="t"){showText(env.b);}
+    else{showText(plaintext);} // older non-enveloped links: treat as plain text
     setStatus("This secret has now been destroyed. Reloading this page will not bring it back.","ok");
   }
   async function fetchAndDecrypt(id,contentKey){
@@ -486,7 +574,7 @@ export const REVEAL_JS = `(function(){
       return;
     }
     try{history.replaceState(null,"",location.pathname);}catch(e){}
-    showSecret(new TextDecoder().decode(pt));
+    showPayload(new TextDecoder().decode(pt));
   }
   function onReveal(){
     var btn=$("reveal-btn");
