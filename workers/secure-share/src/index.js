@@ -24,6 +24,7 @@
 import {
   renderCreatePage,
   renderViewPage,
+  renderHistoryPage,
   CREATE_JS,
   REVEAL_JS,
   FAVICON_SVG,
@@ -155,6 +156,101 @@ function newId() {
 
 function isPlausibleId(id) {
   return typeof id === "string" && /^[A-Za-z0-9_-]{16,64}$/.test(id);
+}
+
+function isEmail(s) {
+  return typeof s === "string" && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s) && s.length <= 160;
+}
+
+// ---------------------------------------------------------------------------
+// Transaction metadata (NOT the secret). Stored in KV per-key metadata so the
+// history view is a single list() call. Holds a sender-chosen label, the
+// recipient (if emailed), timestamps, status, and file/passphrase flags. The
+// ciphertext and key are never here. Keyed by sha256(id) so the KV keyspace
+// does not reveal circulating ids. Best-effort: never fails a create/reveal.
+// ---------------------------------------------------------------------------
+const META_TTL = 2592000; // keep history rows 30 days
+
+async function sha256b64url(str) {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return toB64url(new Uint8Array(d));
+}
+
+async function metaKey(id) {
+  return "m:" + (await sha256b64url(id));
+}
+
+async function writeMeta(env, id, fields) {
+  if (!env.SECRETS) return;
+  try {
+    await env.SECRETS.put(await metaKey(id), "1", {
+      expirationTtl: META_TTL,
+      metadata: fields,
+    });
+  } catch {
+    /* metadata is best-effort */
+  }
+}
+
+async function markOpened(env, id) {
+  if (!env.SECRETS) return null;
+  try {
+    const key = await metaKey(id);
+    const rec = await env.SECRETS.getWithMetadata(key);
+    const md = rec && rec.metadata ? rec.metadata : null;
+    if (!md) return null;
+    md.s = "opened";
+    md.o = Math.floor(Date.now() / 1000);
+    await env.SECRETS.put(key, "1", { expirationTtl: META_TTL, metadata: md });
+    return md;
+  } catch {
+    return null;
+  }
+}
+
+async function listMeta(env) {
+  if (!env.SECRETS) return [];
+  try {
+    const res = await env.SECRETS.list({ prefix: "m:", limit: 1000 });
+    const rows = (res.keys || []).map((k) => k.metadata || {}).filter((m) => m && m.c);
+    rows.sort((a, b) => (b.c || 0) - (a.c || 0));
+    return rows.slice(0, 200);
+  } catch {
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Cockpit bridge (forgerpa-sales MS Graph pipe). Inert until SECURE_SHARE_SECRET
+// is set. Used to email a recipient the link and to notify David on open.
+// The link (which carries the key in its fragment) passes through here only for
+// the opt-in email path; it is never logged or stored.
+// ---------------------------------------------------------------------------
+async function cockpitPost(env, path, payload) {
+  if (!env.SECURE_SHARE_SECRET) return { ok: false, notConfigured: true };
+  const base = env.COCKPIT_URL || "https://sales.forgerpa.com";
+  try {
+    const res = await fetch(base + path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-secure-share-secret": env.SECURE_SHARE_SECRET,
+      },
+      body: JSON.stringify(payload),
+    });
+    return { ok: res.ok, status: res.status };
+  } catch {
+    return { ok: false, status: 502 };
+  }
+}
+
+async function notifyOpened(env, md) {
+  if (!env.SECURE_SHARE_SECRET) return;
+  await cockpitPost(env, "/api/secure-share/opened", {
+    label: md && md.l ? md.l : "",
+    recipient: md && md.r ? md.r : "",
+    openedAt: Math.floor(Date.now() / 1000),
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -294,13 +390,25 @@ async function handleCreate(request, env) {
   });
   if (!res.ok) return json({ error: "store_failed" }, 500);
 
+  // Record non-secret transaction metadata for the history view.
+  const nowSec = Math.floor(Date.now() / 1000);
+  await writeMeta(env, id, {
+    l: typeof body.label === "string" ? body.label.slice(0, 120) : "",
+    r: isEmail(body.to) ? body.to : "",
+    c: nowSec,
+    e: nowSec + ttlSec,
+    s: "active",
+    p: !!body.hasPass,
+    f: !!body.hasFile,
+  });
+
   return json({ id, ttl: ttlSec });
 }
 
 // ---------------------------------------------------------------------------
 // API: reveal.  Body { id }. Returns { ct, iv } exactly once, then burns it.
 // ---------------------------------------------------------------------------
-async function handleReveal(request, env) {
+async function handleReveal(request, env, ctx) {
   const ip = request.headers.get("CF-Connecting-IP");
   if (!(await underLimit(env, "r", ip, cfg(env, "REVEAL_LIMIT"), cfg(env, "REVEAL_WINDOW")))) {
     return json({ error: "rate_limited" }, 429);
@@ -319,6 +427,17 @@ async function handleReveal(request, env) {
   const res = await stub.fetch("https://do/reveal", { method: "POST" });
   // The DO returns 200 { ct, iv } (and has already burned it) or 410 { gone }.
   const payload = await res.text();
+
+  if (res.status === 200 && ctx) {
+    // Record the open and notify the sender, off the response path.
+    ctx.waitUntil(
+      (async () => {
+        const md = await markOpened(env, id);
+        await notifyOpened(env, md);
+      })(),
+    );
+  }
+
   return new Response(payload, {
     status: res.status,
     headers: {
@@ -329,10 +448,49 @@ async function handleReveal(request, env) {
 }
 
 // ---------------------------------------------------------------------------
+// API: send.  Access-gated (under /admin). Emails the recipient the link via
+// the cockpit. The link carries the key in its fragment; per the sender's
+// choice, it passes through the mail pipe here (never logged, never stored).
+// ---------------------------------------------------------------------------
+async function handleSend(request, env) {
+  if (!(await accessAuthorized(request, env))) {
+    return json({ error: "forbidden" }, 403);
+  }
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (!(await underLimit(env, "c", ip, cfg(env, "CREATE_LIMIT"), cfg(env, "CREATE_WINDOW")))) {
+    return json({ error: "rate_limited" }, 429);
+  }
+  if (!env.SECURE_SHARE_SECRET) return json({ error: "email_not_configured" }, 503);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "bad_request" }, 400);
+  }
+  const { link, to, passphrase, alsoPass, label } = body || {};
+  if (typeof link !== "string" || !/^https:\/\/\S+#\S+$/.test(link) || link.length > 4096) {
+    return json({ error: "bad_request" }, 400);
+  }
+  if (!isEmail(to)) return json({ error: "bad_recipient" }, 400);
+
+  const r = await cockpitPost(env, "/api/secure-share/send", {
+    to,
+    link,
+    label: typeof label === "string" ? label.slice(0, 120) : "",
+    passphrase: typeof passphrase === "string" ? passphrase : "",
+    alsoEmailPassphrase: !!alsoPass && typeof passphrase === "string" && !!passphrase,
+  });
+  if (r.notConfigured) return json({ error: "email_not_configured" }, 503);
+  if (!r.ok) return json({ error: "send_failed" }, 502);
+  return json({ ok: true });
+}
+
+// ---------------------------------------------------------------------------
 // Router.
 // ---------------------------------------------------------------------------
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const { pathname } = url;
     const method = request.method;
@@ -344,6 +502,9 @@ export default {
         case "/admin":
         case "/admin/":
           return html(renderCreatePage(env));
+        case "/admin/history":
+        case "/admin/history/":
+          return html(renderHistoryPage(env, await listMeta(env)));
         case "/admin/create.js":
           return js(CREATE_JS);
         case "/s":
@@ -364,7 +525,8 @@ export default {
 
     if (method === "POST") {
       if (pathname === "/admin/api/create") return handleCreate(request, env);
-      if (pathname === "/api/reveal") return handleReveal(request, env);
+      if (pathname === "/admin/api/send") return handleSend(request, env);
+      if (pathname === "/api/reveal") return handleReveal(request, env, ctx);
       return json({ error: "not_found" }, 404);
     }
 

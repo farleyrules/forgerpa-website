@@ -136,6 +136,19 @@ footer.site .inner{max-width:720px; margin:0 auto; padding:1.5rem 1.25rem; text-
 footer.site a{color:var(--gray-300); text-decoration:none}
 footer.site a:hover{color:var(--amber-light)}
 footer.site .copy{color:var(--gray-500); margin-top:.35rem}
+.hist-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.25rem}
+.hist-head h1{margin:0}
+.hist-head .btn{width:auto; padding:.55rem 1rem; font-size:.85rem}
+.tablewrap{overflow-x:auto; margin-top:1rem}
+table.hist{width:100%; border-collapse:collapse; font-size:.88rem}
+table.hist th{text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--gray-500); font-weight:700; padding:.5rem .6rem; border-bottom:2px solid var(--line)}
+table.hist td{padding:.65rem .6rem; border-bottom:1px solid var(--line); vertical-align:top; word-break:break-word}
+.muted{color:var(--gray-400)}
+.pill{display:inline-block; font-size:.75rem; font-weight:700; padding:.2rem .55rem; border-radius:999px; white-space:nowrap}
+.pill.st-active{background:#eff6ff; color:#1e40af}
+.pill.st-opened{background:#f0fdf4; color:#166534}
+.pill.st-expired{background:#f3f4f6; color:#6b7280}
+.tag{display:inline-block; font-size:.68rem; font-weight:600; color:var(--amber-dark); background:#fffbeb; border:1px solid #fde68a; border-radius:5px; padding:.05rem .35rem; margin-left:.25rem}
 @media (max-width:480px){
   main{padding:1.5rem 1rem 2.5rem}
   .card{padding:1.5rem}
@@ -236,6 +249,21 @@ export function renderCreatePage() {
     '<p class="hint">Recommended for high-value secrets. Send it to the recipient separately ' +
     "(text or a call), never with the link. It also stops email scanners from opening the link.</p>" +
     "</div>" +
+    '<div class="field">' +
+    '<label for="label">Label (Optional)</label>' +
+    '<input id="label" type="text" autocomplete="off" maxlength="120" ' +
+    'placeholder="A name for your history, e.g. MRCO OneDataSource SFTP">' +
+    '<p class="hint">Only for your Send History. Never shown to the recipient or part of the secret.</p>' +
+    "</div>" +
+    '<div class="field">' +
+    '<label for="recipient">Email To (Optional)</label>' +
+    '<input id="recipient" type="email" autocomplete="off" placeholder="vendor@example.com">' +
+    '<p class="hint">If set, Forge RPA emails them the link. Leave blank to copy and send it yourself.</p>' +
+    '<label id="alsopass-wrap" style="display:none;margin-top:.6rem;font-weight:500;font-size:.85rem;color:var(--gray-700)">' +
+    '<input id="alsopass" type="checkbox" style="width:auto;margin-right:.45rem;vertical-align:middle">' +
+    "Also email the passphrase in a separate message" +
+    "</label>" +
+    "</div>" +
     '<button id="create-btn" class="btn">Create Secure Link</button>' +
     '<div id="error" class="msg err"></div>' +
     '<div class="assure">' +
@@ -244,6 +272,7 @@ export function renderCreatePage() {
     "only in the link fragment after the # sign, which browsers never send to a server. " +
     "We store encrypted text and nothing else.</span>" +
     "</div>" +
+    '<p class="note" style="margin-top:1.25rem"><a href="/admin/history">View Send History</a></p>' +
     "</div>" +
     '<div id="result-panel" style="display:none">' +
     "<h1>Your Secure Link Is Ready</h1>" +
@@ -257,6 +286,7 @@ export function renderCreatePage() {
     "</div>" +
     '<p id="ttl-note" class="note"></p>' +
     "</div>" +
+    '<div id="email-note" class="msg"></div>' +
     '<div id="pass-reminder" class="pass-reminder">' +
     "<strong>Send this passphrase separately.</strong> The recipient needs it to open the " +
     "link. Do not send it in the same message as the link." +
@@ -328,6 +358,72 @@ export function renderViewPage(env, mode) {
   return shell("You Have a Secret | Forge RPA Secure Share", body, "/reveal.js");
 }
 
+// Server-rendered history of created secrets (metadata only). Access-gated at
+// the edge because it lives under /admin. rows come from index.js listMeta().
+export function renderHistoryPage(env, rows) {
+  const esc = (s) =>
+    String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  const fmt = (sec) => {
+    if (!sec) return "";
+    try {
+      return (
+        new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Chicago",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        }).format(new Date(sec * 1000)) + " CT"
+      );
+    } catch (e) {
+      return new Date(sec * 1000).toISOString().slice(0, 16).replace("T", " ") + " UTC";
+    }
+  };
+  const nowSec = Math.floor(Date.now() / 1000);
+  let trs = "";
+  for (const m of rows) {
+    let status, cls;
+    if (m.s === "opened") {
+      status = "Opened " + fmt(m.o);
+      cls = "st-opened";
+    } else if (m.e && m.e < nowSec) {
+      status = "Expired";
+      cls = "st-expired";
+    } else {
+      status = "Active";
+      cls = "st-active";
+    }
+    const tags =
+      (m.f ? '<span class="tag">File</span>' : "") +
+      (m.p ? '<span class="tag">Passphrase</span>' : "");
+    trs +=
+      "<tr>" +
+      "<td>" + (esc(m.l) || '<span class="muted">(no label)</span>') + " " + tags + "</td>" +
+      "<td>" + (esc(m.r) || '<span class="muted">copied by hand</span>') + "</td>" +
+      "<td>" + fmt(m.c) + "</td>" +
+      '<td><span class="pill ' + cls + '">' + esc(status) + "</span></td>" +
+      "</tr>";
+  }
+  if (!trs) {
+    trs = '<tr><td colspan="4" class="muted" style="text-align:center;padding:2rem">No secrets sent yet.</td></tr>';
+  }
+  const body =
+    '<div class="card">' +
+    '<div class="hist-head"><h1>Send History</h1>' +
+    '<a class="btn secondary" href="/admin">New Secure Link</a></div>' +
+    '<p class="lede">Your last 200 secrets (metadata only, never the secret itself). ' +
+    "Rows disappear 30 days after creation.</p>" +
+    '<div class="tablewrap"><table class="hist">' +
+    "<thead><tr><th>Label</th><th>Recipient</th><th>Created</th><th>Status</th></tr></thead>" +
+    "<tbody>" + trs + "</tbody></table></div>" +
+    "</div>";
+  return shell("Send History | Forge RPA Secure Share", body, null);
+}
+
 // ---------------------------------------------------------------------------
 // Browser scripts. Written with string concatenation (no template literals /
 // backticks) so they embed cleanly as strings here. These run on the client;
@@ -381,6 +477,24 @@ export const CREATE_JS = `(function(){
     $("link-out").focus();
     $("link-out").select();
   }
+  function setEmailNote(msg,kind){
+    var e=$("email-note");
+    if(!e)return;
+    e.textContent=msg||"";
+    e.className="msg "+(kind||"");
+    e.style.display=msg?"block":"none";
+  }
+  function sendLink(link,to,passphrase,alsoPass,label){
+    setEmailNote("Emailing "+to+"...","warn");
+    fetch("/admin/api/send",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({link:link,to:to,passphrase:passphrase||"",alsoPass:!!alsoPass,label:label||""})
+    }).then(function(res){
+      if(res.status===503){setEmailNote("Email is not set up yet. Copy the link and send it yourself.","warn");return;}
+      if(!res.ok){setEmailNote("Could not email the link. Copy it and send it yourself.","err");return;}
+      setEmailNote("Link emailed to "+to+"."+((alsoPass&&passphrase)?" Passphrase sent in a separate email.":""),"ok");
+    }).catch(function(){setEmailNote("Could not email the link. Copy it and send it yourself.","err");});
+  }
   function buildPayload(){
     // Returns a Promise for the JSON envelope string to encrypt, or rejects
     // with a user-facing message string. The server never sees this; it is
@@ -399,7 +513,11 @@ export const CREATE_JS = `(function(){
   }
   function onCreate(){
     setError("");
+    setEmailNote("","");
     var passphrase=$("passphrase").value;
+    var label=$("label")?$("label").value:"";
+    var recipient=$("recipient")?$("recipient").value.trim():"";
+    var alsoPass=$("alsopass")&&$("alsopass").checked;
     var btn=$("create-btn");
     btn.disabled=true;btn.textContent="Encrypting...";
     (async function(){
@@ -414,7 +532,7 @@ export const CREATE_JS = `(function(){
         var res=await fetch("/admin/api/create",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({ct:b64(ctBuf),iv:b64(iv.buffer),ttl:ttl})
+          body:JSON.stringify({ct:b64(ctBuf),iv:b64(iv.buffer),ttl:ttl,label:label,to:recipient,hasPass:!!passphrase,hasFile:(mode==="file")})
         });
         if(res.status===403){setError("You are not authorized to create links here.");return;}
         if(res.status===429){setError("Too many links were created from here. Wait a few minutes and try again.");return;}
@@ -436,6 +554,10 @@ export const CREATE_JS = `(function(){
         $("passphrase").value="";
         if($("file-input")){$("file-input").value="";}
         showResult(link,data.ttl||ttl,passphrase);
+        if(recipient){sendLink(link,recipient,passphrase,alsoPass,label);}
+        if($("label")){$("label").value="";}
+        if($("recipient")){$("recipient").value="";}
+        if($("alsopass-wrap")){$("alsopass-wrap").style.display="none";}
       }catch(e){
         if(typeof e==="string"){setError(e);}
         else{setError("Your browser blocked encryption. Secure Share needs a modern browser over HTTPS.");}
@@ -466,6 +588,13 @@ export const CREATE_JS = `(function(){
     $("copy-btn").addEventListener("click",function(){copyFrom(function(){return $("link-out").value;},"copy-btn","Copy Link");});
     $("copy-pass-btn").addEventListener("click",function(){copyFrom(function(){return $("pass-value").textContent;},"copy-pass-btn","Copy");});
     $("another-btn").addEventListener("click",onAnother);
+    var updateAlsoPass=function(){
+      var show=$("passphrase").value&&$("recipient").value;
+      $("alsopass-wrap").style.display=show?"block":"none";
+      if(!show)$("alsopass").checked=false;
+    };
+    if($("passphrase"))$("passphrase").addEventListener("input",updateAlsoPass);
+    if($("recipient"))$("recipient").addEventListener("input",updateAlsoPass);
     var seg=$("mode-seg");
     if(seg){seg.addEventListener("click",function(e){
       var b=e.target.closest("[data-mode]");

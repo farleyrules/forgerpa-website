@@ -58,17 +58,28 @@ function makeDONamespace() {
 }
 
 const kv = new Map();
+const kvMeta = new Map();
 const env = {
   SECRET_DO: makeDONamespace(),
   SECRETS: {
     async get(k) {
       return kv.has(k) ? kv.get(k) : null;
     },
-    async put(k, v) {
+    async getWithMetadata(k) {
+      return { value: kv.has(k) ? kv.get(k) : null, metadata: kvMeta.has(k) ? kvMeta.get(k) : null };
+    },
+    async put(k, v, opts) {
       kv.set(k, v);
+      if (opts && opts.metadata !== undefined) kvMeta.set(k, opts.metadata);
     },
     async delete(k) {
       kv.delete(k);
+      kvMeta.delete(k);
+    },
+    async list(o) {
+      const prefix = (o && o.prefix) || "";
+      const keys = [...kv.keys()].filter((k) => k.startsWith(prefix)).map((k) => ({ name: k, metadata: kvMeta.get(k) }));
+      return { keys, list_complete: true };
     },
   },
   DEFAULT_TTL_SECONDS: "259200",
@@ -96,7 +107,8 @@ createServer(async (req, res) => {
   });
 
   try {
-    const response = await worker.fetch(request, env);
+    const ctx = { waitUntil(p) { Promise.resolve(p).catch(() => {}); } };
+    const response = await worker.fetch(request, env, ctx);
     res.statusCode = response.status;
     response.headers.forEach((v, k) => res.setHeader(k, v));
     const buf = Buffer.from(await response.arrayBuffer());

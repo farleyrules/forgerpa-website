@@ -56,17 +56,30 @@ function makeDONamespace() {
 
 function makeEnv(extra) {
   const kv = new Map();
+  const meta = new Map();
   return {
     SECRET_DO: makeDONamespace(),
     SECRETS: {
       async get(k) {
         return kv.has(k) ? kv.get(k) : null;
       },
-      async put(k, v) {
+      async getWithMetadata(k) {
+        return { value: kv.has(k) ? kv.get(k) : null, metadata: meta.has(k) ? meta.get(k) : null };
+      },
+      async put(k, v, opts) {
         kv.set(k, v);
+        if (opts && opts.metadata !== undefined) meta.set(k, opts.metadata);
       },
       async delete(k) {
         kv.delete(k);
+        meta.delete(k);
+      },
+      async list(o) {
+        const prefix = (o && o.prefix) || "";
+        const keys = [...kv.keys()]
+          .filter((k) => k.startsWith(prefix))
+          .map((k) => ({ name: k, metadata: meta.get(k) }));
+        return { keys, list_complete: true };
       },
     },
     DEFAULT_TTL_SECONDS: "259200",
@@ -250,6 +263,56 @@ async function run() {
   const robots = await get("/robots.txt", env);
   ok("robots.txt disallows all", (await robots.text()).includes("Disallow: /"));
   ok("PUT is 405", (await worker.fetch(new Request(ORIGIN + "/admin/api/create", { method: "PUT" }), env)).status === 405);
+
+  // 8. Metadata + history + open-tracking.
+  const mEnv = makeEnv();
+  const em = await encryptInBrowser("history-check");
+  const mCreate = await (
+    await post("/admin/api/create", { ct: em.ct, iv: em.iv, ttl: 3600, label: "MRCO SFTP handoff", to: "vendor@example.com", hasPass: true, hasFile: false }, mEnv)
+  ).json();
+  const hist1 = await (await get("/admin/history", mEnv)).text();
+  ok("history lists the label", hist1.includes("MRCO SFTP handoff"));
+  ok("history lists the recipient", hist1.includes("vendor@example.com"));
+  ok("history shows Active before open", hist1.includes(">Active<"));
+  ok("history marks passphrase secrets", hist1.includes(">Passphrase<"));
+  const ctx8 = { _p: [], waitUntil(p) { this._p.push(p); } };
+  await worker.fetch(new Request(ORIGIN + "/api/reveal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: mCreate.id }) }), mEnv, ctx8);
+  await Promise.all(ctx8._p);
+  const hist2 = await (await get("/admin/history", mEnv)).text();
+  ok("history shows Opened after reveal", hist2.includes("Opened"));
+
+  // 9. Send endpoint is 503 when SECURE_SHARE_SECRET is unset (inert).
+  const send503 = await post("/admin/api/send", { to: "v@x.com", link: "https://secure.forgerpa.com/s#abc.def" }, mEnv);
+  ok("send is 503 when email unconfigured", send503.status === 503, "status=" + send503.status);
+
+  // 10. Send + notify when configured (stub global fetch to the cockpit).
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (u, init) => {
+    calls.push({ url: String(u), headers: (init && init.headers) || {}, body: (init && init.body) || "" });
+    return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json" } });
+  };
+  try {
+    const cfgEnv = makeEnv({ SECURE_SHARE_SECRET: "test-shared-secret", COCKPIT_URL: "https://cockpit.test" });
+    const sres = await post("/admin/api/send", { to: "vendor@example.com", link: "https://secure.forgerpa.com/s#id123.key456", label: "L" }, cfgEnv);
+    ok("send returns 200 when configured", sres.status === 200, "status=" + sres.status);
+    const sendCall = calls.find((c) => c.url.includes("/api/secure-share/send"));
+    ok("send POSTs to cockpit send endpoint", !!sendCall);
+    ok("send passes the shared-secret header", !!(sendCall && sendCall.headers["x-secure-share-secret"] === "test-shared-secret"));
+    ok("send body carries to + full link", !!(sendCall && sendCall.body.includes("vendor@example.com") && sendCall.body.includes("id123.key456")));
+
+    calls.length = 0;
+    const ne = await encryptInBrowser("notify-check");
+    const nc = await (await post("/admin/api/create", { ct: ne.ct, iv: ne.iv, ttl: 3600, label: "notify-label", to: "r@x.com" }, cfgEnv)).json();
+    const ctx = { _p: [], waitUntil(p) { this._p.push(p); } };
+    await worker.fetch(new Request(ORIGIN + "/api/reveal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: nc.id }) }), cfgEnv, ctx);
+    await Promise.all(ctx._p);
+    const openedCall = calls.find((c) => c.url.includes("/api/secure-share/opened"));
+    ok("reveal notifies cockpit opened endpoint", !!openedCall);
+    ok("opened payload has label but no key/ciphertext", !!(openedCall && openedCall.body.includes("notify-label") && !openedCall.body.includes("ct") && !/\bkey\b/.test(openedCall.body)));
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 
   console.log("\n" + pass + " passed, " + fail + " failed\n");
   if (fail > 0) process.exit(1);

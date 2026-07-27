@@ -37,7 +37,13 @@
     "CREATE_LIMIT": "20",
     "CREATE_WINDOW": "600",
     "REVEAL_LIMIT": "60",
-    "REVEAL_WINDOW": "60"
+    "REVEAL_WINDOW": "60",
+    "COCKPIT_URL": "https://sales.forgerpa.com"
+    // Email delivery + open-receipts go through the forgerpa-sales cockpit. The
+    // shared secret is NOT here (it is a secret). Set it with:
+    //   npx wrangler secret put SECURE_SHARE_SECRET
+    // and set the SAME value in the Vercel env for forgerpa-sales. Until set,
+    // the email + receipt features are inert (the create UI says "not set up").
     // Access defense-in-depth (set AFTER the Access app exists, then redeploy):
     //   "ACCESS_TEAM_DOMAIN": "forgerpa.cloudflareaccess.com",
     //   "ACCESS_AUD": "<application audience tag from the Access app>"
