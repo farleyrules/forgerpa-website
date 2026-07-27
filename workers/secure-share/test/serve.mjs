@@ -1,25 +1,74 @@
 /**
  * Local HTTP adapter: serves the REAL Worker module over http://localhost:8788
- * with an in-memory KV stub, so a browser can exercise the full create/reveal/
- * burn flow (including create.js and reveal.js). Used because workerd local dev
- * does not start on this Windows box. NOT for production.
+ * with in-memory stubs for the KV (rate limiting) and Durable Object (secrets)
+ * bindings, so a browser can exercise the full create/reveal/burn flow including
+ * the passphrase path. Used because workerd local dev does not start on this
+ * Windows box. NOT for production.
  *
  * localhost is a secure context, so window.crypto.subtle is available.
  */
 import { createServer } from "node:http";
 import worker from "../src/index.js";
 
-const store = new Map();
+// In-memory Durable Object namespace stub. Node is single-threaded and requests
+// are processed sequentially, so read-and-delete is atomic here by construction
+// (mirroring the real DO's blockConcurrencyWhile guarantee).
+function makeDONamespace() {
+  const instances = new Map();
+  const storageFor = (name) => {
+    if (!instances.has(name)) instances.set(name, new Map());
+    return instances.get(name);
+  };
+  return {
+    idFromName: (name) => ({ name }),
+    get: (id) => ({
+      async fetch(url, init) {
+        const u = new URL(url);
+        const method = (init && init.method) || "GET";
+        const store = storageFor(id.name);
+        if (method === "POST" && u.pathname === "/store") {
+          const { ct, iv, ttl } = JSON.parse(init.body);
+          store.set("ct", ct);
+          store.set("iv", iv);
+          store.set("expireAt", Date.now() + ttl * 1000);
+          return new Response(JSON.stringify({ ok: true }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        if (method === "POST" && u.pathname === "/reveal") {
+          const ct = store.get("ct");
+          const expireAt = store.get("expireAt");
+          if (ct == null || (expireAt != null && Date.now() > expireAt)) {
+            store.clear();
+            return new Response(JSON.stringify({ error: "gone" }), {
+              status: 410,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+          const iv = store.get("iv");
+          store.clear();
+          return new Response(JSON.stringify({ ct, iv }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return new Response(JSON.stringify({ error: "not_found" }), { status: 404 });
+      },
+    }),
+  };
+}
+
+const kv = new Map();
 const env = {
+  SECRET_DO: makeDONamespace(),
   SECRETS: {
     async get(k) {
-      return store.has(k) ? store.get(k) : null;
+      return kv.has(k) ? kv.get(k) : null;
     },
     async put(k, v) {
-      store.set(k, v);
+      kv.set(k, v);
     },
     async delete(k) {
-      store.delete(k);
+      kv.delete(k);
     },
   },
   DEFAULT_TTL_SECONDS: "259200",
@@ -43,6 +92,7 @@ createServer(async (req, res) => {
     method: req.method,
     headers: req.headers,
     body: req.method === "GET" || req.method === "HEAD" ? undefined : body,
+    redirect: "manual",
   });
 
   try {

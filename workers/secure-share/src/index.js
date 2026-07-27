@@ -5,16 +5,20 @@
  * Design contract:
  *  - The plaintext secret is encrypted in the SENDER'S BROWSER with AES-256-GCM
  *    (Web Crypto). This Worker only ever receives ciphertext. It never sees the
- *    plaintext or the decryption key.
- *  - The 256-bit key lives ONLY in the URL fragment (after '#'), which browsers
- *    never transmit to any server. This Worker cannot reconstruct it.
- *  - Ciphertext is stored in KV under sha256(id) with a TTL. The first successful
- *    reveal deletes it (burn after read). A second reader gets 410 Gone.
- *  - Nothing sensitive is placed in a request URL: the id and key travel in the
+ *    plaintext or the decryption key. An optional recipient passphrase wraps the
+ *    key entirely client-side (see pages.js), so the server stays zero-knowledge
+ *    whether or not a passphrase is used.
+ *  - The key lives ONLY in the URL fragment (after '#'), which browsers never
+ *    transmit to any server. This Worker cannot reconstruct it.
+ *  - Ciphertext is stored in a per-secret Durable Object (SecretDO). The first
+ *    reveal atomically returns and deletes it (burn after read). A second reader
+ *    gets 410 Gone. See secret-do.js.
+ *  - Creation lives under /admin/* so Cloudflare Access can gate it with one
+ *    path. The recipient side (/s, /api/reveal) stays public. workers.dev is
+ *    disabled so the Access gate cannot be bypassed.
+ *  - Nothing sensitive is placed in a request URL: the id + key travel in the
  *    fragment (create) or a POST body (reveal), so edge request logs contain no
  *    id, key, or ciphertext. We add no logging of our own.
- *
- * See README.md for the burn-race note and the Durable Objects upgrade path.
  */
 
 import {
@@ -24,6 +28,10 @@ import {
   REVEAL_JS,
   FAVICON_SVG,
 } from "./pages.js";
+import { SecretDO } from "./secret-do.js";
+
+// Re-export the Durable Object class so the runtime can bind it.
+export { SecretDO };
 
 // ---------------------------------------------------------------------------
 // Config (overridable via wrangler [vars]; all arrive as strings).
@@ -33,10 +41,10 @@ const DEFAULTS = {
   MIN_TTL_SECONDS: 300, // 5m
   MAX_TTL_SECONDS: 604800, // 7d
   MAX_CIPHERTEXT_BYTES: 153600, // 150 KB of base64 ciphertext
-  CREATE_LIMIT: 20, // creates per window per IP
-  CREATE_WINDOW: 600, // 10 minutes
-  REVEAL_LIMIT: 60, // reveals per window per IP
-  REVEAL_WINDOW: 60, // 1 minute
+  CREATE_LIMIT: 20,
+  CREATE_WINDOW: 600,
+  REVEAL_LIMIT: 60,
+  REVEAL_WINDOW: 60,
 };
 
 function cfg(env, key) {
@@ -46,7 +54,7 @@ function cfg(env, key) {
 }
 
 // ---------------------------------------------------------------------------
-// Response helpers + hardened headers (applied to every response).
+// Hardened headers (applied to every response).
 // ---------------------------------------------------------------------------
 const BASE_HEADERS = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
@@ -61,10 +69,6 @@ const BASE_HEADERS = {
   "Cache-Control": "no-store, max-age=0",
 };
 
-// default-src 'none' with scripts locked to same-origin. Styles are inline
-// (style-src 'unsafe-inline') but the only dynamic content ever written to the
-// DOM (the decrypted secret) is inserted with textContent, never innerHTML, so
-// a malicious "secret" cannot inject markup or script.
 const CSP =
   "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; " +
   "img-src 'self' data:; connect-src 'self'; font-src 'self'; " +
@@ -119,9 +123,15 @@ function svg(body) {
   });
 }
 
+function redirect(location) {
+  return new Response(null, {
+    status: 302,
+    headers: { ...BASE_HEADERS, Location: location },
+  });
+}
+
 // ---------------------------------------------------------------------------
-// Small crypto helpers (server side is only used for id generation + hashing
-// the id into a KV key; all secret encryption happens in the browser).
+// id + base64url helpers.
 // ---------------------------------------------------------------------------
 function toB64url(bytes) {
   let bin = "";
@@ -129,63 +139,120 @@ function toB64url(bytes) {
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+function fromB64url(str) {
+  str = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (str.length % 4) str += "=";
+  const bin = atob(str);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
 function newId() {
-  // 16 random bytes -> 128 bits of entropy -> 22 base64url chars. Unguessable.
+  // 16 random bytes -> 128 bits -> 22 base64url chars. Unguessable.
   return toB64url(crypto.getRandomValues(new Uint8Array(16)));
 }
 
-async function kvKeyForId(id) {
-  // Store under sha256(id) so a KV keyspace listing never reveals the ids that
-  // are actually in circulation (those live only in recipients' fragments).
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(id),
-  );
-  return "s:" + toB64url(new Uint8Array(digest));
-}
-
-// A single reveal only ever needs one id; keep validation strict so garbage
-// never reaches KV.
 function isPlausibleId(id) {
   return typeof id === "string" && /^[A-Za-z0-9_-]{16,64}$/.test(id);
 }
 
 // ---------------------------------------------------------------------------
-// Best-effort per-IP rate limiting via KV counters (fixed window).
-// Fail-open: a KV hiccup must never take the tool down. This is abuse
-// mitigation, not a hard quota; a Cloudflare WAF rate rule can supplement it.
+// Best-effort per-IP rate limiting via KV counters (fixed window). Fail-open.
 // ---------------------------------------------------------------------------
 async function underLimit(env, bucket, ip, limit, windowSec) {
-  if (!ip) return true; // cannot identify the caller (e.g. local dev): allow
+  if (!ip || !env.SECRETS) return true;
   const window = Math.floor(Date.now() / 1000 / windowSec);
   const key = `rl:${bucket}:${ip}:${window}`;
   try {
     const cur = parseInt((await env.SECRETS.get(key)) || "0", 10);
     if (cur >= limit) return false;
-    // expirationTtl has a 60s KV minimum; clamp so short windows still store.
     await env.SECRETS.put(key, String(cur + 1), {
       expirationTtl: Math.max(60, windowSec),
     });
     return true;
   } catch {
-    return true; // fail-open
+    return true;
   }
 }
 
 // ---------------------------------------------------------------------------
-// API: create.  Body { ct, iv, ttl }. Returns { id }. Never logs or echoes ct.
+// Cloudflare Access JWT verification (defense in depth). Inert until ACCESS_AUD
+// is configured; when set, POST /admin/api/create requires a valid Access token
+// so the origin cannot be used to create secrets outside the Access gate.
+// ---------------------------------------------------------------------------
+let JWKS_CACHE = { domain: null, at: 0, keys: null };
+
+async function accessKeys(teamDomain) {
+  const now = Date.now();
+  if (JWKS_CACHE.keys && JWKS_CACHE.domain === teamDomain && now - JWKS_CACHE.at < 3600000) {
+    return JWKS_CACHE.keys;
+  }
+  const res = await fetch(`https://${teamDomain}/cdn-cgi/access/certs`);
+  if (!res.ok) throw new Error("jwks fetch failed");
+  const body = await res.json();
+  JWKS_CACHE = { domain: teamDomain, at: now, keys: body.keys || [] };
+  return JWKS_CACHE.keys;
+}
+
+async function accessAuthorized(request, env) {
+  if (!env.ACCESS_AUD) return true; // inert until configured
+  const teamDomain = env.ACCESS_TEAM_DOMAIN;
+  if (!teamDomain) return false;
+  const token =
+    request.headers.get("Cf-Access-Jwt-Assertion") ||
+    cookieValue(request, "CF_Authorization");
+  if (!token) return false;
+  try {
+    const [h, p, s] = token.split(".");
+    if (!h || !p || !s) return false;
+    const header = JSON.parse(new TextDecoder().decode(fromB64url(h)));
+    const payload = JSON.parse(new TextDecoder().decode(fromB64url(p)));
+    const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+    if (!auds.includes(env.ACCESS_AUD)) return false;
+    if (payload.iss !== `https://${teamDomain}`) return false;
+    if (!payload.exp || Date.now() / 1000 > payload.exp) return false;
+    const jwk = (await accessKeys(teamDomain)).find((k) => k.kid === header.kid);
+    if (!jwk) return false;
+    const key = await crypto.subtle.importKey(
+      "jwk",
+      jwk,
+      { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+      false,
+      ["verify"],
+    );
+    const ok = await crypto.subtle.verify(
+      "RSASSA-PKCS1-v1_5",
+      key,
+      fromB64url(s),
+      new TextEncoder().encode(`${h}.${p}`),
+    );
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+function cookieValue(request, name) {
+  const raw = request.headers.get("Cookie");
+  if (!raw) return null;
+  for (const part of raw.split(";")) {
+    const [k, ...v] = part.trim().split("=");
+    if (k === name) return v.join("=");
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// API: create.  Body { ct, iv, ttl }. Returns { id, ttl }. Never logs ct.
 // ---------------------------------------------------------------------------
 async function handleCreate(request, env) {
+  if (!(await accessAuthorized(request, env))) {
+    return json({ error: "forbidden" }, 403);
+  }
+
   const ip = request.headers.get("CF-Connecting-IP");
-  if (
-    !(await underLimit(
-      env,
-      "c",
-      ip,
-      cfg(env, "CREATE_LIMIT"),
-      cfg(env, "CREATE_WINDOW"),
-    ))
-  ) {
+  if (!(await underLimit(env, "c", ip, cfg(env, "CREATE_LIMIT"), cfg(env, "CREATE_WINDOW")))) {
     return json({ error: "rate_limited" }, 429);
   }
 
@@ -206,7 +273,6 @@ async function handleCreate(request, env) {
   if (typeof ct !== "string" || typeof iv !== "string" || !ct || !iv) {
     return json({ error: "bad_request" }, 400);
   }
-  // base64 charset guard + hard size cap (defends KV from blob-stuffing abuse).
   if (!/^[A-Za-z0-9+/=]+$/.test(ct) || ct.length > maxBytes) {
     return json({ error: "too_large" }, 413);
   }
@@ -221,10 +287,12 @@ async function handleCreate(request, env) {
   ttlSec = Math.min(max, Math.max(min, ttlSec));
 
   const id = newId();
-  const key = await kvKeyForId(id);
-  await env.SECRETS.put(key, JSON.stringify({ ct, iv, v: 1 }), {
-    expirationTtl: ttlSec,
+  const stub = env.SECRET_DO.get(env.SECRET_DO.idFromName(id));
+  const res = await stub.fetch("https://do/store", {
+    method: "POST",
+    body: JSON.stringify({ ct, iv, ttl: ttlSec }),
   });
+  if (!res.ok) return json({ error: "store_failed" }, 500);
 
   return json({ id, ttl: ttlSec });
 }
@@ -234,15 +302,7 @@ async function handleCreate(request, env) {
 // ---------------------------------------------------------------------------
 async function handleReveal(request, env) {
   const ip = request.headers.get("CF-Connecting-IP");
-  if (
-    !(await underLimit(
-      env,
-      "r",
-      ip,
-      cfg(env, "REVEAL_LIMIT"),
-      cfg(env, "REVEAL_WINDOW"),
-    ))
-  ) {
+  if (!(await underLimit(env, "r", ip, cfg(env, "REVEAL_LIMIT"), cfg(env, "REVEAL_WINDOW")))) {
     return json({ error: "rate_limited" }, 429);
   }
 
@@ -255,24 +315,17 @@ async function handleReveal(request, env) {
   const id = body && body.id;
   if (!isPlausibleId(id)) return json({ error: "bad_request" }, 400);
 
-  const key = await kvKeyForId(id);
-  const stored = await env.SECRETS.get(key);
-  if (stored == null) return json({ error: "gone" }, 410);
-
-  // Burn. NOTE: KV has no atomic read-and-delete, so a get/delete race exists
-  // (two reads landing inside KV's propagation window could both succeed). For
-  // this tool the link is delivered out of band to one recipient, so the window
-  // is not reachable in practice; README documents the Durable Objects upgrade
-  // for hard atomic one-time semantics.
-  await env.SECRETS.delete(key);
-
-  let parsed;
-  try {
-    parsed = JSON.parse(stored);
-  } catch {
-    return json({ error: "gone" }, 410);
-  }
-  return json({ ct: parsed.ct, iv: parsed.iv });
+  const stub = env.SECRET_DO.get(env.SECRET_DO.idFromName(id));
+  const res = await stub.fetch("https://do/reveal", { method: "POST" });
+  // The DO returns 200 { ct, iv } (and has already burned it) or 410 { gone }.
+  const payload = await res.text();
+  return new Response(payload, {
+    status: res.status,
+    headers: {
+      ...BASE_HEADERS,
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -287,12 +340,15 @@ export default {
     if (method === "GET" || method === "HEAD") {
       switch (pathname) {
         case "/":
+          return redirect("/admin");
+        case "/admin":
+        case "/admin/":
           return html(renderCreatePage(env));
+        case "/admin/create.js":
+          return js(CREATE_JS);
         case "/s":
         case "/s/":
           return html(renderViewPage(env));
-        case "/create.js":
-          return js(CREATE_JS);
         case "/reveal.js":
           return js(REVEAL_JS);
         case "/favicon.svg":
@@ -307,7 +363,7 @@ export default {
     }
 
     if (method === "POST") {
-      if (pathname === "/api/create") return handleCreate(request, env);
+      if (pathname === "/admin/api/create") return handleCreate(request, env);
       if (pathname === "/api/reveal") return handleReveal(request, env);
       return json({ error: "not_found" }, 404);
     }

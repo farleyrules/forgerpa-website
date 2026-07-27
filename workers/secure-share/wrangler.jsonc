@@ -6,10 +6,21 @@
   "main": "src/index.js",
   "compatibility_date": "2026-06-22",
 
-  // KV holds ciphertext only, under sha256(id), with a per-secret TTL.
-  // Create the namespace once with:  npx wrangler kv namespace create SECRETS
-  // then paste the returned id below (and a preview id for `wrangler dev`,
-  // though local dev simulates KV and ignores it).
+  // Only the custom domain serves this Worker. workers.dev is disabled so the
+  // Cloudflare Access gate on secure.forgerpa.com/admin cannot be bypassed via a
+  // *.workers.dev URL.
+  "workers_dev": false,
+
+  "routes": [{ "pattern": "secure.forgerpa.com", "custom_domain": true }],
+
+  // Secrets live in a per-secret Durable Object (idFromName(id)): strong
+  // consistency gives an atomic read-and-delete, so burn-after-read has no race.
+  "durable_objects": {
+    "bindings": [{ "name": "SECRET_DO", "class_name": "SecretDO" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SecretDO"] }],
+
+  // KV is retained only for best-effort per-IP rate-limit counters (not secrets).
   "kv_namespaces": [
     {
       "binding": "SECRETS",
@@ -18,12 +29,6 @@
     }
   ],
 
-  // The public subdomain. custom_domain:true makes wrangler create the Worker
-  // custom domain AND the DNS record automatically (forgerpa.com is on
-  // Cloudflare). Change the hostname here if you prefer share.forgerpa.com.
-  "routes": [{ "pattern": "secure.forgerpa.com", "custom_domain": true }],
-
-  // Tunable limits. All read as strings in src/index.js (see DEFAULTS there).
   "vars": {
     "DEFAULT_TTL_SECONDS": "259200",
     "MIN_TTL_SECONDS": "300",
@@ -33,9 +38,11 @@
     "CREATE_WINDOW": "600",
     "REVEAL_LIMIT": "60",
     "REVEAL_WINDOW": "60"
+    // Access defense-in-depth (set AFTER the Access app exists, then redeploy):
+    //   "ACCESS_TEAM_DOMAIN": "forgerpa.cloudflareaccess.com",
+    //   "ACCESS_AUD": "<application audience tag from the Access app>"
+    // While unset, the Worker skips JWT verification (Cloudflare Access at the
+    // edge is the gate). Once set, POST /admin/api/create also verifies the
+    // Cf-Access-Jwt-Assertion signature, audience, and expiry.
   }
-
-  // Note: observability/logs are intentionally left OFF. Even if enabled, no id,
-  // key, or ciphertext appears in a request URL by design, but we keep the
-  // default (no request logging) for this tool.
 }
