@@ -107,7 +107,7 @@ select{font-family:var(--font-sans); cursor:pointer}
 .outbox{margin-top:.5rem}
 .outbox .row{display:flex; gap:.6rem; align-items:stretch}
 .outbox input,.outbox textarea{background:var(--slate)}
-.outbox .row .btn{width:auto; padding:.75rem 1.1rem; white-space:nowrap}
+.outbox .row .btn,.pass-reminder .row .btn{width:auto; padding:.75rem 1.1rem; white-space:nowrap}
 .note{color:var(--gray-500); font-size:.85rem; margin:.75rem 0 0}
 .pass-reminder{
   display:none; margin-top:1.25rem; padding:.85rem .95rem; border-radius:10px;
@@ -133,7 +133,7 @@ footer.site .copy{color:var(--gray-500); margin-top:.35rem}
   .card{padding:1.5rem}
   .brand .sub{display:none}
   .outbox .row,.pass-reminder .row{flex-direction:column}
-  .outbox .row .btn{width:100%}
+  .outbox .row .btn,.pass-reminder .row .btn{width:100%}
 }
 `;
 
