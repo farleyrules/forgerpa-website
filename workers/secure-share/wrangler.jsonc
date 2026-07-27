@@ -1,0 +1,41 @@
+{
+  // Forge RPA Secure Share: a standalone Cloudflare Worker, deployed separately
+  // from the marketing site (this is NOT built by the forgerpa.com Git
+  // connection). Deploy with `npx wrangler deploy` from this directory.
+  "name": "forge-secure-share",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-22",
+
+  // KV holds ciphertext only, under sha256(id), with a per-secret TTL.
+  // Create the namespace once with:  npx wrangler kv namespace create SECRETS
+  // then paste the returned id below (and a preview id for `wrangler dev`,
+  // though local dev simulates KV and ignores it).
+  "kv_namespaces": [
+    {
+      "binding": "SECRETS",
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID",
+      "preview_id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ],
+
+  // The public subdomain. custom_domain:true makes wrangler create the Worker
+  // custom domain AND the DNS record automatically (forgerpa.com is on
+  // Cloudflare). Change the hostname here if you prefer share.forgerpa.com.
+  "routes": [{ "pattern": "secure.forgerpa.com", "custom_domain": true }],
+
+  // Tunable limits. All read as strings in src/index.js (see DEFAULTS there).
+  "vars": {
+    "DEFAULT_TTL_SECONDS": "259200",
+    "MIN_TTL_SECONDS": "300",
+    "MAX_TTL_SECONDS": "604800",
+    "MAX_CIPHERTEXT_BYTES": "153600",
+    "CREATE_LIMIT": "20",
+    "CREATE_WINDOW": "600",
+    "REVEAL_LIMIT": "60",
+    "REVEAL_WINDOW": "60"
+  }
+
+  // Note: observability/logs are intentionally left OFF. Even if enabled, no id,
+  // key, or ciphertext appears in a request URL by design, but we keep the
+  // default (no request logging) for this tool.
+}

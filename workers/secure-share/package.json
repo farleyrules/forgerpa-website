@@ -1,0 +1,17 @@
+{
+  "name": "forge-secure-share",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Zero-knowledge, one-time-view encrypted secret links for Forge RPA.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "test": "node test/harness.mjs",
+    "serve": "node test/serve.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.114.0"
+  }
+}
