@@ -30,6 +30,7 @@ import {
   FAVICON_SVG,
 } from "./pages.js";
 import { SecretDO } from "./secret-do.js";
+import { ANVIL_PNG_B64 } from "./anvil.js";
 
 // Re-export the Durable Object class so the runtime can bind it.
 export { SecretDO };
@@ -128,6 +129,23 @@ function redirect(location) {
   return new Response(null, {
     status: 302,
     headers: { ...BASE_HEADERS, Location: location },
+  });
+}
+
+let ANVIL_BYTES = null;
+function anvilPng() {
+  if (!ANVIL_BYTES) {
+    const bin = atob(ANVIL_PNG_B64);
+    ANVIL_BYTES = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) ANVIL_BYTES[i] = bin.charCodeAt(i);
+  }
+  return new Response(ANVIL_BYTES, {
+    status: 200,
+    headers: {
+      ...BASE_HEADERS,
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=86400",
+    },
   });
 }
 
@@ -514,6 +532,8 @@ export default {
           return js(REVEAL_JS);
         case "/favicon.svg":
           return svg(FAVICON_SVG);
+        case "/anvil-mark.png":
+          return anvilPng();
         case "/healthz":
           return text("ok");
         case "/robots.txt":

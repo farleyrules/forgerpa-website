@@ -55,7 +55,7 @@ header.site .bar{
   display:flex; align-items:center; justify-content:space-between;
 }
 .brand{display:flex; align-items:center; gap:.6rem; text-decoration:none}
-.brand .anvil{width:34px; height:34px; display:block}
+.brand .anvil{height:34px; width:auto; display:block}
 .brand .name{color:var(--amber); font-weight:800; font-size:1.5rem; letter-spacing:-.01em}
 .brand .divider{width:1px; height:22px; background:var(--gray-700)}
 .brand .sub{color:var(--gray-300); font-weight:500; font-size:.95rem}
@@ -188,9 +188,7 @@ function shell(title, bodyHtml, scriptSrc) {
     "</head><body>" +
     '<header class="site"><div class="bar">' +
     '<a class="brand" href="https://forgerpa.com">' +
-    '<span class="anvil">' +
-    FAVICON_SVG +
-    "</span>" +
+    '<img class="anvil" src="/anvil-mark.png" alt="Forge RPA" width="52" height="34">' +
     '<span class="name">Forge RPA</span>' +
     '<span class="divider"></span>' +
     '<span class="sub">Secure Share</span>' +
