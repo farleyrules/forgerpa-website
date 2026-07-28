@@ -63,8 +63,8 @@ header.site .bar{
 .homelink:hover{color:#fff}
 main{flex:1; width:100%; max-width:640px; margin:0 auto; padding:2.5rem 1.25rem 3rem}
 .card{
-  background:#fff; border:1px solid var(--line); border-radius:16px;
-  padding:2rem; box-shadow:0 10px 25px -12px rgba(26,26,46,.18);
+  background:#fff; border:1px solid var(--line); border-top:3px solid var(--amber);
+  border-radius:16px; padding:2rem 2rem 2rem; box-shadow:0 10px 25px -12px rgba(26,26,46,.18);
 }
 h1{font-size:1.6rem; font-weight:800; letter-spacing:-.02em; margin:0 0 .5rem; color:var(--charcoal)}
 .lede{color:var(--gray-500); margin:0 0 1.5rem; font-size:1rem}
@@ -81,8 +81,10 @@ select{font-family:var(--font-sans); cursor:pointer}
 .field{margin-bottom:1.25rem}
 .hint{color:var(--gray-500); font-size:.8rem; margin:.4rem 0 0; font-family:var(--font-sans); line-height:1.45}
 .seg{display:inline-flex; background:var(--slate); border:1px solid var(--gray-300); border-radius:8px; padding:3px; margin-bottom:.7rem; gap:3px}
-.seg-btn{appearance:none; border:none; background:transparent; cursor:pointer; font-family:var(--font-sans); font-weight:600; font-size:.85rem; color:var(--gray-500); padding:.4rem 1rem; border-radius:6px}
-.seg-btn.active{background:#fff; color:var(--charcoal); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg-btn{appearance:none; border:none; background:transparent; cursor:pointer; font-family:var(--font-sans); font-weight:600; font-size:.85rem; color:var(--gray-500); padding:.4rem 1rem; border-radius:6px; transition:background-color .12s,color .12s}
+.seg-btn:hover{color:var(--charcoal)}
+.seg-btn.active{background:var(--amber); color:var(--charcoal); box-shadow:0 2px 5px -1px rgba(245,158,11,.5)}
+.seg-btn.active:hover{background:var(--amber-dark); color:var(--charcoal)}
 input[type=file]{font-family:var(--font-sans); font-size:.9rem; padding:.6rem .7rem; cursor:pointer}
 .filecard{display:flex; align-items:center; gap:.85rem; background:var(--slate); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; margin-bottom:1rem}
 .filecard svg{flex:none; width:30px; height:30px; color:var(--amber-dark)}
@@ -728,7 +730,12 @@ export const REVEAL_JS = `(function(){
           }
           contentKey=await crypto.subtle.importKey("raw",rawKey,{name:"AES-GCM"},false,["decrypt"]);
         }else{
-          contentKey=await crypto.subtle.importKey("raw",fromB64url(parsed.key),{name:"AES-GCM"},false,["decrypt"]);
+          try{
+            contentKey=await crypto.subtle.importKey("raw",fromB64url(parsed.key),{name:"AES-GCM"},false,["decrypt"]);
+          }catch(e){
+            setStatus("This link appears corrupted or incomplete. Ask the sender to resend the full link.","err");
+            return;
+          }
         }
         await fetchAndDecrypt(parsed.id,contentKey);
       }catch(e){
