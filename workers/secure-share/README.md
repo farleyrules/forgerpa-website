@@ -24,6 +24,16 @@ use `/s#...` links, which need no login.
   passphrase to unwrap it, and that unwrap happens entirely client-side **before
   any server fetch**, so a wrong passphrase never burns the secret, and an
   auto-clicking email scanner (which has no passphrase) cannot burn it either.
+- **Files, not just text.** A file (SSH key, `.pem`/`.ppk`, small config, under
+  50 KB) is wrapped in a small JSON envelope and encrypted client-side exactly
+  like text, so the server stays file-agnostic and zero-knowledge. Reveal offers a
+  one-time download.
+- **Optional email delivery.** The sender can have the tool email the link to a
+  recipient (branded, through the forgerpa-sales cockpit's Microsoft Graph pipe).
+  The link carries the key in its fragment, so for the email path the key transits
+  the mail pipe (the same exposure as sending it yourself); the storage server
+  still never sees it and never logs it. Copy-paste delivery keeps the key off
+  every server.
 - **Atomic burn after read.** Ciphertext lives in a per-secret **Durable Object**
   (`SecretDO`, addressed by `idFromName(id)`). `blockConcurrencyWhile` makes the
   read-and-delete atomic, so two simultaneous reveals cannot both succeed: the
@@ -43,18 +53,35 @@ use `/s#...` links, which need no login.
   written to a textarea via `.value` (never `innerHTML`), so a hostile secret
   cannot inject script into the viewer's page. No external requests at all.
 - **Abuse limits.** Per-IP rate limits on create (20 / 10 min) and reveal
-  (60 / min) via KV counters, plus a 150 KB ciphertext cap.
+  (60 / min) via KV counters, plus a 120 KB ciphertext cap (files capped at
+  50 KB, sized to stay under the Durable Object 128 KiB per-value limit).
+
+## Send history + receipts
+
+- **Send history** (`/admin/history`): a metadata-only log of created secrets
+  (label, recipient, created time, status). It is stored in KV per-key metadata,
+  never the secret itself, and rows expire 30 days after creation. A sender-chosen
+  **Label** and optional **Email To** feed it.
+- **Open-tracking + receipts.** A reveal flips the history row from Active to
+  Opened and, off the response path (`ctx.waitUntil`), notifies the sender through
+  the cockpit (email + a Discord ping). The receipt payload carries a label and
+  time only, never the key or ciphertext.
 
 ## Files
 
 | File | Role |
 |---|---|
-| `src/index.js` | Worker: router, DO calls, validation, rate limiting, Access JWT check, security headers. |
+| `src/index.js` | Worker: router, DO calls, validation, rate limiting, Access JWT check, KV metadata (history), the `/admin/api/send` email proxy + open-receipt bridge to the cockpit, security headers. |
 | `src/secret-do.js` | `SecretDO` Durable Object: atomic store / reveal-and-burn / expiry alarm. |
-| `src/pages.js` | Create + view HTML, inline CSS, and the browser scripts (`CREATE_JS`, `REVEAL_JS`) where AES-GCM + the PBKDF2 passphrase wrap/unwrap happen. |
-| `wrangler.jsonc` | Worker name, DO binding + migration, KV binding, custom-domain route, `workers_dev:false`, tunable limits, Access vars. |
-| `test/harness.mjs` | `node test/harness.mjs`: 30 checks against the real Worker module with DO + KV stubs and a real AES + passphrase round-trip. |
+| `src/pages.js` | Create / view / history HTML, inline CSS, and the browser scripts (`CREATE_JS`, `REVEAL_JS`) where AES-GCM, the PBKDF2 passphrase wrap/unwrap, and file encode/decode happen. |
+| `src/anvil.js` | The 3D anvil mark (base64 PNG) served at `/anvil-mark.png`. |
+| `wrangler.jsonc` | Worker name, DO binding + migration, KV binding, custom-domain route, `workers_dev:false`, tunable limits, Access + cockpit vars. |
+| `test/harness.mjs` | `node test/harness.mjs`: 42 checks against the real Worker module (DO + KV stubs, real AES + passphrase round-trip, history/open-tracking, send/receipt bridge). |
 | `test/serve.mjs` | `node test/serve.mjs`: serves the Worker on `http://localhost:8788` for a real-browser end-to-end test. |
+
+Email delivery + open-receipts flow through two shared-secret endpoints in the
+forgerpa-sales cockpit (`app/api/secure-share/{send,opened}`), which send via that
+repo's Microsoft Graph pipe. See "Email setup" below.
 
 ## Deployment
 
@@ -105,15 +132,36 @@ team domain (`<team>.cloudflareaccess.com`). Add to `wrangler.jsonc` `vars`:
 then `npx wrangler deploy`. Until these are set, the Worker skips JWT
 verification and relies on Access at the edge.
 
+## Email setup (link delivery + open-receipts)
+
+These features are inert until a shared secret is set in BOTH places (same value):
+
+```bash
+# 1. Worker side
+cd workers/secure-share && npx wrangler secret put SECURE_SHARE_SECRET
+# 2. Vercel side (forgerpa-sales project), same value:
+printf '%s' "<the same secret>" | vercel env add SECURE_SHARE_SECRET production
+```
+
+The cockpit endpoints also use the pre-existing `MS_GRAPH_*` mail creds and, for
+receipts, `STEWARD_NOTIFY_TO` (defaults `david@forgerpa.com`) +
+`DISCORD_WEBHOOK_SALES_GENERAL`. The Worker calls the cockpit at `COCKPIT_URL`
+(defaults `https://sales.forgerpa.com`). Until the secret is set, the create UI
+degrades to "Email is not set up yet. Copy the link and send it yourself."
+
 ## How to use it
 
 1. Go to `https://secure.forgerpa.com/admin` (log in via Access).
-2. Paste the secret, pick an expiry, optionally set a passphrase, click **Create
-   Secure Link**.
-3. Copy the link and send it to the recipient. If you set a passphrase, send it
-   **separately** (text or a call), never in the same message as the link.
-4. They open the link, enter the passphrase if required, click **Reveal Secret**,
-   and copy it. The link is now dead.
+2. Choose **Text** or **File**, enter the secret, pick an expiry. Optionally set a
+   passphrase, a **Label** (for your history), and an **Email To** (to have the
+   tool email the recipient the link). Click **Create Secure Link**.
+3. If you did not set Email To, copy the link and send it yourself. If you set a
+   passphrase, send it **separately** (text or a call), never with the link.
+4. The recipient opens the link, enters the passphrase if required, clicks
+   **Reveal Secret**, and copies it (or downloads the file). The link is now dead,
+   and you get an open-receipt.
+5. **Send History** (`/admin/history`) shows what you sent and whether it was
+   opened.
 
 ## Operational notes
 
@@ -130,7 +178,7 @@ verification and relies on Access at the edge.
 
 ```bash
 cd workers/secure-share
-node test/harness.mjs     # 30 server + crypto + passphrase + Access checks
+node test/harness.mjs     # 42 checks: crypto, passphrase, files, burn, history, send/receipt
 node test/serve.mjs       # then browse http://localhost:8788/admin for a live e2e
 ```
 
@@ -138,9 +186,13 @@ node test/serve.mjs       # then browse http://localhost:8788/admin for a live e
 `std::terminate()` on startup); the Node harness + adapter drive the exact Worker
 module instead.
 
-## v2 roadmap (remaining)
+## Roadmap (remaining)
 
-- **Sender receipt / notification** when a secret is opened (optional webhook to
-  the sales cockpit).
+- **Receipts in Central time.** The cockpit's `/opened` email renders the open
+  time in UTC (`toUTCString`); switch to `America/Chicago` for CT.
+- **Recipient identity gate.** Optional email one-time-PIN so only a named
+  recipient can open a link (stronger than a passphrase, but adds friction and a
+  stored recipient-email hash).
 - **Multi-view links** (max-views > 1) for a credential a small team all needs.
 - **Custom expiry input** beyond the four presets.
+- **Larger files** via R2 (current cap is 50 KB to fit the DO value limit).
