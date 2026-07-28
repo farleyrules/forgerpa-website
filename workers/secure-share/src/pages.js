@@ -119,6 +119,12 @@ input[type=file]{font-family:var(--font-sans); font-size:.9rem; padding:.6rem .7
 .outbox input,.outbox textarea{background:var(--slate)}
 .outbox .row .btn,.pass-reminder .row .btn{width:auto; padding:.75rem 1.1rem; white-space:nowrap}
 .note{color:var(--gray-500); font-size:.85rem; margin:.75rem 0 0}
+.mrow{display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; border:1px solid var(--line); border-radius:8px; margin-bottom:.5rem}
+.mrow .who{flex:1; font-family:var(--font-mono); font-size:.85rem; color:var(--gray-900); word-break:break-all}
+.mrow .st{font-weight:700; font-size:.78rem; white-space:nowrap}
+.mrow .st.ok{color:#166534}
+.mrow .st.err{color:#991b1b}
+.mrow .mcopy{width:auto; padding:.35rem .7rem; font-size:.78rem; box-shadow:none}
 .pass-reminder{
   display:none; margin-top:1.25rem; padding:.85rem .95rem; border-radius:10px;
   background:#fffbeb; border:1px solid #fde68a; color:#92400e; font-size:.88rem;
@@ -257,8 +263,17 @@ export function renderCreatePage() {
     "</div>" +
     '<div class="field">' +
     '<label for="recipient">Email To (Optional)</label>' +
-    '<input id="recipient" type="email" autocomplete="off" placeholder="vendor@example.com">' +
-    '<p class="hint">If set, Forge RPA emails them the link. Leave blank to copy and send it yourself.</p>' +
+    '<input id="recipient" type="text" autocomplete="off" placeholder="vendor@example.com, backup@example.com">' +
+    '<p class="hint">If set, Forge RPA emails them the link. Separate multiple addresses with commas. ' +
+    "Leave blank to copy and send it yourself.</p>" +
+    '<div id="delivery-wrap" style="display:none;margin-top:.7rem">' +
+    '<div class="seg" id="delivery-seg">' +
+    '<button type="button" class="seg-btn active" data-dmode="separate">Separate Link Each</button>' +
+    '<button type="button" class="seg-btn" data-dmode="shared">One Shared Link</button>' +
+    "</div>" +
+    '<p class="hint" id="delivery-hint">Each recipient gets their own one-time link. Everyone can retrieve it once, ' +
+    "and Send History shows who opened which.</p>" +
+    "</div>" +
     '<label id="alsopass-wrap" style="display:none;margin-top:.6rem;font-weight:500;font-size:.85rem;color:var(--gray-700)">' +
     '<input id="alsopass" type="checkbox" style="width:auto;margin-right:.45rem;vertical-align:middle">' +
     "Also email the passphrase in a separate message" +
@@ -275,10 +290,10 @@ export function renderCreatePage() {
     '<p class="note" style="margin-top:1.25rem"><a href="/admin/history">View Send History</a></p>' +
     "</div>" +
     '<div id="result-panel" style="display:none">' +
-    "<h1>Your Secure Link Is Ready</h1>" +
-    '<p class="lede">Share this link with the recipient over your normal channel. It can be ' +
-    "opened one time.</p>" +
-    '<div class="outbox">' +
+    '<h1 id="result-title">Your Secure Link Is Ready</h1>' +
+    '<p class="lede" id="result-lede">Share this link with the recipient over your normal channel. ' +
+    "It can be opened one time.</p>" +
+    '<div id="single-out" class="outbox">' +
     '<label for="link-out">One-Time Link</label>' +
     '<div class="row">' +
     '<input id="link-out" type="text" readonly>' +
@@ -286,6 +301,7 @@ export function renderCreatePage() {
     "</div>" +
     '<p id="ttl-note" class="note"></p>' +
     "</div>" +
+    '<div id="multi-list" style="display:none"></div>' +
     '<div id="email-note" class="msg"></div>' +
     '<div id="pass-reminder" class="pass-reminder">' +
     "<strong>Send this passphrase separately.</strong> The recipient needs it to open the " +
@@ -435,6 +451,7 @@ export const CREATE_JS = `(function(){
   "use strict";
   var PBKDF2_ITER=210000;
   var mode="text";
+  var deliveryMode="separate";
   var FILE_MAX=51200;
   var $=function(id){return document.getElementById(id);};
   function b64(buf){
@@ -465,17 +482,58 @@ export const CREATE_JS = `(function(){
           base,{name:"AES-GCM",length:256},false,usage);
       });
   }
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function parseRecipients(str){
+    if(!str)return [];
+    var parts=str.split(/[\\s,;]+/),seen={},out=[];
+    for(var i=0;i<parts.length;i++){
+      var raw=parts[i].trim(),e=raw.toLowerCase();
+      if(e&&/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(e)&&!seen[e]){seen[e]=1;out.push(raw);}
+    }
+    return out;
+  }
+  function clearForm(){
+    $("secret").value="";
+    $("passphrase").value="";
+    if($("file-input"))$("file-input").value="";
+    if($("label"))$("label").value="";
+    if($("recipient"))$("recipient").value="";
+    if($("alsopass-wrap"))$("alsopass-wrap").style.display="none";
+    if($("delivery-wrap"))$("delivery-wrap").style.display="none";
+  }
   function showResult(link,ttlSec,passphrase){
     $("form-panel").style.display="none";
     $("result-panel").style.display="block";
+    $("single-out").style.display="block";
+    $("multi-list").style.display="none";$("multi-list").innerHTML="";
+    $("result-title").textContent="Your Secure Link Is Ready";
+    $("result-lede").textContent="Share this link with the recipient over your normal channel. It can be opened one time.";
     $("link-out").value=link;
     $("ttl-note").textContent="This link opens once, then it is destroyed. It also expires in "+ttlLabel(ttlSec)+" if it is never opened.";
-    if(passphrase){
-      $("pass-value").textContent=passphrase;
-      $("pass-reminder").style.display="block";
+    if(passphrase){$("pass-value").textContent=passphrase;$("pass-reminder").style.display="block";}
+    $("link-out").focus();$("link-out").select();
+  }
+  function renderMulti(items,passphrase){
+    $("form-panel").style.display="none";
+    $("result-panel").style.display="block";
+    $("single-out").style.display="none";
+    $("result-title").textContent="Secure Links Sent";
+    $("result-lede").textContent="Each recipient got their own one-time link. Send History shows who opens which.";
+    var h="";
+    for(var i=0;i<items.length;i++){
+      var it=items[i],st,cp="";
+      if(it.sent.ok){st='<span class="st ok">Emailed</span>';}
+      else{st='<span class="st err">'+(it.sent.reason==="notset"?"Email off":"Failed")+'</span>';cp='<button class="btn mcopy" data-link="'+esc(it.link)+'">Copy Link</button>';}
+      h+='<div class="mrow"><span class="who">'+esc(it.recipient)+'</span>'+st+cp+'</div>';
     }
-    $("link-out").focus();
-    $("link-out").select();
+    var ml=$("multi-list");ml.innerHTML=h;ml.style.display="block";
+    var btns=ml.querySelectorAll(".mcopy");
+    for(var j=0;j<btns.length;j++){(function(b){b.addEventListener("click",function(){
+      var link=b.getAttribute("data-link");
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link);}
+      b.textContent="Copied";setTimeout(function(){b.textContent="Copy Link";},1500);
+    });})(btns[j]);}
+    if(passphrase){$("pass-value").textContent=passphrase;$("pass-reminder").style.display="block";}
   }
   function setEmailNote(msg,kind){
     var e=$("email-note");
@@ -484,16 +542,43 @@ export const CREATE_JS = `(function(){
     e.className="msg "+(kind||"");
     e.style.display=msg?"block":"none";
   }
-  function sendLink(link,to,passphrase,alsoPass,label){
-    setEmailNote("Emailing "+to+"...","warn");
-    fetch("/admin/api/send",{
+  function sendOne(link,to,passphrase,alsoPass,label){
+    return fetch("/admin/api/send",{
       method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({link:link,to:to,passphrase:passphrase||"",alsoPass:!!alsoPass,label:label||""})
     }).then(function(res){
-      if(res.status===503){setEmailNote("Email is not set up yet. Copy the link and send it yourself.","warn");return;}
-      if(!res.ok){setEmailNote("Could not email the link. Copy it and send it yourself.","err");return;}
-      setEmailNote("Link emailed to "+to+"."+((alsoPass&&passphrase)?" Passphrase sent in a separate email.":""),"ok");
-    }).catch(function(){setEmailNote("Could not email the link. Copy it and send it yourself.","err");});
+      if(res.status===503)return {ok:false,reason:"notset"};
+      if(!res.ok)return {ok:false,reason:"failed"};
+      return {ok:true};
+    }).catch(function(){return {ok:false,reason:"failed"};});
+  }
+  async function encryptAndCreate(payloadJson,meta,passphrase){
+    var enc=new TextEncoder();
+    var contentKey=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);
+    var iv=crypto.getRandomValues(new Uint8Array(12));
+    var ctBuf=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},contentKey,enc.encode(payloadJson));
+    var rawKey=await crypto.subtle.exportKey("raw",contentKey);
+    var ttl=parseInt($("ttl").value,10);
+    var res=await fetch("/admin/api/create",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ct:b64(ctBuf),iv:b64(iv.buffer),ttl:ttl,label:meta.label,to:meta.to,hasPass:!!passphrase,hasFile:meta.hasFile})
+    });
+    if(res.status===403)throw "You are not authorized to create links here.";
+    if(res.status===429)throw "Too many links were created from here. Wait a few minutes and try again.";
+    if(res.status===413)throw "That is too large. Keep secrets under about 90 KB and files under 50 KB.";
+    if(!res.ok)throw "Something went wrong creating the link. Please try again.";
+    var data=await res.json();
+    var frag;
+    if(passphrase){
+      var salt=crypto.getRandomValues(new Uint8Array(16));
+      var wrapIv=crypto.getRandomValues(new Uint8Array(12));
+      var wrapKey=await deriveWrapKey(passphrase,salt,["encrypt"]);
+      var wrapped=await crypto.subtle.encrypt({name:"AES-GCM",iv:wrapIv},wrapKey,rawKey);
+      frag=data.id+".P."+b64url(salt.buffer)+"."+b64url(wrapIv.buffer)+"."+b64url(wrapped);
+    }else{
+      frag=data.id+"."+b64url(rawKey);
+    }
+    return {link:location.origin+"/s#"+frag,ttl:data.ttl||ttl};
   }
   function buildPayload(){
     // Returns a Promise for the JSON envelope string to encrypt, or rejects
@@ -512,52 +597,46 @@ export const CREATE_JS = `(function(){
     return Promise.resolve(JSON.stringify({k:"t",b:secret}));
   }
   function onCreate(){
-    setError("");
-    setEmailNote("","");
+    setError("");setEmailNote("","");
     var passphrase=$("passphrase").value;
     var label=$("label")?$("label").value:"";
-    var recipient=$("recipient")?$("recipient").value.trim():"";
+    var raw=$("recipient")?$("recipient").value.trim():"";
+    var recipients=parseRecipients(raw);
     var alsoPass=$("alsopass")&&$("alsopass").checked;
-    var btn=$("create-btn");
-    btn.disabled=true;btn.textContent="Encrypting...";
+    if(raw&&recipients.length===0){setError("Those recipient emails do not look valid. Use full addresses separated by commas.");return;}
+    var btn=$("create-btn");btn.disabled=true;btn.textContent="Encrypting...";
     (async function(){
       try{
         var payloadJson=await buildPayload();
-        var enc=new TextEncoder();
-        var contentKey=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);
-        var iv=crypto.getRandomValues(new Uint8Array(12));
-        var ctBuf=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},contentKey,enc.encode(payloadJson));
-        var rawKey=await crypto.subtle.exportKey("raw",contentKey);
-        var ttl=parseInt($("ttl").value,10);
-        var res=await fetch("/admin/api/create",{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({ct:b64(ctBuf),iv:b64(iv.buffer),ttl:ttl,label:label,to:recipient,hasPass:!!passphrase,hasFile:(mode==="file")})
-        });
-        if(res.status===403){setError("You are not authorized to create links here.");return;}
-        if(res.status===429){setError("Too many links were created from here. Wait a few minutes and try again.");return;}
-        if(res.status===413){setError("That is too large. Keep secrets under about 90 KB and files under 50 KB.");return;}
-        if(!res.ok){setError("Something went wrong creating the link. Please try again.");return;}
-        var data=await res.json();
-        var frag;
-        if(passphrase){
-          var salt=crypto.getRandomValues(new Uint8Array(16));
-          var wrapIv=crypto.getRandomValues(new Uint8Array(12));
-          var wrapKey=await deriveWrapKey(passphrase,salt,["encrypt"]);
-          var wrapped=await crypto.subtle.encrypt({name:"AES-GCM",iv:wrapIv},wrapKey,rawKey);
-          frag=data.id+".P."+b64url(salt.buffer)+"."+b64url(wrapIv.buffer)+"."+b64url(wrapped);
+        if(recipients.length>1&&deliveryMode==="separate"){
+          btn.textContent="Creating "+recipients.length+" links...";
+          var items=[];
+          for(var i=0;i<recipients.length;i++){
+            var r=recipients[i];
+            var made=await encryptAndCreate(payloadJson,{label:label,to:r,hasFile:(mode==="file")},passphrase);
+            var st=await sendOne(made.link,r,passphrase,alsoPass,label);
+            items.push({recipient:r,link:made.link,sent:st});
+          }
+          clearForm();
+          renderMulti(items,passphrase);
         }else{
-          frag=data.id+"."+b64url(rawKey);
+          var toMeta=recipients.length?recipients.join(", "):"";
+          var one=await encryptAndCreate(payloadJson,{label:label,to:toMeta,hasFile:(mode==="file")},passphrase);
+          clearForm();
+          showResult(one.link,one.ttl,passphrase);
+          if(recipients.length){
+            var shared=recipients.length>1;
+            setEmailNote("Emailing "+recipients.length+" recipient"+(recipients.length>1?"s":"")+"...","warn");
+            var oks=0,fails=0,notset=false;
+            for(var j=0;j<recipients.length;j++){
+              var s=await sendOne(one.link,recipients[j],passphrase,alsoPass,label);
+              if(s.ok){oks++;}else{fails++;if(s.reason==="notset")notset=true;}
+            }
+            if(notset&&oks===0){setEmailNote("Email is not set up yet. Copy the link and send it yourself.","warn");}
+            else if(fails){setEmailNote("Emailed "+oks+" of "+recipients.length+"; some failed. Copy the link and send it to the rest.","warn");}
+            else{setEmailNote("Link emailed to "+recipients.length+" recipient"+(recipients.length>1?"s":"")+"."+(shared?" First to open it wins; then it is destroyed for the rest.":"")+((alsoPass&&passphrase)?" Passphrase sent separately.":""),"ok");}
+          }
         }
-        var link=location.origin+"/s#"+frag;
-        $("secret").value="";
-        $("passphrase").value="";
-        if($("file-input")){$("file-input").value="";}
-        showResult(link,data.ttl||ttl,passphrase);
-        if(recipient){sendLink(link,recipient,passphrase,alsoPass,label);}
-        if($("label")){$("label").value="";}
-        if($("recipient")){$("recipient").value="";}
-        if($("alsopass-wrap")){$("alsopass-wrap").style.display="none";}
       }catch(e){
         if(typeof e==="string"){setError(e);}
         else{setError("Your browser blocked encryption. Secure Share needs a modern browser over HTTPS.");}
@@ -580,6 +659,9 @@ export const CREATE_JS = `(function(){
   function onAnother(){
     $("result-panel").style.display="none";
     $("pass-reminder").style.display="none";
+    if($("multi-list")){$("multi-list").style.display="none";$("multi-list").innerHTML="";}
+    if($("single-out"))$("single-out").style.display="block";
+    setEmailNote("","");
     $("form-panel").style.display="block";
     $("secret").focus();
   }
@@ -588,13 +670,23 @@ export const CREATE_JS = `(function(){
     $("copy-btn").addEventListener("click",function(){copyFrom(function(){return $("link-out").value;},"copy-btn","Copy Link");});
     $("copy-pass-btn").addEventListener("click",function(){copyFrom(function(){return $("pass-value").textContent;},"copy-pass-btn","Copy");});
     $("another-btn").addEventListener("click",onAnother);
-    var updateAlsoPass=function(){
+    var onRecipInput=function(){
+      var recs=parseRecipients($("recipient")?$("recipient").value:"");
+      if($("delivery-wrap"))$("delivery-wrap").style.display=recs.length>1?"block":"none";
       var show=$("passphrase").value&&$("recipient").value;
-      $("alsopass-wrap").style.display=show?"block":"none";
-      if(!show)$("alsopass").checked=false;
+      if($("alsopass-wrap"))$("alsopass-wrap").style.display=show?"block":"none";
+      if(!show&&$("alsopass"))$("alsopass").checked=false;
     };
-    if($("passphrase"))$("passphrase").addEventListener("input",updateAlsoPass);
-    if($("recipient"))$("recipient").addEventListener("input",updateAlsoPass);
+    if($("passphrase"))$("passphrase").addEventListener("input",onRecipInput);
+    if($("recipient"))$("recipient").addEventListener("input",onRecipInput);
+    var dseg=$("delivery-seg");
+    if(dseg){dseg.addEventListener("click",function(e){
+      var b=e.target.closest("[data-dmode]");if(!b)return;
+      deliveryMode=b.getAttribute("data-dmode");
+      var bs=dseg.querySelectorAll(".seg-btn");
+      for(var i=0;i<bs.length;i++)bs[i].classList.toggle("active",bs[i]===b);
+      if($("delivery-hint"))$("delivery-hint").textContent=deliveryMode==="separate"?"Each recipient gets their own one-time link. Everyone can retrieve it once, and Send History shows who opened which.":"One shared link to everyone. The first person to open it gets the secret; it is then destroyed for the rest (best paired with a passphrase).";
+    });}
     var seg=$("mode-seg");
     if(seg){seg.addEventListener("click",function(e){
       var b=e.target.closest("[data-mode]");

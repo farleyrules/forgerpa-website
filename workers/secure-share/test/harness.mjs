@@ -281,6 +281,12 @@ async function run() {
   const hist2 = await (await get("/admin/history", mEnv)).text();
   ok("history shows Opened after reveal", hist2.includes("Opened"));
 
+  // Shared-mode joined recipient list is stored as-is (display-only, not gated on isEmail).
+  const je = await encryptInBrowser("joined");
+  await post("/admin/api/create", { ct: je.ct, iv: je.iv, ttl: 3600, label: "shared", to: "a@x.com, b@x.com, c@x.com" }, mEnv);
+  const histJ = await (await get("/admin/history", mEnv)).text();
+  ok("history stores a joined recipient list", histJ.includes("a@x.com, b@x.com, c@x.com"));
+
   // 9. Send endpoint is 503 when SECURE_SHARE_SECRET is unset (inert).
   const send503 = await post("/admin/api/send", { to: "v@x.com", link: "https://secure.forgerpa.com/s#abc.def" }, mEnv);
   ok("send is 503 when email unconfigured", send503.status === 503, "status=" + send503.status);

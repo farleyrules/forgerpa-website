@@ -412,7 +412,9 @@ async function handleCreate(request, env) {
   const nowSec = Math.floor(Date.now() / 1000);
   await writeMeta(env, id, {
     l: typeof body.label === "string" ? body.label.slice(0, 120) : "",
-    r: isEmail(body.to) ? body.to : "",
+    // display-only; may be one email or a joined list (shared mode), so do not
+    // gate on isEmail here.
+    r: typeof body.to === "string" ? body.to.slice(0, 300) : "",
     c: nowSec,
     e: nowSec + ttlSec,
     s: "active",
