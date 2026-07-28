@@ -259,7 +259,7 @@ export function renderCreatePage() {
     '<label for="label">Label (Optional)</label>' +
     '<input id="label" type="text" autocomplete="off" maxlength="120" ' +
     'placeholder="A name for your history, e.g. MRCO OneDataSource SFTP">' +
-    '<p class="hint">Only for your Send History. Never shown to the recipient or part of the secret.</p>' +
+    '<p class="hint">Shown in your Send History and in the email sent to recipients. Never part of the encrypted secret.</p>' +
     "</div>" +
     '<div class="field">' +
     '<label for="recipient">Email To (Optional)</label>' +
