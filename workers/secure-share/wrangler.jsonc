@@ -15,10 +15,19 @@
 
   // Secrets live in a per-secret Durable Object (idFromName(id)): strong
   // consistency gives an atomic read-and-delete, so burn-after-read has no race.
+  // SecretDO backs the OUTBOUND flow (David sends a secret out); RequestDO backs
+  // the INBOUND flow (an outside party submits credentials to David). Same atomic
+  // single-use discipline, separate DO class so their id spaces never collide.
   "durable_objects": {
-    "bindings": [{ "name": "SECRET_DO", "class_name": "SecretDO" }]
+    "bindings": [
+      { "name": "SECRET_DO", "class_name": "SecretDO" },
+      { "name": "REQUEST_DO", "class_name": "RequestDO" }
+    ]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SecretDO"] }],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["SecretDO"] },
+    { "tag": "v2", "new_sqlite_classes": ["RequestDO"] }
+  ],
 
   // KV is retained only for best-effort per-IP rate-limit counters (not secrets).
   "kv_namespaces": [

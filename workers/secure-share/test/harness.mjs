@@ -7,6 +7,7 @@
  * Run: node test/harness.mjs
  */
 import worker from "../src/index.js";
+import { RequestDO } from "../src/request-do.js";
 
 // ---- in-memory Durable Object namespace stub (sequential = atomic) ---------
 function makeDONamespace() {
@@ -54,11 +55,82 @@ function makeDONamespace() {
   };
 }
 
+// ---- in-memory RequestDO namespace stub (mirrors src/request-do.js) --------
+// Node runs requests sequentially, so the read-check-write is atomic here by
+// construction, mirroring the real DO's blockConcurrencyWhile guarantee. The
+// real class's atomicity is exercised directly in section 19.
+function makeRequestDONamespace() {
+  const instances = new Map();
+  const storeFor = (name) => {
+    if (!instances.has(name)) instances.set(name, new Map());
+    return instances.get(name);
+  };
+  const rj = (obj, status = 200) =>
+    new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
+  return {
+    _status: (name) => (instances.has(name) ? instances.get(name).get("status") : undefined),
+    _hasPayload: (name) => !!(instances.has(name) && instances.get(name).get("payload")),
+    _rawPayload: (name) => (instances.has(name) ? instances.get(name).get("payload") : undefined),
+    _backdate: (name) => {
+      if (instances.has(name)) instances.get(name).set("expireAt", Date.now() - 1000);
+    },
+    idFromName: (name) => ({ name }),
+    get: (id) => ({
+      async fetch(url, init) {
+        const u = new URL(url);
+        const method = (init && init.method) || "GET";
+        const store = storeFor(id.name);
+        const body = init && init.body ? JSON.parse(init.body) : {};
+        if (method === "POST" && u.pathname === "/init") {
+          if (store.get("status")) return rj({ error: "exists" }, 409);
+          store.set("title", body.title);
+          store.set("fields", body.fields);
+          store.set("pubJwk", body.pubJwk);
+          store.set("status", "pending");
+          store.set("createdAt", body.createdAt);
+          store.set("expireAt", Date.now() + body.ttl * 1000);
+          return rj({ ok: true });
+        }
+        if (method === "POST" && u.pathname === "/describe") {
+          const status = store.get("status");
+          const expireAt = store.get("expireAt");
+          if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) {
+            return rj({ error: "unavailable" }, 410);
+          }
+          return rj({ title: store.get("title"), fields: store.get("fields"), pubJwk: store.get("pubJwk") });
+        }
+        if (method === "POST" && u.pathname === "/submit") {
+          const status = store.get("status");
+          const expireAt = store.get("expireAt");
+          if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) {
+            return rj({ error: "unavailable" }, 410);
+          }
+          store.set("payload", body);
+          store.set("status", "submitted");
+          store.set("submittedAt", Date.now());
+          return rj({ ok: true });
+        }
+        if (method === "POST" && u.pathname === "/claim") {
+          const status = store.get("status");
+          const payload = store.get("payload");
+          if (status !== "submitted" || payload == null) return rj({ error: "gone" }, 410);
+          store.set("status", "claimed");
+          store.set("claimedAt", Date.now());
+          store.delete("payload");
+          return rj(payload);
+        }
+        return rj({ error: "nf" }, 404);
+      },
+    }),
+  };
+}
+
 function makeEnv(extra) {
   const kv = new Map();
   const meta = new Map();
   return {
     SECRET_DO: makeDONamespace(),
+    REQUEST_DO: makeRequestDONamespace(),
     SECRETS: {
       async get(k) {
         return kv.has(k) ? kv.get(k) : null;
@@ -155,6 +227,78 @@ async function deriveWrapKey(passphrase, salt, usage) {
     false,
     usage,
   );
+}
+
+// ---- client-equivalent inbound crypto (ECDH-ES + HKDF) ---------------------
+const HKDF_SALT = new TextEncoder().encode("forge-secure-request-hkdf-salt-v1");
+const HKDF_INFO = new TextEncoder().encode("forge-secure-request-ecdh-es-v1");
+
+async function genRequestKeypair() {
+  const pair = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, [
+    "deriveBits",
+    "deriveKey",
+  ]);
+  const pub = await crypto.subtle.exportKey("jwk", pair.publicKey);
+  const privJwk = await crypto.subtle.exportKey("jwk", pair.privateKey);
+  return { pubJwk: { kty: pub.kty, crv: pub.crv, x: pub.x, y: pub.y }, privJwk };
+}
+
+async function ecdhWrapKey(privKey, pubKey, usage) {
+  const bits = await crypto.subtle.deriveBits({ name: "ECDH", public: pubKey }, privKey, 256);
+  const hk = await crypto.subtle.importKey("raw", bits, "HKDF", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "HKDF", hash: "SHA-256", salt: HKDF_SALT, info: HKDF_INFO },
+    hk,
+    { name: "AES-GCM", length: 256 },
+    false,
+    usage,
+  );
+}
+
+// Submitter side: encrypt the bundle with a fresh content key, ECDH-ES wrap it to
+// the request public key. Returns exactly what the browser POSTs to /api/submit.
+async function submitEncrypt(pubJwk, bundleObj) {
+  const contentKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, [
+    "encrypt",
+    "decrypt",
+  ]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ctBuf = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    contentKey,
+    new TextEncoder().encode(JSON.stringify(bundleObj)),
+  );
+  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", contentKey));
+  const reqPub = await crypto.subtle.importKey("jwk", pubJwk, { name: "ECDH", namedCurve: "P-256" }, false, []);
+  const eph = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits", "deriveKey"]);
+  const ephJwk = await crypto.subtle.exportKey("jwk", eph.publicKey);
+  const wrapKey = await ecdhWrapKey(eph.privateKey, reqPub, ["encrypt"]);
+  const wrapIv = crypto.getRandomValues(new Uint8Array(12));
+  const wrapped = await crypto.subtle.encrypt({ name: "AES-GCM", iv: wrapIv }, wrapKey, rawKey);
+  return {
+    ct: b64(ctBuf),
+    iv: b64(iv.buffer),
+    wrapped: b64(wrapped),
+    wrapIv: b64(wrapIv.buffer),
+    epk: { kty: ephJwk.kty, crv: ephJwk.crv, x: ephJwk.x, y: ephJwk.y },
+  };
+}
+
+// Claimer side: ECDH-ES unwrap the content key with the request private key, then
+// decrypt the bundle. Mirrors CLAIM_JS.
+async function claimDecrypt(privJwk, payload) {
+  const reqPriv = await crypto.subtle.importKey("jwk", privJwk, { name: "ECDH", namedCurve: "P-256" }, false, [
+    "deriveBits",
+    "deriveKey",
+  ]);
+  const ephPub = await crypto.subtle.importKey("jwk", payload.epk, { name: "ECDH", namedCurve: "P-256" }, false, []);
+  const wrapKey = await ecdhWrapKey(reqPriv, ephPub, ["decrypt"]);
+  const rawKey = new Uint8Array(
+    await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(payload.wrapIv) }, wrapKey, fromB64(payload.wrapped)),
+  );
+  const contentKey = await crypto.subtle.importKey("raw", rawKey, { name: "AES-GCM" }, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(payload.iv) }, contentKey, fromB64(payload.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
 }
 
 // ---- tiny assert framework -------------------------------------------------
@@ -319,6 +463,183 @@ async function run() {
   } finally {
     globalThis.fetch = realFetch;
   }
+
+  // =========================================================================
+  // INBOUND: Secure Requests (mint -> submit -> claim), zero-knowledge hybrid.
+  // =========================================================================
+  const rEnv = makeEnv();
+
+  // 11. Full roundtrip: mint a request, submit a multi-field bundle, claim it.
+  const kp = await genRequestKeypair();
+  const fieldsSpec = [
+    { label: "Username", secret: false },
+    { label: "Password", secret: true },
+    { label: "Company ID", secret: true },
+  ];
+  const rcRes = await post(
+    "/admin/api/request-create",
+    { title: "Sage Web Services Credentials for MRCO", fields: fieldsSpec, ttl: 259200, pubJwk: kp.pubJwk },
+    rEnv,
+  );
+  const rc = await rcRes.json();
+  ok("request-create returns 200", rcRes.status === 200, "status=" + rcRes.status);
+  ok("request-create returns a token", typeof rc.token === "string" && rc.token.length >= 16);
+  ok("request DO is pending", rEnv.REQUEST_DO._status(rc.token) === "pending");
+  const listPending = await (await get("/admin/requests", rEnv)).text();
+  ok("requests list shows the title", listPending.includes("Sage Web Services Credentials for MRCO"));
+  ok("requests list shows Pending", listPending.includes(">Pending<"));
+
+  // Submit page renders the requested fields (describe path), not the error page.
+  const sp = await get("/r/" + rc.token, rEnv);
+  const spBody = await sp.text();
+  ok("submit page renders (200)", sp.status === 200, "status=" + sp.status);
+  ok("submit page shows the title", spBody.includes("Sage Web Services Credentials for MRCO"));
+  ok("submit page shows a requested field label", spBody.includes("Company ID"));
+  ok("submit page embeds the request public key", spBody.includes(kp.pubJwk.x) && spBody.includes('id="req-data"'));
+
+  const bundle = {
+    v: 1,
+    fields: [
+      { label: "Username", value: "mrco_forge", secret: false },
+      { label: "Password", value: "Xj7#mQ!v2Lp$9wZ", secret: true },
+      { label: "Company ID", value: "MRCO-778", secret: true },
+    ],
+  };
+  const subEnc = await submitEncrypt(kp.pubJwk, bundle);
+  const subRes = await post("/api/submit", { token: rc.token, ...subEnc }, rEnv);
+  ok("submit returns 200", subRes.status === 200, "status=" + subRes.status);
+  ok("request DO is submitted", rEnv.REQUEST_DO._status(rc.token) === "submitted");
+  ok("requests list flips to Submitted", (await (await get("/admin/requests", rEnv)).text()).includes("Submitted"));
+
+  // Zero-knowledge: what the server stored must contain no plaintext value.
+  const stored = JSON.stringify(rEnv.REQUEST_DO._rawPayload(rc.token));
+  ok(
+    "stored payload holds no plaintext value",
+    !stored.includes("Xj7#mQ") && !stored.includes("mrco_forge") && !stored.includes("MRCO-778"),
+  );
+
+  // Claim with an explicit ctx so the off-path meta update (waitUntil) runs, as
+  // the outbound "Opened" test does for markOpened.
+  const claimCtx = { _p: [], waitUntil(p) { this._p.push(p); } };
+  const clRes = await worker.fetch(
+    new Request(ORIGIN + "/admin/api/claim", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: rc.token }) }),
+    rEnv,
+    claimCtx,
+  );
+  ok("claim returns 200", clRes.status === 200, "status=" + clRes.status);
+  const clPayload = await clRes.json();
+  const decoded = await claimDecrypt(kp.privJwk, clPayload);
+  ok("claim decrypts to the EXACT bundle", JSON.stringify(decoded) === JSON.stringify(bundle));
+  ok(
+    "request DO claimed + payload burned",
+    rEnv.REQUEST_DO._status(rc.token) === "claimed" && !rEnv.REQUEST_DO._hasPayload(rc.token),
+  );
+  await Promise.all(claimCtx._p);
+  ok("requests list shows Claimed", (await (await get("/admin/requests", rEnv)).text()).includes("Claimed"));
+
+  // 12. Burn: a second claim is 410 Gone.
+  ok("second claim returns 410", (await post("/admin/api/claim", { token: rc.token }, rEnv)).status === 410);
+
+  // 13. Single-use submit token: a second submit on the same token is rejected.
+  const kp2 = await genRequestKeypair();
+  const rc2 = await (
+    await post("/admin/api/request-create", { title: "Second", fields: [{ label: "Key", secret: true }], ttl: 3600, pubJwk: kp2.pubJwk }, rEnv)
+  ).json();
+  const enc2 = await submitEncrypt(kp2.pubJwk, { v: 1, fields: [{ label: "Key", value: "AAA", secret: true }] });
+  ok("first submit ok", (await post("/api/submit", { token: rc2.token, ...enc2 }, rEnv)).status === 200);
+  const enc2b = await submitEncrypt(kp2.pubJwk, { v: 1, fields: [{ label: "Key", value: "BBB", secret: true }] });
+  ok("second submit on same token returns 410 (single-use)", (await post("/api/submit", { token: rc2.token, ...enc2b }, rEnv)).status === 410);
+
+  // 14. Expired token: describe (submit page) + submit both rejected generically.
+  const kp3 = await genRequestKeypair();
+  const rc3 = await (
+    await post("/admin/api/request-create", { title: "Exp", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kp3.pubJwk }, rEnv)
+  ).json();
+  rEnv.REQUEST_DO._backdate(rc3.token);
+  ok("expired submit page shows generic error", (await (await get("/r/" + rc3.token, rEnv)).text()).includes("This Request Link Is Not Available"));
+  const enc3 = await submitEncrypt(kp3.pubJwk, { v: 1, fields: [{ label: "K", value: "x", secret: true }] });
+  ok("expired token submit returns 410", (await post("/api/submit", { token: rc3.token, ...enc3 }, rEnv)).status === 410);
+
+  // 15. Field-spec validation on mint.
+  ok("empty fields array -> 400", (await post("/admin/api/request-create", { title: "T", fields: [], ttl: 3600, pubJwk: kp.pubJwk }, rEnv)).status === 400);
+  ok("field missing label -> 400", (await post("/admin/api/request-create", { title: "T", fields: [{ secret: true }], ttl: 3600, pubJwk: kp.pubJwk }, rEnv)).status === 400);
+  ok(">20 fields -> 400", (await post("/admin/api/request-create", { title: "T", fields: Array.from({ length: 21 }, (_, i) => ({ label: "f" + i, secret: false })), ttl: 3600, pubJwk: kp.pubJwk }, rEnv)).status === 400);
+  ok("missing title -> 400", (await post("/admin/api/request-create", { fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kp.pubJwk }, rEnv)).status === 400);
+  ok("incomplete pubJwk -> 400", (await post("/admin/api/request-create", { title: "T", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: { kty: "EC", crv: "P-256" } }, rEnv)).status === 400);
+  ok("pubJwk carrying private d rejected -> 400", (await post("/admin/api/request-create", { title: "T", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: { ...kp.pubJwk, d: "AAAA" } }, rEnv)).status === 400);
+
+  // 16. Submit size cap + payload validation.
+  const kp4 = await genRequestKeypair();
+  const rc4 = await (
+    await post("/admin/api/request-create", { title: "Big", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kp4.pubJwk }, rEnv)
+  ).json();
+  const enc4 = await submitEncrypt(kp4.pubJwk, { v: 1, fields: [{ label: "K", value: "x", secret: true }] });
+  const bigCt = "A".repeat(153601);
+  ok("oversized ct -> 413", (await post("/api/submit", { token: rc4.token, ct: bigCt, iv: enc4.iv, wrapped: enc4.wrapped, wrapIv: enc4.wrapIv, epk: enc4.epk }, rEnv)).status === 413);
+  ok("submit with malformed epk -> 400", (await post("/api/submit", { token: rc4.token, ct: enc4.ct, iv: enc4.iv, wrapped: enc4.wrapped, wrapIv: enc4.wrapIv, epk: { kty: "EC", crv: "P-256" } }, rEnv)).status === 400);
+  ok("submit with malformed token -> 400", (await post("/api/submit", { token: "not a token !!", ct: enc4.ct, iv: enc4.iv, wrapped: enc4.wrapped, wrapIv: enc4.wrapIv, epk: enc4.epk }, rEnv)).status === 400);
+  // rc4 is still pending (the 413/400 attempts did not spend it): a valid submit works.
+  ok("valid submit after rejected attempts still works", (await post("/api/submit", { token: rc4.token, ...enc4 }, rEnv)).status === 200);
+
+  // 17. No enumeration oracle: invalid/unknown submit tokens look identical.
+  ok("bogus /r/<token> shows the generic error", (await (await get("/r/abcdEFGH01234567", rEnv)).text()).includes("This Request Link Is Not Available"));
+  ok("empty /r/ is the generic error", (await (await get("/r/", rEnv)).text()).includes("This Request Link Is Not Available"));
+
+  // 18. Access gate covers inbound mint + claim (defense in depth).
+  const rGated = makeEnv({ ACCESS_AUD: "test-aud", ACCESS_TEAM_DOMAIN: "test.cloudflareaccess.com" });
+  ok("gated request-create with no token -> 403", (await post("/admin/api/request-create", { title: "T", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kp.pubJwk }, rGated)).status === 403);
+  ok("gated claim with no token -> 403", (await post("/admin/api/claim", { token: "abcdEFGH01234567" }, rGated)).status === 403);
+  // Submit stays PUBLIC (no Access), like reveal: an unknown token is 410, not 403.
+  ok("public submit needs no Access (unknown token -> 410)", (await post("/api/submit", { token: "abcdEFGH01234567", ...enc4 }, rGated)).status === 410);
+
+  // 19. RequestDO atomic single-use + burn, on the REAL class with a fake state.
+  {
+    const map = new Map();
+    const st = {
+      storage: {
+        async get(k) {
+          if (Array.isArray(k)) {
+            const m = new Map();
+            for (const kk of k) if (map.has(kk)) m.set(kk, map.get(kk));
+            return m;
+          }
+          return map.has(k) ? map.get(k) : undefined;
+        },
+        async put(obj) {
+          for (const kk of Object.keys(obj)) map.set(kk, obj[kk]);
+        },
+        async delete(k) {
+          map.delete(k);
+        },
+        async deleteAll() {
+          map.clear();
+        },
+        async setAlarm() {},
+        async deleteAlarm() {},
+      },
+      async blockConcurrencyWhile(fn) {
+        return fn();
+      },
+    };
+    const doInst = new RequestDO(st);
+    const doReq = (path, bodyObj) =>
+      doInst.fetch(new Request("https://do" + path, { method: "POST", body: bodyObj ? JSON.stringify(bodyObj) : undefined }));
+    ok("DO init ok", (await doReq("/init", { title: "t", fields: [{ label: "K", secret: true }], pubJwk: {}, ttl: 3600, createdAt: 1 })).status === 200);
+    ok("DO re-init refused (409)", (await doReq("/init", { title: "x", fields: [], pubJwk: {}, ttl: 1, createdAt: 2 })).status === 409);
+    ok("DO describe returns pending spec", (await doReq("/describe")).status === 200);
+    ok("DO first submit ok", (await doReq("/submit", { ct: "x", iv: "y", wrapped: "z", wrapIv: "w", epk: {} })).status === 200);
+    ok("DO second submit rejected (single-use) 410", (await doReq("/submit", { ct: "x2", iv: "y", wrapped: "z", wrapIv: "w", epk: {} })).status === 410);
+    ok("DO describe after submit is 410", (await doReq("/describe")).status === 410);
+    const dc1 = await doReq("/claim");
+    ok("DO first claim returns payload 200", dc1.status === 200);
+    ok("DO claim returns the FIRST submission's ciphertext", (await dc1.json()).ct === "x");
+    ok("DO second claim 410 (burned)", (await doReq("/claim")).status === 410);
+  }
+
+  // 20. Outbound flow is untouched and still serves (regression guard).
+  ok("outbound create page still serves", (await (await get("/admin", rEnv)).text()).includes("Create a Secure Link"));
+  ok("outbound /s reveal page still serves", (await (await get("/s", rEnv)).text()).includes("Reveal Secret"));
+  ok("outbound reveal endpoint still burns (unknown id -> 410)", (await post("/api/reveal", { id: "abcdEFGH01234567" }, rEnv)).status === 410);
 
   console.log("\n" + pass + " passed, " + fail + " failed\n");
   if (fail > 0) process.exit(1);

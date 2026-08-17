@@ -157,12 +157,53 @@ table.hist td{padding:.65rem .6rem; border-bottom:1px solid var(--line); vertica
 .pill.st-opened{background:#f0fdf4; color:#166534}
 .pill.st-expired{background:#f3f4f6; color:#6b7280}
 .tag{display:inline-block; font-size:.68rem; font-weight:600; color:var(--amber-dark); background:#fffbeb; border:1px solid #fde68a; border-radius:5px; padding:.05rem .35rem; margin-left:.25rem}
+.pill.st-pending{background:#eff6ff; color:#1e40af}
+.pill.st-submitted{background:#fefce8; color:#854d0e}
+.pill.st-claimed{background:#f0fdf4; color:#166534}
+/* Inbound Secure Requests: mint field editor */
+.fieldlist{margin:.25rem 0 .6rem}
+.fieldrow{display:flex; align-items:center; gap:.5rem; margin-bottom:.5rem}
+.fieldrow input[type=text]{flex:1; font-family:var(--font-sans); font-size:.9rem}
+.fieldrow .secretbox{display:inline-flex; align-items:center; gap:.3rem; font-family:var(--font-sans); font-size:.78rem; color:var(--gray-700); font-weight:600; white-space:nowrap}
+.fieldrow .secretbox input{width:auto; margin:0}
+.fieldrow .rm{flex:none; width:auto; padding:.4rem .6rem; font-size:.78rem; background:transparent; color:var(--gray-500); border:1.5px solid var(--gray-300); box-shadow:none; font-weight:700}
+.fieldrow .rm:hover{background:var(--slate); color:#991b1b; border-color:var(--gray-400)}
+.addfield{width:auto; padding:.5rem .9rem; font-size:.85rem; background:transparent; color:var(--charcoal); border:1.5px dashed var(--gray-300); box-shadow:none; font-weight:600}
+.addfield:hover{background:var(--slate); border-color:var(--amber)}
+/* Mint result: the two links */
+.reqlink{margin-top:1.25rem}
+.reqlink.first{margin-top:0}
+.reqlink .cap{font-family:var(--font-sans); font-size:.82rem; color:var(--gray-500); margin:.4rem 0 0; line-height:1.45}
+.reqlink .cap strong{color:var(--gray-800)}
+/* Submit page: one requested field */
+.reqfield{margin-bottom:1rem}
+.reqfield>label{display:flex; align-items:center; gap:.35rem}
+.reqfield .lock{width:13px; height:13px; color:var(--amber-dark); flex:none}
+.pwrap{display:flex; gap:.5rem; align-items:stretch}
+.pwrap input{flex:1}
+.pwrap .toggle,.vbtns .toggle{flex:none; width:auto; padding:.5rem .75rem; font-size:.78rem; background:transparent; color:var(--charcoal); border:1.5px solid var(--gray-300); box-shadow:none; font-weight:600}
+.pwrap .toggle:hover,.minibtn.secondary:hover{background:var(--slate); border-color:var(--gray-400)}
+/* Claim reveal: the fields table */
+.kvtable{width:100%; border-collapse:collapse; margin-top:.5rem}
+.kvtable td{padding:.65rem .5rem; border-bottom:1px solid var(--line); vertical-align:top}
+.kvtable td.k{font-weight:700; color:var(--gray-800); font-family:var(--font-sans); font-size:.85rem; word-break:break-word; width:30%; padding-right:1rem}
+.kvtable td.v{font-family:var(--font-mono); font-size:.9rem; color:var(--gray-900)}
+.kvtable .vwrap{display:flex; align-items:center; gap:.5rem}
+.kvtable .vval{flex:1; word-break:break-all}
+.kvtable .vbtns{display:flex; gap:.35rem; flex:none}
+.minibtn{width:auto; padding:.35rem .65rem; font-size:.75rem; box-shadow:none; font-weight:700}
+.minibtn.secondary{background:transparent; color:var(--charcoal); border:1.5px solid var(--gray-300)}
 @media (max-width:480px){
   main{padding:1.5rem 1rem 2.5rem}
   .card{padding:1.5rem}
   .brand .sub{display:none}
   .outbox .row,.pass-reminder .row{flex-direction:column}
   .outbox .row .btn,.pass-reminder .row .btn{width:100%}
+  .fieldrow{flex-wrap:wrap}
+  .fieldrow input[type=text]{flex:1 1 100%}
+  .kvtable td.k{width:auto; display:block; border:none; padding-bottom:.15rem}
+  .kvtable td.v{display:block; padding-top:0}
+  .kvtable tr{display:block; padding:.35rem 0}
 }
 `;
 
@@ -865,6 +906,636 @@ export const REVEAL_JS = `(function(){
     }
     if(parsed.mode==="pass"){
       $("pass-field").style.display="block";
+    }
+  });
+})();`;
+
+// ===========================================================================
+// INBOUND: Secure Requests. The reverse direction of the tool above. David
+// mints a REQUEST (a list of fields + an ephemeral ECDH P-256 public key); an
+// outside party submits credentials encrypted to that key (ECDH-ES + HKDF, one
+// AES-256-GCM content key per submission); David claims and decrypts them with
+// the private key that lived only in his Claim Link fragment. The server only
+// ever holds ciphertext and public keys. Pages + scripts mirror the outbound
+// side's branding, CSP posture (external same-origin scripts, no inline JS),
+// and reveal-on-click burn discipline.
+// ===========================================================================
+
+function escHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function fmtCT(sec) {
+  if (!sec) return "";
+  try {
+    return (
+      new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(sec * 1000)) + " CT"
+    );
+  } catch (e) {
+    return new Date(sec * 1000).toISOString().slice(0, 16).replace("T", " ") + " UTC";
+  }
+}
+
+// A small lock glyph for secret-field labels (sized via the .lock CSS rule).
+const LOCK_MINI =
+  '<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+
+// The Credential template shown by default on the mint page. David can add,
+// remove, rename, and flip the secret flag on any row before creating.
+const CREDENTIAL_TEMPLATE = [
+  { label: "Username", secret: false },
+  { label: "Password", secret: true },
+  { label: "Company ID", secret: true },
+  { label: "Sender ID", secret: true },
+  { label: "API Endpoint", secret: false },
+  { label: "Notes", secret: false },
+];
+
+function mintFieldRow(label, secret) {
+  return (
+    '<div class="fieldrow">' +
+    '<input type="text" class="flabel" maxlength="80" value="' + escHtml(label) + '" ' +
+    'placeholder="Field label, e.g. Password">' +
+    '<label class="secretbox"><input type="checkbox" class="fsecret"' + (secret ? " checked" : "") + "> Secret</label>" +
+    '<button type="button" class="btn rm" aria-label="Remove field">Remove</button>' +
+    "</div>"
+  );
+}
+
+// GET /admin/request -- David mints an inbound request. Access-gated at the edge.
+export function renderRequestMintPage() {
+  let rows = "";
+  for (const f of CREDENTIAL_TEMPLATE) rows += mintFieldRow(f.label, f.secret);
+  const body =
+    '<div class="card">' +
+    '<div id="form-panel">' +
+    "<h1>Request Credentials Securely</h1>" +
+    '<p class="lede">Ask an outside party (a client, a vendor) to send you passwords, keys, or ' +
+    "connection strings without anything sensitive touching email. They fill in a short form; it " +
+    "is encrypted in their browser to a key only you hold.</p>" +
+    '<div class="field">' +
+    '<label for="req-title">What You Are Requesting</label>' +
+    '<input id="req-title" type="text" maxlength="200" autocomplete="off" ' +
+    'placeholder="e.g. Sage Web Services Credentials for MRCO">' +
+    '<p class="hint">Shown to the outside party and in your Requests list. Never encrypted; keep it ' +
+    "free of anything sensitive.</p>" +
+    "</div>" +
+    '<div class="field">' +
+    "<label>Fields to Collect</label>" +
+    '<div class="fieldlist" id="fieldlist">' + rows + "</div>" +
+    '<button type="button" id="add-field" class="btn addfield">Add Field</button>' +
+    '<p class="hint">Mark a field <strong>Secret</strong> to have it entered and shown masked. ' +
+    "Started from a credential template; change it however you need.</p>" +
+    "</div>" +
+    '<div class="field">' +
+    '<label for="req-ttl">Expires After</label>' +
+    '<select id="req-ttl">' +
+    '<option value="3600">1 Hour</option>' +
+    '<option value="86400">24 Hours</option>' +
+    '<option value="259200" selected>72 Hours</option>' +
+    '<option value="604800">7 Days</option>' +
+    "</select>" +
+    '<p class="hint">The Submit Link stops working after this. A submission you have not claimed is ' +
+    "also destroyed at this time, so claim it before then.</p>" +
+    "</div>" +
+    '<button id="req-create-btn" class="btn">Create Request</button>' +
+    '<div id="req-error" class="msg err"></div>' +
+    '<div class="assure">' +
+    LOCK_ICON +
+    "<span>Zero knowledge. A request keypair is generated in your browser. Only the public half is " +
+    "stored, so the sender can encrypt to it; the private half goes only into your Claim Link and " +
+    "never reaches our servers.</span>" +
+    "</div>" +
+    '<p class="note" style="margin-top:1.25rem"><a href="/admin/requests">View Requests</a> ' +
+    '&middot; <a href="/admin">Send a Secret Instead</a></p>' +
+    "</div>" +
+    '<div id="result-panel" style="display:none">' +
+    "<h1>Your Request Is Ready</h1>" +
+    '<p class="lede">Send the Submit Link to the outside party. Keep the Claim Link; it is the only ' +
+    "way to read what comes back.</p>" +
+    '<div class="reqlink first">' +
+    '<label for="submit-out">Submit Link (Send This)</label>' +
+    '<div class="outbox"><div class="row">' +
+    '<input id="submit-out" type="text" readonly>' +
+    '<button id="copy-submit" class="btn">Copy</button>' +
+    "</div></div>" +
+    '<p class="cap"><strong>Send this to the outside party.</strong> They fill in the fields; nothing ' +
+    "sensitive touches email. It works once, then it closes.</p>" +
+    "</div>" +
+    '<div class="reqlink">' +
+    '<label for="claim-out">Claim Link (Keep This)</label>' +
+    '<div class="outbox"><div class="row">' +
+    '<input id="claim-out" type="text" readonly>' +
+    '<button id="copy-claim" class="btn">Copy</button>' +
+    "</div></div>" +
+    '<p class="cap"><strong>The only way to read what comes back.</strong> Save it now (a password ' +
+    "manager is ideal). It is also stored in this browser for convenience. If you lose it, the " +
+    "submission cannot be recovered.</p>" +
+    "</div>" +
+    '<div class="btn-row">' +
+    '<button id="req-another-btn" class="btn secondary">Create Another</button>' +
+    '<a class="btn secondary" href="/admin/requests" style="text-decoration:none">View Requests</a>' +
+    "</div>" +
+    "</div>" +
+    "</div>";
+  return shell("Forge RPA Secure Requests", body, "/admin/request.js");
+}
+
+// Server-rendered generic error for an invalid, used, or expired submit link.
+// Identical for every failure so it is not an enumeration oracle.
+export function renderRequestError() {
+  const body =
+    '<div class="card">' +
+    "<h1>This Request Link Is Not Available</h1>" +
+    '<p class="lede">This link is invalid, has already been used, or has expired. If you were asked ' +
+    "to send credentials, reply to the person who sent you the link and ask for a new one.</p>" +
+    "</div>";
+  return shell("Not Available | Forge RPA Secure Share", body, null);
+}
+
+function submitFieldHtml(label, secret, idx) {
+  if (secret) {
+    return (
+      '<div class="reqfield">' +
+      "<label>" + LOCK_MINI + "<span>" + escHtml(label) + "</span></label>" +
+      '<div class="pwrap">' +
+      '<input class="fval" data-idx="' + idx + '" type="password" autocomplete="off" ' +
+      'autocorrect="off" autocapitalize="off" spellcheck="false">' +
+      '<button type="button" class="btn toggle">Show</button>' +
+      "</div>" +
+      "</div>"
+    );
+  }
+  return (
+    '<div class="reqfield">' +
+    "<label><span>" + escHtml(label) + "</span></label>" +
+    '<input class="fval" data-idx="' + idx + '" type="text" autocomplete="off">' +
+    "</div>"
+  );
+}
+
+// GET /r/<token> -- the public submit form. spec = { token, title, fields, pubJwk }.
+export function renderSubmitPage(env, spec) {
+  let fieldsHtml = "";
+  for (let i = 0; i < spec.fields.length; i++) {
+    fieldsHtml += submitFieldHtml(spec.fields[i].label, !!spec.fields[i].secret, i);
+  }
+  // Non-executable data island: the token, field spec, and request public key the
+  // client script needs. `<` is escaped so it cannot close the script element.
+  const dataJson = JSON.stringify({
+    token: spec.token,
+    fields: spec.fields.map((f) => ({ label: f.label, secret: !!f.secret })),
+    pubJwk: spec.pubJwk,
+  }).replace(/</g, "\\u003c");
+  const body =
+    '<div class="card">' +
+    '<div id="form-panel">' +
+    "<h1>" + escHtml(spec.title || "Submit Requested Information") + "</h1>" +
+    '<p class="lede">Forge RPA asked you to share the information below. It is encrypted in your ' +
+    "browser before it is sent, and can be read only by the person who requested it. Forge RPA " +
+    "never sees it.</p>" +
+    '<div id="fields">' + fieldsHtml + "</div>" +
+    '<div id="extra-fields"></div>' +
+    '<button type="button" id="add-field" class="btn addfield">Add Field</button>' +
+    '<button id="submit-btn" class="btn" style="margin-top:1.25rem">Submit Securely</button>' +
+    '<div id="submit-status" class="msg"></div>' +
+    '<div class="assure">' +
+    LOCK_ICON +
+    "<span>Encrypted in your browser with a one-time AES-256 key, then sealed to the requester's " +
+    "public key. Forge RPA stores only ciphertext and cannot read what you enter.</span>" +
+    "</div>" +
+    "</div>" +
+    '<div id="done-panel" style="display:none">' +
+    "<h1>Submission Received</h1>" +
+    '<p class="lede">Your information was encrypted and delivered. This link is now closed and cannot ' +
+    "be used again. You can close this page.</p>" +
+    "</div>" +
+    '<script type="application/json" id="req-data">' + dataJson + "</script>" +
+    "</div>";
+  return shell("Secure Submission | Forge RPA", body, "/submit.js");
+}
+
+// GET /admin/claim -- David reveals a submission. Access-gated at the edge; the
+// token + private key ride in the fragment. Reveal-on-click, one atomic burn.
+export function renderClaimPage() {
+  const body =
+    '<div class="card">' +
+    '<div id="reveal-panel">' +
+    "<h1>Claim a Submission</h1>" +
+    '<p class="lede">An outside party submitted encrypted information to one of your requests.</p>' +
+    '<div class="reveal-warn"><strong>Read this first.</strong> This can be revealed only once. The ' +
+    "moment it is revealed, it is permanently destroyed on the server. Have somewhere ready to save " +
+    "it before you continue.</div>" +
+    '<button id="claim-btn" class="btn">Reveal Submission</button>' +
+    '<div class="assure">' +
+    LOCK_ICON +
+    "<span>Decrypted here in your browser using the private key from this link. Forge RPA only ever " +
+    "stored ciphertext and the sender's one-time public key.</span>" +
+    "</div>" +
+    "</div>" +
+    '<div id="claim-panel" style="display:none">' +
+    "<h1>Submitted Information</h1>" +
+    '<div class="tablewrap"><table class="kvtable"><tbody id="kv"></tbody></table></div>' +
+    "</div>" +
+    '<div id="claim-status" class="msg"></div>' +
+    "</div>";
+  return shell("Claim a Submission | Forge RPA Secure Share", body, "/admin/claim.js");
+}
+
+// GET /admin/requests -- status list. rows come from index.js listReqMeta().
+export function renderRequestsPage(env, rows) {
+  const nowSec = Math.floor(Date.now() / 1000);
+  let trs = "";
+  for (const m of rows) {
+    let status, cls;
+    if (m.s === "claimed") {
+      status = "Claimed " + fmtCT(m.cl);
+      cls = "st-claimed";
+    } else if (m.s === "submitted") {
+      status = "Submitted " + fmtCT(m.su);
+      cls = "st-submitted";
+    } else if (m.e && m.e < nowSec) {
+      status = "Expired";
+      cls = "st-expired";
+    } else {
+      status = "Pending";
+      cls = "st-pending";
+    }
+    const n = m.n || 0;
+    trs +=
+      "<tr>" +
+      "<td>" + (escHtml(m.t) || '<span class="muted">(no title)</span>') + "</td>" +
+      "<td>" + n + " field" + (n === 1 ? "" : "s") + "</td>" +
+      "<td>" + fmtCT(m.c) + "</td>" +
+      '<td><span class="pill ' + cls + '">' + escHtml(status) + "</span></td>" +
+      '<td class="claimcell" data-th="' + escHtml(m.th || "") + '"></td>' +
+      "</tr>";
+  }
+  if (!trs) {
+    trs = '<tr><td colspan="5" class="muted" style="text-align:center;padding:2rem">No requests yet.</td></tr>';
+  }
+  const body =
+    '<div class="card">' +
+    '<div class="hist-head"><h1>Secure Requests</h1>' +
+    '<a class="btn secondary" href="/admin/request">New Request</a></div>' +
+    '<p class="lede">Inbound requests you created (metadata only, never the submitted secret). ' +
+    "Rows disappear 30 days after creation. Claim a submission with the Claim Link you saved when you " +
+    "created it; where this browser has it stored, an Open Claim link appears below.</p>" +
+    '<div class="tablewrap"><table class="hist">' +
+    "<thead><tr><th>Request</th><th>Fields</th><th>Created</th><th>Status</th><th>Claim</th></tr></thead>" +
+    "<tbody>" + trs + "</tbody></table></div>" +
+    "</div>";
+  return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js");
+}
+
+// ---------------------------------------------------------------------------
+// Browser scripts (client-side crypto). Same conventions as CREATE_JS/REVEAL_JS:
+// string concatenation, doubled backslashes in regex/newlines, no `${}`.
+// Shared shape: ECDH-ES key agreement (P-256) + HKDF-SHA256 -> an AES-256-GCM
+// wrapping key for the per-submission content key.
+// ---------------------------------------------------------------------------
+
+export const REQUEST_JS = `(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id);};
+  function b64url(buf){
+    var bytes=new Uint8Array(buf),bin="";
+    for(var i=0;i<bytes.length;i++){bin+=String.fromCharCode(bytes[i]);}
+    return btoa(bin).replace(/\\+/g,"-").replace(/\\//g,"_").replace(/=+$/,"");
+  }
+  function sha256b64url(str){
+    return crypto.subtle.digest("SHA-256",new TextEncoder().encode(str)).then(function(d){return b64url(d);});
+  }
+  function setError(msg){var e=$("req-error");e.textContent=msg||"";e.style.display=msg?"block":"none";}
+  function addRow(label,secret){
+    var wrap=document.createElement("div");
+    wrap.className="fieldrow";
+    var li=document.createElement("input");li.type="text";li.className="flabel";li.maxLength=80;li.placeholder="Field label, e.g. Password";if(label)li.value=label;
+    var lab=document.createElement("label");lab.className="secretbox";
+    var cb=document.createElement("input");cb.type="checkbox";cb.className="fsecret";if(secret)cb.checked=true;
+    lab.appendChild(cb);lab.appendChild(document.createTextNode(" Secret"));
+    var rm=document.createElement("button");rm.type="button";rm.className="btn rm";rm.textContent="Remove";
+    rm.addEventListener("click",function(){wrap.parentNode.removeChild(wrap);});
+    wrap.appendChild(li);wrap.appendChild(lab);wrap.appendChild(rm);
+    $("fieldlist").appendChild(wrap);
+  }
+  function readFields(){
+    var rows=$("fieldlist").querySelectorAll(".fieldrow"),out=[];
+    for(var i=0;i<rows.length;i++){
+      var label=rows[i].querySelector(".flabel").value.trim();
+      var secret=rows[i].querySelector(".fsecret").checked;
+      if(label)out.push({label:label.slice(0,80),secret:!!secret});
+    }
+    return out;
+  }
+  function copyFrom(id,btnId,restore){
+    var v=$(id).value;
+    var done=function(){var b=$(btnId);b.textContent="Copied";setTimeout(function(){b.textContent=restore;},1500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(v).then(done,done);}
+    else{$(id).focus();$(id).select();done();}
+  }
+  function showResult(token,claimLink,submitLink){
+    $("form-panel").style.display="none";
+    $("result-panel").style.display="block";
+    $("submit-out").value=submitLink;
+    $("claim-out").value=claimLink;
+    // Convenience stash (this browser only), keyed by sha256(token) so the raw
+    // token is never persisted or sent anywhere.
+    sha256b64url(token).then(function(th){
+      try{localStorage.setItem("fsr_claim_"+th,claimLink);}catch(e){}
+    });
+  }
+  function onCreate(){
+    setError("");
+    var title=$("req-title").value.trim();
+    var fields=readFields();
+    if(!title){setError("Add a short title so you and the sender know what this is for.");return;}
+    if(fields.length===0){setError("Add at least one field to collect.");return;}
+    if(fields.length>20){setError("Keep it to 20 fields or fewer.");return;}
+    var ttl=parseInt($("req-ttl").value,10);
+    var btn=$("req-create-btn");btn.disabled=true;btn.textContent="Creating...";
+    (async function(){
+      try{
+        var pair=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"},true,["deriveBits","deriveKey"]);
+        var pubJwk=await crypto.subtle.exportKey("jwk",pair.publicKey);
+        var privJwk=await crypto.subtle.exportKey("jwk",pair.privateKey);
+        var pub={kty:pubJwk.kty,crv:pubJwk.crv,x:pubJwk.x,y:pubJwk.y};
+        var res=await fetch("/admin/api/request-create",{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({title:title,fields:fields,ttl:ttl,pubJwk:pub})
+        });
+        if(res.status===403)throw "You are not authorized to create requests here.";
+        if(res.status===429)throw "Too many requests were created from here. Wait a few minutes and try again.";
+        if(!res.ok)throw "Something went wrong creating the request. Please try again.";
+        var data=await res.json();
+        var priv=b64url(new TextEncoder().encode(JSON.stringify(privJwk)));
+        var origin=location.origin;
+        var submitLink=origin+"/r/"+encodeURIComponent(data.token);
+        var claimLink=origin+"/admin/claim#"+data.token+"."+priv;
+        showResult(data.token,claimLink,submitLink);
+      }catch(e){
+        if(typeof e==="string"){setError(e);}
+        else{setError("Your browser blocked key generation. Secure Requests needs a modern browser over HTTPS.");}
+      }finally{
+        btn.disabled=false;btn.textContent="Create Request";
+      }
+    })();
+  }
+  function onAnother(){
+    $("result-panel").style.display="none";
+    $("form-panel").style.display="block";
+    $("req-title").value="";
+    $("submit-out").value="";$("claim-out").value="";
+    setError("");
+    $("req-title").focus();
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    var list=$("fieldlist");
+    var initial=list.querySelectorAll(".fieldrow");
+    for(var i=0;i<initial.length;i++){(function(row){
+      row.querySelector(".rm").addEventListener("click",function(){row.parentNode.removeChild(row);});
+    })(initial[i]);}
+    $("add-field").addEventListener("click",function(){addRow("",true);});
+    $("req-create-btn").addEventListener("click",onCreate);
+    $("req-another-btn").addEventListener("click",onAnother);
+    $("copy-submit").addEventListener("click",function(){copyFrom("submit-out","copy-submit","Copy");});
+    $("copy-claim").addEventListener("click",function(){copyFrom("claim-out","copy-claim","Copy");});
+    if(!window.crypto||!window.crypto.subtle){
+      setError("This browser does not support the Web Crypto API. Open Secure Requests in a modern browser over HTTPS.");
+      $("req-create-btn").disabled=true;
+    }
+  });
+})();`;
+
+// Shared client crypto (ECDH-ES + HKDF) used by both SUBMIT_JS and CLAIM_JS.
+const ECDH_ES_JS = `
+  var HKDF_SALT=new TextEncoder().encode("forge-secure-request-hkdf-salt-v1");
+  var HKDF_INFO=new TextEncoder().encode("forge-secure-request-ecdh-es-v1");
+  function b64(buf){var bytes=new Uint8Array(buf),bin="";for(var i=0;i<bytes.length;i++){bin+=String.fromCharCode(bytes[i]);}return btoa(bin);}
+  function b64url(buf){return b64(buf).replace(/\\+/g,"-").replace(/\\//g,"_").replace(/=+$/,"");}
+  function fromB64(str){var bin=atob(str),b=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++){b[i]=bin.charCodeAt(i);}return b;}
+  function fromB64url(str){str=str.replace(/-/g,"+").replace(/_/g,"/");while(str.length%4){str+="=";}return fromB64(str);}
+  function deriveWrapKey(privKey,pubKey,usage){
+    return crypto.subtle.deriveBits({name:"ECDH",public:pubKey},privKey,256).then(function(bits){
+      return crypto.subtle.importKey("raw",bits,"HKDF",false,["deriveKey"]).then(function(hk){
+        return crypto.subtle.deriveKey({name:"HKDF",hash:"SHA-256",salt:HKDF_SALT,info:HKDF_INFO},hk,{name:"AES-GCM",length:256},false,usage);
+      });
+    });
+  }`;
+
+export const SUBMIT_JS = `(function(){
+  "use strict";
+  ${ECDH_ES_JS}
+  var $=function(id){return document.getElementById(id);};
+  var DATA=null;
+  function setStatus(msg,kind){var s=$("submit-status");if(!s)return;s.textContent=msg||"";s.className="msg "+(kind||"");s.style.display=msg?"block":"none";}
+  function addExtra(){
+    var wrap=document.createElement("div");
+    wrap.className="reqfield xrow";
+    var li=document.createElement("input");li.type="text";li.className="xlabel";li.maxLength=80;li.placeholder="Field label";
+    var pw=document.createElement("div");pw.className="pwrap";pw.style.marginTop=".4rem";
+    var val=document.createElement("input");val.type="password";val.className="xval";val.autocomplete="off";val.placeholder="Value";
+    var tog=document.createElement("button");tog.type="button";tog.className="btn toggle";tog.textContent="Show";
+    var rm=document.createElement("button");rm.type="button";rm.className="btn rm";rm.textContent="Remove";
+    pw.appendChild(val);pw.appendChild(tog);pw.appendChild(rm);
+    wrap.appendChild(li);wrap.appendChild(pw);
+    $("extra-fields").appendChild(wrap);
+    val.focus();
+  }
+  function collectBundle(){
+    var fields=[];
+    var reqInputs=$("fields").querySelectorAll(".fval");
+    for(var i=0;i<reqInputs.length;i++){
+      var idx=parseInt(reqInputs[i].getAttribute("data-idx"),10);
+      var spec=DATA.fields[idx]||{label:"Field "+(idx+1),secret:true};
+      fields.push({label:spec.label,value:reqInputs[i].value,secret:!!spec.secret});
+    }
+    var xrows=$("extra-fields").querySelectorAll(".xrow");
+    for(var j=0;j<xrows.length;j++){
+      var lbl=xrows[j].querySelector(".xlabel").value.trim();
+      var v=xrows[j].querySelector(".xval").value;
+      if(lbl||v){fields.push({label:(lbl||"Additional").slice(0,80),value:v,secret:true});}
+    }
+    return fields;
+  }
+  function onSubmit(){
+    setStatus("","");
+    if(!DATA){setStatus("This page did not load correctly. Refresh and try again.","err");return;}
+    var fields=collectBundle();
+    var hasValue=false;
+    for(var i=0;i<fields.length;i++){if(fields[i].value&&fields[i].value.length){hasValue=true;break;}}
+    if(!hasValue){setStatus("Fill in at least one field before submitting.","warn");return;}
+    var btn=$("submit-btn");btn.disabled=true;btn.textContent="Encrypting...";
+    (async function(){
+      try{
+        var bundleJson=JSON.stringify({v:1,fields:fields});
+        var contentKey=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);
+        var iv=crypto.getRandomValues(new Uint8Array(12));
+        var ctBuf=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},contentKey,new TextEncoder().encode(bundleJson));
+        var rawKey=await crypto.subtle.exportKey("raw",contentKey);
+        var reqPub=await crypto.subtle.importKey("jwk",DATA.pubJwk,{name:"ECDH",namedCurve:"P-256"},false,[]);
+        var eph=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"},true,["deriveBits","deriveKey"]);
+        var ephJwk=await crypto.subtle.exportKey("jwk",eph.publicKey);
+        var wrapKey=await deriveWrapKey(eph.privateKey,reqPub,["encrypt"]);
+        var wrapIv=crypto.getRandomValues(new Uint8Array(12));
+        var wrapped=await crypto.subtle.encrypt({name:"AES-GCM",iv:wrapIv},wrapKey,rawKey);
+        var res=await fetch("/api/submit",{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({token:DATA.token,ct:b64(ctBuf),iv:b64(iv.buffer),wrapped:b64(wrapped),wrapIv:b64(wrapIv.buffer),epk:{kty:ephJwk.kty,crv:ephJwk.crv,x:ephJwk.x,y:ephJwk.y}})
+        });
+        if(res.status===410){setStatus("This request link is no longer available. It may have already been used or expired. Ask for a new one.","err");btn.textContent="Submit Securely";btn.disabled=false;return;}
+        if(res.status===413){setStatus("That is too large. Keep the total under about 90 KB.","err");btn.disabled=false;btn.textContent="Submit Securely";return;}
+        if(res.status===429){setStatus("Too many attempts. Wait a moment and try again.","err");btn.disabled=false;btn.textContent="Submit Securely";return;}
+        if(!res.ok){setStatus("Something went wrong sending your submission. Please try again.","err");btn.disabled=false;btn.textContent="Submit Securely";return;}
+        $("form-panel").style.display="none";
+        $("done-panel").style.display="block";
+      }catch(e){
+        setStatus("Your browser blocked encryption. This page needs a modern browser over HTTPS.","err");
+        btn.disabled=false;btn.textContent="Submit Securely";
+      }
+    })();
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    try{DATA=JSON.parse($("req-data").textContent);}catch(e){DATA=null;}
+    var card=document.querySelector(".card");
+    card.addEventListener("click",function(e){
+      var t=e.target;
+      if(t.classList&&t.classList.contains("toggle")){
+        var inp=t.parentNode.querySelector("input");
+        if(inp){inp.type=inp.type==="password"?"text":"password";t.textContent=inp.type==="password"?"Show":"Hide";}
+      }else if(t.classList&&t.classList.contains("rm")){
+        var row=t.closest(".xrow");if(row)row.parentNode.removeChild(row);
+      }
+    });
+    $("add-field").addEventListener("click",addExtra);
+    $("submit-btn").addEventListener("click",onSubmit);
+    if(!window.crypto||!window.crypto.subtle){
+      setStatus("This browser does not support the Web Crypto API. Open this link in a modern browser over HTTPS.","err");
+      $("submit-btn").disabled=true;
+    }
+  });
+})();`;
+
+export const CLAIM_JS = `(function(){
+  "use strict";
+  ${ECDH_ES_JS}
+  var $=function(id){return document.getElementById(id);};
+  var parsed=null;
+  function setStatus(msg,kind){var s=$("claim-status");s.textContent=msg||"";s.className="msg "+(kind||"");s.style.display=msg?"block":"none";}
+  function parseFragment(){
+    var hash=location.hash.slice(1);
+    if(!hash)return null;
+    var dot=hash.indexOf(".");
+    if(dot<1)return null;
+    var token=hash.slice(0,dot),privPart=hash.slice(dot+1);
+    if(!token||!privPart)return null;
+    try{return {token:token,privJwk:JSON.parse(new TextDecoder().decode(fromB64url(privPart)))};}catch(e){return null;}
+  }
+  function mask(v){var n=v?v.length:0;if(n<1)return "";return new Array(Math.min(n,24)+1).join("\\u2022");}
+  function copyText(text,btn,restore){
+    var done=function(){btn.textContent="Copied";setTimeout(function(){btn.textContent=restore;},1500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,done);}else{done();}
+  }
+  function renderFields(fields){
+    var tb=$("kv");tb.innerHTML="";
+    for(var i=0;i<fields.length;i++){(function(f){
+      var tr=document.createElement("tr");
+      var k=document.createElement("td");k.className="k";k.textContent=f.label==null?"":String(f.label);
+      var v=document.createElement("td");v.className="v";
+      var wrap=document.createElement("div");wrap.className="vwrap";
+      var val=document.createElement("div");val.className="vval";
+      var value=f.value==null?"":String(f.value);
+      var secret=!!f.secret;
+      val.textContent=secret?mask(value):value;
+      var btns=document.createElement("div");btns.className="vbtns";
+      if(secret){
+        var shown=false;
+        var show=document.createElement("button");show.type="button";show.className="btn minibtn secondary";show.textContent="Show";
+        show.addEventListener("click",function(){shown=!shown;val.textContent=shown?value:mask(value);show.textContent=shown?"Hide":"Show";});
+        btns.appendChild(show);
+      }
+      var copy=document.createElement("button");copy.type="button";copy.className="btn minibtn";copy.textContent="Copy";
+      copy.addEventListener("click",function(){copyText(value,copy,"Copy");});
+      btns.appendChild(copy);
+      wrap.appendChild(val);wrap.appendChild(btns);v.appendChild(wrap);
+      tr.appendChild(k);tr.appendChild(v);tb.appendChild(tr);
+    })(fields[i]);}
+  }
+  function onReveal(){
+    setStatus("","");
+    if(!parsed){setStatus("This link is missing its key. Use the full Claim Link you saved.","err");return;}
+    var btn=$("claim-btn");btn.disabled=true;btn.textContent="Revealing...";
+    (async function(){
+      try{
+        var res=await fetch("/admin/api/claim",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:parsed.token})});
+        if(res.status===410){$("reveal-panel").style.display="none";setStatus("This submission has already been claimed, was never submitted, or has expired. It no longer exists.","err");return;}
+        if(res.status===403){setStatus("You are not authorized to claim here. Open this link while signed in.","err");btn.disabled=false;btn.textContent="Reveal Submission";return;}
+        if(res.status===429){setStatus("Too many attempts. Wait a moment and try again.","err");btn.disabled=false;btn.textContent="Reveal Submission";return;}
+        if(!res.ok){setStatus("Something went wrong. Please try again.","err");btn.disabled=false;btn.textContent="Reveal Submission";return;}
+        var data=await res.json();
+        var reqPriv=await crypto.subtle.importKey("jwk",parsed.privJwk,{name:"ECDH",namedCurve:"P-256"},false,["deriveBits","deriveKey"]);
+        var ephPub=await crypto.subtle.importKey("jwk",data.epk,{name:"ECDH",namedCurve:"P-256"},false,[]);
+        var wrapKey=await deriveWrapKey(reqPriv,ephPub,["decrypt"]);
+        var rawKey;
+        try{rawKey=await crypto.subtle.decrypt({name:"AES-GCM",iv:fromB64(data.wrapIv)},wrapKey,fromB64(data.wrapped));}
+        catch(e){$("reveal-panel").style.display="none";setStatus("Could not unwrap this submission. The Claim Link may be for a different request.","err");return;}
+        var contentKey=await crypto.subtle.importKey("raw",rawKey,{name:"AES-GCM"},false,["decrypt"]);
+        var pt;
+        try{pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:fromB64(data.iv)},contentKey,fromB64(data.ct));}
+        catch(e){$("reveal-panel").style.display="none";setStatus("Could not decrypt this submission. It may be corrupted.","err");return;}
+        var bundle;
+        try{bundle=JSON.parse(new TextDecoder().decode(pt));}catch(e){bundle=null;}
+        try{history.replaceState(null,"",location.pathname);}catch(e){}
+        $("reveal-panel").style.display="none";
+        $("claim-panel").style.display="block";
+        renderFields(bundle&&bundle.fields?bundle.fields:[]);
+        setStatus("This submission has now been destroyed on the server. Reloading will not bring it back.","ok");
+      }catch(e){
+        setStatus("Your browser blocked decryption. This page needs a modern browser over HTTPS.","err");
+        var b=$("claim-btn");if(b){b.disabled=false;b.textContent="Reveal Submission";}
+      }
+    })();
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    var rb=$("claim-btn");
+    if(rb)rb.addEventListener("click",onReveal);
+    if(!window.crypto||!window.crypto.subtle){setStatus("This browser does not support the Web Crypto API. Open this link in a modern browser over HTTPS.","err");if(rb)rb.disabled=true;return;}
+    parsed=parseFragment();
+    if(!parsed){setStatus("This link is missing its key. Use the full Claim Link you saved when you created the request.","err");if(rb)rb.disabled=true;}
+  });
+})();`;
+
+// Enhances the Requests list: for each row whose Claim Link this browser stashed
+// at mint time (keyed by sha256(token)), surface an Open Claim link. Fail-silent.
+export const REQUESTS_JS = `(function(){
+  "use strict";
+  document.addEventListener("DOMContentLoaded",function(){
+    var cells=document.querySelectorAll(".claimcell");
+    for(var i=0;i<cells.length;i++){
+      var th=cells[i].getAttribute("data-th");
+      if(!th)continue;
+      var link=null;
+      try{link=localStorage.getItem("fsr_claim_"+th);}catch(e){link=null;}
+      if(link){
+        var a=document.createElement("a");
+        a.href=link;a.textContent="Open Claim";a.className="tag";a.style.textDecoration="none";
+        cells[i].appendChild(a);
+      }else{
+        var s=document.createElement("span");s.className="muted";s.textContent="link saved separately";
+        cells[i].appendChild(s);
+      }
     }
   });
 })();`;

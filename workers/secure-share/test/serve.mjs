@@ -57,10 +57,69 @@ function makeDONamespace() {
   };
 }
 
+// In-memory RequestDO namespace stub (mirrors src/request-do.js). Atomic here by
+// Node's sequential request processing, like the real blockConcurrencyWhile.
+function makeRequestDONamespace() {
+  const instances = new Map();
+  const storeFor = (name) => {
+    if (!instances.has(name)) instances.set(name, new Map());
+    return instances.get(name);
+  };
+  const rj = (obj, status = 200) =>
+    new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
+  return {
+    idFromName: (name) => ({ name }),
+    get: (id) => ({
+      async fetch(url, init) {
+        const u = new URL(url);
+        const method = (init && init.method) || "GET";
+        const store = storeFor(id.name);
+        const body = init && init.body ? JSON.parse(init.body) : {};
+        if (method === "POST" && u.pathname === "/init") {
+          if (store.get("status")) return rj({ error: "exists" }, 409);
+          store.set("title", body.title);
+          store.set("fields", body.fields);
+          store.set("pubJwk", body.pubJwk);
+          store.set("status", "pending");
+          store.set("createdAt", body.createdAt);
+          store.set("expireAt", Date.now() + body.ttl * 1000);
+          return rj({ ok: true });
+        }
+        if (method === "POST" && u.pathname === "/describe") {
+          const status = store.get("status");
+          const expireAt = store.get("expireAt");
+          if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) return rj({ error: "unavailable" }, 410);
+          return rj({ title: store.get("title"), fields: store.get("fields"), pubJwk: store.get("pubJwk") });
+        }
+        if (method === "POST" && u.pathname === "/submit") {
+          const status = store.get("status");
+          const expireAt = store.get("expireAt");
+          if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) return rj({ error: "unavailable" }, 410);
+          store.set("payload", body);
+          store.set("status", "submitted");
+          store.set("submittedAt", Date.now());
+          return rj({ ok: true });
+        }
+        if (method === "POST" && u.pathname === "/claim") {
+          const status = store.get("status");
+          const payload = store.get("payload");
+          if (status !== "submitted" || payload == null) return rj({ error: "gone" }, 410);
+          store.set("status", "claimed");
+          store.set("claimedAt", Date.now());
+          store.delete("payload");
+          return rj(payload);
+        }
+        return rj({ error: "not_found" }, 404);
+      },
+    }),
+  };
+}
+
 const kv = new Map();
 const kvMeta = new Map();
 const env = {
   SECRET_DO: makeDONamespace(),
+  REQUEST_DO: makeRequestDONamespace(),
   SECRETS: {
     async get(k) {
       return kv.has(k) ? kv.get(k) : null;
