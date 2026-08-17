@@ -327,6 +327,15 @@ async function updateReqMeta(env, token, mut) {
   }
 }
 
+async function deleteReqMeta(env, token) {
+  if (!env.SECRETS) return;
+  try {
+    await env.SECRETS.delete(await reqMetaKey(token));
+  } catch {
+    /* best-effort */
+  }
+}
+
 async function listReqMeta(env) {
   if (!env.SECRETS) return [];
   try {
@@ -347,9 +356,11 @@ async function listReqMeta(env) {
 // The link (which carries the key in its fragment) passes through here only for
 // the opt-in email path; it is never logged or stored.
 // ---------------------------------------------------------------------------
-async function cockpitPost(env, path, payload) {
+async function cockpitPost(env, path, payload, timeoutMs) {
   if (!env.SECURE_SHARE_SECRET) return { ok: false, notConfigured: true };
   const base = env.COCKPIT_URL || "https://sales.forgerpa.com";
+  const ctl = timeoutMs ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => ctl.abort(), timeoutMs) : null;
   try {
     const res = await fetch(base + path, {
       method: "POST",
@@ -358,10 +369,13 @@ async function cockpitPost(env, path, payload) {
         "x-secure-share-secret": env.SECURE_SHARE_SECRET,
       },
       body: JSON.stringify(payload),
+      signal: ctl ? ctl.signal : undefined,
     });
     return { ok: res.ok, status: res.status };
   } catch {
     return { ok: false, status: 502 };
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -372,6 +386,27 @@ async function notifyOpened(env, md) {
     recipient: md && md.r ? md.r : "",
     openedAt: Math.floor(Date.now() / 1000),
   });
+}
+
+// Inbound: notify David that a submission arrived, off the response path. The
+// payload carries only non-secret request metadata (title, a hashed request id,
+// the time, and a field COUNT). Never a field label, a value, or anything derived
+// from the payload ciphertext. Fire-and-forget with a short timeout: a 404 (the
+// cockpit endpoint not deployed yet), a 5xx, or a network error is swallowed by
+// cockpitPost and never fails or delays the submission.
+async function notifySubmitted(env, info) {
+  if (!env.SECURE_SHARE_SECRET) return;
+  await cockpitPost(
+    env,
+    "/api/secure-share/submitted",
+    {
+      title: info.title || "",
+      requestId: info.requestId,
+      submittedAt: info.submittedAt,
+      fieldCount: info.fieldCount || 0,
+    },
+    5000,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -666,6 +701,9 @@ async function handleRequestCreate(request, env) {
     e: nowSec + ttlSec,
     s: "pending",
     n: fields.length,
+    // Non-secret spec (labels + secret flags, never values) so the admin list can
+    // offer Duplicate for any row, even after the DO itself is gone.
+    sp: fields,
   });
 
   return json({ token, ttl: ttlSec });
@@ -689,8 +727,8 @@ async function handleSubmitPage(request, env, token) {
 
 // API: submit (public). Body { token, ct, iv, wrapped, wrapIv, epk }. Atomically
 // spends the single-use token and stores the encrypted payload. Never sees
-// plaintext or any private key.
-async function handleSubmit(request, env) {
+// plaintext or any private key. ctx carries the fire-and-forget receipt.
+async function handleSubmit(request, env, ctx) {
   const ip = request.headers.get("CF-Connecting-IP");
   if (!(await underLimit(env, "r", ip, cfg(env, "REVEAL_LIMIT"), cfg(env, "REVEAL_WINDOW")))) {
     return json({ error: "rate_limited" }, 429);
@@ -731,18 +769,39 @@ async function handleSubmit(request, env) {
     body: JSON.stringify({ ct, iv, wrapped, wrapIv, epk: cleanEpk }),
   });
   if (res.status !== 200) return json({ error: "unavailable" }, 410);
+  let info = {};
+  try {
+    info = await res.json();
+  } catch {
+    /* the DO returns { ok, submittedAt }; fall back to now if absent */
+  }
 
+  // A submitted payload never expires (the DO cancels its alarm), so there is no
+  // claim deadline to record: just the submission time for the "awaiting claim"
+  // age shown on /admin/requests. Capture the non-secret title + field count for
+  // the receipt while we hold the metadata.
+  const submittedSec = info.submittedAt
+    ? Math.floor(info.submittedAt / 1000)
+    : Math.floor(Date.now() / 1000);
+  let noticeTitle = "";
+  let fieldCount = 0;
   await updateReqMeta(env, token, (md) => {
     md.s = "submitted";
-    md.su = Math.floor(Date.now() / 1000);
+    md.su = submittedSec;
+    noticeTitle = md.t || "";
+    fieldCount = md.n || 0;
   });
 
-  // v1 signal is the /admin/requests status list. An email/Discord "submission
-  // received" receipt is deferred: the cockpit's /api/secure-share/opened endpoint
-  // says "a secret you shared was opened and destroyed", which is untrue for an
-  // inbound submission (nothing of yours was opened; something arrived for you to
-  // claim). A truthful receipt needs a new cockpit endpoint
-  // (/api/secure-share/submitted) in forgerpa-sales, which is out of scope here.
+  // Fire-and-forget submission receipt to the cockpit, off the response path. Only
+  // non-secret metadata (title, a hashed request id, time, field COUNT); never a
+  // label, a value, or anything from the ciphertext. Its failure or slowness can
+  // never affect this response.
+  if (ctx) {
+    const requestId = await sha256b64url(token);
+    ctx.waitUntil(
+      notifySubmitted(env, { title: noticeTitle, requestId, submittedAt: submittedSec, fieldCount }),
+    );
+  }
 
   return json({ ok: true });
 }
@@ -785,6 +844,32 @@ async function handleClaim(request, env, ctx) {
     status: res.status,
     headers: { ...BASE_HEADERS, "Content-Type": "application/json; charset=utf-8" },
   });
+}
+
+// API: request-cancel (Access-gated, under /admin). Body { token }. Destroys the
+// request DO from any status (deleteAll + deleteAlarm) and purges its KV metadata
+// row so the status list cleans up. Idempotent: a gone request still returns ok.
+async function handleRequestCancel(request, env) {
+  if (!(await accessAuthorized(request, env))) {
+    return json({ error: "forbidden" }, 403);
+  }
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (!(await underLimit(env, "c", ip, cfg(env, "CREATE_LIMIT"), cfg(env, "CREATE_WINDOW")))) {
+    return json({ error: "rate_limited" }, 429);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "bad_request" }, 400);
+  }
+  const token = body && body.token;
+  if (!isPlausibleId(token)) return json({ error: "bad_request" }, 400);
+
+  const stub = env.REQUEST_DO.get(env.REQUEST_DO.idFromName(token));
+  await stub.fetch("https://do/cancel", { method: "POST" });
+  await deleteReqMeta(env, token);
+  return json({ ok: true });
 }
 
 // ---------------------------------------------------------------------------
@@ -861,8 +946,9 @@ export default {
       if (pathname === "/api/reveal") return handleReveal(request, env, ctx);
       // Inbound POST routes.
       if (pathname === "/admin/api/request-create") return handleRequestCreate(request, env);
+      if (pathname === "/admin/api/request-cancel") return handleRequestCancel(request, env);
       if (pathname === "/admin/api/claim") return handleClaim(request, env, ctx);
-      if (pathname === "/api/submit") return handleSubmit(request, env);
+      if (pathname === "/api/submit") return handleSubmit(request, env, ctx);
       return json({ error: "not_found" }, 404);
     }
 

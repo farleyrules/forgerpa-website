@@ -95,10 +95,12 @@ function makeRequestDONamespace() {
           const status = store.get("status");
           const expireAt = store.get("expireAt");
           if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) return rj({ error: "unavailable" }, 410);
+          const submittedAt = Date.now();
           store.set("payload", body);
           store.set("status", "submitted");
-          store.set("submittedAt", Date.now());
-          return rj({ ok: true });
+          store.set("submittedAt", submittedAt);
+          store.delete("expireAt");
+          return rj({ ok: true, submittedAt });
         }
         if (method === "POST" && u.pathname === "/claim") {
           const status = store.get("status");
@@ -108,6 +110,10 @@ function makeRequestDONamespace() {
           store.set("claimedAt", Date.now());
           store.delete("payload");
           return rj(payload);
+        }
+        if (method === "POST" && u.pathname === "/cancel") {
+          store.clear();
+          return rj({ ok: true });
         }
         return rj({ error: "not_found" }, 404);
       },

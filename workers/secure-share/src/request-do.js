@@ -18,8 +18,12 @@
  *     all ciphertext or public keys. It never holds plaintext, the content key,
  *     or the request PRIVATE key (that lives only in David's claim-link fragment).
  *
- * An alarm destroys the object at expiry whether or not it was ever submitted or
- * claimed, so an unclaimed submission does not outlive the request's TTL.
+ * Expiry applies to the SUBMIT side only. While a request is pending, an alarm
+ * destroys it at its TTL. On a submission the alarm is CANCELLED: a submitted
+ * payload never expires; it persists until David claims it (burn) or deletes it
+ * via the admin Delete action. So a submission that lands near the request's
+ * expiry is never destroyed before it can be claimed. What lingers is ciphertext
+ * only the claim link can decrypt.
  */
 export class RequestDO {
   constructor(state) {
@@ -73,13 +77,18 @@ export class RequestDO {
         const status = rec.get("status");
         const expireAt = rec.get("expireAt");
         if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) {
-          out = 410;
+          out = { code: 410 };
           return;
         }
-        await this.storage.put({ payload, status: "submitted", submittedAt: Date.now() });
-        out = 200;
+        const submittedAt = Date.now();
+        // A submitted payload never expires: cancel the alarm entirely. It
+        // persists until David claims (burn) or deletes it.
+        await this.storage.put({ payload, status: "submitted", submittedAt });
+        await this.storage.deleteAlarm();
+        out = { code: 200, submittedAt };
       });
-      return json(out === 200 ? { ok: true } : { error: "unavailable" }, out);
+      if (out.code !== 200) return json({ error: "unavailable" }, 410);
+      return json({ ok: true, submittedAt: out.submittedAt });
     }
 
     // Claim: atomically read-and-burn the payload. The first claim returns it and
@@ -102,6 +111,14 @@ export class RequestDO {
       });
       if (payload == null) return json({ error: "gone" }, 410);
       return json(payload);
+    }
+
+    // Cancel/delete: destroy the request and any unclaimed submission, valid from
+    // ANY status. Backs the admin Delete action.
+    if (request.method === "POST" && path === "/cancel") {
+      await this.storage.deleteAll();
+      await this.storage.deleteAlarm();
+      return json({ ok: true });
     }
 
     return json({ error: "not_found" }, 404);

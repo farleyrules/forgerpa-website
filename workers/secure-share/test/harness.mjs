@@ -105,10 +105,14 @@ function makeRequestDONamespace() {
           if (status !== "pending" || (expireAt != null && Date.now() > expireAt)) {
             return rj({ error: "unavailable" }, 410);
           }
+          const submittedAt = Date.now();
           store.set("payload", body);
           store.set("status", "submitted");
-          store.set("submittedAt", Date.now());
-          return rj({ ok: true });
+          store.set("submittedAt", submittedAt);
+          // Submit cancels expiry: a submitted payload never expires (mirrors the
+          // real DO's deleteAlarm). Represented here by clearing expireAt.
+          store.delete("expireAt");
+          return rj({ ok: true, submittedAt });
         }
         if (method === "POST" && u.pathname === "/claim") {
           const status = store.get("status");
@@ -118,6 +122,10 @@ function makeRequestDONamespace() {
           store.set("claimedAt", Date.now());
           store.delete("payload");
           return rj(payload);
+        }
+        if (method === "POST" && u.pathname === "/cancel") {
+          store.clear();
+          return rj({ ok: true });
         }
         return rj({ error: "nf" }, 404);
       },
@@ -299,6 +307,49 @@ async function claimDecrypt(privJwk, payload) {
   const contentKey = await crypto.subtle.importKey("raw", rawKey, { name: "AES-GCM" }, false, ["decrypt"]);
   const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(payload.iv) }, contentKey, fromB64(payload.ct));
   return JSON.parse(new TextDecoder().decode(pt));
+}
+
+// Fake DurableObjectState for driving the REAL RequestDO class directly. Records
+// alarm calls so a test can assert the alarm lifecycle (set at init, cancelled at
+// submit). blockConcurrencyWhile runs synchronously (Node is single-threaded).
+function makeFakeState() {
+  const map = new Map();
+  const alarms = [];
+  const storage = {
+    async get(k) {
+      if (Array.isArray(k)) {
+        const m = new Map();
+        for (const kk of k) if (map.has(kk)) m.set(kk, map.get(kk));
+        return m;
+      }
+      return map.has(k) ? map.get(k) : undefined;
+    },
+    async put(obj) {
+      for (const kk of Object.keys(obj)) map.set(kk, obj[kk]);
+    },
+    async delete(k) {
+      map.delete(k);
+    },
+    async deleteAll() {
+      map.clear();
+    },
+    async setAlarm(t) {
+      alarms.push(["set", t]);
+    },
+    async deleteAlarm() {
+      alarms.push(["del"]);
+    },
+  };
+  return {
+    state: {
+      storage,
+      async blockConcurrencyWhile(fn) {
+        return fn();
+      },
+    },
+    map,
+    alarms,
+  };
 }
 
 // ---- tiny assert framework -------------------------------------------------
@@ -640,6 +691,132 @@ async function run() {
   ok("outbound create page still serves", (await (await get("/admin", rEnv)).text()).includes("Create a Secure Link"));
   ok("outbound /s reveal page still serves", (await (await get("/s", rEnv)).text()).includes("Reveal Secret"));
   ok("outbound reveal endpoint still burns (unknown id -> 410)", (await post("/api/reveal", { id: "abcdEFGH01234567" }, rEnv)).status === 410);
+
+  // 21. Added fields: the per-field secret flag round-trips byte-exact through the
+  // hybrid crypto (this is what drives claim-side masking).
+  {
+    const env21 = makeEnv();
+    const kpA = await genRequestKeypair();
+    const rcA = await (
+      await post("/admin/api/request-create", { title: "Add", fields: [{ label: "Username", secret: false }], ttl: 3600, pubJwk: kpA.pubJwk }, env21)
+    ).json();
+    const bundleA = {
+      v: 1,
+      fields: [
+        { label: "Username", value: "vendor1", secret: false },
+        { label: "Registration ID", value: "REG-42", secret: true }, // added, secret
+        { label: "Public Ref", value: "PR-9", secret: false }, // added, not secret
+      ],
+    };
+    ok("added-field submit ok", (await post("/api/submit", { token: rcA.token, ...(await submitEncrypt(kpA.pubJwk, bundleA)) }, env21)).status === 200);
+    const decA = await claimDecrypt(kpA.privJwk, await (await post("/admin/api/claim", { token: rcA.token }, env21)).json());
+    ok("added secret field round-trips secret=true", decA.fields.some((f) => f.label === "Registration ID" && f.value === "REG-42" && f.secret === true));
+    ok("added non-secret field round-trips secret=false", decA.fields.some((f) => f.label === "Public Ref" && f.value === "PR-9" && f.secret === false));
+    ok("added-field bundle is byte-exact", JSON.stringify(decA) === JSON.stringify(bundleA));
+  }
+
+  // 22. Admin cancel/delete.
+  {
+    const env22 = makeEnv();
+    const kpP = await genRequestKeypair();
+    const rcP = await (await post("/admin/api/request-create", { title: "PendingKill", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kpP.pubJwk }, env22)).json();
+    ok("cancel pending returns ok", (await post("/admin/api/request-cancel", { token: rcP.token }, env22)).status === 200);
+    ok("cancelled submit page is the generic error", (await (await get("/r/" + rcP.token, env22)).text()).includes("This Request Link Is Not Available"));
+    ok("cancelled token submit -> 410", (await post("/api/submit", { token: rcP.token, ...(await submitEncrypt(kpP.pubJwk, { v: 1, fields: [{ label: "K", value: "x", secret: true }] })) }, env22)).status === 410);
+    ok("cancelled request purged from the list", !(await (await get("/admin/requests", env22)).text()).includes("PendingKill"));
+
+    const kpS = await genRequestKeypair();
+    const rcS = await (await post("/admin/api/request-create", { title: "SubKill", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kpS.pubJwk }, env22)).json();
+    ok("submit before cancel ok", (await post("/api/submit", { token: rcS.token, ...(await submitEncrypt(kpS.pubJwk, { v: 1, fields: [{ label: "K", value: "s", secret: true }] })) }, env22)).status === 200);
+    ok("cancel submitted returns ok", (await post("/admin/api/request-cancel", { token: rcS.token }, env22)).status === 200);
+    ok("delete-from-submitted destroys payload -> claim 410", (await post("/admin/api/claim", { token: rcS.token }, env22)).status === 410);
+    ok("submitted request purged from the list", !(await (await get("/admin/requests", env22)).text()).includes("SubKill"));
+
+    const env22g = makeEnv({ ACCESS_AUD: "test-aud", ACCESS_TEAM_DOMAIN: "test.cloudflareaccess.com" });
+    ok("gated cancel with no token -> 403", (await post("/admin/api/request-cancel", { token: "abcdEFGH01234567" }, env22g)).status === 403);
+  }
+
+  // 23. A submitted payload never expires: claim still succeeds after the original
+  // submit-side expiry has passed (submit cancels expiry).
+  {
+    const env23 = makeEnv();
+    const kpE = await genRequestKeypair();
+    const rcE = await (await post("/admin/api/request-create", { title: "NoExpire", fields: [{ label: "K", secret: true }], ttl: 3600, pubJwk: kpE.pubJwk }, env23)).json();
+    ok("submit ok", (await post("/api/submit", { token: rcE.token, ...(await submitEncrypt(kpE.pubJwk, { v: 1, fields: [{ label: "K", value: "keep", secret: true }] })) }, env23)).status === 200);
+    env23.REQUEST_DO._backdate(rcE.token); // even if an expiry were set, it is in the past
+    const clE = await post("/admin/api/claim", { token: rcE.token }, env23);
+    ok("claim succeeds after original expiry (submitted never expires)", clE.status === 200);
+    const decE = await claimDecrypt(kpE.privJwk, await clE.json());
+    ok("post-expiry claim decrypts correctly", decE.fields[0].value === "keep");
+    // The claim above used no ctx, so the row's metadata stays "submitted": the
+    // list renders "awaiting claim", never a claim-by deadline.
+    const listE = await (await get("/admin/requests", env23)).text();
+    ok("requests list shows 'awaiting claim'", listE.includes("awaiting claim"));
+    ok("requests list has no claim-by deadline", !/claim by/i.test(listE));
+  }
+
+  // 24. RequestDO alarm lifecycle on the REAL class: init sets an alarm, submit
+  // CANCELS it, pending alarm() wipes, cancel destroys from any status.
+  {
+    const f = makeFakeState();
+    const doInst = new RequestDO(f.state);
+    const doReq = (p, b) => doInst.fetch(new Request("https://do" + p, { method: "POST", body: b ? JSON.stringify(b) : undefined }));
+    await doReq("/init", { title: "t", fields: [{ label: "K", secret: true }], pubJwk: {}, ttl: 3600, createdAt: 1 });
+    ok("DO init sets an alarm", f.alarms.some((a) => a[0] === "set"));
+    f.alarms.length = 0;
+    await doReq("/submit", { ct: "x", iv: "y", wrapped: "z", wrapIv: "w", epk: {} });
+    ok("DO submit CANCELS the alarm (never expires)", f.alarms.some((a) => a[0] === "del"));
+    ok("DO submit does NOT re-set an alarm", !f.alarms.some((a) => a[0] === "set"));
+    ok("DO claim returns the payload after submit", (await doReq("/claim")).status === 200);
+
+    const fp = makeFakeState();
+    const doP = new RequestDO(fp.state);
+    await doP.fetch(new Request("https://do/init", { method: "POST", body: JSON.stringify({ title: "p", fields: [{ label: "K", secret: true }], pubJwk: {}, ttl: 3600, createdAt: 1 }) }));
+    await doP.alarm(); // expiry fires while pending
+    ok("DO pending alarm() wipes -> describe 410", (await doP.fetch(new Request("https://do/describe", { method: "POST" }))).status === 410);
+    ok("DO pending alarm() wipes -> submit 410", (await doP.fetch(new Request("https://do/submit", { method: "POST", body: JSON.stringify({ ct: "x", iv: "y", wrapped: "z", wrapIv: "w", epk: {} }) }))).status === 410);
+
+    const fc = makeFakeState();
+    const doC = new RequestDO(fc.state);
+    await doC.fetch(new Request("https://do/init", { method: "POST", body: JSON.stringify({ title: "c", fields: [{ label: "K", secret: true }], pubJwk: {}, ttl: 3600, createdAt: 1 }) }));
+    await doC.fetch(new Request("https://do/submit", { method: "POST", body: JSON.stringify({ ct: "x", iv: "y", wrapped: "z", wrapIv: "w", epk: {} }) }));
+    ok("DO cancel returns ok", (await doC.fetch(new Request("https://do/cancel", { method: "POST" }))).status === 200);
+    ok("DO cancel destroys payload -> claim 410", (await doC.fetch(new Request("https://do/claim", { method: "POST" }))).status === 410);
+  }
+
+  // 25. Submission receipt (fire-and-forget). With the shared secret set, submit
+  // POSTs a NON-SECRET receipt off the response path; a throwing cockpit never
+  // fails the submission, and the payload carries no ciphertext.
+  {
+    const realFetch = globalThis.fetch;
+    const calls = [];
+    const kpN = await genRequestKeypair();
+    const envN = makeEnv({ SECURE_SHARE_SECRET: "test-secret", COCKPIT_URL: "https://cockpit.test" });
+    const rcN = await (
+      await post("/admin/api/request-create", { title: "NotifyMe", fields: [{ label: "K", secret: true }, { label: "L", secret: false }], ttl: 3600, pubJwk: kpN.pubJwk }, envN)
+    ).json();
+    const encN = await submitEncrypt(kpN.pubJwk, { v: 1, fields: [{ label: "K", value: "sekretvalue", secret: true }] });
+    globalThis.fetch = async (u, init) => {
+      calls.push({ url: String(u), body: (init && init.body) || "" });
+      throw new Error("cockpit down"); // prove the submit still succeeds
+    };
+    try {
+      const ctxN = { _p: [], waitUntil(p) { this._p.push(p); } };
+      const subN = await worker.fetch(
+        new Request(ORIGIN + "/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: rcN.token, ...encN }) }),
+        envN,
+        ctxN,
+      );
+      ok("submit returns 200 even when the receipt fetch throws", subN.status === 200, "status=" + subN.status);
+      await Promise.all(ctxN._p.map((p) => Promise.resolve(p).catch(() => {})));
+      const notif = calls.find((c) => c.url.includes("/api/secure-share/submitted"));
+      ok("receipt POSTed to /api/secure-share/submitted", !!notif);
+      ok("receipt carries title + fieldCount(2)", !!(notif && notif.body.includes("NotifyMe") && /"fieldCount":2/.test(notif.body)));
+      ok("receipt has NO ciphertext or values", !!(notif && !/"ct"|"iv"|"wrapped"|"epk"|sekretvalue/.test(notif.body)));
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+  }
 
   console.log("\n" + pass + " passed, " + fail + " failed\n");
   if (fail > 0) process.exit(1);

@@ -99,28 +99,44 @@ in. Same zero-knowledge posture, same atomic single-use discipline.
   to `/api/submit`, which atomically spends the single-use token (in `RequestDO`)
   and stores the payload. Plaintext, the content key, and any private key never
   reach the server.
+  The submitter can also **Add Field** (a labeled row with its own Secret toggle;
+  a secret added field is a password input and is masked on claim). Requested
+  fields are not removable; leaving one blank is the signal "I do not have this"
+  (submitting with any blank asks for confirmation). The mint result also shows a
+  self-contained **QR code** of the Submit Link (inline SVG, no external library)
+  for vendors on a phone.
 - **Claim** (`/admin/claim`, Access-gated). Click **Reveal Submission** (click to
   burn, so a link-prefetching scanner cannot consume it). The Worker atomically
   burns and returns the payload once (a second claim gets `410 Gone`), and the
   browser derives the same ECDH-ES wrapping key with the private key from the
   fragment, unwraps the content key, decrypts the bundle, and renders the fields
   (secret fields masked, with per-field Show + Copy).
+- **Lifecycle: expiry is submit-side only.** While a request is pending, an alarm
+  destroys it at its TTL. On a submission the alarm is **cancelled**: a submitted
+  payload never expires, it persists until you claim it (burn) or delete it. So a
+  submission landing near the request's expiry is never lost.
 - **Status** (`/admin/requests`): pending / submitted / claimed / expired, metadata
   only, keyed by `sha256(token)` in a separate KV keyspace (`rm:`) from outbound
-  history (`m:`). Where this browser stashed the Claim Link, an Open Claim link
-  appears in the row.
+  history (`m:`). A submitted row shows "Submitted &lt;age&gt;, awaiting claim" and
+  tints amber after 7 days unclaimed. Per row: **Delete** (cancels the request and
+  purges its metadata; confirms first if it would destroy an unclaimed submission),
+  **Duplicate** (re-mint from the stored non-secret spec: fresh token, keypair, and
+  expiry; works even after the DO is gone), and, where this browser saved the Claim
+  Link, a clickable **Open Claim** + **Copy** (rendered client-side from the
+  `localStorage` stash, since the private key never touches the server).
 
 `RequestDO` (one instance per request, addressed by `idFromName(token)`) is a
 separate Durable Object class from `SecretDO`, so their id spaces never collide.
-Its `blockConcurrencyWhile` makes both the submit-token spend and the claim burn
-atomic, exactly like `SecretDO`'s reveal-and-burn.
+Its `blockConcurrencyWhile` makes the submit-token spend, the claim burn, and the
+cancel atomic, exactly like `SecretDO`'s reveal-and-burn.
 
-**Submission receipt (deferred).** A "submission received" email/Discord ping is a
-fast-follow, not in v1. The existing cockpit endpoint
-`/api/secure-share/opened` says "a secure item you shared was opened and
-destroyed", which is untrue for an inbound submission. A truthful receipt needs a
-new `/api/secure-share/submitted` endpoint in forgerpa-sales; until then the
-`/admin/requests` list is the signal.
+**Submission receipt.** On a durable submit, the Worker fires a best-effort
+`POST /api/secure-share/submitted` to the cockpit (same `x-secure-share-secret`
+auth as `/opened`), off the response path via `ctx.waitUntil` with a short
+timeout. The payload is non-secret only: `{ title, requestId (a sha256 of the
+token), submittedAt, fieldCount }`, never a field label, value, or anything from
+the ciphertext. A missing (404), failing, or slow cockpit endpoint never delays or
+fails the submission.
 
 ## Files
 
@@ -128,11 +144,11 @@ new `/api/secure-share/submitted` endpoint in forgerpa-sales; until then the
 |---|---|
 | `src/index.js` | Worker: router, DO calls, validation, rate limiting, Access JWT check, KV metadata (outbound history + inbound request status), the `/admin/api/send` email proxy + open-receipt bridge, the inbound mint / submit / claim handlers, security headers. |
 | `src/secret-do.js` | `SecretDO` Durable Object (outbound): atomic store / reveal-and-burn / expiry alarm. |
-| `src/request-do.js` | `RequestDO` Durable Object (inbound): atomic init / describe / single-use submit / claim-and-burn / expiry alarm. Stores only ciphertext + public keys. |
-| `src/pages.js` | All HTML, inline CSS, and browser scripts. Outbound: create / view / history + `CREATE_JS` / `REVEAL_JS` (AES-GCM, PBKDF2 passphrase, file encode/decode). Inbound: mint / submit / claim / requests-list + `REQUEST_JS` / `SUBMIT_JS` / `CLAIM_JS` / `REQUESTS_JS` (ECDH-ES + HKDF hybrid). |
+| `src/request-do.js` | `RequestDO` Durable Object (inbound): atomic init / describe / single-use submit (cancels expiry) / claim-and-burn / cancel / pending-expiry alarm. Stores only ciphertext + public keys. |
+| `src/pages.js` | All HTML, inline CSS, and browser scripts. Outbound: create / view / history + `CREATE_JS` / `REVEAL_JS` (AES-GCM, PBKDF2 passphrase, file encode/decode). Inbound: mint / submit / claim / requests-list + `REQUEST_JS` / `SUBMIT_JS` / `CLAIM_JS` / `REQUESTS_JS` (ECDH-ES + HKDF hybrid), plus `QR_JS` (self-contained byte-mode QR encoder rendered as inline SVG). |
 | `src/anvil.js` | The 3D anvil mark (base64 PNG) served at `/anvil-mark.png`. |
 | `wrangler.jsonc` | Worker name, DO bindings (`SecretDO` + `RequestDO`) + migrations, KV binding, custom-domain route, `workers_dev:false`, tunable limits, Access + cockpit vars. |
-| `test/harness.mjs` | `node test/harness.mjs`: 92 checks against the real Worker module (DO + KV stubs, real AES + passphrase + ECDH-ES round-trips, outbound history/receipts, inbound mint/submit/claim, single-use + burn, validation, plus a direct `RequestDO` atomicity test). |
+| `test/harness.mjs` | `node test/harness.mjs`: 122 checks against the real Worker module (DO + KV stubs, real AES + passphrase + ECDH-ES round-trips, outbound history/receipts, inbound mint/submit/claim/cancel, single-use + burn, submit-side-only expiry, the fire-and-forget submission receipt, validation, plus direct `RequestDO` atomicity + alarm-lifecycle tests). |
 | `test/serve.mjs` | `node test/serve.mjs`: serves the Worker on `http://localhost:8788` for a real-browser end-to-end test (both directions). |
 
 Email delivery + open-receipts flow through two shared-secret endpoints in the
@@ -234,7 +250,7 @@ degrades to "Email is not set up yet. Copy the link and send it yourself."
 
 ```bash
 cd workers/secure-share
-node test/harness.mjs     # 92 checks: crypto, passphrase, files, burn, history, send/receipt, inbound requests
+node test/harness.mjs     # 122 checks: crypto, passphrase, files, burn, history, send/receipt, inbound requests
 node test/serve.mjs       # then browse http://localhost:8788/admin (outbound) or /admin/request (inbound) for a live e2e
 ```
 
@@ -244,11 +260,11 @@ module instead.
 
 ## Roadmap (remaining)
 
-- **Inbound submission receipt.** Add `/api/secure-share/submitted` to the
-  forgerpa-sales cockpit (mirroring `/opened`) so a submission triggers a truthful
-  "a submission is ready to claim" email + Discord ping, and have `handleSubmit`
-  call it. Deferred from v1 because the existing `/opened` copy is untrue for the
-  inbound direction (see "Secure Requests").
+- **Inbound submission receipt endpoint.** The Worker already fires
+  `POST /api/secure-share/submitted` on every submission (see "Secure Requests").
+  It is inert until the matching endpoint ships in the forgerpa-sales cockpit
+  (mirroring `/opened`, emailing "a submission is ready to claim"); the Worker
+  swallows the 404 until then, and the `/admin/requests` list is the interim signal.
 - **Receipts in Central time.** The cockpit's `/opened` email renders the open
   time in UTC (`toUTCString`); switch to `America/Chicago` for CT.
 - **Recipient identity gate.** Optional email one-time-PIN so only a named

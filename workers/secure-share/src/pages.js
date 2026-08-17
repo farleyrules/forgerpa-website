@@ -180,7 +180,7 @@ table.hist td{padding:.65rem .6rem; border-bottom:1px solid var(--line); vertica
 .reqfield>label{display:flex; align-items:center; gap:.35rem}
 .reqfield .lock{width:13px; height:13px; color:var(--amber-dark); flex:none}
 .pwrap{display:flex; gap:.5rem; align-items:stretch}
-.pwrap input{flex:1}
+.pwrap input{flex:1; min-width:0}
 .pwrap .toggle,.vbtns .toggle{flex:none; width:auto; padding:.5rem .75rem; font-size:.78rem; background:transparent; color:var(--charcoal); border:1.5px solid var(--gray-300); box-shadow:none; font-weight:600}
 .pwrap .toggle:hover,.minibtn.secondary:hover{background:var(--slate); border-color:var(--gray-400)}
 /* Claim reveal: the fields table */
@@ -193,6 +193,12 @@ table.hist td{padding:.65rem .6rem; border-bottom:1px solid var(--line); vertica
 .kvtable .vbtns{display:flex; gap:.35rem; flex:none}
 .minibtn{width:auto; padding:.35rem .65rem; font-size:.75rem; box-shadow:none; font-weight:700}
 .minibtn.secondary{background:transparent; color:var(--charcoal); border:1.5px solid var(--gray-300)}
+.substatus{font-size:.72rem; margin-top:.25rem}
+table.hist tr.stale td{background:#fffbeb}
+.actioncell{white-space:nowrap}
+.qrwrap{margin-top:1rem; text-align:center}
+.qrwrap svg{width:160px; height:160px; border:1px solid var(--line); border-radius:8px; background:#fff}
+.qrwrap .cap{text-align:center}
 @media (max-width:480px){
   main{padding:1.5rem 1rem 2.5rem}
   .card{padding:1.5rem}
@@ -1033,12 +1039,17 @@ export function renderRequestMintPage() {
     "</div></div>" +
     '<p class="cap"><strong>Send this to the outside party.</strong> They fill in the fields; nothing ' +
     "sensitive touches email. It works once, then it closes.</p>" +
+    '<div id="qr-wrap" class="qrwrap" style="display:none">' +
+    '<div id="qr-svg" aria-hidden="false"></div>' +
+    '<p class="cap">Scan to open the Submit Link on a phone.</p>' +
+    "</div>" +
     "</div>" +
     '<div class="reqlink">' +
     '<label for="claim-out">Claim Link (Keep This)</label>' +
     '<div class="outbox"><div class="row">' +
     '<input id="claim-out" type="text" readonly>' +
     '<button id="copy-claim" class="btn">Copy</button>' +
+    '<a id="open-claim" class="btn secondary" target="_blank" rel="noopener" style="text-decoration:none">Open</a>' +
     "</div></div>" +
     '<p class="cap"><strong>The only way to read what comes back.</strong> Save it now (a password ' +
     "manager is ideal). It is also stored in this browser for convenience. If you lose it, the " +
@@ -1155,32 +1166,53 @@ export function renderClaimPage() {
 }
 
 // GET /admin/requests -- status list. rows come from index.js listReqMeta().
+function relativeAge(sec, nowSec) {
+  const d = Math.max(0, nowSec - sec);
+  if (d < 60) return "just now";
+  if (d < 3600) return Math.floor(d / 60) + "m ago";
+  if (d < 86400) return Math.floor(d / 3600) + "h ago";
+  const days = Math.floor(d / 86400);
+  if (days < 14) return days + (days === 1 ? " day ago" : " days ago");
+  return Math.floor(days / 7) + " weeks ago";
+}
+
 export function renderRequestsPage(env, rows) {
   const nowSec = Math.floor(Date.now() / 1000);
+  const STALE = 604800; // 7 days: an unclaimed submission older than this gets an amber row
   let trs = "";
   for (const m of rows) {
-    let status, cls;
+    // A submitted payload never expires (submit-side expiry only), so a submitted
+    // row is never Expired; only a still-pending request expires at its TTL.
+    let pill, cls, sub = "", trClass = "";
     if (m.s === "claimed") {
-      status = "Claimed " + fmtCT(m.cl);
+      pill = "Claimed";
       cls = "st-claimed";
+      sub = m.cl ? fmtCT(m.cl) : "";
     } else if (m.s === "submitted") {
-      status = "Submitted " + fmtCT(m.su);
+      pill = "Submitted";
       cls = "st-submitted";
+      const age = m.su ? relativeAge(m.su, nowSec) : "";
+      sub = (age ? age + ", " : "") + "awaiting claim";
+      if (m.su && nowSec - m.su > STALE) trClass = ' class="stale"';
     } else if (m.e && m.e < nowSec) {
-      status = "Expired";
+      pill = "Expired";
       cls = "st-expired";
     } else {
-      status = "Pending";
+      pill = "Pending";
       cls = "st-pending";
     }
+    const statusKey = cls.slice(3); // st-pending -> pending
     const n = m.n || 0;
+    const subHtml = sub ? '<div class="muted substatus">' + escHtml(sub) + "</div>" : "";
+    // Non-secret spec for the Duplicate action (labels + secret flags, no values).
+    const specJson = escHtml(JSON.stringify({ title: m.t || "", fields: Array.isArray(m.sp) ? m.sp : [] }));
     trs +=
-      "<tr>" +
+      "<tr" + trClass + ">" +
       "<td>" + (escHtml(m.t) || '<span class="muted">(no title)</span>') + "</td>" +
       "<td>" + n + " field" + (n === 1 ? "" : "s") + "</td>" +
       "<td>" + fmtCT(m.c) + "</td>" +
-      '<td><span class="pill ' + cls + '">' + escHtml(status) + "</span></td>" +
-      '<td class="claimcell" data-th="' + escHtml(m.th || "") + '"></td>' +
+      '<td><span class="pill ' + cls + '">' + pill + "</span>" + subHtml + "</td>" +
+      '<td class="actioncell" data-th="' + escHtml(m.th || "") + '" data-status="' + statusKey + '" data-spec="' + specJson + '"></td>' +
       "</tr>";
   }
   if (!trs) {
@@ -1191,10 +1223,11 @@ export function renderRequestsPage(env, rows) {
     '<div class="hist-head"><h1>Secure Requests</h1>' +
     '<a class="btn secondary" href="/admin/request">New Request</a></div>' +
     '<p class="lede">Inbound requests you created (metadata only, never the submitted secret). ' +
-    "Rows disappear 30 days after creation. Claim a submission with the Claim Link you saved when you " +
-    "created it; where this browser has it stored, an Open Claim link appears below.</p>" +
+    "A submitted request stays until you claim or delete it. Rows disappear 30 days after creation. " +
+    "Where this browser has the Claim Link saved, Open Claim and Copy appear below; otherwise use the " +
+    "copy you saved at mint.</p>" +
     '<div class="tablewrap"><table class="hist">' +
-    "<thead><tr><th>Request</th><th>Fields</th><th>Created</th><th>Status</th><th>Claim</th></tr></thead>" +
+    "<thead><tr><th>Request</th><th>Fields</th><th>Created</th><th>Status</th><th>Actions</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
   return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js");
@@ -1207,8 +1240,83 @@ export function renderRequestsPage(env, rows) {
 // wrapping key for the per-submission content key.
 // ---------------------------------------------------------------------------
 
+// Self-contained byte-mode QR encoder (ECC level M, versions 1-6) rendered as an
+// inline SVG. Public-domain algorithm (ISO/IEC 18004); no external library, no
+// fetch, so it stays inside the strict CSP. Verified against the jsQR decoder.
+const QR_JS = `
+  var QR=(function(){
+    var EXP=new Array(512),LOG=new Array(256);
+    (function(){var x=1;for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&0x100)x^=0x11d;}for(var i=255;i<512;i++)EXP[i]=EXP[i-255];})();
+    function gmul(a,b){return a===0||b===0?0:EXP[LOG[a]+LOG[b]];}
+    function rsGen(deg){var g=[1];for(var i=0;i<deg;i++){var ng=new Array(g.length+1);for(var z=0;z<ng.length;z++)ng[z]=0;for(var j=0;j<g.length;j++){ng[j]^=g[j];ng[j+1]^=gmul(g[j],EXP[i]);}g=ng;}return g;}
+    function rsEnc(data,ecLen){var gen=rsGen(ecLen),res=new Array(ecLen);for(var i=0;i<ecLen;i++)res[i]=0;for(var d=0;d<data.length;d++){var factor=data[d]^res[0];res.shift();res.push(0);for(var i2=0;i2<ecLen;i2++)res[i2]^=gmul(gen[i2+1],factor);}return res;}
+    var ECC_M={1:[10,1,16],2:[16,1,28],3:[26,1,44],4:[18,2,32],5:[24,2,43],6:[16,4,27]};
+    var ALIGN={2:18,3:22,4:26,5:30,6:34};
+    function getBit(x,i){return (x>>>i)&1;}
+    function encode(text){
+      var bytes=[];
+      for(var i=0;i<text.length;i++){var c=text.charCodeAt(i);if(c<0x80)bytes.push(c);else if(c<0x800){bytes.push(0xc0|(c>>6),0x80|(c&0x3f));}else{bytes.push(0xe0|(c>>12),0x80|((c>>6)&0x3f),0x80|(c&0x3f));}}
+      var version=0;
+      for(var v=1;v<=6;v++){var e=ECC_M[v];if(e[1]*e[2]>=bytes.length+2){version=v;break;}}
+      if(!version)return null;
+      var ecPerBlock=ECC_M[version][0],numBlocks=ECC_M[version][1],dataPerBlock=ECC_M[version][2],totalDataCw=numBlocks*dataPerBlock;
+      var bits=[];
+      function putBits(val,len){for(var i=len-1;i>=0;i--)bits.push((val>>i)&1);}
+      putBits(4,4);putBits(bytes.length,8);
+      for(var b=0;b<bytes.length;b++)putBits(bytes[b],8);
+      for(var t=0;t<4&&bits.length<totalDataCw*8;t++)bits.push(0);
+      while(bits.length%8!==0)bits.push(0);
+      var dataCw=[];
+      for(var i3=0;i3<bits.length;i3+=8){var byte=0;for(var j=0;j<8;j++)byte=(byte<<1)|bits[i3+j];dataCw.push(byte);}
+      var PAD=[0xec,0x11],pp=0;
+      while(dataCw.length<totalDataCw)dataCw.push(PAD[pp++%2]);
+      var blocks=[],eccs=[];
+      for(var bl=0;bl<numBlocks;bl++){var block=dataCw.slice(bl*dataPerBlock,(bl+1)*dataPerBlock);blocks.push(block);eccs.push(rsEnc(block,ecPerBlock));}
+      var finalCw=[];
+      for(var di=0;di<dataPerBlock;di++)for(var bb=0;bb<numBlocks;bb++)finalCw.push(blocks[bb][di]);
+      for(var ei=0;ei<ecPerBlock;ei++)for(var bc=0;bc<numBlocks;bc++)finalCw.push(eccs[bc][ei]);
+      var size=17+4*version;
+      var mods=[],fn=[];
+      for(var r0=0;r0<size;r0++){mods.push(new Array(size));fn.push(new Array(size));for(var c0=0;c0<size;c0++){mods[r0][c0]=0;fn[r0][c0]=false;}}
+      function setF(r,c,val){mods[r][c]=val?1:0;fn[r][c]=true;}
+      function finder(r,c){for(var dr=-1;dr<=7;dr++)for(var dc=-1;dc<=7;dc++){var rr=r+dr,cc=c+dc;if(rr<0||rr>=size||cc<0||cc>=size)continue;var ring=dr>=0&&dr<=6&&dc>=0&&dc<=6&&(dr===0||dr===6||dc===0||dc===6||(dr>=2&&dr<=4&&dc>=2&&dc<=4));setF(rr,cc,ring);}}
+      finder(0,0);finder(0,size-7);finder(size-7,0);
+      for(var ti=8;ti<size-8;ti++){setF(6,ti,ti%2===0);setF(ti,6,ti%2===0);}
+      if(ALIGN[version]){var a=ALIGN[version];for(var dr2=-2;dr2<=2;dr2++)for(var dc2=-2;dc2<=2;dc2++)setF(a+dr2,a+dc2,Math.max(Math.abs(dr2),Math.abs(dc2))!==1);}
+      for(var f1=0;f1<=8;f1++){fn[8][f1]=true;fn[f1][8]=true;}
+      for(var f2=0;f2<8;f2++){fn[8][size-1-f2]=true;fn[size-1-f2][8]=true;}
+      var idx=0;
+      function dataBit(i){return i<finalCw.length*8?getBit(finalCw[i>>3],7-(i&7)):0;}
+      for(var col=size-1;col>=1;col-=2){if(col===6)col=5;for(var vert=0;vert<size;vert++){for(var jj=0;jj<2;jj++){var x=col-jj,upward=((col+1)&2)===0,y=upward?size-1-vert:vert;if(!fn[y][x]){mods[y][x]=dataBit(idx);idx++;}}}}
+      var maskFns=[function(r,c){return (r+c)%2===0;},function(r){return r%2===0;},function(r,c){return c%3===0;},function(r,c){return (r+c)%3===0;},function(r,c){return (Math.floor(r/2)+Math.floor(c/3))%2===0;},function(r,c){return ((r*c)%2)+((r*c)%3)===0;},function(r,c){return (((r*c)%2)+((r*c)%3))%2===0;},function(r,c){return (((r+c)%2)+((r*c)%3))%2===0;}];
+      function applyMask(mfn){var g=[];for(var r=0;r<size;r++){g.push(mods[r].slice());}for(var r2=0;r2<size;r2++)for(var c=0;c<size;c++)if(!fn[r2][c]&&mfn(r2,c))g[r2][c]^=1;return g;}
+      function penalty(g){var pen=0;for(var r=0;r<size;r++){var rc=1,cc=1;for(var c=1;c<size;c++){if(g[r][c]===g[r][c-1]){rc++;if(rc===5)pen+=3;else if(rc>5)pen++;}else rc=1;if(g[c][r]===g[c-1][r]){cc++;if(cc===5)pen+=3;else if(cc>5)pen++;}else cc=1;}}for(var r3=0;r3<size-1;r3++)for(var c3=0;c3<size-1;c3++)if(g[r3][c3]===g[r3][c3+1]&&g[r3][c3]===g[r3+1][c3]&&g[r3][c3]===g[r3+1][c3+1])pen+=3;var p1=[1,0,1,1,1,0,1,0,0,0,0],p2=[0,0,0,0,1,0,1,1,1,0,1];for(var r4=0;r4<size;r4++)for(var c4=0;c4<=size-11;c4++){var A=true,B=true,D=true,E=true;for(var k=0;k<11;k++){if(g[r4][c4+k]!==p1[k])A=false;if(g[r4][c4+k]!==p2[k])B=false;if(g[c4+k][r4]!==p1[k])D=false;if(g[c4+k][r4]!==p2[k])E=false;}if(A||B)pen+=40;if(D||E)pen+=40;}var dark=0;for(var r5=0;r5<size;r5++)for(var c5=0;c5<size;c5++)if(g[r5][c5])dark++;pen+=Math.floor(Math.abs((dark*100)/(size*size)-50)/5)*10;return pen;}
+      var best=null,bestMask=0,bestPen=Infinity;
+      for(var m=0;m<8;m++){var g=applyMask(maskFns[m]);var pen=penalty(g);if(pen<bestPen){bestPen=pen;best=g;bestMask=m;}}
+      var fdata=(0<<3)|bestMask,rem=fdata;
+      for(var i6=0;i6<10;i6++)rem=(rem<<1)^((rem>>9)*0x537);
+      var fmt=((fdata<<10)|rem)^0x5412;
+      for(var i7=0;i7<=5;i7++)best[i7][8]=getBit(fmt,i7);
+      best[7][8]=getBit(fmt,6);best[8][8]=getBit(fmt,7);best[8][7]=getBit(fmt,8);
+      for(var i8=9;i8<15;i8++)best[8][14-i8]=getBit(fmt,i8);
+      for(var i9=0;i9<8;i9++)best[8][size-1-i9]=getBit(fmt,i9);
+      for(var i10=8;i10<15;i10++)best[size-15+i10][8]=getBit(fmt,i10);
+      best[size-8][8]=1;
+      return {size:size,mods:best};
+    }
+    function svg(text,scale){
+      var q=encode(text);if(!q)return null;
+      var quiet=4,dim=(q.size+quiet*2)*scale,path="";
+      for(var r=0;r<q.size;r++)for(var c=0;c<q.size;c++)if(q.mods[r][c])path+="M"+(c+quiet)*scale+" "+(r+quiet)*scale+"h"+scale+"v"+scale+"h-"+scale+"z";
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="'+dim+'" height="'+dim+'" viewBox="0 0 '+dim+" "+dim+'" shape-rendering="crispEdges" role="img" aria-label="QR code for the Submit Link"><rect width="'+dim+'" height="'+dim+'" fill="#ffffff"/><path d="'+path+'" fill="#1a1a2e"/></svg>';
+    }
+    return {svg:svg};
+  })();
+`;
+
 export const REQUEST_JS = `(function(){
   "use strict";
+  ${QR_JS}
   var $=function(id){return document.getElementById(id);};
   function b64url(buf){
     var bytes=new Uint8Array(buf),bin="";
@@ -1251,11 +1359,29 @@ export const REQUEST_JS = `(function(){
     $("result-panel").style.display="block";
     $("submit-out").value=submitLink;
     $("claim-out").value=claimLink;
+    if($("open-claim"))$("open-claim").href=claimLink;
+    // QR of the Submit Link (for vendors on a phone). Self-contained inline SVG.
+    try{
+      var qsvg=QR.svg(submitLink,5);
+      if(qsvg&&$("qr-svg")){$("qr-svg").innerHTML=qsvg;if($("qr-wrap"))$("qr-wrap").style.display="block";}
+    }catch(e){/* QR is a convenience; ignore failures */}
     // Convenience stash (this browser only), keyed by sha256(token) so the raw
     // token is never persisted or sent anywhere.
     sha256b64url(token).then(function(th){
       try{localStorage.setItem("fsr_claim_"+th,claimLink);}catch(e){}
     });
+  }
+  function prefillFromDup(){
+    var raw=null;try{raw=sessionStorage.getItem("fsr_dup_spec");}catch(e){raw=null;}
+    if(!raw)return;
+    try{sessionStorage.removeItem("fsr_dup_spec");}catch(e){}
+    var spec=null;try{spec=JSON.parse(raw);}catch(e){spec=null;}
+    if(!spec)return;
+    if(spec.title&&$("req-title"))$("req-title").value=spec.title;
+    if(spec.fields&&spec.fields.length){
+      $("fieldlist").innerHTML="";
+      for(var i=0;i<spec.fields.length;i++){addRow(spec.fields[i].label||"",!!spec.fields[i].secret);}
+    }
   }
   function onCreate(){
     setError("");
@@ -1312,6 +1438,7 @@ export const REQUEST_JS = `(function(){
     $("req-another-btn").addEventListener("click",onAnother);
     $("copy-submit").addEventListener("click",function(){copyFrom("submit-out","copy-submit","Copy");});
     $("copy-claim").addEventListener("click",function(){copyFrom("claim-out","copy-claim","Copy");});
+    prefillFromDup();
     if(!window.crypto||!window.crypto.subtle){
       setError("This browser does not support the Web Crypto API. Open Secure Requests in a modern browser over HTTPS.");
       $("req-create-btn").disabled=true;
@@ -1342,15 +1469,30 @@ export const SUBMIT_JS = `(function(){
   var DATA=null;
   function setStatus(msg,kind){var s=$("submit-status");if(!s)return;s.textContent=msg||"";s.className="msg "+(kind||"");s.style.display=msg?"block":"none";}
   function addExtra(){
+    // Two rows: [label | Secret toggle | Remove] then [value (full width) | Show].
+    // Keeping Remove out of the .pwrap flex row is what stops the value input from
+    // collapsing (a width:100% .btn there would eat all the free space).
     var wrap=document.createElement("div");
     wrap.className="reqfield xrow";
+    var top=document.createElement("div");top.className="fieldrow";
     var li=document.createElement("input");li.type="text";li.className="xlabel";li.maxLength=80;li.placeholder="Field label";
-    var pw=document.createElement("div");pw.className="pwrap";pw.style.marginTop=".4rem";
-    var val=document.createElement("input");val.type="password";val.className="xval";val.autocomplete="off";val.placeholder="Value";
-    var tog=document.createElement("button");tog.type="button";tog.className="btn toggle";tog.textContent="Show";
+    var sec=document.createElement("label");sec.className="secretbox";
+    var cb=document.createElement("input");cb.type="checkbox";cb.className="xsecret";
+    sec.appendChild(cb);sec.appendChild(document.createTextNode(" Secret"));
     var rm=document.createElement("button");rm.type="button";rm.className="btn rm";rm.textContent="Remove";
-    pw.appendChild(val);pw.appendChild(tog);pw.appendChild(rm);
-    wrap.appendChild(li);wrap.appendChild(pw);
+    top.appendChild(li);top.appendChild(sec);top.appendChild(rm);
+    var pw=document.createElement("div");pw.className="pwrap";pw.style.marginTop=".4rem";
+    var val=document.createElement("input");val.type="text";val.className="xval";val.autocomplete="off";
+    val.setAttribute("autocorrect","off");val.setAttribute("autocapitalize","off");val.spellcheck=false;val.placeholder="Value";
+    var tog=document.createElement("button");tog.type="button";tog.className="btn toggle";tog.textContent="Show";tog.style.display="none";
+    pw.appendChild(val);pw.appendChild(tog);
+    // Secret toggle drives the value input type + Show button visibility, and the
+    // secret flag carried into the encrypted bundle. Default off (plain text).
+    cb.addEventListener("change",function(){
+      if(cb.checked){val.type="password";tog.style.display="";tog.textContent="Show";}
+      else{val.type="text";tog.style.display="none";}
+    });
+    wrap.appendChild(top);wrap.appendChild(pw);
     $("extra-fields").appendChild(wrap);
     val.focus();
   }
@@ -1366,7 +1508,8 @@ export const SUBMIT_JS = `(function(){
     for(var j=0;j<xrows.length;j++){
       var lbl=xrows[j].querySelector(".xlabel").value.trim();
       var v=xrows[j].querySelector(".xval").value;
-      if(lbl||v){fields.push({label:(lbl||"Additional").slice(0,80),value:v,secret:true});}
+      var sec=xrows[j].querySelector(".xsecret").checked;
+      if(lbl||v){fields.push({label:(lbl||"Additional").slice(0,80),value:v,secret:!!sec});}
     }
     return fields;
   }
@@ -1377,6 +1520,11 @@ export const SUBMIT_JS = `(function(){
     var hasValue=false;
     for(var i=0;i<fields.length;i++){if(fields[i].value&&fields[i].value.length){hasValue=true;break;}}
     if(!hasValue){setStatus("Fill in at least one field before submitting.","warn");return;}
+    // Requested fields are not removable; a blank one is the signal "I do not have
+    // this". Confirm before submitting with any left empty.
+    var reqBlank=0,reqAll=$("fields").querySelectorAll(".fval");
+    for(var bi=0;bi<reqAll.length;bi++){if(!reqAll[bi].value)reqBlank++;}
+    if(reqBlank>0&&!window.confirm(reqBlank+" requested field"+(reqBlank===1?" is":"s are")+" empty. Submit anyway?")){return;}
     var btn=$("submit-btn");btn.disabled=true;btn.textContent="Encrypting...";
     (async function(){
       try{
@@ -1517,25 +1665,69 @@ export const CLAIM_JS = `(function(){
   });
 })();`;
 
-// Enhances the Requests list: for each row whose Claim Link this browser stashed
-// at mint time (keyed by sha256(token)), surface an Open Claim link. Fail-silent.
+// Enhances the Requests list. The claim link (with its private key) never touches
+// the server, so it is recovered CLIENT-SIDE from this browser's localStorage
+// stash (keyed by sha256(token), written at mint). For a stashed row: on claimable
+// states show the claim link as a clickable anchor + Copy, and always a Delete
+// button (which reads the token out of the stashed link). Rows minted elsewhere
+// get a muted hint. Fail-silent throughout.
 export const REQUESTS_JS = `(function(){
   "use strict";
+  function tokenFrom(link){
+    try{var h=link.split("#")[1];if(!h)return null;var dot=h.indexOf(".");return dot>0?h.slice(0,dot):null;}catch(e){return null;}
+  }
+  function copyText(text,btn,restore){
+    var done=function(){btn.textContent="Copied";setTimeout(function(){btn.textContent=restore;},1500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,done);}else{done();}
+  }
+  function del(token,th,row,status){
+    var msg=status==="submitted"?"This request has an unclaimed submission. Deleting destroys it permanently. Continue?":null;
+    if(msg&&!window.confirm(msg))return;
+    fetch("/admin/api/request-cancel",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:token})})
+      .then(function(res){
+        if(res.ok){try{localStorage.removeItem("fsr_claim_"+th);}catch(e){}if(row&&row.parentNode)row.parentNode.removeChild(row);}
+        else{window.alert("Could not delete this request. Try again.");}
+      }).catch(function(){window.alert("Could not delete this request. Try again.");});
+  }
   document.addEventListener("DOMContentLoaded",function(){
-    var cells=document.querySelectorAll(".claimcell");
-    for(var i=0;i<cells.length;i++){
-      var th=cells[i].getAttribute("data-th");
-      if(!th)continue;
+    var cells=document.querySelectorAll(".actioncell");
+    for(var i=0;i<cells.length;i++){(function(cell){
+      var th=cell.getAttribute("data-th");
+      var status=cell.getAttribute("data-status");
+      var row=cell.closest("tr");
       var link=null;
-      try{link=localStorage.getItem("fsr_claim_"+th);}catch(e){link=null;}
+      try{if(th)link=localStorage.getItem("fsr_claim_"+th);}catch(e){link=null;}
       if(link){
-        var a=document.createElement("a");
-        a.href=link;a.textContent="Open Claim";a.className="tag";a.style.textDecoration="none";
-        cells[i].appendChild(a);
+        // Claim link is live only while pending or submitted.
+        if(status==="pending"||status==="submitted"){
+          var a=document.createElement("a");
+          a.href=link;a.target="_blank";a.rel="noopener";a.textContent="Open Claim";a.className="tag";a.style.textDecoration="none";
+          cell.appendChild(a);
+          var cp=document.createElement("button");cp.type="button";cp.className="btn minibtn secondary";cp.textContent="Copy";cp.style.marginLeft=".4rem";
+          (function(l){cp.addEventListener("click",function(){copyText(l,cp,"Copy");});})(link);
+          cell.appendChild(cp);
+        }
+        var token=tokenFrom(link);
+        if(token){
+          var d=document.createElement("button");d.type="button";d.className="btn minibtn secondary";d.textContent="Delete";d.style.marginLeft=".4rem";
+          (function(tok,st){d.addEventListener("click",function(){del(tok,th,row,st);});})(token,status);
+          cell.appendChild(d);
+        }
       }else{
-        var s=document.createElement("span");s.className="muted";s.textContent="link saved separately";
-        cells[i].appendChild(s);
+        var s=document.createElement("span");s.className="muted";s.textContent="Claim link not available in this browser; use the copy saved at mint";
+        cell.appendChild(s);
       }
-    }
+      // Duplicate works for ANY row: it re-mints from the stored non-secret spec,
+      // no claim link or live DO needed.
+      var specRaw=cell.getAttribute("data-spec");
+      if(specRaw){
+        var dup=document.createElement("button");dup.type="button";dup.className="btn minibtn secondary";dup.textContent="Duplicate";dup.style.marginLeft=".4rem";
+        (function(sr){dup.addEventListener("click",function(){
+          try{sessionStorage.setItem("fsr_dup_spec",sr);}catch(e){}
+          location.href="/admin/request";
+        });})(specRaw);
+        cell.appendChild(dup);
+      }
+    })(cells[i]);}
   });
 })();`;
