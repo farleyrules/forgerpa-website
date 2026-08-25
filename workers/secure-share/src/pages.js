@@ -199,6 +199,24 @@ table.hist tr.stale td{background:#fffbeb}
 .qrwrap{margin-top:1rem; text-align:center}
 .qrwrap svg{width:160px; height:160px; border:1px solid var(--line); border-radius:8px; background:#fff}
 .qrwrap .cap{text-align:center}
+/* List pages (Send History, Secure Requests) opt into a wider shell so a
+   multi-column table has room; single-column forms keep the default 640px. */
+body.wide main{max-width:1180px}
+body.wide header.site .bar,body.wide footer.site .inner{max-width:1180px}
+/* Secure Requests table: a fixed column model. The Request name takes the
+   flexible remaining width and wraps on word boundaries (never mid-word);
+   Created stacks to two short lines; the action buttons sit on one row. Below
+   the table's min width the .tablewrap scrolls (mobile fallback). Send History
+   keeps auto layout. Scoped to .requests. */
+table.requests{table-layout:fixed; min-width:820px}
+table.requests td{word-break:normal; overflow-wrap:break-word}
+table.requests col.c-fields{width:80px}
+table.requests col.c-created{width:116px}
+table.requests col.c-status{width:168px}
+table.requests col.c-actions{width:316px}
+table.requests td.created .ct-day,table.requests td.created .ct-time{display:block; white-space:nowrap}
+table.requests td.created .ct-time{color:var(--gray-500); font-size:.85em}
+table.requests .actioncell{white-space:normal}
 @media (max-width:480px){
   main{padding:1.5rem 1rem 2.5rem}
   .card{padding:1.5rem}
@@ -224,7 +242,8 @@ const FILE_ICON =
   '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
   '<polyline points="14 2 14 8 20 8"/></svg>';
 
-function shell(title, bodyHtml, scriptSrc) {
+function shell(title, bodyHtml, scriptSrc, opts) {
+  const wide = !!(opts && opts.wide);
   return (
     "<!DOCTYPE html>" +
     '<html lang="en"><head>' +
@@ -238,7 +257,9 @@ function shell(title, bodyHtml, scriptSrc) {
     "<style>" +
     STYLES +
     "</style>" +
-    "</head><body>" +
+    "</head><body" +
+    (wide ? ' class="wide"' : "") +
+    ">" +
     '<header class="site"><div class="bar">' +
     '<a class="brand" href="https://forgerpa.com">' +
     '<img class="anvil" src="/anvil-mark.png" alt="Forge RPA" width="52" height="34">' +
@@ -484,7 +505,7 @@ export function renderHistoryPage(env, rows) {
     "<thead><tr><th>Label</th><th>Recipient</th><th>Created</th><th>Status</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
-  return shell("Send History | Forge RPA Secure Share", body, null);
+  return shell("Send History | Forge RPA Secure Share", body, null, { wide: true });
 }
 
 // ---------------------------------------------------------------------------
@@ -952,6 +973,33 @@ function fmtCT(sec) {
   }
 }
 
+// Same instant as fmtCT, split into two short lines for the narrow Created
+// column: the date on top, the time (with the CT label) beneath. Each line is
+// kept on one row by CSS so a cramped column never wraps a timestamp to three
+// lines. Returns HTML (its own spans), so it is only used where that is escaped.
+function fmtCTStacked(sec) {
+  if (!sec) return "";
+  try {
+    const d = new Date(sec * 1000);
+    const day = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      month: "short",
+      day: "numeric",
+    }).format(d);
+    const time = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(d);
+    return (
+      '<span class="ct-day">' + escHtml(day) + "</span>" +
+      '<span class="ct-time">' + escHtml(time) + " CT</span>"
+    );
+  } catch (e) {
+    return escHtml(fmtCT(sec));
+  }
+}
+
 // A small lock glyph for secret-field labels (sized via the .lock CSS rule).
 const LOCK_MINI =
   '<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -1210,7 +1258,7 @@ export function renderRequestsPage(env, rows) {
       "<tr" + trClass + ">" +
       "<td>" + (escHtml(m.t) || '<span class="muted">(no title)</span>') + "</td>" +
       "<td>" + n + " field" + (n === 1 ? "" : "s") + "</td>" +
-      "<td>" + fmtCT(m.c) + "</td>" +
+      '<td class="created">' + fmtCTStacked(m.c) + "</td>" +
       '<td><span class="pill ' + cls + '">' + pill + "</span>" + subHtml + "</td>" +
       '<td class="actioncell" data-th="' + escHtml(m.th || "") + '" data-status="' + statusKey + '" data-spec="' + specJson + '"></td>' +
       "</tr>";
@@ -1226,11 +1274,13 @@ export function renderRequestsPage(env, rows) {
     "A submitted request stays until you claim or delete it. Rows disappear 30 days after creation. " +
     "Where this browser has the Claim Link saved, Open Claim and Copy appear below; otherwise use the " +
     "copy you saved at mint.</p>" +
-    '<div class="tablewrap"><table class="hist">' +
+    '<div class="tablewrap"><table class="hist requests">' +
+    '<colgroup><col class="c-req"><col class="c-fields"><col class="c-created">' +
+    '<col class="c-status"><col class="c-actions"></colgroup>' +
     "<thead><tr><th>Request</th><th>Fields</th><th>Created</th><th>Status</th><th>Actions</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
-  return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js");
+  return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js", { wide: true });
 }
 
 // ---------------------------------------------------------------------------
@@ -1701,7 +1751,7 @@ export const REQUESTS_JS = `(function(){
         // Claim link is live only while pending or submitted.
         if(status==="pending"||status==="submitted"){
           var a=document.createElement("a");
-          a.href=link;a.target="_blank";a.rel="noopener";a.textContent="Open Claim";a.className="tag";a.style.textDecoration="none";
+          a.href=link;a.target="_blank";a.rel="noopener";a.textContent="Open Claim";a.className="btn minibtn";a.style.textDecoration="none";
           cell.appendChild(a);
           var cp=document.createElement("button");cp.type="button";cp.className="btn minibtn secondary";cp.textContent="Copy";cp.style.marginLeft=".4rem";
           (function(l){cp.addEventListener("click",function(){copyText(l,cp,"Copy");});})(link);
