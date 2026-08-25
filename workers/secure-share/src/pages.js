@@ -199,24 +199,26 @@ table.hist tr.stale td{background:#fffbeb}
 .qrwrap{margin-top:1rem; text-align:center}
 .qrwrap svg{width:160px; height:160px; border:1px solid var(--line); border-radius:8px; background:#fff}
 .qrwrap .cap{text-align:center}
-/* List pages (Send History, Secure Requests) opt into a wider shell so a
-   multi-column table has room; single-column forms keep the default 640px. */
-body.wide main{max-width:1180px}
-body.wide header.site .bar,body.wide footer.site .inner{max-width:1180px}
+/* List pages (Send History, Secure Requests) opt into a slightly wider shell so
+   a multi-column table has room; single-column forms keep the default 640px. */
+body.wide main{max-width:950px}
+body.wide header.site .bar,body.wide footer.site .inner{max-width:950px}
 /* Secure Requests table: a fixed column model. The Request name takes the
-   flexible remaining width and wraps on word boundaries (never mid-word);
-   Created stacks to two short lines; the action buttons sit on one row. Below
-   the table's min width the .tablewrap scrolls (mobile fallback). Send History
-   keeps auto layout. Scoped to .requests. */
-table.requests{table-layout:fixed; min-width:820px}
+   flexible remaining width and wraps on word boundaries (never mid-word, up to
+   two lines); Created stacks to two short lines; the action buttons flow on one
+   row and wrap tidily to a second when the column is narrow. Below the table's
+   min width the .tablewrap scrolls (mobile fallback). Send History keeps auto
+   layout. Scoped to .requests. */
+table.requests{table-layout:fixed; min-width:760px}
 table.requests td{word-break:normal; overflow-wrap:break-word}
-table.requests col.c-fields{width:80px}
-table.requests col.c-created{width:116px}
-table.requests col.c-status{width:168px}
-table.requests col.c-actions{width:316px}
+table.requests col.c-fields{width:78px}
+table.requests col.c-created{width:112px}
+table.requests col.c-status{width:152px}
+table.requests col.c-actions{width:240px}
 table.requests td.created .ct-day,table.requests td.created .ct-time{display:block; white-space:nowrap}
 table.requests td.created .ct-time{color:var(--gray-500); font-size:.85em}
-table.requests .actioncell{white-space:normal}
+table.requests .actioncell{display:flex; flex-wrap:wrap; gap:.4rem; align-items:flex-start; align-content:flex-start; white-space:normal}
+table.requests .actioncell .muted{flex-basis:100%}
 @media (max-width:480px){
   main{padding:1.5rem 1rem 2.5rem}
   .card{padding:1.5rem}
@@ -1753,13 +1755,13 @@ export const REQUESTS_JS = `(function(){
           var a=document.createElement("a");
           a.href=link;a.target="_blank";a.rel="noopener";a.textContent="Open Claim";a.className="btn minibtn";a.style.textDecoration="none";
           cell.appendChild(a);
-          var cp=document.createElement("button");cp.type="button";cp.className="btn minibtn secondary";cp.textContent="Copy";cp.style.marginLeft=".4rem";
+          var cp=document.createElement("button");cp.type="button";cp.className="btn minibtn secondary";cp.textContent="Copy";
           (function(l){cp.addEventListener("click",function(){copyText(l,cp,"Copy");});})(link);
           cell.appendChild(cp);
         }
         var token=tokenFrom(link);
         if(token){
-          var d=document.createElement("button");d.type="button";d.className="btn minibtn secondary";d.textContent="Delete";d.style.marginLeft=".4rem";
+          var d=document.createElement("button");d.type="button";d.className="btn minibtn secondary";d.textContent="Delete";
           (function(tok,st){d.addEventListener("click",function(){del(tok,th,row,st);});})(token,status);
           cell.appendChild(d);
         }
@@ -1771,7 +1773,7 @@ export const REQUESTS_JS = `(function(){
       // no claim link or live DO needed.
       var specRaw=cell.getAttribute("data-spec");
       if(specRaw){
-        var dup=document.createElement("button");dup.type="button";dup.className="btn minibtn secondary";dup.textContent="Duplicate";dup.style.marginLeft=".4rem";
+        var dup=document.createElement("button");dup.type="button";dup.className="btn minibtn secondary";dup.textContent="Duplicate";
         (function(sr){dup.addEventListener("click",function(){
           try{sessionStorage.setItem("fsr_dup_spec",sr);}catch(e){}
           location.href="/admin/request";
