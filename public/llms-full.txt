@@ -83,6 +83,7 @@ Pricing is fixed-fee and scoped per engagement after a discovery call, so the cl
 - How to Score Any Process for Automation Potential (Free Framework): https://forgerpa.com/blog/automation-assessment-framework
 - From SOP to Running Automation, How AI Accelerates the Journey: https://forgerpa.com/blog/sop-to-automation-guide
 - Why Your AR Reconciliation Still Breaks After You "Automate" It: https://forgerpa.com/blog/ar-reconciliation-automation
+- Why Closing the Books Across 20 Entities Takes Three Weeks: https://forgerpa.com/blog/multi-entity-close-consolidation
 
 ## Contact
 
