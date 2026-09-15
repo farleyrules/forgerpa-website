@@ -1,5 +1,17 @@
 import { defineCollection, z } from 'astro:content';
 
+// Frontmatter dates may be authored as a quoted string ("2026-06-29") or as a
+// bare YAML date (2026-06-29), which the YAML parser hands back as a Date.
+// Normalize both to a single ISO "YYYY-MM-DD" string so every consumer (blog
+// cards, layouts, RSS feed, JSON-LD) works with one consistent type instead of
+// a `string | Date` union that has to be re-narrowed at each call site.
+const isoDate = z
+  .string()
+  .or(z.date())
+  .transform((value) =>
+    value instanceof Date ? value.toISOString().slice(0, 10) : value,
+  );
+
 const caseStudyCollection = defineCollection({
   type: 'content',
   schema: z.object({
@@ -13,7 +25,7 @@ const caseStudyCollection = defineCollection({
     approach: z.string(),
     outcome: z.array(z.string()),
     order: z.number().optional().default(999), // Lower number = higher priority (shown first)
-    publishDate: z.string().or(z.date()).optional(),
+    publishDate: isoDate.optional(),
     tags: z.array(z.string()).optional().default([]),
     featured: z.boolean().optional().default(false),
   }),
@@ -24,11 +36,11 @@ const blogCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    date: z.string().or(z.date()).optional(),
+    date: isoDate.optional(),
     // Last-substantive-update date. Drives JSON-LD dateModified; falls back to `date` when unset.
-    updated: z.string().or(z.date()).optional(),
+    updated: isoDate.optional(),
     readingTime: z.string().optional(),
-    publishDate: z.string().or(z.date()).optional(),
+    publishDate: isoDate.optional(),
     author: z.string().optional(),
     tags: z.array(z.string()).optional().default([]),
     // Optional slug echo written by the content-engine generator. Astro derives

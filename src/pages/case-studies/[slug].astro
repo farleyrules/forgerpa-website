@@ -24,13 +24,8 @@ const { study, links, relatedStudies } = Astro.props;
 const d = study.data;
 const isComposite = (d.tags ?? []).includes('Composite');
 
-// publishDate may be a string or a Date; normalize to YYYY-MM-DD for schema.
-const publishDate =
-  typeof d.publishDate === 'string'
-    ? d.publishDate
-    : d.publishDate
-      ? d.publishDate.toISOString().slice(0, 10)
-      : undefined;
+// The content schema normalizes publishDate to an ISO "YYYY-MM-DD" string.
+const publishDate = d.publishDate;
 
 const metaTitle = `${d.title} | Case Study`;
 const metaDescription = d.summary;

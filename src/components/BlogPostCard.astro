@@ -1,20 +1,24 @@
 ---
 interface Props {
   title: string;
-  date: string;
-  readingTime: string;
-  description: string;
+  date?: string;
+  readingTime?: string;
+  description?: string;
   tags: string[];
   slug: string;
 }
 
 const { title, date, readingTime, description, tags, slug } = Astro.props;
 
-const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-});
+// `date` is an ISO "YYYY-MM-DD" string from the content schema; append a local
+// midnight so the displayed day never shifts under a timezone offset.
+const formattedDate = date
+  ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : '';
 ---
 
 <a href={`/blog/${slug}/`} class="group block p-8 bg-white rounded-xl border border-gray-200 hover:border-amber shadow-sm hover:shadow-lg transition-all duration-300">
@@ -33,6 +37,6 @@ const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
   </p>
   <div class="flex items-center justify-between text-sm text-gray-400">
     <time datetime={date}>{formattedDate}</time>
-    <span>{readingTime} read</span>
+    {readingTime && <span>{readingTime} read</span>}
   </div>
 </a>

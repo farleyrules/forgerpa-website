@@ -577,7 +577,7 @@ function loadCalEmbed(): void {
           cal.loaded = true;
         }
         if (ar[0] === L) {
-          const api = function () {
+          const api: { (...args: unknown[]): void; q?: unknown[] } = function () {
             p(api, arguments);
           };
           const namespace = ar[1];
