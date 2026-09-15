@@ -1,0 +1,44 @@
+name: CI
+
+# Pre-deploy gate for forgerpa.com (Astro 5 static site, deployed via Cloudflare).
+# Runs the production build on every push and PR to main so a broken build is
+# caught before it reaches the deploy path.
+#
+# `astro check` is intentionally NOT wired here yet. It needs the @astrojs/check
+# dev dependency (not currently installed) and, under the repo's strict tsconfig,
+# it currently reports pre-existing type errors (mostly blog date-frontmatter
+# typing), so it would fail on main today. Add it as a second job once those are
+# resolved and @astrojs/check is added to devDependencies.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# One run per ref; a new push cancels the superseded run to save minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: astro build
+        run: npm run build
