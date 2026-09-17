@@ -1,5 +1,6 @@
 ---
 title: "SOX-Adjacent Close Tasks Without Heroics Every Quarter"
+metaTitle: "SOX-Adjacent Close Tasks Every Quarter"
 industry: "Manufacturing"
 service: "Month-End Close & Controls"
 summary: "Composite engagement pattern from manufacturers with public-adjacent reporting pressure, controls evidence packaged where auditors actually look."

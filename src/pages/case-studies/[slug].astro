@@ -27,8 +27,8 @@ const isComposite = (d.tags ?? []).includes('Composite');
 // The content schema normalizes publishDate to an ISO "YYYY-MM-DD" string.
 const publishDate = d.publishDate;
 
-const metaTitle = `${d.title} | Case Study`;
-const metaDescription = d.summary;
+const metaTitle = d.metaTitle ?? `${d.title} | Case Study`;
+const metaDescription = d.metaDescription ?? d.summary;
 ---
 
 <CaseStudyLayout

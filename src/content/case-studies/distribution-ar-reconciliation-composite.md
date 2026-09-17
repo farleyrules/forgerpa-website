@@ -1,5 +1,6 @@
 ---
 title: "From Spreadsheet Reconciliation to Repeatable Cash Application"
+metaTitle: "Spreadsheet Reconciliation to Cash Application"
 industry: "Distribution"
 service: "Accounts Receivable"
 summary: "Composite pattern from distribution engagements, faster cash application, fewer disputes, audit-ready evidence without naming any single client."

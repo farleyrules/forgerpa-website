@@ -1,5 +1,6 @@
 ---
 title: "$1 Million ERP Module Cost Avoidance"
+metaTitle: "$1 Million ERP Module Cost Avoidance"
 industry: "Insurance"
 service: "Process Automation"
 summary: "Custom time and forecasting system for large insurance company"

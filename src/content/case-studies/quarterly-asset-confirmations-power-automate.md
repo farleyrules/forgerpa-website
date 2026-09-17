@@ -1,5 +1,7 @@
 ---
 title: "Quarterly Asset Confirmations Run From One Workbook and a Teams Message"
+metaTitle: "Quarterly Asset Confirmations from One Workbook"
+metaDescription: "A quarterly confirmation cycle that once needed six to eight people now runs from one Teams message, with the accounting team still owning the workbook."
 industry: "Manufacturing"
 service: "Fixed Asset Controls"
 summary: "A quarterly confirmation cycle that engaged six to eight people to split the data and send the emails now starts from one Teams message, with the accounting team still owning the workbook and every answer flowing back into it"

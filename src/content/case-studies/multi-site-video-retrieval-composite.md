@@ -1,5 +1,6 @@
 ---
 title: "Centralized Multi-Site Video Retrieval Across Every Location"
+metaTitle: "Centralized Multi-Site Video Retrieval"
 industry: "Restaurants and Multi-Unit Operations"
 service: "Custom Application"
 summary: "Composite pattern from multi-location operators, one centralized camera retrieval app that pulls from existing on-site recorders into the client's own cloud, replacing store-by-store, login-per-location video review, without naming any single client."

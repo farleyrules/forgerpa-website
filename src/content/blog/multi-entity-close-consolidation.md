@@ -1,5 +1,6 @@
 ---
 title: "Why Closing the Books Across 20 Entities Takes Three Weeks"
+metaTitle: "Why a 20-Entity Close Takes Three Weeks"
 author: "David Farley"
 date: "2026-08-27"
 description: "The multi-entity close is a data problem, not a staffing problem. Here is where the three weeks actually go, and what to fix first."

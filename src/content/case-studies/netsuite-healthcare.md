@@ -1,5 +1,6 @@
 ---
 title: "Multi-Subsidiary NetSuite Data Conversion"
+metaTitle: "Multi-Subsidiary NetSuite Data Conversion"
 industry: "Healthcare"
 service: "ERP Data Migration"
 summary: "Historical data converted for 100+ subsidiaries"

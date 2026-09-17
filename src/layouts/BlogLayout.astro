@@ -5,6 +5,8 @@ import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
+  /** Optional SEO override for the <title> only; the visible <h1> stays `title`. */
+  metaTitle?: string;
   description?: string;
   author?: string;
   date?: string;
@@ -14,7 +16,7 @@ interface Props {
   readingTime?: string;
 }
 
-const { title, description, author = 'David Farley', date, updated, tags = [], readingTime = '8 min' } = Astro.props;
+const { title, metaTitle, description, author = 'David Farley', date, updated, tags = [], readingTime = '8 min' } = Astro.props;
 
 // Normalize a frontmatter value (string "YYYY-MM-DD" or Date) to an ISO date string (YYYY-MM-DD).
 function toIsoDate(value: string | Date | undefined): string | undefined {
@@ -63,7 +65,7 @@ const blogPostingSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={metaTitle ?? title} description={description}>
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
   <Header />
   <main class="py-16 lg:py-24">

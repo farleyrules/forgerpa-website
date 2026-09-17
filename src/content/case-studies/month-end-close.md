@@ -1,5 +1,6 @@
 ---
 title: "40 Hours of Manual Work Reduced to Under 20 Minutes"
+metaTitle: "Month-End Close: 40 Hours to Under 20 Minutes"
 industry: "Manufacturing"
 service: "Month-End Close"
 summary: "Replicated across multiple accounting groups with consistent 95%+ time savings"

@@ -1,5 +1,6 @@
 ---
 title: "Enterprise Data Analysis Beyond Excel's Limits"
+metaTitle: "Enterprise Data Analysis Beyond Excel's Limits"
 industry: "Manufacturing"
 service: "Operational Reporting"
 summary: "40+ hours/month across multiple business units automated"

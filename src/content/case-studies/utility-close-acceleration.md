@@ -1,5 +1,6 @@
 ---
 title: "Month-End Close Acceleration – Utility Company"
+metaTitle: "Month-End Close Acceleration: Utility Company"
 industry: "Utilities"
 service: "Finance Automation"
 summary: "Reduced close cycle from 7 days to 4 days"
