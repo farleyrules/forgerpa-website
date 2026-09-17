@@ -1,0 +1,14 @@
+# Cloudflare response headers for forgerpa.com.
+# Workers Static Assets serves this file the same way it serves public/_redirects
+# (it is copied verbatim to dist/ at build time).
+#
+# HSTS (HTTP Strict Transport Security): tells a browser that has seen an HTTPS
+# response to use HTTPS for this domain for the max-age window, so it upgrades
+# http:// on its own after the first visit. Scope is the apex only for now:
+# NO includeSubDomains and NO preload. Every Forge subdomain (app, sales, secure)
+# is HTTPS today, but includeSubDomains would force HTTPS on ALL subdomains and
+# preload is near-permanent, so add them only after confirming every subdomain is
+# HTTPS-only. Pair this with the Cloudflare "Always Use HTTPS" toggle (dashboard)
+# so a first-time http:// visitor is redirected before any HSTS is cached.
+/*
+  Strict-Transport-Security: max-age=31536000

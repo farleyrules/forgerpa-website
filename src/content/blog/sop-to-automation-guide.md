@@ -2,7 +2,7 @@
 title: "From SOP to Running Automation: How AI Accelerates the Journey"
 author: "David Farley"
 date: "2026-03-11"
-description: "Learn how to go from SOP to automation faster using AI-powered analysis. Compare traditional vs AI-accelerated timelines and find your best automation candidates."
+description: "Learn how to go from SOP to automation faster using AI-powered analysis. Compare traditional vs AI-accelerated timelines and find your best candidates."
 tags:
   - "SOP Automation"
   - "AI Process Automation"
