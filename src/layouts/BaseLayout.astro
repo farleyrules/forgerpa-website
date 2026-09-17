@@ -25,6 +25,15 @@ const siteUrl = 'https://forgerpa.com';
 const canonical = canonicalUrl || Astro.url.href;
 const ogImageResolved = ogImage || `${siteUrl}/og-default.png`;
 
+// The document and social title always end in the brand. Callers pass a BARE
+// page title and this layout owns the "| Forge RPA" suffix, so there is one
+// convention across the site. The guard keeps the suffix from doubling if a
+// caller ever passes an already-suffixed title (the 2026-09-17 audit found 12
+// such pages rendering "... | Forge RPA | Forge RPA"). og:title and
+// twitter:title use the same resolved value so social cards match the <title>.
+const BRAND_SUFFIX = ' | Forge RPA';
+const fullTitle = title.endsWith(BRAND_SUFFIX) ? title : `${title}${BRAND_SUFFIX}`;
+
 // --- Tracking / verification env vars (Astro requires PUBLIC_ prefix for client-exposed values) ---
 const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
 const gscVerificationToken = import.meta.env.PUBLIC_GSC_VERIFICATION_TOKEN;
@@ -153,14 +162,14 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta name="description" content={description} />
-  <meta property="og:title" content={title} />
+  <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Forge RPA" />
   <meta property="og:image" content={ogImageResolved} />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
+  <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImageResolved} />
   <link rel="canonical" href={canonical} />
@@ -172,7 +181,7 @@ try {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <title>{title} | Forge RPA</title>
+  <title>{fullTitle}</title>
 
   {/* Google Search Console verification */}
   {gscVerificationToken && (

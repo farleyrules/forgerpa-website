@@ -2,7 +2,10 @@ name: CI
 
 # Pre-deploy gate for forgerpa.com (Astro 5 static site, deployed via Cloudflare).
 # Two jobs run on every push and PR to main, in parallel:
-#   - Build: the production build (`astro build`) must succeed.
+#   - Build: the production build (`astro build`) must succeed, then a metadata
+#     gate (`npm run check:metadata`) scans the built dist/ and fails on a
+#     doubled "| Forge RPA" title suffix, a page without exactly one <h1>, or a
+#     missing meta description.
 #   - Check: `astro check` must report zero type errors under the repo's strict
 #     tsconfig (astro/tsconfigs/strict).
 # A failure in either blocks the change before it reaches the deploy path.
@@ -39,6 +42,9 @@ jobs:
 
       - name: astro build
         run: npm run build
+
+      - name: metadata gate
+        run: npm run check:metadata
 
   check:
     name: Check

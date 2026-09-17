@@ -481,7 +481,7 @@ const defaultHeroSubtitle =
     // NOTE: the hero headline is governed by the single HERO_HEADLINE constant
     // in this page's frontmatter (single-intent positioning). The `?from=`
     // machinery below sets only the document title, meta description, and the
-    // context banner — it intentionally does NOT override the hero <h1>.
+    // context banner. It intentionally does NOT override the hero heading.
     function industryContext(fromKey) {
       if (!fromKey || fromKey.indexOf('industries-') !== 0) return null;
       var slug = fromKey.replace(/^industries-/, '').replace(/-/g, ' ');
