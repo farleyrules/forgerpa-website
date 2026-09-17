@@ -1,5 +1,6 @@
 ---
 title: "Why Your AR Reconciliation Still Breaks After You 'Automate' It"
+metaTitle: "Why AR Reconciliation Breaks After You Automate"
 author: "David Farley"
 date: "2026-05-13"
 description: "Most AR reconciliation automations fail within 6 months. The fix isn't better bots, it's governance and exception ownership. Here's what actually works."

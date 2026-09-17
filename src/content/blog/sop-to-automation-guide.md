@@ -1,5 +1,6 @@
 ---
 title: "From SOP to Running Automation: How AI Accelerates the Journey"
+metaTitle: "From SOP to Automation, Accelerated by AI"
 author: "David Farley"
 date: "2026-03-11"
 description: "Learn how to go from SOP to automation faster using AI-powered analysis. Compare traditional vs AI-accelerated timelines and find your best candidates."

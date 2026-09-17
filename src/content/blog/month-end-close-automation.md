@@ -1,5 +1,6 @@
 ---
 title: "5 Month-End Close Tasks You Should Automate Today"
+metaTitle: "5 Month-End Close Tasks to Automate Today"
 author: "David Farley"
 date: "2026-03-11"
 description: "Automate month-end close with these 5 high-impact tasks. Hours saved, error reduction, and how automation works for each process."

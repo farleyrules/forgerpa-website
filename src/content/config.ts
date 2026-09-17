@@ -16,6 +16,12 @@ const caseStudyCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    // Optional SEO overrides. When set, they drive only the <title> and meta
+    // description; the visible on-page title and summary stay as `title` and
+    // `summary`. Used to keep search-result titles/descriptions within length
+    // without rewriting the visible case-study headline or summary.
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
     industry: z.string(),
     service: z.string(),
     summary: z.string(),
@@ -35,6 +41,10 @@ const blogCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    // Optional SEO override for the <title> only. When set, the visible post
+    // <h1> and the JSON-LD headline stay as `title`; only the browser/search
+    // title uses this shorter form. Keeps long headlines out of search results.
+    metaTitle: z.string().optional(),
     description: z.string().optional(),
     date: isoDate.optional(),
     // Last-substantive-update date. Drives JSON-LD dateModified; falls back to `date` when unset.

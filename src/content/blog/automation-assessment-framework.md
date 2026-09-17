@@ -1,5 +1,6 @@
 ---
 title: "How to Score Any Process for Automation Potential (Free Framework)"
+metaTitle: "Score Any Process for Automation: Free Framework"
 author: "David Farley"
 date: "2026-03-11"
 description: "Use this free process automation assessment framework to score any process for automation potential. Six criteria, real examples, and a ready-to-use method."

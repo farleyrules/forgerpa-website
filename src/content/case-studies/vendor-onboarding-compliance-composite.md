@@ -1,5 +1,6 @@
 ---
 title: "Vendor Onboarding Where Compliance Cannot Be an Afterthought"
+metaTitle: "Vendor Onboarding, Compliance First"
 industry: "Regulated Operations"
 service: "Vendor Master & Onboarding"
 summary: "Composite pattern combining regulated-industry diligence with realistic Ops timelines, fewer stalled vendors, clearer approvals."

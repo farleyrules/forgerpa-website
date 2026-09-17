@@ -1,5 +1,6 @@
 ---
 title: "Workday Payroll Data Conversion – Global Dairy Company"
+metaTitle: "Workday Payroll Data Conversion: Dairy Company"
 industry: "Food & Beverage"
 service: "ERP Data Migration"
 summary: "Complex payroll iLoad templates automated"

@@ -1,5 +1,6 @@
 ---
 title: "40+ Bank Reconciliations Automated Inside BlackLine"
+metaTitle: "40+ Bank Reconciliations Automated in BlackLine"
 industry: "Manufacturing"
 service: "Bank Reconciliations"
 summary: "A full day of statement-to-BlackLine keying returned every cycle, with approvals and the audit trail left exactly as the controllers designed them"

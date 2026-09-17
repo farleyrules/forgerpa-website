@@ -1,5 +1,7 @@
 ---
 title: "A Multi-Unit Operator Data Lake for Store-Level P&L Analytics"
+metaTitle: "Multi-Unit Data Lake for Store-Level P&L"
+metaDescription: "A composite of multi-unit and franchise operators: a restaurant data lake unifying POS, labor, inventory, and accounting into weekly store-level P&L analytics."
 industry: "Restaurants and Multi-Unit Operations"
 service: "Data Lake"
 summary: "Composite pattern from multi-unit and franchise operators, a client-owned restaurant data lake that unifies POS, labor, inventory, and accounting into weekly store-level P&L and variance analytics without naming any single client."
