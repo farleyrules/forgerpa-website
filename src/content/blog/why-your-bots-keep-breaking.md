@@ -1,7 +1,7 @@
 ---
 title: "Why Your Bots Keep Breaking"
 author: "David Farley"
-date: "2026-09-21"
+date: "2026-09-28"
 description: "Brittle automation fails silently the moment a portal or a report changes. Here is what makes a bot break, what self-healing actually means, and how to build automation that knows when it is wrong."
 tags:
   - "Self-Healing Automation"
@@ -9,7 +9,7 @@ tags:
   - "Finance Automation"
   - "Exception Handling"
 readingTime: "6 min"
-draft: true
+draft: false
 ---
 
 <p>Most finance teams that soured on automation did not fail at automation. They succeeded once, then watched the thing they built stop working the first time a vendor changed a portal or a report added a column. The bot had been recorded against a world that was expected to hold still, and the world never does. So the automation broke, usually without saying so, and the team went back to doing the work by hand and quietly concluded that automation does not last.</p>
