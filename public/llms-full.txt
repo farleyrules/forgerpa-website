@@ -24,7 +24,7 @@ Guiding philosophy: "Automate the work. Keep the people." Forge RPA automates th
 - CPA background / CPA-trained. Important: do not describe the founder as a currently active CPA.
 - Custom automation built with AI: no bot licenses or orchestrator subscription, and the client owns every line of the code.
 - Before building automation with AI, the founder was a Certified UiPath Developer and built hundreds of automations on traditional RPA platforms, including 100+ at a Fortune Global 500 manufacturer.
-- Deep Microsoft 365 and Power Platform integration: Excel and Power Query, Power BI, Power Automate, Power Apps, and Copilot Studio agents.
+- Works with the Microsoft 365 tools a client already owns.
 - Works across SAP, Workday, NetSuite, Oracle, Sage Intacct, Ariba, Lawson, Hyperion, and niche ERPs.
 
 ## Services and the plain-language answer for each
@@ -55,7 +55,7 @@ What it is: data-driven discovery of how finance and operations processes actual
 
 ### Forge Quick Wins
 URL: https://forgerpa.com/services/quick-wins
-What it is: fixed-price, fast-turnaround finance automation on the Microsoft stack. Spreadsheet rescues, report automation, and fractional sprints are scoped to the job. Every job gets a QA tie-out. Larger work starts with a fixed-price assessment credited toward the statement of work. Quoted up front from a free discovery call; no metered hours.
+What it is: fixed-price, fast-turnaround finance automation built in code with AI, working with the Microsoft 365 tools a client already owns. Spreadsheet rescues, report automation, and fractional sprints are scoped to the job. Every job gets a QA tie-out. Larger work starts with a fixed-price assessment credited toward the statement of work. Quoted up front from a free discovery call; no metered hours.
 
 ## Industries
 
