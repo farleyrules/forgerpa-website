@@ -12,6 +12,8 @@ const sortedFeatured = featuredStudies
 
 // "How We Differ From Traditional RPA": one data source for both the desktop
 // table and the stacked mobile cards, so the two layouts can never drift apart.
+// Forge RPA is the FIRST column (and first in each phone card) so readers see
+// the benefits before the comparison (David Farley, 2026-10-13).
 // Positioning approved by David Farley on 2026-10-13. Keep it neutral: compare
 // approaches, never disparage or name a vendor here.
 const differences = [
@@ -72,16 +74,16 @@ const differences = [
           <thead>
             <tr class="border-b-2 border-gray-200">
               <th scope="col" class="py-4 px-4 w-1/5"><span class="sr-only">Topic</span></th>
-              <th scope="col" class="py-4 px-4 text-charcoal font-bold w-2/5">Traditional RPA</th>
               <th scope="col" class="py-4 px-4 text-charcoal font-bold w-2/5 bg-amber/10 rounded-t-lg">Forge RPA</th>
+              <th scope="col" class="py-4 px-4 text-charcoal font-bold w-2/5">Traditional RPA</th>
             </tr>
           </thead>
           <tbody>
             {differences.map((row) => (
               <tr class="border-b border-gray-100 align-top">
                 <th scope="row" class="py-4 px-4 font-semibold text-charcoal">{row.label}</th>
-                <td class="py-4 px-4 text-gray-600">{row.traditional}</td>
                 <td class="py-4 px-4 text-gray-800 bg-amber/5">{row.forge}</td>
+                <td class="py-4 px-4 text-gray-600">{row.traditional}</td>
               </tr>
             ))}
           </tbody>
@@ -94,13 +96,13 @@ const differences = [
           <div class="bg-white border border-gray-200 rounded-xl p-5">
             <h3 class="font-bold text-charcoal mb-3">{row.label}</h3>
             <dl class="space-y-3 text-sm">
-              <div>
-                <dt class="text-gray-500 font-semibold">Traditional RPA</dt>
-                <dd class="text-gray-600">{row.traditional}</dd>
-              </div>
               <div class="border-l-4 border-amber pl-3">
                 <dt class="text-charcoal font-semibold">Forge RPA</dt>
                 <dd class="text-gray-800">{row.forge}</dd>
+              </div>
+              <div>
+                <dt class="text-gray-500 font-semibold">Traditional RPA</dt>
+                <dd class="text-gray-600">{row.traditional}</dd>
               </div>
             </dl>
           </div>

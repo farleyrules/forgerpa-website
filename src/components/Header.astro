@@ -43,26 +43,35 @@ const industryLinks = [
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 text-amber hover:text-amber-light transition-colors">
-        <!-- Anvil brand mark. alt is empty because the wordmark text beside it already names the link. -->
-        <img src="/anvil-mark.png" alt="" class="h-9 w-auto" />
+      <a href="/" class="flex shrink-0 items-center gap-2 text-amber hover:text-amber-light transition-colors">
+        <!-- Anvil brand mark. alt is empty because the wordmark text beside it already names the link.
+             It grows to the height of the two-line lockup wherever the descriptor shows, and drops
+             back to the single-line size from lg to xl, where the descriptor is hidden. -->
+        <img src="/anvil-mark.png" alt="" class="h-12 lg:h-9 xl:h-12 w-auto" />
         <!-- Wordmark plus the "AI-Built Automation" descriptor ("Forge RPA | AI-Built Automation").
              The descriptor is stacked beneath the wordmark, never inline: the desktop nav row has
              no spare width (an inline descriptor at 1440px squeezed the nav until "Case Studies"
              and "Contact Us" wrapped), and the stacked lockup is no wider than the wordmark.
              It is hidden only from lg to xl (1024-1279px), where the full desktop nav already
-             fills the row and the logo has to give up width; below lg the nav is a hamburger. -->
-        <span class="flex flex-col">
-          <span class="text-3xl font-bold leading-none">Forge RPA</span>
-          <span class="mt-1 text-xs font-medium leading-none text-gray-300 lg:hidden xl:block">AI-Built Automation</span>
+             fills the row and the logo has to give up width; below lg the nav is a hamburger.
+             The descriptor spans the full width of the wordmark: its size, letter-spacing, and a
+             small left inset (which offsets the side bearing of the wordmark's F) are tuned to Inter
+             so the visible letters of both lines start and end on the same edges (David Farley,
+             2026-10-13; measured within 2px in headless Chromium). items-start keeps each line at
+             its own text width, so a font change that breaks the alignment shows up in a
+             bounding-box check. -->
+        <span class="flex flex-col items-start">
+          <span class="text-3xl font-bold leading-none whitespace-nowrap">Forge RPA</span>
+          <span class="mt-1.5 ml-[0.125em] text-sm font-medium leading-none tracking-[0.069em] whitespace-nowrap text-gray-300 lg:hidden xl:block">AI-Built Automation</span>
         </span>
       </a>
 
-      <!-- Desktop Navigation -->
+      <!-- Desktop Navigation. From lg to xl (1024-1279px) the links use tighter padding so the full
+           row fits beside the logo on one line; from xl up they get the roomier spacing. -->
       <div class="hidden lg:flex items-center gap-1">
         <!-- Services Dropdown -->
         <div class="relative group">
-          <a href="/services" class="flex items-center gap-1 px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+          <a href="/services" class="flex items-center gap-1 px-1.5 xl:px-4 py-2 whitespace-nowrap text-gray-300 hover:text-white text-sm font-medium transition-colors">
             Services
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -94,7 +103,7 @@ const industryLinks = [
 
         <!-- Industries Dropdown -->
         <div class="relative group">
-          <a href="/industries" class="flex items-center gap-1 px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+          <a href="/industries" class="flex items-center gap-1 px-1.5 xl:px-4 py-2 whitespace-nowrap text-gray-300 hover:text-white text-sm font-medium transition-colors">
             Industries
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -112,12 +121,12 @@ const industryLinks = [
         </div>
 
         {navLinks.map((link) => (
-          <a href={link.href} class="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium transition-colors">
+          <a href={link.href} class="px-1.5 xl:px-4 py-2 whitespace-nowrap text-gray-300 hover:text-white text-sm font-medium transition-colors">
             {link.label}
           </a>
         ))}
 
-        <a href="/contact" class="ml-4 px-5 py-2 bg-amber hover:bg-amber-dark text-charcoal font-semibold text-sm rounded-lg transition-colors">
+        <a href="/contact" class="ml-2 xl:ml-4 px-4 xl:px-5 py-2 whitespace-nowrap bg-amber hover:bg-amber-dark text-charcoal font-semibold text-sm rounded-lg transition-colors">
           Contact Us
         </a>
       </div>

@@ -99,7 +99,7 @@ readingTime: "8 min"
 
 <p><strong>1. Automating a broken process.</strong> If your month-end close has undefined steps, tribal knowledge, and inconsistent data sources, automating it will just make it fail faster. <em>Fix the process first, then automate.</em></p>
 
-<p><strong>2. Over-engineering the solution.</strong> A $50,000 UiPath implementation for a task that a Python script could handle in $5,000 is not smart architecture, it is vendor lock-in dressed up as strategy.</p>
+<p><strong>2. Over-engineering the solution.</strong> Buying a full automation platform, with its licenses and renewals, for a task a short script could handle is not smart architecture. Match the tool to the task, and let platform licensing follow a real need rather than lead the design.</p>
 
 <p><strong>3. Ignoring maintenance costs.</strong> Every time your ERP vendor pushes a UI update, your bot breaks. Budget 15-20% of development cost annually for maintenance, or your ROI erodes fast.</p>
 
@@ -134,4 +134,4 @@ readingTime: "8 min"
 
 <hr />
 
-<p><em>David Farley is the President and Founder of Forge RPA. A 30-year finance and accounting veteran and Certified UiPath Developer, he helps companies automate business processes, from advanced Excel and VBA solutions to enterprise RPA, while keeping costs under control.</em></p>
+<p><em>David Farley is the President and Founder of Forge RPA. A 30-year finance and accounting veteran, he helps companies automate business processes with custom automation built with AI, from advanced Excel and VBA solutions to end-to-end workflows, while keeping costs under control. Before building automation with AI, David was a Certified UiPath Developer and built hundreds of automations on traditional RPA platforms, including 100+ at a Fortune Global 500 manufacturer.</em></p>

@@ -17,8 +17,8 @@
  *   annual savings    = monthly x 12
  *   cumulative net(N) = N x annual savings - implementation - N x run-state
  *   payback (months)  = implementation / monthly savings
- * Run-state defaults to $0 per the Forge model: client-owned code, minimal
- * licensing, optional hosting, so ongoing cost is at or near zero.
+ * Run-state defaults to $0 per the Forge model: client-owned code, no bot
+ * licenses, optional hosting, so ongoing cost is at or near zero.
  */
 interface Props {
   /** Which scenario pre-fills the inputs + descriptor. */
@@ -59,7 +59,7 @@ const SCENARIOS = {
     adoption: 90,
     implementation: 15000,
     runstate: 0,
-    note: 'A general finance or operations automation. Adjust every field to your own process. Run-state defaults to zero because Forge builds are code you own, with minimal licensing and optional hosting.',
+    note: 'A general finance or operations automation. Adjust every field to your own process. Run-state defaults to zero because Forge builds are code you own, with no bot licenses and optional hosting.',
   },
   ap: {
     hours: 40,
@@ -203,7 +203,7 @@ const scenariosJson = JSON.stringify(SCENARIOS);
 
         <label class="block">
           <span class="text-sm font-semibold text-charcoal">Annual Run-State Cost (USD)</span>
-          <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. With Forge this is usually at or near zero: you own the code, licensing is minimal, and hosting is optional if you want us to run it.</span>
+          <span class="block text-xs text-gray-500 mb-1">Ongoing yearly cost to keep it running. With Forge this is usually at or near zero: you own the code, there are no bot licenses, and hosting is optional if you want us to run it.</span>
           <input
             type="number"
             id={`${uid}-runstate`}
