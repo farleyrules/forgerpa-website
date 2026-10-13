@@ -79,7 +79,7 @@ readingTime: "9 min"
 
 <ul>
   <li><strong>Web-based data entry with structured forms</strong>, Lightweight browser automation</li>
-  <li><strong>Desktop application with complex UI</strong>, Enterprise RPA platform</li>
+  <li><strong>Desktop application with complex UI</strong>, Screen-level automation</li>
   <li><strong>File processing and data transformation</strong>, Custom scripts</li>
   <li><strong>Cross-system data movement with APIs</strong>, Direct API integration (no RPA needed)</li>
   <li><strong>Email-triggered workflows</strong>, Cloud workflow platform</li>

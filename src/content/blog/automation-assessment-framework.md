@@ -110,7 +110,7 @@ readingTime: "10 min"
 | 2 | Primarily desktop or legacy systems | SAP GUI, AS/400 green screens |
 | 1 | Citrix, virtual desktop, or highly secured | Citrix-hosted applications, biometric authentication |
 
-<p><strong>Why it matters:</strong> Technology accessibility determines development cost and reliability. Processes scoring 4-5 can use lightweight, low-cost automation tools. Processes scoring 1-2 may require enterprise RPA platforms with higher licensing costs.</p>
+<p><strong>Why it matters:</strong> Technology accessibility determines development cost and reliability. Processes scoring 4-5 can use lightweight, low-cost automation tools. Processes scoring 1-2 need screen-level automation that costs more to build and maintain.</p>
 
 <h2>Putting It All Together: The Scoring Worksheet</h2>
 
