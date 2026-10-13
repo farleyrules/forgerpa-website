@@ -10,6 +10,10 @@ interface Props {
   description?: string;
   heroTitle?: string;
   heroSubtitle?: string;
+  /** Optional small supporting line above the hero H1. */
+  heroEyebrow?: string;
+  /** Optional emphasized line under the hero subtitle. */
+  heroTrustLine?: string;
   heroCta?: string;
   heroCtaLink?: string;
   noindex?: boolean;
@@ -19,7 +23,7 @@ interface Props {
   stickyCta?: boolean;
 }
 
-const { title, description, heroTitle, heroSubtitle, heroCta, heroCtaLink, noindex, ogImage, stickyCta = true } = Astro.props;
+const { title, description, heroTitle, heroSubtitle, heroEyebrow, heroTrustLine, heroCta, heroCtaLink, noindex, ogImage, stickyCta = true } = Astro.props;
 // Show the mobile sticky CTA only when the page actually has a booking target,
 // so /book and the legal pages (which pass no heroCtaLink) never show it.
 const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
@@ -31,6 +35,8 @@ const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
     <Hero
       title={heroTitle}
       subtitle={heroSubtitle}
+      eyebrow={heroEyebrow}
+      trustLine={heroTrustLine}
       ctaText={heroCta}
       ctaLink={heroCtaLink}
     />

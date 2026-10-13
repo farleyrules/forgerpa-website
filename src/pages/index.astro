@@ -9,18 +9,105 @@ const featuredStudies = await getCollection('case-studies', ({ data }) => data.f
 const sortedFeatured = featuredStudies
   .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
   .slice(0, 3);
+
+// "How We Differ From Traditional RPA": one data source for both the desktop
+// table and the stacked mobile cards, so the two layouts can never drift apart.
+// Positioning approved by David Farley on 2026-10-13. Keep it neutral: compare
+// approaches, never disparage or name a vendor here.
+const differences = [
+  {
+    label: 'Licenses',
+    traditional: 'Per-bot or platform licenses, plus an orchestrator subscription.',
+    forge: 'None. You own the code, so there is nothing to license.',
+  },
+  {
+    label: 'Build Approach and Speed',
+    traditional: 'Configured inside a vendor platform.',
+    forge: 'Custom code, built with AI, so it is ready faster.',
+  },
+  {
+    label: 'Ownership',
+    traditional: 'The automations stay tied to the vendor platform.',
+    forge: 'You own every line of it.',
+  },
+  {
+    label: 'Operations',
+    traditional: 'Run from a vendor orchestrator.',
+    forge: 'Our own portal runs, schedules, and audits every automation.',
+  },
+  {
+    label: 'Role of AI',
+    traditional: 'Varies by platform.',
+    forge: 'AI writes and helps build it. The automation itself runs on deterministic rules you can check, with AI used only for judgment steps, such as reading a messy document.',
+  },
+];
 ---
 
 <PageLayout
-  title="Finance & Operations Automation"
-  description="Practical automation for finance, accounting, and operations. We eliminate manual work in month-end close, AP, reconciliations, reporting, and ledger handoffs."
-  heroTitle="Finance and Operations Automation, Built Around Your Process"
-  heroSubtitle="We're a finance-led automation team, headed by a 30-year accounting practitioner who also builds the automation. Most vendors have finance clients but have never closed a book; most people who have lived the close don't write the code. We do both. We strip the manual data-movement out of month-end close, AP, reconciliations, intercompany, and reporting, so the judgment work stays with your team and the swivel-chair work goes away. The same discipline carries into operations and administrative flows when they're rules-based and systems-accessible."
+  title="Custom Finance Automation Without RPA Licenses"
+  description="Finance and operations automation, custom built with AI. No bot licenses, no orchestrator subscription, you own the code. Month-end close, AP, reconciliations."
+  heroEyebrow="Finance and Operations Automation, Built Around Your Process"
+  heroTitle="The Results of RPA, Without the Licenses"
+  heroSubtitle="We build custom automation for finance and operations with AI, faster than traditional RPA, and you own every line of it. No bot licenses, no orchestrator subscription."
+  heroTrustLine="AI builds it. Your numbers run on rules you can check."
   heroCta="Get Your Time Back"
   heroCtaLink="/contact"
 >
   <!-- Proof Bar -->
   <ProofBar />
+
+  <!-- How We Differ From Traditional RPA -->
+  <section id="how-we-differ" class="py-20 lg:py-28">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal">How We Differ From Traditional RPA</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          Both aim at the same result: repetitive, rules-based finance and operations work that runs without anyone keying it in. The difference is how it gets built, what you pay to keep it running, and who owns it.
+        </p>
+      </div>
+
+      <!-- Desktop table -->
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-b-2 border-gray-200">
+              <th scope="col" class="py-4 px-4 w-1/5"><span class="sr-only">Topic</span></th>
+              <th scope="col" class="py-4 px-4 text-charcoal font-bold w-2/5">Traditional RPA</th>
+              <th scope="col" class="py-4 px-4 text-charcoal font-bold w-2/5 bg-amber/10 rounded-t-lg">Forge RPA</th>
+            </tr>
+          </thead>
+          <tbody>
+            {differences.map((row) => (
+              <tr class="border-b border-gray-100 align-top">
+                <th scope="row" class="py-4 px-4 font-semibold text-charcoal">{row.label}</th>
+                <td class="py-4 px-4 text-gray-600">{row.traditional}</td>
+                <td class="py-4 px-4 text-gray-800 bg-amber/5">{row.forge}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile card stack -->
+      <div class="md:hidden space-y-4">
+        {differences.map((row) => (
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <h3 class="font-bold text-charcoal mb-3">{row.label}</h3>
+            <dl class="space-y-3 text-sm">
+              <div>
+                <dt class="text-gray-500 font-semibold">Traditional RPA</dt>
+                <dd class="text-gray-600">{row.traditional}</dd>
+              </div>
+              <div class="border-l-4 border-amber pl-3">
+                <dt class="text-charcoal font-semibold">Forge RPA</dt>
+                <dd class="text-gray-800">{row.forge}</dd>
+              </div>
+            </dl>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <!-- Services Section -->
   <section class="py-20 lg:py-28 bg-slate-light">
