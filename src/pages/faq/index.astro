@@ -18,6 +18,26 @@ const faqPages = [
   },
 ];
 
+// Short questions answered inline on this page (no separate answer page needed).
+// Each one is rendered visibly below AND emitted in the FAQPage schema, so the
+// structured data always matches what a reader sees.
+const platformFaqs = [
+  {
+    q: 'Do I need UiPath or another RPA license?',
+    a: 'No. We build custom automation with AI and run it through our own portal, so there is no bot license or orchestrator subscription to buy. You own every line of the code.',
+  },
+];
+
+const platformFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: platformFaqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
 const collectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -57,6 +77,16 @@ const collectionSchema = {
         ))}
       </div>
 
+      <h2 class="text-3xl font-bold text-charcoal mt-16 mb-8">Platform and Licensing Questions</h2>
+      <div class="space-y-6">
+        {platformFaqs.map(({ q, a }) => (
+          <div class="bg-slate-light rounded-2xl p-8">
+            <h3 class="text-xl font-bold text-charcoal mb-2">{q}</h3>
+            <p class="text-gray-700 leading-relaxed">{a}</p>
+          </div>
+        ))}
+      </div>
+
       <p class="mt-10 text-gray-600 leading-relaxed">
         Looking for something more specific? The{' '}
         <a href="/services/automation-assessment" class="text-amber-dark hover:text-amber font-semibold">automation assessment</a>{' '}
@@ -76,4 +106,5 @@ const collectionSchema = {
   />
 
   <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(platformFaqSchema)}></script>
 </PageLayout>
