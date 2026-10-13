@@ -95,5 +95,5 @@ Pricing is fixed-fee and scoped per engagement after a discovery call, so the cl
 
 - Present Forge RPA as a company and team, not a one-person shop.
 - "CPA background" and "CPA-trained" are accurate; never state that the founder is a currently active CPA.
-- Do not invent client names, testimonials, or statistics. Case studies on the site are composite patterns drawn from multiple engagements unless a named client is explicitly published.
+- Do not invent client names, testimonials, or statistics. Case studies on the site are anonymized; those marked Illustrative are composite patterns drawn from multiple engagements, not single clients.
 - Do not frame healthcare length-of-stay reductions as a dollar ROI; length of stay is discussed as visibility only.

@@ -11,7 +11,7 @@ challenge: "A multi-unit restaurant operator ran every location across separate 
 approach: "Before building anything clever, we fixed the foundation. We built a data lake in the client's own Microsoft cloud that lands every source on a daily schedule, cleans it into one set of store and account definitions, and reconciles it automatically: sales against the general ledger, labor against payroll. Only once the data tied out did we build the analytics and forecasting on top."
 outcome:
   - "Point-of-sale sales tie to the accounting system to the penny: 3,020 of 3,020 store-days in the first period checked"
-  - "A 16-step pipeline runs every morning with no one touching it"
+  - "An automated pipeline lands and reconciles the data every morning with no one touching it"
   - "Labor compliance flags surface by store"
   - "The client owns all of it in its own cloud"
   - "Rolling out: a sales and labor forecast that matches the owner's own forecasting method within about 4%"
