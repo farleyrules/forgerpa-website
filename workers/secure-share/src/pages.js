@@ -1095,7 +1095,7 @@ export function renderRequestMintPage() {
     '<div class="card">' +
     '<div id="form-panel">' +
     "<h1>Request Credentials Securely</h1>" +
-    '<p class="direction">Someone gives you a secret. Only you can open it.</p>' +
+    '<p class="direction">Request someone to give you a secret. Only you can open it.</p>' +
     '<p class="lede">Ask an outside party (a client, a vendor) to send you passwords, keys, or ' +
     "connection strings without anything sensitive touching email. They fill in a short form; it " +
     "is encrypted in their browser to a key only you hold.</p>" +

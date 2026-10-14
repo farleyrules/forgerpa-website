@@ -873,7 +873,7 @@ async function run() {
     );
     ok(
       "request page: direction hint under the heading",
-      reqBody.includes('<h1>Request Credentials Securely</h1><p class="direction">Someone gives you a secret. Only you can open it.</p>'),
+      reqBody.includes('<h1>Request Credentials Securely</h1><p class="direction">Request someone to give you a secret. Only you can open it.</p>'),
     );
 
     // The nav replaces the old ad-hoc cross links; in-flow buttons stay.
