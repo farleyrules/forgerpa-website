@@ -818,6 +818,116 @@ async function run() {
     }
   }
 
+  // 26. Shared admin nav. Every Access-gated /admin page renders the same four
+  // items with exactly one active; public pages (recipient, submitter, every
+  // error page) carry no nav and no /admin link at all.
+  {
+    const nEnv = makeEnv();
+    const NAV_ITEMS = [
+      ["/admin", "Send a Secret"],
+      ["/admin/request", "Request a Secret"],
+      ["/admin/history", "Sent History"],
+      ["/admin/requests", "Requests"],
+    ];
+    const navOf = (body) => {
+      const m = body.match(/<nav class="adminnav"[\s\S]*?<\/nav>/);
+      return m ? m[0] : "";
+    };
+    const activeOf = (nav) => [...nav.matchAll(/<a href="([^"]+)" class="active" aria-current="([^"]+)"/g)];
+    // [route, expected active href, expected aria-current]
+    const ADMIN_PAGES = [
+      ["/admin", "/admin", "page"],
+      ["/admin/", "/admin", "page"],
+      ["/admin/request", "/admin/request", "page"],
+      ["/admin/history", "/admin/history", "page"],
+      ["/admin/requests", "/admin/requests", "page"],
+      ["/admin/claim", "/admin/requests", "true"], // claim sits in the Requests section
+    ];
+    for (const [route, wantHref, wantCurrent] of ADMIN_PAGES) {
+      const res = await get(route, nEnv);
+      const body = await res.text();
+      const nav = navOf(body);
+      ok("nav: " + route + " renders the admin nav", res.status === 200 && !!nav, "status=" + res.status);
+      ok(
+        "nav: " + route + " has all four items in order",
+        NAV_ITEMS.every(([href, label]) => nav.includes('<a href="' + href + '"') && nav.includes(">" + label + "</a>")) &&
+          nav.indexOf(">Send a Secret<") < nav.indexOf(">Request a Secret<") &&
+          nav.indexOf(">Request a Secret<") < nav.indexOf(">Sent History<") &&
+          nav.indexOf(">Sent History<") < nav.indexOf(">Requests<"),
+      );
+      const act = activeOf(nav);
+      ok(
+        "nav: " + route + " highlights exactly " + wantHref,
+        act.length === 1 && act[0][1] === wantHref && act[0][2] === wantCurrent,
+        "active=" + JSON.stringify(act.map((a) => [a[1], a[2]])),
+      );
+      ok("nav: " + route + " nav sits inside the header band", /<header class="site">[\s\S]*<nav class="adminnav"[\s\S]*<\/nav><\/header>/.test(body));
+    }
+
+    // Direction hints on the two create pages, directly under the heading.
+    const sendBody = await (await get("/admin", nEnv)).text();
+    const reqBody = await (await get("/admin/request", nEnv)).text();
+    ok(
+      "send page: direction hint under the heading",
+      sendBody.includes('<h1>Create a Secure Link</h1><p class="direction">You give someone a secret. They open it once.</p>'),
+    );
+    ok(
+      "request page: direction hint under the heading",
+      reqBody.includes('<h1>Request Credentials Securely</h1><p class="direction">Someone gives you a secret. Only you can open it.</p>'),
+    );
+
+    // The nav replaces the old ad-hoc cross links; in-flow buttons stay.
+    const histBody = await (await get("/admin/history", nEnv)).text();
+    const reqsBody = await (await get("/admin/requests", nEnv)).text();
+    ok("send page: old View Send History note is gone", !sendBody.includes("View Send History"));
+    ok("request page: old View Requests / Send a Secret Instead note is gone", !reqBody.includes("Send a Secret Instead"));
+    ok("history page: duplicate New Secure Link button is gone", !histBody.includes("New Secure Link"));
+    ok("requests page: duplicate New Request button is gone", !reqsBody.includes(">New Request<"));
+    ok("send page keeps Create Another after creating", sendBody.includes('id="another-btn"'));
+    ok(
+      "request page keeps Create Another + View Requests after minting",
+      reqBody.includes('id="req-another-btn"') && /id="result-panel"[\s\S]*href="\/admin\/requests"[^>]*>View Requests</.test(reqBody),
+    );
+
+    // Mint result: the private / same-browser note sits under the Claim Link
+    // (admin only; the public submit page never carries it).
+    const CLAIM_NOTE =
+      "Keep this link private. It is also saved in this browser only, so claim from this same browser (or keep a copy of the link).";
+    ok(
+      "request result: claim-link note sits under the Claim Link",
+      /id="result-panel"[\s\S]*id="claim-out"[\s\S]*<p class="cap" id="claim-private-note">([^<]*)<\/p>/.test(reqBody) &&
+        reqBody.match(/<p class="cap" id="claim-private-note">([^<]*)<\/p>/)[1] === CLAIM_NOTE,
+    );
+
+    // Public pages: no nav, no admin link, not even the string "/admin".
+    const kpN = await genRequestKeypair();
+    const mint = await (
+      await post("/admin/api/request-create", { title: "Nav Check", fields: [{ label: "Password", secret: true }], ttl: 3600, pubJwk: kpN.pubJwk }, nEnv)
+    ).json();
+    const PUBLIC = [
+      ["/s", 200, "Reveal Secret"],
+      ["/s/", 200, "Reveal Secret"],
+      ["/r/" + mint.token, 200, "Submit Securely"],
+      ["/r/abcdEFGH01234567", 404, "This Request Link Is Not Available"],
+      ["/r/", 404, "This Request Link Is Not Available"],
+      ["/nope", 404, "This Link Is Not Valid"],
+      ["/admin/nope", 404, "This Link Is Not Valid"],
+    ];
+    for (const [route, wantStatus, marker] of PUBLIC) {
+      const res = await get(route, nEnv);
+      const body = await res.text();
+      ok("public: " + route + " renders (" + wantStatus + ")", res.status === wantStatus && body.includes(marker), "status=" + res.status);
+      ok("public: " + route + " has no admin nav or admin styles", !body.includes("adminnav") && !body.includes("Send a Secret"));
+      ok("public: " + route + " has no /admin link", !body.includes("/admin"));
+      ok("public: " + route + " has no claim-link note", !body.includes("claim-private-note") && !body.includes("Keep this link private"));
+    }
+    // The public page scripts cannot inject an admin link either.
+    for (const js of ["/reveal.js", "/submit.js"]) {
+      const src = await (await get(js, nEnv)).text();
+      ok("public: " + js + " has no /admin reference", !src.includes("/admin"));
+    }
+  }
+
   console.log("\n" + pass + " passed, " + fail + " failed\n");
   if (fail > 0) process.exit(1);
 }

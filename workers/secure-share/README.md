@@ -148,7 +148,7 @@ fails the submission.
 | `src/pages.js` | All HTML, inline CSS, and browser scripts. Outbound: create / view / history + `CREATE_JS` / `REVEAL_JS` (AES-GCM, PBKDF2 passphrase, file encode/decode). Inbound: mint / submit / claim / requests-list + `REQUEST_JS` / `SUBMIT_JS` / `CLAIM_JS` / `REQUESTS_JS` (ECDH-ES + HKDF hybrid), plus `QR_JS` (self-contained byte-mode QR encoder rendered as inline SVG). |
 | `src/anvil.js` | The 3D anvil mark (base64 PNG) served at `/anvil-mark.png`. |
 | `wrangler.jsonc` | Worker name, DO bindings (`SecretDO` + `RequestDO`) + migrations, KV binding, custom-domain route, `workers_dev:false`, tunable limits, Access + cockpit vars. |
-| `test/harness.mjs` | `node test/harness.mjs`: 122 checks against the real Worker module (DO + KV stubs, real AES + passphrase + ECDH-ES round-trips, outbound history/receipts, inbound mint/submit/claim/cancel, single-use + burn, submit-side-only expiry, the fire-and-forget submission receipt, validation, plus direct `RequestDO` atomicity + alarm-lifecycle tests). |
+| `test/harness.mjs` | `node test/harness.mjs`: 185 checks against the real Worker module (DO + KV stubs, real AES + passphrase + ECDH-ES round-trips, outbound history/receipts, inbound mint/submit/claim/cancel, single-use + burn, submit-side-only expiry, the fire-and-forget submission receipt, validation, direct `RequestDO` atomicity + alarm-lifecycle tests, plus the admin nav: right active item on every `/admin` page, and no nav or `/admin` link on any public or error page). |
 | `test/serve.mjs` | `node test/serve.mjs`: serves the Worker on `http://localhost:8788` for a real-browser end-to-end test (both directions). |
 
 Email delivery + open-receipts flow through two shared-secret endpoints in the
@@ -223,6 +223,12 @@ degrades to "Email is not set up yet. Copy the link and send it yourself."
 
 ## How to use it
 
+Every `/admin` page carries one shared nav under the header: **Send a Secret**
+(`/admin`), **Request a Secret** (`/admin/request`), **Sent History**
+(`/admin/history`), and **Requests** (`/admin/requests`); the Claim page highlights
+Requests. Public pages (`/s`, `/r/<token>`, and every error page) never render it
+and carry no `/admin` link.
+
 1. Go to `https://secure.forgerpa.com/admin` (log in via Access).
 2. Choose **Text** or **File**, enter the secret, pick an expiry. Optionally set a
    passphrase, a **Label** (for your history), and an **Email To** (to have the
@@ -250,7 +256,7 @@ degrades to "Email is not set up yet. Copy the link and send it yourself."
 
 ```bash
 cd workers/secure-share
-node test/harness.mjs     # 122 checks: crypto, passphrase, files, burn, history, send/receipt, inbound requests
+node test/harness.mjs     # 185 checks: crypto, passphrase, files, burn, history, send/receipt, inbound requests, admin nav
 node test/serve.mjs       # then browse http://localhost:8788/admin (outbound) or /admin/request (inbound) for a live e2e
 ```
 

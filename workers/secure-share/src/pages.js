@@ -146,7 +146,6 @@ footer.site a:hover{color:var(--amber-light)}
 footer.site .copy{color:var(--gray-500); margin-top:.35rem}
 .hist-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.25rem}
 .hist-head h1{margin:0}
-.hist-head .btn{width:auto; padding:.55rem 1rem; font-size:.85rem}
 .tablewrap{overflow-x:auto; margin-top:1rem}
 table.hist{width:100%; border-collapse:collapse; font-size:.88rem}
 table.hist th{text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--gray-500); font-weight:700; padding:.5rem .6rem; border-bottom:2px solid var(--line)}
@@ -233,6 +232,33 @@ table.requests .actioncell .muted{flex-basis:100%}
 }
 `;
 
+// Admin-only styles, appended after STYLES ONLY when shell() renders the admin
+// nav, so a public page's HTML carries no trace of the admin surface.
+const ADMIN_STYLES = `
+nav.adminnav{border-top:1px solid rgba(255,255,255,.08)}
+nav.adminnav .inner{
+  max-width:720px; margin:0 auto; padding:.5rem 1.25rem;
+  display:flex; flex-wrap:wrap; gap:.35rem;
+}
+body.wide nav.adminnav .inner{max-width:950px}
+nav.adminnav a{
+  color:var(--gray-300); text-decoration:none; font-weight:600; font-size:.88rem;
+  line-height:1.2; padding:.45rem .85rem; border-radius:8px; white-space:nowrap;
+  transition:background-color .12s,color .12s;
+}
+nav.adminnav a:hover{color:#fff; background:var(--charcoal-light)}
+nav.adminnav a.active{background:var(--amber); color:var(--charcoal); box-shadow:0 2px 6px -1px rgba(245,158,11,.45)}
+nav.adminnav a.active:hover{background:var(--amber-light); color:var(--charcoal)}
+.direction{margin:0 0 .6rem; font-weight:600; font-size:.95rem; color:var(--amber-dark)}
+@media (max-width:480px){
+  /* Phone: the four items sit in a tidy 2x2 grid, and the header scrolls away
+     instead of pinning two extra rows to the top of the screen. */
+  header.site{position:relative}
+  nav.adminnav .inner{display:grid; grid-template-columns:1fr 1fr; padding:.5rem 1rem .6rem}
+  nav.adminnav a{text-align:center; padding:.55rem .4rem}
+}
+`;
+
 const LOCK_ICON =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
   'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -244,8 +270,37 @@ const FILE_ICON =
   '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
   '<polyline points="14 2 14 8 20 8"/></svg>';
 
+// The shared admin nav. Order and labels are fixed; `key` is what a page passes
+// as shell opts.nav. /admin/claim has no item of its own: it belongs to the
+// Requests section, so it highlights Requests without being "the page".
+const ADMIN_NAV = [
+  { key: "send", href: "/admin", label: "Send a Secret" },
+  { key: "request", href: "/admin/request", label: "Request a Secret" },
+  { key: "history", href: "/admin/history", label: "Sent History" },
+  { key: "requests", href: "/admin/requests", label: "Requests" },
+];
+const NAV_SECTION = { claim: "requests" };
+
+function adminNav(active) {
+  const section = NAV_SECTION[active] || active;
+  let links = "";
+  for (const item of ADMIN_NAV) {
+    const on = item.key === section;
+    // aria-current="page" only on the exact page; a sub-page (claim) marks its
+    // section with aria-current="true".
+    const current = on ? ' aria-current="' + (item.key === active ? "page" : "true") + '"' : "";
+    links +=
+      '<a href="' + item.href + '"' + (on ? ' class="active"' : "") + current + ">" + item.label + "</a>";
+  }
+  return '<nav class="adminnav" aria-label="Secure Share Admin"><div class="inner">' + links + "</div></nav>";
+}
+
+// opts.wide: wider shell for list pages. opts.nav: the active admin nav key
+// ("send" | "request" | "history" | "requests" | "claim"). Only Access-gated
+// /admin pages pass opts.nav; every public page omits it and gets no admin links.
 function shell(title, bodyHtml, scriptSrc, opts) {
   const wide = !!(opts && opts.wide);
+  const nav = opts && opts.nav ? adminNav(opts.nav) : "";
   return (
     "<!DOCTYPE html>" +
     '<html lang="en"><head>' +
@@ -258,6 +313,7 @@ function shell(title, bodyHtml, scriptSrc, opts) {
     '<link rel="icon" type="image/svg+xml" href="/favicon.svg">' +
     "<style>" +
     STYLES +
+    (nav ? ADMIN_STYLES : "") +
     "</style>" +
     "</head><body" +
     (wide ? ' class="wide"' : "") +
@@ -270,7 +326,9 @@ function shell(title, bodyHtml, scriptSrc, opts) {
     '<span class="sub">Secure Share</span>' +
     "</a>" +
     '<a class="homelink" href="https://forgerpa.com">forgerpa.com</a>' +
-    "</div></header>" +
+    "</div>" +
+    nav +
+    "</header>" +
     "<main>" +
     bodyHtml +
     "</main>" +
@@ -291,6 +349,7 @@ export function renderCreatePage() {
     '<div class="card">' +
     '<div id="form-panel">' +
     "<h1>Create a Secure Link</h1>" +
+    '<p class="direction">You give someone a secret. They open it once.</p>' +
     '<p class="lede">Paste a password, key, or connection string. It is encrypted in your ' +
     "browser before it ever leaves this page. The link can be opened once, then it is gone.</p>" +
     '<div class="field">' +
@@ -357,7 +416,6 @@ export function renderCreatePage() {
     "only in the link fragment after the # sign, which browsers never send to a server. " +
     "We store encrypted text and nothing else.</span>" +
     "</div>" +
-    '<p class="note" style="margin-top:1.25rem"><a href="/admin/history">View Send History</a></p>' +
     "</div>" +
     '<div id="result-panel" style="display:none">' +
     '<h1 id="result-title">Your Secure Link Is Ready</h1>' +
@@ -386,7 +444,7 @@ export function renderCreatePage() {
     "</div>" +
     "</div>" +
     "</div>";
-  return shell("Forge RPA Secure Share", body, "/admin/create.js");
+  return shell("Forge RPA Secure Share", body, "/admin/create.js", { nav: "send" });
 }
 
 export function renderViewPage(env, mode) {
@@ -499,15 +557,14 @@ export function renderHistoryPage(env, rows) {
   }
   const body =
     '<div class="card">' +
-    '<div class="hist-head"><h1>Send History</h1>' +
-    '<a class="btn secondary" href="/admin">New Secure Link</a></div>' +
+    '<div class="hist-head"><h1>Send History</h1></div>' +
     '<p class="lede">Your last 200 secrets (metadata only, never the secret itself). ' +
     "Rows disappear 30 days after creation.</p>" +
     '<div class="tablewrap"><table class="hist">' +
     "<thead><tr><th>Label</th><th>Recipient</th><th>Created</th><th>Status</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
-  return shell("Send History | Forge RPA Secure Share", body, null, { wide: true });
+  return shell("Send History | Forge RPA Secure Share", body, null, { wide: true, nav: "history" });
 }
 
 // ---------------------------------------------------------------------------
@@ -1038,6 +1095,7 @@ export function renderRequestMintPage() {
     '<div class="card">' +
     '<div id="form-panel">' +
     "<h1>Request Credentials Securely</h1>" +
+    '<p class="direction">Someone gives you a secret. Only you can open it.</p>' +
     '<p class="lede">Ask an outside party (a client, a vendor) to send you passwords, keys, or ' +
     "connection strings without anything sensitive touching email. They fill in a short form; it " +
     "is encrypted in their browser to a key only you hold.</p>" +
@@ -1074,8 +1132,6 @@ export function renderRequestMintPage() {
     "stored, so the sender can encrypt to it; the private half goes only into your Claim Link and " +
     "never reaches our servers.</span>" +
     "</div>" +
-    '<p class="note" style="margin-top:1.25rem"><a href="/admin/requests">View Requests</a> ' +
-    '&middot; <a href="/admin">Send a Secret Instead</a></p>' +
     "</div>" +
     '<div id="result-panel" style="display:none">' +
     "<h1>Your Request Is Ready</h1>" +
@@ -1104,6 +1160,8 @@ export function renderRequestMintPage() {
     '<p class="cap"><strong>The only way to read what comes back.</strong> Save it now (a password ' +
     "manager is ideal). It is also stored in this browser for convenience. If you lose it, the " +
     "submission cannot be recovered.</p>" +
+    '<p class="cap" id="claim-private-note">Keep this link private. It is also saved in this browser only, so claim ' +
+    "from this same browser (or keep a copy of the link).</p>" +
     "</div>" +
     '<div class="btn-row">' +
     '<button id="req-another-btn" class="btn secondary">Create Another</button>' +
@@ -1111,7 +1169,7 @@ export function renderRequestMintPage() {
     "</div>" +
     "</div>" +
     "</div>";
-  return shell("Forge RPA Secure Requests", body, "/admin/request.js");
+  return shell("Forge RPA Secure Requests", body, "/admin/request.js", { nav: "request" });
 }
 
 // Server-rendered generic error for an invalid, used, or expired submit link.
@@ -1212,7 +1270,7 @@ export function renderClaimPage() {
     "</div>" +
     '<div id="claim-status" class="msg"></div>' +
     "</div>";
-  return shell("Claim a Submission | Forge RPA Secure Share", body, "/admin/claim.js");
+  return shell("Claim a Submission | Forge RPA Secure Share", body, "/admin/claim.js", { nav: "claim" });
 }
 
 // GET /admin/requests -- status list. rows come from index.js listReqMeta().
@@ -1270,8 +1328,7 @@ export function renderRequestsPage(env, rows) {
   }
   const body =
     '<div class="card">' +
-    '<div class="hist-head"><h1>Secure Requests</h1>' +
-    '<a class="btn secondary" href="/admin/request">New Request</a></div>' +
+    '<div class="hist-head"><h1>Secure Requests</h1></div>' +
     '<p class="lede">Inbound requests you created (metadata only, never the submitted secret). ' +
     "A submitted request stays until you claim or delete it. Rows disappear 30 days after creation. " +
     "Where this browser has the Claim Link saved, Open Claim and Copy appear below; otherwise use the " +
@@ -1282,7 +1339,7 @@ export function renderRequestsPage(env, rows) {
     "<thead><tr><th>Request</th><th>Fields</th><th>Created</th><th>Status</th><th>Actions</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
-  return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js", { wide: true });
+  return shell("Secure Requests | Forge RPA Secure Share", body, "/admin/requests.js", { wide: true, nav: "requests" });
 }
 
 // ---------------------------------------------------------------------------
