@@ -198,7 +198,7 @@ table.hist tr.stale td{background:#fffbeb}
 .qrwrap{margin-top:1rem; text-align:center}
 .qrwrap svg{width:160px; height:160px; border:1px solid var(--line); border-radius:8px; background:#fff}
 .qrwrap .cap{text-align:center}
-/* List pages (Send History, Secure Requests) opt into a slightly wider shell so
+/* List pages (Sent History, Secure Requests) opt into a slightly wider shell so
    a multi-column table has room; single-column forms keep the default 640px. */
 body.wide main{max-width:950px}
 body.wide header.site .bar,body.wide footer.site .inner{max-width:950px}
@@ -206,7 +206,7 @@ body.wide header.site .bar,body.wide footer.site .inner{max-width:950px}
    flexible remaining width and wraps on word boundaries (never mid-word, up to
    two lines); Created stacks to two short lines; the action buttons flow on one
    row and wrap tidily to a second when the column is narrow. Below the table's
-   min width the .tablewrap scrolls (mobile fallback). Send History keeps auto
+   min width the .tablewrap scrolls (mobile fallback). Sent History keeps auto
    layout. Scoped to .requests. */
 table.requests{table-layout:fixed; min-width:760px}
 table.requests td{word-break:normal; overflow-wrap:break-word}
@@ -388,7 +388,7 @@ export function renderCreatePage() {
     '<label for="label">Label (Optional)</label>' +
     '<input id="label" type="text" autocomplete="off" maxlength="120" ' +
     'placeholder="A name for your history, e.g. MRCO OneDataSource SFTP">' +
-    '<p class="hint">Shown in your Send History and in the email sent to recipients. Never part of the encrypted secret.</p>' +
+    '<p class="hint">Shown in your Sent History and in the email sent to recipients. Never part of the encrypted secret.</p>' +
     "</div>" +
     '<div class="field">' +
     '<label for="recipient">Email To (Optional)</label>' +
@@ -401,7 +401,7 @@ export function renderCreatePage() {
     '<button type="button" class="seg-btn" data-dmode="shared">One Shared Link</button>' +
     "</div>" +
     '<p class="hint" id="delivery-hint">Each recipient gets their own one-time link. Everyone can retrieve it once, ' +
-    "and Send History shows who opened which.</p>" +
+    "and Sent History shows who opened which.</p>" +
     "</div>" +
     '<label id="alsopass-wrap" style="display:none;margin-top:.6rem;font-weight:500;font-size:.85rem;color:var(--gray-700)">' +
     '<input id="alsopass" type="checkbox" style="width:auto;margin-right:.45rem;vertical-align:middle">' +
@@ -557,14 +557,14 @@ export function renderHistoryPage(env, rows) {
   }
   const body =
     '<div class="card">' +
-    '<div class="hist-head"><h1>Send History</h1></div>' +
+    '<div class="hist-head"><h1>Sent History</h1></div>' +
     '<p class="lede">Your last 200 secrets (metadata only, never the secret itself). ' +
     "Rows disappear 30 days after creation.</p>" +
     '<div class="tablewrap"><table class="hist">' +
     "<thead><tr><th>Label</th><th>Recipient</th><th>Created</th><th>Status</th></tr></thead>" +
     "<tbody>" + trs + "</tbody></table></div>" +
     "</div>";
-  return shell("Send History | Forge RPA Secure Share", body, null, { wide: true, nav: "history" });
+  return shell("Sent History | Forge RPA Secure Share", body, null, { wide: true, nav: "history" });
 }
 
 // ---------------------------------------------------------------------------
@@ -645,7 +645,7 @@ export const CREATE_JS = `(function(){
     $("result-panel").style.display="block";
     $("single-out").style.display="none";
     $("result-title").textContent="Secure Links Sent";
-    $("result-lede").textContent="Each recipient got their own one-time link. Send History shows who opens which.";
+    $("result-lede").textContent="Each recipient got their own one-time link. Sent History shows who opens which.";
     var h="";
     for(var i=0;i<items.length;i++){
       var it=items[i],st,cp="";
@@ -812,7 +812,7 @@ export const CREATE_JS = `(function(){
       deliveryMode=b.getAttribute("data-dmode");
       var bs=dseg.querySelectorAll(".seg-btn");
       for(var i=0;i<bs.length;i++)bs[i].classList.toggle("active",bs[i]===b);
-      if($("delivery-hint"))$("delivery-hint").textContent=deliveryMode==="separate"?"Each recipient gets their own one-time link. Everyone can retrieve it once, and Send History shows who opened which.":"One shared link to everyone. The first person to open it gets the secret; it is then destroyed for the rest (best paired with a passphrase).";
+      if($("delivery-hint"))$("delivery-hint").textContent=deliveryMode==="separate"?"Each recipient gets their own one-time link. Everyone can retrieve it once, and Sent History shows who opened which.":"One shared link to everyone. The first person to open it gets the secret; it is then destroyed for the rest (best paired with a passphrase).";
     });}
     var seg=$("mode-seg");
     if(seg){seg.addEventListener("click",function(e){
@@ -1158,7 +1158,7 @@ export function renderRequestMintPage() {
     '<a id="open-claim" class="btn secondary" target="_blank" rel="noopener" style="text-decoration:none">Open</a>' +
     "</div></div>" +
     '<p class="cap"><strong>The only way to read what comes back.</strong> Save it now (a password ' +
-    "manager is ideal). It is also stored in this browser for convenience. If you lose it, the " +
+    "manager is ideal). If you lose it, the " +
     "submission cannot be recovered.</p>" +
     '<p class="cap" id="claim-private-note">Keep this link private. It is also saved in this browser only, so claim ' +
     "from this same browser (or keep a copy of the link).</p>" +
