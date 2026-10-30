@@ -159,6 +159,18 @@ for (const range of ['bytes=0-1,5-9', 'bytes=abc', 'items=0-10', 'bytes=-', 'byt
     'video page path (with a start-at query) passes through',
     videoPage.res.status === 200 && videoPage.h('Accept-Ranges') === null && assetCalls.at(-1).path === '/demos/clip/'
   );
+  // The tracked-link page (?r=) and the catalog the sales cockpit reads both pass through:
+  // tracking events go straight to the cockpit, never through this Worker.
+  const trackedPage = await call('/demos/clip/?r=AbCdEf1234&t=45');
+  check(
+    'tracked video page (?r= token) passes through',
+    trackedPage.res.status === 200 && trackedPage.h('Accept-Ranges') === null && assetCalls.at(-1).path === '/demos/clip/'
+  );
+  const catalog = await call('/demos/demos.json');
+  check(
+    'demo catalog JSON passes through',
+    catalog.res.status === 200 && catalog.h('Accept-Ranges') === null && assetCalls.at(-1).path === '/demos/demos.json'
+  );
   const notModified = await call(MP4, { headers: { 'If-None-Match': ETAG, Range: 'bytes=0-9' } });
   check('304 passes through', notModified.res.status === 304 && notModified.h('Accept-Ranges') === null, `got ${notModified.res.status}`);
   const missing = await call('/demos/missing.mp4');

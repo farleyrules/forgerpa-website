@@ -1,0 +1,182 @@
+---
+/**
+ * Tracked demo link beacons for one /demos/<slug>/ page (David, 2026-10-30).
+ *
+ * Runs ONLY when the page was opened with ?r=<token> (exactly 10 base62 characters), the link
+ * the sales cockpit minted for one prospect. Without it, every anonymous visitor, nothing is
+ * sent. With it, the page sends these events to the cockpit with navigator.sendBeacon as a
+ * text/plain body (no preflight, no cookies set, nothing stored in the browser):
+ *
+ *   open           once, when this script runs
+ *   play           each time playback starts
+ *   progress       every 10 seconds while playing, and on leaving the page mid-play
+ *   pause          a pause before the end
+ *   ended          the video reached its end
+ *   up_next_click  a click on an Up Next tile (x: the target slug)
+ *   copy_link      a click on Copy Link
+ *
+ * Each event carries a random per-page-load session id, w (unique seconds actually played,
+ * summed from video.played, so seeking never counts as watching), p (the furthest point the
+ * playhead reached, seeks included) and d (the video length). No fingerprint, no stored id.
+ *
+ * The token is read once and then removed from the address bar (history.replaceState keeps
+ * any ?t= start-at), so it does not end up in bookmarks, in a URL copied from the address bar,
+ * or, in the usual case, in the analytics page URL.
+ */
+import { DEMO_EVENTS_URL, DEMO_HEARTBEAT_MS, DEMO_TOKEN_PATTERN } from '../data/demo-tracking';
+
+interface Props {
+  slug: string;
+  /** The video length from src/data/demos.ts, used until the player knows its own. */
+  durationSeconds: number;
+}
+
+const { slug, durationSeconds } = Astro.props;
+---
+
+<script
+  is:inline
+  define:vars={{
+    slug,
+    durationSeconds,
+    endpoint: DEMO_EVENTS_URL,
+    tokenPattern: DEMO_TOKEN_PATTERN,
+    heartbeatMs: DEMO_HEARTBEAT_MS,
+  }}
+>
+  (function () {
+    var params = new URLSearchParams(location.search);
+    var token = params.get('r');
+    if (!token || !new RegExp(tokenPattern).test(token)) return;
+    var video = document.querySelector('video[data-demo-player]');
+    if (!video) return;
+
+    // Keep the token out of the address bar from here on; ?t= and anything else stay.
+    try {
+      params.delete('r');
+      var rest = params.toString();
+      history.replaceState(history.state, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    } catch (e) {
+      // An old browser keeps the URL as it was; tracking still works.
+    }
+
+    function newSessionId() {
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var out = '';
+      try {
+        var bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        for (var i = 0; i < bytes.length; i++) out += chars.charAt(bytes[i] % 62);
+      } catch (e) {
+        for (var j = 0; j < 16; j++) out += chars.charAt(Math.floor(Math.random() * 62));
+      }
+      return out;
+    }
+
+    var session = newSessionId();
+    var seq = 0;
+    var furthest = 0;
+
+    function watchedSeconds() {
+      var ranges = video.played;
+      var total = 0;
+      for (var i = 0; i < ranges.length; i++) total += ranges.end(i) - ranges.start(i);
+      return total;
+    }
+    function duration() {
+      var d = video.duration;
+      return isFinite(d) && d > 0 ? d : durationSeconds;
+    }
+    function tenths(n) {
+      return Math.round(n * 10) / 10;
+    }
+    function noteFurthest() {
+      var t = video.currentTime;
+      if (isFinite(t) && t > furthest) furthest = t;
+    }
+
+    function send(type, extra) {
+      noteFurthest();
+      var body = {
+        v: 1,
+        r: token,
+        s: session,
+        e: type,
+        slug: slug,
+        n: seq++,
+        w: tenths(watchedSeconds()),
+        p: tenths(furthest),
+        d: tenths(duration()),
+      };
+      if (extra) for (var key in extra) body[key] = extra[key];
+      var json = JSON.stringify(body);
+      try {
+        if (navigator.sendBeacon && navigator.sendBeacon(endpoint, json)) return;
+      } catch (e) {
+        // fall through to fetch
+      }
+      try {
+        fetch(endpoint, { method: 'POST', body: json, mode: 'no-cors', keepalive: true, credentials: 'omit' });
+      } catch (e) {
+        // Nothing else to try; the visitor's page is unaffected.
+      }
+    }
+
+    var heartbeat = null;
+    function startHeartbeat() {
+      if (heartbeat !== null) return;
+      heartbeat = setInterval(function () {
+        if (!video.paused && !video.ended) send('progress');
+      }, heartbeatMs);
+    }
+    function stopHeartbeat() {
+      if (heartbeat === null) return;
+      clearInterval(heartbeat);
+      heartbeat = null;
+    }
+
+    video.addEventListener('timeupdate', noteFurthest);
+    video.addEventListener('seeked', noteFurthest);
+    video.addEventListener('play', function () {
+      send('play');
+      startHeartbeat();
+    });
+    video.addEventListener('pause', function () {
+      stopHeartbeat();
+      // The browser also fires pause when the video ends; that one is reported as ended.
+      if (!video.ended) send('pause');
+    });
+    video.addEventListener('ended', function () {
+      stopHeartbeat();
+      send('ended');
+    });
+
+    // Leaving mid-play: report the seconds watched since the last heartbeat.
+    function flush() {
+      if (!video.paused && !video.ended) send('progress');
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') flush();
+    });
+    window.addEventListener('pagehide', flush);
+
+    // Up Next tiles (the list under the player and the end card over it).
+    document.addEventListener(
+      'click',
+      function (event) {
+        var target = event.target;
+        var link = target && target.closest ? target.closest('a[href]') : null;
+        if (!link || !link.closest('[data-demo-upnext], [data-demo-endcard]')) return;
+        var path = new URL(link.href, location.href).pathname;
+        var m = /^\/demos\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/.exec(path);
+        if (m && m[1] !== slug) send('up_next_click', { x: m[1] });
+      },
+      true
+    );
+
+    var copyButton = document.querySelector('[data-demo-copy]');
+    if (copyButton) copyButton.addEventListener('click', function () { send('copy_link'); });
+
+    send('open');
+  })();
+</script>

@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import DemoTracking from '../../components/DemoTracking.astro';
 import {
   demos,
   formatDuration,
@@ -396,6 +397,11 @@ const videoSchema = {
       });
     })();
   </script>
+
+  <!-- Tracked demo links: beacons view events to the sales cockpit ONLY when the page was
+       opened with the ?r= token the cockpit minted for one prospect. Anonymous visitors
+       send nothing. See src/components/DemoTracking.astro. -->
+  <DemoTracking slug={demo.slug} durationSeconds={demo.durationSeconds} />
 
   <CTASection
     heading="See it on your process"
