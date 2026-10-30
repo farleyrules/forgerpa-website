@@ -42,13 +42,16 @@ const industryLinks = [
 
 <header class="sticky top-0 z-50 bg-charcoal shadow-lg">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="/" class="flex shrink-0 items-center gap-2 text-amber hover:text-amber-light transition-colors">
+    <!-- Header bar height: 4.3125rem (69px). -->
+    <div class="flex items-center justify-between h-[4.3125rem]">
+      <!-- Logo. The whole lockup (mark, gap, wordmark, descriptor) is drawn at 0.9 of its original
+           size, so its parts stay aligned; the 45px two-line lockup leaves 12px of clear space above
+           and below it in the 69px bar (the old 64px bar with the 50px lockup left 7px). -->
+      <a href="/" class="flex shrink-0 items-center gap-[0.45rem] text-amber hover:text-amber-light transition-colors">
         <!-- Anvil brand mark. alt is empty because the wordmark text beside it already names the link.
              It grows to the height of the two-line lockup wherever the descriptor shows, and drops
              back to the single-line size from lg to xl, where the descriptor is hidden. -->
-        <img src="/anvil-mark.png" alt="" class="h-12 lg:h-9 xl:h-12 w-auto" />
+        <img src="/anvil-mark.png" alt="" class="h-[2.7rem] lg:h-[2.025rem] xl:h-[2.7rem] w-auto" />
         <!-- Wordmark plus the "AI-Built Automation" descriptor ("Forge RPA | AI-Built Automation").
              The descriptor is stacked beneath the wordmark, never inline: the desktop nav row has
              no spare width (an inline descriptor at 1440px squeezed the nav until "Case Studies"
@@ -62,8 +65,8 @@ const industryLinks = [
              its own text width, so a font change that breaks the alignment shows up in a
              bounding-box check. -->
         <span class="flex flex-col items-start">
-          <span class="text-3xl font-bold leading-none whitespace-nowrap">Forge RPA</span>
-          <span class="mt-1.5 ml-[0.125em] text-sm font-medium leading-none tracking-[0.069em] whitespace-nowrap text-gray-300 lg:hidden xl:block">AI-Built Automation</span>
+          <span class="text-[1.6875rem] font-bold leading-none whitespace-nowrap">Forge RPA</span>
+          <span class="mt-[0.3375rem] ml-[0.125em] text-[0.7875rem] font-medium leading-none tracking-[0.069em] whitespace-nowrap text-gray-300 lg:hidden xl:block">AI-Built Automation</span>
         </span>
       </a>
 
