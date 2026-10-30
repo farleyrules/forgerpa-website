@@ -6,7 +6,14 @@
   // "Missing entry-point to Worker script or to assets directory".
   "name": "forgerpa-website",
   "compatibility_date": "2026-06-22",
+  // A small script that adds byte-range (206) answers for the demo videos,
+  // which the static asset server does not give and Safari needs. It runs ONLY
+  // for /demos/* (run_worker_first); every other path is served straight from
+  // the assets with no script invocation. See worker/index.js.
+  "main": "./worker/index.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/demos/*"]
   }
 }
