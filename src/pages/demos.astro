@@ -55,18 +55,22 @@ const videoSchemas = demos.map((d) => ({
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {section.items.map((demo) => (
               <article class="flex flex-col overflow-hidden bg-white border border-gray-200 rounded-2xl hover:border-amber transition-colors">
-                <video
-                  class="block w-full aspect-video bg-charcoal"
-                  controls
-                  preload="none"
-                  playsinline
-                  width="1920"
-                  height="1080"
-                  poster={demoPosterSrc(demo.slug)}
-                  aria-labelledby={`demo-${demo.slug}-title`}
-                >
-                  <source src={demoVideoSrc(demo.slug)} type="video/mp4" />
-                </video>
+                <div class="relative">
+                  <video
+                    class="block w-full aspect-video bg-charcoal"
+                    controls
+                    preload="none"
+                    playsinline
+                    width="1920"
+                    height="1080"
+                    poster={demoPosterSrc(demo.slug)}
+                    aria-labelledby={`demo-${demo.slug}-title`}
+                    data-demo-player
+                    data-demo-title={demo.title}
+                  >
+                    <source src={demoVideoSrc(demo.slug)} type="video/mp4" />
+                  </video>
+                </div>
                 <div class="flex flex-1 flex-col p-6">
                   <div class="flex items-start justify-between gap-4">
                     <h3 id={`demo-${demo.slug}-title`} class="text-xl font-bold text-charcoal">
@@ -88,6 +92,39 @@ const videoSchemas = demos.map((d) => ({
         </div>
       ))}
     </div>
+
+    <!-- Progressive enhancement for the players. Without JavaScript each video keeps its
+         native controls. With it, the controls come off until the visitor presses play, so
+         the whole poster shows (burned-in caption included) with no control bar and no
+         loading spinner, and a centered play button sits over it. Pressing the button
+         removes it, restores the native controls, starts playback and moves focus to the
+         player. Inline and classic (not a deferred module) so it runs as soon as the players
+         are parsed, before the control bar gets a chance to paint. -->
+    <script is:inline>
+      (function () {
+        var players = document.querySelectorAll('video[data-demo-player]');
+        Array.prototype.forEach.call(players, function (video) {
+          video.removeAttribute('controls');
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className =
+            'group absolute inset-0 flex items-center justify-center cursor-pointer focus:outline-none';
+          button.setAttribute('aria-label', 'Play ' + (video.getAttribute('data-demo-title') || 'video'));
+          button.innerHTML =
+            '<span class="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-amber text-white shadow-lg shadow-black/30 transition group-hover:bg-amber-dark group-hover:scale-105 group-focus-visible:ring-4 group-focus-visible:ring-charcoal group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-white">' +
+            '<svg class="ml-1 h-8 w-8 sm:h-10 sm:w-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l10.6-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>' +
+            '</span>';
+          button.addEventListener('click', function () {
+            button.remove();
+            video.setAttribute('controls', '');
+            video.focus({ preventScroll: true });
+            var started = video.play();
+            if (started && typeof started.catch === 'function') started.catch(function () {});
+          });
+          video.parentElement.appendChild(button);
+        });
+      })();
+    </script>
   </section>
 
   <CTASection
