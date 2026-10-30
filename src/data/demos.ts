@@ -110,3 +110,4 @@ export function isoDuration(seconds: number): string {
 
 export const demoVideoSrc = (slug: string): string => `/demos/${slug}.mp4`;
 export const demoPosterSrc = (slug: string): string => `/demos/${slug}.jpg`;
+export const demoPagePath = (slug: string): string => `/demos/${slug}/`;

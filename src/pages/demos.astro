@@ -8,6 +8,7 @@ import {
   isoDuration,
   demoVideoSrc,
   demoPosterSrc,
+  demoPagePath,
 } from '../data/demos';
 
 // The video list lives in src/data/demos.ts; adding a video there adds a card,
@@ -74,7 +75,7 @@ const videoSchemas = demos.map((d) => ({
                 <div class="flex flex-1 flex-col p-6">
                   <div class="flex items-start justify-between gap-4">
                     <h3 id={`demo-${demo.slug}-title`} class="text-xl font-bold text-charcoal">
-                      {demo.title}
+                      <a href={demoPagePath(demo.slug)} class="hover:text-amber-dark transition-colors">{demo.title}</a>
                     </h3>
                     <time
                       datetime={isoDuration(demo.durationSeconds)}
