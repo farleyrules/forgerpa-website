@@ -2,6 +2,7 @@
 const navLinks = [
   { label: 'About', href: '/about' },
   { label: 'Case Studies', href: '/case-studies' },
+  { label: 'Demos', href: '/demos' },
   { label: 'Blog', href: '/blog' },
   { label: 'Resources', href: '/resources' },
   { label: 'Referral', href: '/referral' },
@@ -66,9 +67,10 @@ const industryLinks = [
         </span>
       </a>
 
-      <!-- Desktop Navigation. From lg to xl (1024-1279px) the links use tighter padding so the full
-           row fits beside the logo on one line; from xl up they get the roomier spacing. -->
-      <div class="hidden lg:flex items-center gap-1">
+      <!-- Desktop Navigation. From lg to xl (1024-1279px) the links use tighter padding and no gap
+           so the full row fits beside the logo on one line (with the Demos link added, the 4px gap
+           pushed Contact Us into the right padding at 1024px); from xl up they get the roomier spacing. -->
+      <div class="hidden lg:flex items-center gap-0 xl:gap-1">
         <!-- Services Dropdown -->
         <div class="relative group">
           <a href="/services" class="flex items-center gap-1 px-1.5 xl:px-4 py-2 whitespace-nowrap text-gray-300 hover:text-white text-sm font-medium transition-colors">

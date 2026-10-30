@@ -1,0 +1,97 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import {
+  demos,
+  demoSections,
+  formatDuration,
+  isoDuration,
+  demoVideoSrc,
+  demoPosterSrc,
+} from '../data/demos';
+
+// The video list lives in src/data/demos.ts; adding a video there adds a card,
+// a player and a VideoObject here with no page change.
+const siteUrl = 'https://forgerpa.com';
+
+const sections = demoSections
+  .map((section) => ({
+    ...section,
+    items: demos.filter((d) => d.category === section.category),
+  }))
+  .filter((section) => section.items.length > 0);
+
+// One schema.org VideoObject per video. URLs are absolute on the production
+// domain so search engines resolve them the same way from any preview host.
+const videoSchemas = demos.map((d) => ({
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: d.title,
+  description: d.description,
+  thumbnailUrl: `${siteUrl}${demoPosterSrc(d.slug)}`,
+  contentUrl: `${siteUrl}${demoVideoSrc(d.slug)}`,
+  uploadDate: d.uploadDate,
+  duration: isoDuration(d.durationSeconds),
+}));
+---
+
+<PageLayout
+  title="Automation Demo Videos"
+  description="Short videos of Forge automations running finance and revenue cycle processes from start to finish, on invented data."
+  heroTitle="Watch the work get done"
+  heroSubtitle="Each video follows one process from start to finish in Forge Foreman, the automation portal your team signs into. Foreman does the manual steps before and after each judgment call. The calls stay with your team."
+>
+  {videoSchemas.map((schema) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+  ))}
+
+  <section class="py-16 lg:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-sm text-gray-500">All data in these videos is invented for demonstration.</p>
+
+      {sections.map((section, sectionIndex) => (
+        <div class={sectionIndex === 0 ? 'mt-10' : 'mt-16 lg:mt-20'}>
+          <h2 class="text-3xl font-bold text-charcoal mb-8">{section.heading}</h2>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {section.items.map((demo) => (
+              <article class="flex flex-col overflow-hidden bg-white border border-gray-200 rounded-2xl hover:border-amber transition-colors">
+                <video
+                  class="block w-full aspect-video bg-charcoal"
+                  controls
+                  preload="none"
+                  playsinline
+                  width="1920"
+                  height="1080"
+                  poster={demoPosterSrc(demo.slug)}
+                  aria-labelledby={`demo-${demo.slug}-title`}
+                >
+                  <source src={demoVideoSrc(demo.slug)} type="video/mp4" />
+                </video>
+                <div class="flex flex-1 flex-col p-6">
+                  <div class="flex items-start justify-between gap-4">
+                    <h3 id={`demo-${demo.slug}-title`} class="text-xl font-bold text-charcoal">
+                      {demo.title}
+                    </h3>
+                    <time
+                      datetime={isoDuration(demo.durationSeconds)}
+                      class="shrink-0 rounded-full bg-slate-light border border-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-600 tabular-nums"
+                    >
+                      {formatDuration(demo.durationSeconds)}
+                    </time>
+                  </div>
+                  <p class="mt-1 text-sm font-semibold text-amber-dark">{demo.audience}</p>
+                  <p class="mt-3 text-gray-600 leading-relaxed">{demo.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CTASection
+    heading="See it on your process"
+    subtext="Tell us about the process that takes up your team's week. We will show you what it looks like automated."
+  />
+</PageLayout>
