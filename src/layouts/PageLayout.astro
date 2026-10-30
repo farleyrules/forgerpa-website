@@ -18,18 +18,32 @@ interface Props {
   heroCtaLink?: string;
   noindex?: boolean;
   ogImage?: string;
+  /** Optional link-preview extras, passed straight through to BaseLayout. */
+  ogType?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogVideo?: { url: string; type: string; width: number; height: number };
   /** Mobile sticky "Book a call" bar. Shows on any page that has a heroCtaLink;
    *  pass false to suppress it (e.g. the booking page itself). */
   stickyCta?: boolean;
 }
 
-const { title, description, heroTitle, heroSubtitle, heroEyebrow, heroTrustLine, heroCta, heroCtaLink, noindex, ogImage, stickyCta = true } = Astro.props;
+const { title, description, heroTitle, heroSubtitle, heroEyebrow, heroTrustLine, heroCta, heroCtaLink, noindex, ogImage, ogType, ogImageWidth, ogImageHeight, ogVideo, stickyCta = true } = Astro.props;
 // Show the mobile sticky CTA only when the page actually has a booking target,
 // so /book and the legal pages (which pass no heroCtaLink) never show it.
 const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
 ---
 
-<BaseLayout title={title} description={description} noindex={noindex} ogImage={ogImage}>
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={noindex}
+  ogImage={ogImage}
+  ogType={ogType}
+  ogImageWidth={ogImageWidth}
+  ogImageHeight={ogImageHeight}
+  ogVideo={ogVideo}
+>
   <Header />
   {heroTitle && (
     <Hero

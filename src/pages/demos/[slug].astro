@@ -1,0 +1,404 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import {
+  demos,
+  formatDuration,
+  isoDuration,
+  demoVideoSrc,
+  demoPosterSrc,
+  demoPagePath,
+  type Demo,
+} from '../../data/demos';
+import { jpegSize, mp4VideoSize, publicFilePath } from '../../lib/media-size';
+import { clampDescription } from '../../lib/meta-description';
+
+// One watch page per video at /demos/<slug>/, so a prospect sent a link lands on
+// that video instead of the full list. Everything shown here comes from
+// src/data/demos.ts; adding a video there adds its page, its Up Next tile on the
+// other pages and its sitemap entry with no change to this file.
+export function getStaticPaths() {
+  return demos.map((demo) => ({ params: { slug: demo.slug }, props: { demo } }));
+}
+
+interface Props {
+  demo: Demo;
+}
+
+const { demo } = Astro.props;
+
+// Link previews (email, LinkedIn, Teams) need absolute URLs, and they always
+// point at the production domain whichever host built the page.
+const siteUrl = 'https://forgerpa.com';
+const posterUrl = `${siteUrl}${demoPosterSrc(demo.slug)}`;
+const videoUrl = `${siteUrl}${demoVideoSrc(demo.slug)}`;
+const posterSize = jpegSize(publicFilePath(demoPosterSrc(demo.slug)));
+const videoSize = mp4VideoSize(publicFilePath(demoVideoSrc(demo.slug)));
+// The meta description is the video's description as written; clampDescription
+// trims one over 160 characters at a word boundary.
+
+// Up Next: the other videos, the same section first, then the rest in list order.
+const others = demos.filter((d) => d.slug !== demo.slug);
+const upNext = [
+  ...others.filter((d) => d.category === demo.category),
+  ...others.filter((d) => d.category !== demo.category),
+];
+// The end card over the player has room for three tiles (two on a phone).
+const endCardTiles = upNext.slice(0, 3);
+
+// The same schema.org VideoObject the /demos/ list carries for this video, on
+// the page where the video is the main content.
+const videoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: demo.title,
+  description: demo.description,
+  thumbnailUrl: posterUrl,
+  contentUrl: videoUrl,
+  uploadDate: demo.uploadDate,
+  duration: isoDuration(demo.durationSeconds),
+};
+---
+
+<PageLayout
+  title={demo.title}
+  description={clampDescription(demo.description)}
+  ogType="video.other"
+  ogImage={posterUrl}
+  ogImageWidth={posterSize.width}
+  ogImageHeight={posterSize.height}
+  ogVideo={{ url: videoUrl, type: 'video/mp4', width: videoSize.width, height: videoSize.height }}
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(videoSchema)}></script>
+
+  <section class="py-12 lg:py-16">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a href="/demos/" class="inline-flex items-center gap-1 text-sm font-semibold text-amber-dark hover:text-amber transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        All Demos
+      </a>
+
+      <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-charcoal">
+        <div class="relative" data-demo-stage>
+          <video
+            class="block w-full aspect-video bg-charcoal"
+            controls
+            preload="none"
+            playsinline
+            width={videoSize.width}
+            height={videoSize.height}
+            poster={demoPosterSrc(demo.slug)}
+            aria-labelledby="demo-title"
+            data-demo-player
+            data-demo-title={demo.title}
+          >
+            <source src={demoVideoSrc(demo.slug)} type="video/mp4" />
+          </video>
+
+          <!-- End card: shown by the script below when the video ends, never without
+               JavaScript. It sits over the player, offers the next videos and a Replay
+               button, and starts nothing on its own (no autoplay, no countdown). -->
+          <div
+            class="absolute inset-0 flex flex-col justify-center gap-2 px-4 py-3 sm:p-8 bg-charcoal"
+            role="group"
+            aria-labelledby="demo-endcard-heading"
+            tabindex="-1"
+            hidden
+            data-demo-endcard
+          >
+            <div class="flex items-center justify-between gap-4">
+              <h2 id="demo-endcard-heading" class="text-lg font-bold text-white">Up Next</h2>
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber hover:bg-amber-dark text-sm font-bold text-charcoal transition-colors cursor-pointer"
+                data-demo-replay
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M4.6 15a8 8 0 1 0 1.9-8.3L4 9" />
+                </svg>
+                Replay
+              </button>
+            </div>
+            <ul class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {endCardTiles.map((next, index) => (
+                <li class={index === 2 ? 'hidden md:block' : undefined}>
+                  <a href={demoPagePath(next.slug)} class="group block" data-demo-endcard-link>
+                    <img
+                      src={demoPosterSrc(next.slug)}
+                      alt=""
+                      width="1280"
+                      height="720"
+                      loading="lazy"
+                      decoding="async"
+                      class="block w-full aspect-video rounded-lg border-2 border-transparent hover:border-amber transition-colors"
+                    />
+                    <span class="mt-1.5 block truncate text-sm font-semibold text-white group-hover:text-amber-dark transition-colors">
+                      {next.title}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="flex items-start justify-between gap-4">
+          <h1 id="demo-title" class="text-3xl sm:text-4xl font-extrabold text-charcoal leading-tight">{demo.title}</h1>
+          <time
+            datetime={isoDuration(demo.durationSeconds)}
+            class="mt-1.5 shrink-0 rounded-full bg-slate-light border border-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-600 tabular-nums"
+          >
+            {formatDuration(demo.durationSeconds)}
+          </time>
+        </div>
+        <p class="mt-2 text-sm font-semibold text-amber-dark">{demo.audience}</p>
+        <p class="mt-3 max-w-3xl text-lg text-gray-600 leading-relaxed">{demo.description}</p>
+
+        <!-- Copy Link: for making start-at links to send. Hidden without JavaScript,
+             since it cannot work without it. -->
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-charcoal hover:border-amber transition-colors cursor-pointer"
+            hidden
+            data-demo-copy
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />
+            </svg>
+            <span data-demo-copy-label>Copy Link</span>
+          </button>
+          <span class="sr-only" aria-live="polite" data-demo-copy-status></span>
+        </div>
+
+        <p class="mt-6 text-sm text-gray-500">All data in these videos is invented for demonstration.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16" aria-labelledby="demo-upnext-heading">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 id="demo-upnext-heading" class="text-2xl font-bold text-charcoal mb-6">Up Next</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6" data-demo-upnext>
+        {upNext.map((next) => (
+          <li>
+            <a
+              href={demoPagePath(next.slug)}
+              class="group flex flex-col h-full overflow-hidden bg-white border border-gray-200 rounded-2xl hover:border-amber transition-colors"
+            >
+              <img
+                src={demoPosterSrc(next.slug)}
+                alt=""
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+                class="block w-full aspect-video bg-charcoal"
+              />
+              <div class="flex flex-1 items-start justify-between gap-4 p-5">
+                <h3 class="text-base font-bold text-charcoal group-hover:text-amber-dark transition-colors">{next.title}</h3>
+                <time
+                  datetime={isoDuration(next.durationSeconds)}
+                  class="shrink-0 rounded-full bg-slate-light border border-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-600 tabular-nums"
+                >
+                  {formatDuration(next.durationSeconds)}
+                </time>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- The player, start-at links, the end card and Copy Link. Inline and classic (not a
+       deferred module), like the /demos/ list's player script, so the native controls come
+       off before the control bar paints. Without JavaScript the video keeps its native
+       controls and none of this appears. -->
+  <script is:inline>
+    (function () {
+      var video = document.querySelector('video[data-demo-player]');
+      if (!video) return;
+      var stage = video.parentElement;
+      var endCard = stage.querySelector('[data-demo-endcard]');
+      var replayButton = stage.querySelector('[data-demo-replay]');
+      var copyButton = document.querySelector('[data-demo-copy]');
+      var copyLabel = document.querySelector('[data-demo-copy-label]');
+      var copyStatus = document.querySelector('[data-demo-copy-status]');
+      var canonical = document.querySelector('link[rel="canonical"]');
+      var pageUrl = canonical ? canonical.href : location.origin + location.pathname;
+
+      function ignoreRejection(promise) {
+        if (promise && typeof promise.catch === 'function') promise.catch(function () {});
+      }
+
+      // ---- Start-at links: ?t=45, ?t=90s, ?t=1m30s (also 1h2m3s), or #t=45. ----
+      // Anything else is ignored and the video starts at 0.
+      function parseTime(value) {
+        var m = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/i.exec(String(value).trim());
+        if (!m || (m[1] === undefined && m[2] === undefined && m[3] === undefined)) return null;
+        var seconds = Number(m[1] || 0) * 3600 + Number(m[2] || 0) * 60 + Number(m[3] || 0);
+        return seconds > 0 ? seconds : null;
+      }
+      function requestedStart() {
+        var query = new URLSearchParams(location.search).get('t');
+        if (query !== null) return parseTime(query);
+        var fragment = /^#t=([^&,]+)/.exec(location.hash);
+        return fragment ? parseTime(decodeURIComponent(fragment[1])) : null;
+      }
+      var startAt = requestedStart();
+      if (startAt !== null) {
+        // preload="none" means the metadata arrives when the visitor presses play;
+        // the seek happens then, before the first frame shows. Clamped so a time
+        // past the end still leaves a second to play.
+        var applyStart = function () {
+          var limit = isFinite(video.duration) && video.duration > 1 ? video.duration - 1 : startAt;
+          video.currentTime = Math.min(startAt, limit);
+        };
+        if (video.readyState >= 1) applyStart();
+        else video.addEventListener('loadedmetadata', applyStart, { once: true });
+      }
+
+      // ---- Play button over the poster (same treatment as the /demos/ list). ----
+      video.removeAttribute('controls');
+      var playButton = document.createElement('button');
+      playButton.type = 'button';
+      playButton.className =
+        'group absolute inset-0 flex items-center justify-center cursor-pointer focus:outline-none';
+      playButton.setAttribute('aria-label', 'Play ' + (video.getAttribute('data-demo-title') || 'video'));
+      playButton.innerHTML =
+        '<span class="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-amber text-white shadow-lg shadow-black/30 transition group-hover:bg-amber-dark group-hover:scale-105 group-focus-visible:ring-4 group-focus-visible:ring-charcoal group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-white">' +
+        '<svg class="ml-1 h-8 w-8 sm:h-10 sm:w-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l10.6-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg>' +
+        '</span>';
+      playButton.addEventListener('click', function () {
+        playButton.remove();
+        video.setAttribute('controls', '');
+        video.focus({ preventScroll: true });
+        ignoreRejection(video.play());
+      });
+      stage.appendChild(playButton);
+
+      // ---- End card. ----
+      // A video that ends in fullscreen leaves fullscreen first, so the card is seen
+      // on the page instead of hidden behind a frozen last frame. The native controls
+      // come off while the card covers the player so focus cannot land on a hidden video.
+      function leaveFullscreen() {
+        var current = document.fullscreenElement || document.webkitFullscreenElement;
+        if (current && (current === video || current.contains(video))) {
+          if (document.exitFullscreen) ignoreRejection(document.exitFullscreen());
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        } else if (video.webkitDisplayingFullscreen && video.webkitExitFullscreen) {
+          video.webkitExitFullscreen(); // the iOS Safari native player
+        }
+      }
+      function showEndCard() {
+        var focusWasOnPlayer = stage.contains(document.activeElement);
+        leaveFullscreen();
+        playButton.remove(); // only still there if playback started some other way
+        video.removeAttribute('controls');
+        endCard.hidden = false;
+        if (focusWasOnPlayer) endCard.focus({ preventScroll: true });
+      }
+      function hideEndCard() {
+        if (endCard.hidden) return;
+        endCard.hidden = true;
+        video.setAttribute('controls', '');
+      }
+      video.addEventListener('ended', showEndCard);
+      video.addEventListener('play', hideEndCard);
+      video.addEventListener('seeking', hideEndCard);
+      replayButton.addEventListener('click', function () {
+        hideEndCard();
+        video.currentTime = 0;
+        video.focus({ preventScroll: true });
+        ignoreRejection(video.play());
+      });
+
+      // ---- Copy Link. ----
+      // Copies the canonical page URL. Once the visitor has played past 1 second and
+      // paused, it copies a start-at link to that moment instead (?t=<seconds>).
+      if (!copyButton || !copyLabel) return;
+      copyButton.hidden = false;
+      var copiedTimer = null;
+
+      function clock(total) {
+        var h = Math.floor(total / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        var s = total % 60;
+        var mm = h > 0 ? String(m).padStart(2, '0') : String(m);
+        return (h > 0 ? h + ':' : '') + mm + ':' + String(s).padStart(2, '0');
+      }
+      function linkSeconds() {
+        var t = Math.floor(video.currentTime);
+        return video.paused && !video.ended && video.currentTime > 1 ? t : 0;
+      }
+      function refreshCopyLabel() {
+        if (copiedTimer !== null) return;
+        var t = linkSeconds();
+        copyLabel.textContent = t > 0 ? 'Copy Link at ' + clock(t) : 'Copy Link';
+      }
+      ['play', 'pause', 'seeked', 'ended', 'emptied'].forEach(function (type) {
+        video.addEventListener(type, refreshCopyLabel);
+      });
+
+      function legacyCopy(text) {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.top = '0';
+        area.style.left = '0';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        var ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (e) {
+          ok = false;
+        }
+        area.remove();
+        copyButton.focus({ preventScroll: true });
+        return ok;
+      }
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).then(
+            function () {
+              return true;
+            },
+            function () {
+              return legacyCopy(text);
+            }
+          );
+        }
+        return Promise.resolve(legacyCopy(text));
+      }
+
+      copyButton.addEventListener('click', function () {
+        var t = linkSeconds();
+        var url = t > 0 ? pageUrl + '?t=' + t : pageUrl;
+        copyText(url).then(function (ok) {
+          if (!ok) return; // quiet: the label stays as it was
+          copyLabel.textContent = 'Copied';
+          if (copyStatus) copyStatus.textContent = 'Copied';
+          if (copiedTimer !== null) clearTimeout(copiedTimer);
+          copiedTimer = setTimeout(function () {
+            copiedTimer = null;
+            if (copyStatus) copyStatus.textContent = '';
+            refreshCopyLabel();
+          }, 2000);
+        });
+      });
+    })();
+  </script>
+
+  <CTASection
+    heading="See it on your process"
+    subtext="Tell us about the process that takes up your team's week. We will show you what it looks like automated."
+  />
+</PageLayout>

@@ -154,6 +154,11 @@ for (const range of ['bytes=0-1,5-9', 'bytes=abc', 'items=0-10', 'bytes=-', 'byt
   check('non-mp4 body untouched', sameBytes(jpg.body, 0, SIZE - 1));
   const page = await call('/demos/');
   check('page path passes through', page.res.status === 200 && page.h('Accept-Ranges') === null);
+  const videoPage = await call('/demos/clip/?t=45');
+  check(
+    'video page path (with a start-at query) passes through',
+    videoPage.res.status === 200 && videoPage.h('Accept-Ranges') === null && assetCalls.at(-1).path === '/demos/clip/'
+  );
   const notModified = await call(MP4, { headers: { 'If-None-Match': ETAG, Range: 'bytes=0-9' } });
   check('304 passes through', notModified.res.status === 304 && notModified.h('Accept-Ranges') === null, `got ${notModified.res.status}`);
   const missing = await call('/demos/missing.mp4');
