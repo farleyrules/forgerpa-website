@@ -51,7 +51,7 @@ export const demos: Demo[] = [
     audience: 'For controllers of multi-unit operators',
     description:
       "Every store's card, cash and delivery dollars tied out each morning. Each gap is traced to its cause, and a person approves the dispute list.",
-    durationSeconds: 135.9,
+    durationSeconds: 146.2,
     category: 'finance',
     uploadDate: '2026-10-13',
   },
@@ -61,7 +61,7 @@ export const demos: Demo[] = [
     audience: 'For revenue cycle leaders',
     description:
       'Every denied or late-paid claim traced to the step that caused it, with the dollars and days totaled by step, community and payer.',
-    durationSeconds: 144.1,
+    durationSeconds: 155.5,
     category: 'healthcare',
     uploadDate: '2026-10-13',
   },
@@ -71,7 +71,7 @@ export const demos: Demo[] = [
     audience: 'For revenue cycle and MDS teams',
     description:
       'Claims that would deny are held before billing, and each hold goes to the department that owns the fix.',
-    durationSeconds: 187.1,
+    durationSeconds: 193.7,
     category: 'healthcare',
     uploadDate: '2026-10-13',
   },
@@ -81,7 +81,7 @@ export const demos: Demo[] = [
     audience: 'For denial and appeals specialists',
     description:
       'A morning queue of open denials, highest priority first, and an appeal packet the specialist reviews and approves.',
-    durationSeconds: 185.0,
+    durationSeconds: 205.8,
     category: 'healthcare',
     uploadDate: '2026-10-13',
   },
