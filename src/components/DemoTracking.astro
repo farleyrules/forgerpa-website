@@ -9,7 +9,9 @@
  *
  *   open           once, when this script runs
  *   play           each time playback starts
- *   progress       every 10 seconds while playing, and on leaving the page mid-play
+ *   progress       every 10 seconds while playing, and once on leaving or hiding the page when
+ *                  the watch or the position moved since the last event (this is how a jump
+ *                  made while paused is reported: a paused seek fires no ended event)
  *   pause          a pause before the end
  *   ended          the video reached its end
  *   up_next_click  a click on an Up Next tile (x: the target slug)
@@ -76,6 +78,9 @@ const { slug, durationSeconds } = Astro.props;
     var session = newSessionId();
     var seq = 0;
     var furthest = 0;
+    // What the last event reported, so leaving the page sends only what is new.
+    var sentWatched = -1;
+    var sentFurthest = -1;
 
     function watchedSeconds() {
       var ranges = video.played;
@@ -109,6 +114,8 @@ const { slug, durationSeconds } = Astro.props;
         d: tenths(duration()),
       };
       if (extra) for (var key in extra) body[key] = extra[key];
+      sentWatched = body.w;
+      sentFurthest = body.p;
       var json = JSON.stringify(body);
       try {
         if (navigator.sendBeacon && navigator.sendBeacon(endpoint, json)) return;
@@ -151,9 +158,15 @@ const { slug, durationSeconds } = Astro.props;
       send('ended');
     });
 
-    // Leaving mid-play: report the seconds watched since the last heartbeat.
+    // Leaving the page (or hiding the tab): report what changed since the last event, the
+    // seconds watched since the last heartbeat or a jump made while paused (a seek to the end
+    // fires no ended event when the video is paused).
     function flush() {
-      if (!video.paused && !video.ended) send('progress');
+      noteFurthest();
+      var playing = !video.paused && !video.ended;
+      if (playing || tenths(watchedSeconds()) > sentWatched || tenths(furthest) > sentFurthest) {
+        send('progress');
+      }
     }
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') flush();
