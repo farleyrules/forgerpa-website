@@ -53,7 +53,7 @@ export const demos: Demo[] = [
       "Every store's card, cash and delivery dollars tied out each morning. Each gap is traced to its cause, and a person approves the dispute list.",
     durationSeconds: 146.2,
     category: 'finance',
-    uploadDate: '2026-10-13',
+    uploadDate: '2026-10-30',
   },
   {
     slug: 'denial-and-delay-trace',
@@ -63,7 +63,7 @@ export const demos: Demo[] = [
       'Every denied or late-paid claim traced to the step that caused it, with the dollars and days totaled by step, community and payer.',
     durationSeconds: 155.5,
     category: 'healthcare',
-    uploadDate: '2026-10-13',
+    uploadDate: '2026-10-30',
   },
   {
     slug: 'pre-billing-triple-check',
@@ -73,7 +73,7 @@ export const demos: Demo[] = [
       'Claims that would deny are held before billing, and each hold goes to the department that owns the fix.',
     durationSeconds: 193.7,
     category: 'healthcare',
-    uploadDate: '2026-10-13',
+    uploadDate: '2026-10-30',
   },
   {
     slug: 'denial-work-packets',
@@ -83,7 +83,7 @@ export const demos: Demo[] = [
       'A morning queue of open denials, highest priority first, and an appeal packet the specialist reviews and approves.',
     durationSeconds: 205.8,
     category: 'healthcare',
-    uploadDate: '2026-10-13',
+    uploadDate: '2026-10-30',
   },
 ];
 
