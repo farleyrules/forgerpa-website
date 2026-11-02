@@ -1,30 +1,40 @@
 /**
  * PROD-SAFE verification: the discovery qualifier captures the Google Click ID
- * and forwards it in the lead submission — WITHOUT ever creating a real lead.
+ * and forwards it in the lead submission, WITHOUT ever creating a real lead.
  *
  * Funnel step under test (frontend half):
- *   src/lib/qualifier-state.ts  — captureAttribution() reads ?gclid and persists
- *                                 it to localStorage ("forge-discovery-attribution").
- *   src/lib/qualifier-init.ts   — submitWizard() reads it back and puts it in the
- *                                 POST body's `attribution.gclid`, then POSTs to
- *                                 https://sales.forgerpa.com/api/warm-intake/discovery-qualifier.
+ *   src/lib/qualifier-state.ts: captureAttribution() reads ?gclid and persists
+ *     it to localStorage ("forge-discovery-attribution").
+ *   src/lib/qualifier-init.ts: submitInquiry() (the primary "Send Your Request"
+ *     form) and submitWizard() (the 6-step "Add More Details" wizard) both read
+ *     it back into the POST body's `attribution.gclid`, then POST to
+ *     https://sales.forgerpa.com/api/warm-intake/discovery-qualifier.
  *
  * SAFETY (every external write is intercepted; nothing reaches production):
- *   1. The cross-origin POST to .../discovery-qualifier is ROUTED and ABORTED
- *      after we capture its body. No lead row is ever created.
+ *   1. Every cross-origin POST to .../discovery-qualifier is ROUTED. The body is
+ *      captured, then the request is ABORTED, or (only to reach the wizard that
+ *      appears after a successful inquiry) answered with a synthetic success
+ *      that Playwright fulfills locally. No request reaches the real server, so
+ *      no lead row is ever created.
  *   2. The Turnstile site-key fetch to sales.forgerpa.com is fulfilled with a
  *      synthetic stub, so no live cockpit call is made.
  *   3. window.turnstile is stubbed via addInitScript so the spam-check
  *      "passes" locally with a synthetic token and the real Cloudflare script
- *      is never loaded. This lets submit reach the (aborted) POST.
+ *      is never loaded. This lets submit reach the intercepted POST.
  *   4. A catch-all route blocks ANY other request to sales.forgerpa.com,
  *      Google, Cal.com, or Cloudflare challenges, as belt-and-suspenders.
  *   5. The gclid marker is the obviously-synthetic "SYNTH-TEST-DoNotUpload".
  *
- * Note: the page is served by the LOCAL Astro dev server (see
- * playwright.config.ts webServer), so the run is deterministic and offline.
+ * The page is served by a LOCAL `astro preview` server (see playwright.config.ts
+ * webServer), so the run is deterministic and offline.
+ *
+ * The tests land on /contact. /book was folded into /contact in #42 and is now
+ * only a Cloudflare Pages 301 (public/_redirects) that carries the query string
+ * through. `astro preview` does not apply _redirects, so /book is a 404 here and
+ * the capture script never loads; the live /book redirect is checked against
+ * forgerpa.com, not in this offline run.
  */
-import { test, expect, type Route } from "@playwright/test";
+import { test, expect, type Page, type Route } from "@playwright/test";
 
 const SYNTH_GCLID = "SYNTH-TEST-DoNotUpload";
 const ATTRIBUTION_KEY = "forge-discovery-attribution";
@@ -33,23 +43,36 @@ const QUALIFIER_ENDPOINT =
 
 // gbraid/wbraid are included in the URL to mirror a real Google-ads landing,
 // but the current capture code (qualifier-state.ts captureAttribution) reads
-// gclid/msclkid/fbclid/utm_* only — NOT gbraid/wbraid — so we do not assert on
+// gclid/msclkid/fbclid/utm_* only, NOT gbraid/wbraid, so we do not assert on
 // them here. Documented finding, not a failure.
 const LANDING_URL =
-  "/book?gclid=" +
+  "/contact?gclid=" +
   SYNTH_GCLID +
   "&gbraid=SYNTH-GBRAID&wbraid=SYNTH-WBRAID" +
   "&utm_source=google&utm_medium=cpc&utm_campaign=erp-migration-services";
 
-test("captures gclid and forwards it in the (aborted) lead submission", async ({
-  page,
-}) => {
+type QualifierPayload = {
+  source?: string;
+  essentials?: boolean;
+  attribution?: { gclid?: string; utmCampaign?: string };
+  qualifierAnswers?: { role?: string };
+};
+
+/**
+ * Stub Turnstile and install the safety routes. `onQualifierPost` decides what
+ * happens to each intercepted qualifier POST (abort, or a synthetic success);
+ * the request never leaves the browser either way. Returns the captured bodies.
+ */
+async function installSafetyNet(
+  page: Page,
+  onQualifierPost: (route: Route, index: number) => Promise<void>,
+): Promise<QualifierPayload[]> {
   // ---- Stub Turnstile BEFORE any page script runs ----
   // render() immediately invokes the success callback with a synthetic token,
-  // so submitWizard() sees a valid token and proceeds to the POST (which we
-  // abort). The real challenges.cloudflare.com script is never loaded. The stub
-  // also flips __turnstileTokenSet when the callback fires so the test can wait
-  // for the token deterministically.
+  // so the submit handlers see a valid token and proceed to the POST. The real
+  // challenges.cloudflare.com script is never loaded. The stub also flips
+  // __turnstileTokenSet when the callback fires so the test can wait for the
+  // token deterministically (the mount is async: site-key fetch, then render).
   await page.addInitScript(() => {
     (window as unknown as { __turnstileTokenSet?: boolean }).__turnstileTokenSet =
       false;
@@ -92,22 +115,24 @@ test("captures gclid and forwards it in the (aborted) lead submission", async ({
     }),
   );
 
-  // ---- THE safety boundary: capture + ABORT the lead POST ----
-  let capturedPayload: Record<string, unknown> | null = null;
-  await page.route(QUALIFIER_ENDPOINT, (route: Route) => {
+  // ---- THE safety boundary: capture every lead POST, never forward it ----
+  const captured: QualifierPayload[] = [];
+  await page.route(QUALIFIER_ENDPOINT, async (route: Route) => {
     const req = route.request();
-    if (req.method() === "POST") {
-      try {
-        capturedPayload = req.postDataJSON() as Record<string, unknown>;
-      } catch {
-        capturedPayload = { __unparseable: req.postData() ?? null };
-      }
+    if (req.method() !== "POST") return route.abort();
+    try {
+      captured.push(req.postDataJSON() as QualifierPayload);
+    } catch {
+      captured.push({ source: `__unparseable: ${req.postData() ?? ""}` });
     }
-    // ABORT — the request never reaches the real server, so NO lead is created.
-    return route.abort();
+    await onQualifierPost(route, captured.length - 1);
   });
 
-  // ---- Load the qualifier with the synthetic gclid ----
+  return captured;
+}
+
+/** Load /contact with the synthetic gclid and prove the record was persisted. */
+async function landAndAssertPersisted(page: Page): Promise<void> {
   await page.goto(LANDING_URL);
 
   // (a) gclid is PERSISTED where qualifier-state.ts puts it (localStorage).
@@ -117,14 +142,73 @@ test("captures gclid and forwards it in the (aborted) lead submission", async ({
   }, ATTRIBUTION_KEY);
   expect(stored, "attribution record should be persisted to localStorage").not.toBeNull();
   expect(stored?.params?.gclid).toBe(SYNTH_GCLID);
+}
 
-  // ---- Open the full wizard ----
-  // The default /book view is now the short inquiry form (the 3-card entry fork
-  // was removed in favor of leading with it). The full 6-step wizard — the path
-  // this test walks — is reached via the inline "tell us more" link beneath the
-  // form. gclid forwarding is identical on every path (submitWizard reads
-  // captureAttribution() regardless of entry).
-  await page.click("#qualifier-inquiry-tellmore");
+/**
+ * Fill and send the primary inquiry form (the default /contact view). Synthetic,
+ * non-deliverable details; company is optional on this form.
+ */
+async function sendInquiry(page: Page): Promise<void> {
+  await expect(page.locator("#qualifier-essentials-path")).toBeVisible();
+  await page.fill("#essentials-name", "Synthetic Tester");
+  await page.fill("#essentials-email", "synthetic.tester@example.com");
+  await page.fill("#essentials-notes", "Synthetic e2e check. Do not contact.");
+  await page.waitForFunction(
+    () =>
+      (window as unknown as { __turnstileTokenSet?: boolean })
+        .__turnstileTokenSet === true,
+  );
+  await Promise.all([
+    page.waitForRequest(QUALIFIER_ENDPOINT),
+    page.click("#essentials-send"),
+  ]);
+}
+
+test("captures gclid and forwards it in the (aborted) inquiry form submission", async ({
+  page,
+}) => {
+  const captured = await installSafetyNet(page, (route) => route.abort());
+  await landAndAssertPersisted(page);
+
+  // The single-intent /contact page leads with the short inquiry form; its one
+  // button, "Send Your Request", is how most leads arrive.
+  await sendInquiry(page);
+
+  // (b) The gclid is included in the request payload to the qualifier endpoint.
+  await expect
+    .poll(() => captured.length, { message: "the inquiry POST body should have been captured" })
+    .toBe(1);
+  const payload = captured[0];
+  expect(payload.source).toBe("discovery_qualifier");
+  expect(payload.essentials).toBe(true);
+  expect(payload.attribution?.gclid).toBe(SYNTH_GCLID);
+  // The campaign UTM also rides along (used later for conversion VALUE).
+  expect(payload.attribution?.utmCampaign).toBe("erp-migration-services");
+});
+
+test("forwards gclid in the full wizard reached via Add More Details (aborted)", async ({
+  page,
+}) => {
+  // The 6-step wizard appears only AFTER a successful inquiry, on the
+  // confirmation screen. So the FIRST POST (the inquiry) gets a synthetic
+  // success that Playwright fulfills locally (it never reaches the server), and
+  // the SECOND POST (the wizard) is captured and aborted.
+  const captured = await installSafetyNet(page, (route, index) =>
+    index === 0
+      ? route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          headers: { "access-control-allow-origin": "*" },
+          body: JSON.stringify({ tier: "MEDIUM" }),
+        })
+      : route.abort(),
+  );
+  await landAndAssertPersisted(page);
+  await sendInquiry(page);
+
+  // ---- Open the full wizard from the post-submit confirmation ----
+  await expect(page.locator("#essentials-confirmation")).toBeVisible();
+  await page.click("#essentials-confirm-tellmore");
 
   // ---- Walk the 6-step wizard to the submit step ----
   // Step 1: role
@@ -139,45 +223,42 @@ test("captures gclid and forwards it in the (aborted) lead submission", async ({
   // Step 4: team size
   await page.check('input[name="qualifier-team-size"][value="6-15"]');
   await page.click("#qualifier-step4-next");
-  // Step 5: timeline
+  // Step 5: timeline. Step 6 mounts its OWN Turnstile widget, so reset the
+  // stub's flag first and wait for that second callback below.
   await page.check('input[name="qualifier-timeline"][value="This quarter"]');
+  await page.evaluate(() => {
+    (window as unknown as { __turnstileTokenSet?: boolean }).__turnstileTokenSet =
+      false;
+  });
   await page.click("#qualifier-step5-next");
 
-  // Step 6: contact + consent. Synthetic, non-deliverable details.
+  // Step 6: contact. Name + email carry over from the inquiry; company is
+  // required here. Consent is passive (no checkbox gate).
   await expect(page.locator('[data-qualifier-step="6"]')).toBeVisible();
-  await page.fill("#qualifier-contact-name", "Synthetic Tester");
-  await page.fill("#qualifier-contact-email", "synthetic.tester@example.com");
+  await expect(page.locator("#qualifier-contact-email")).toHaveValue(
+    "synthetic.tester@example.com",
+  );
   await page.fill("#qualifier-contact-company", "Synthetic Co");
-  // Consent is now passive (no checkbox gate); submitting implies agreement.
-
-  // Wait until the stubbed Turnstile has actually fired its callback (the mount
-  // is async: site-key fetch -> render). The submit handler bails early without
-  // a token, so this guard makes the POST deterministic.
   await page.waitForFunction(
     () =>
       (window as unknown as { __turnstileTokenSet?: boolean })
         .__turnstileTokenSet === true,
   );
 
-  // Submit. The POST is intercepted + aborted above.
+  // Submit. The POST is intercepted + aborted.
   await Promise.all([
     page.waitForRequest(QUALIFIER_ENDPOINT),
     page.click("#qualifier-step6-submit"),
   ]);
 
-  // (b) The gclid is included in the request payload to the qualifier endpoint.
-  expect(capturedPayload, "the lead POST body should have been captured").not.toBeNull();
-  const payload = capturedPayload as unknown as {
-    source?: string;
-    attribution?: { gclid?: string; utmCampaign?: string };
-    qualifierAnswers?: { role?: string };
-  };
+  // (b) The wizard POST also carries the gclid, alongside the answers.
+  await expect
+    .poll(() => captured.length, { message: "both POST bodies should have been captured" })
+    .toBe(2);
+  const payload = captured[1];
   expect(payload.source).toBe("discovery_qualifier");
+  expect(payload.essentials).toBeUndefined();
   expect(payload.attribution?.gclid).toBe(SYNTH_GCLID);
-  // The campaign UTM also rides along (used later for conversion VALUE).
   expect(payload.attribution?.utmCampaign).toBe("erp-migration-services");
   expect(payload.qualifierAnswers?.role).toBe("Controller");
-
-  // And prove safety held: no real lead could have been created because the
-  // POST was aborted (capturedPayload came from the aborted request).
 });
