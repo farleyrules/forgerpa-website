@@ -105,6 +105,10 @@ export function captureAttribution(): AttributionParams {
   const params = new URLSearchParams(window.location.search);
   const captured: AttributionParams = {
     gclid: params.get("gclid"),
+    // Google sends these on iOS clicks, often WITHOUT a gclid. wbraid = an ad
+    // clicked in an iOS app that lands on this site; gbraid = web to app.
+    gbraid: params.get("gbraid"),
+    wbraid: params.get("wbraid"),
     msclkid: params.get("msclkid"),
     fbclid: params.get("fbclid"),
     utmSource: params.get("utm_source"),
@@ -120,6 +124,8 @@ export function captureAttribution(): AttributionParams {
   // don't need to dirty localStorage with all-null records.
   const hasAdParam = !!(
     captured.gclid ||
+    captured.gbraid ||
+    captured.wbraid ||
     captured.msclkid ||
     captured.fbclid ||
     captured.utmSource

@@ -41,20 +41,25 @@ const ATTRIBUTION_KEY = "forge-discovery-attribution";
 const QUALIFIER_ENDPOINT =
   "https://sales.forgerpa.com/api/warm-intake/discovery-qualifier";
 
-// gbraid/wbraid are included in the URL to mirror a real Google-ads landing,
-// but the current capture code (qualifier-state.ts captureAttribution) reads
-// gclid/msclkid/fbclid/utm_* only, NOT gbraid/wbraid, so we do not assert on
-// them here. Documented finding, not a failure.
+// gbraid/wbraid mirror a real Google Ads landing from iOS. They are captured
+// and forwarded beside gclid (the cockpit uploads whichever Google ranks
+// highest: gclid, then wbraid, then gbraid).
+const SYNTH_GBRAID = "SYNTH-GBRAID";
+const SYNTH_WBRAID = "SYNTH-WBRAID";
 const LANDING_URL =
   "/contact?gclid=" +
   SYNTH_GCLID +
-  "&gbraid=SYNTH-GBRAID&wbraid=SYNTH-WBRAID" +
+  `&gbraid=${SYNTH_GBRAID}&wbraid=${SYNTH_WBRAID}` +
   "&utm_source=google&utm_medium=cpc&utm_campaign=erp-migration-services";
 
+// An iOS click can arrive with ONLY a wbraid: no gclid and no UTM tags.
+const WBRAID_ONLY_URL = `/contact?wbraid=${SYNTH_WBRAID}`;
+
+type ClickIds = { gclid?: string; gbraid?: string; wbraid?: string };
 type QualifierPayload = {
   source?: string;
   essentials?: boolean;
-  attribution?: { gclid?: string; utmCampaign?: string };
+  attribution?: ClickIds & { utmCampaign?: string };
   qualifierAnswers?: { role?: string };
 };
 
@@ -131,17 +136,23 @@ async function installSafetyNet(
   return captured;
 }
 
-/** Load /contact with the synthetic gclid and prove the record was persisted. */
-async function landAndAssertPersisted(page: Page): Promise<void> {
-  await page.goto(LANDING_URL);
-
-  // (a) gclid is PERSISTED where qualifier-state.ts puts it (localStorage).
-  const stored = await page.evaluate((key) => {
+/** Load a landing URL and return the persisted attribution params (or null). */
+async function landAndReadStored(page: Page, url: string): Promise<ClickIds | null> {
+  await page.goto(url);
+  return page.evaluate((key) => {
     const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as { params?: { gclid?: string } }) : null;
+    return raw ? ((JSON.parse(raw) as { params?: ClickIds }).params ?? {}) : null;
   }, ATTRIBUTION_KEY);
+}
+
+/** Load /contact with the synthetic click IDs and prove the record was persisted. */
+async function landAndAssertPersisted(page: Page): Promise<void> {
+  // (a) the click IDs are PERSISTED where qualifier-state.ts puts them (localStorage).
+  const stored = await landAndReadStored(page, LANDING_URL);
   expect(stored, "attribution record should be persisted to localStorage").not.toBeNull();
-  expect(stored?.params?.gclid).toBe(SYNTH_GCLID);
+  expect(stored?.gclid).toBe(SYNTH_GCLID);
+  expect(stored?.gbraid).toBe(SYNTH_GBRAID);
+  expect(stored?.wbraid).toBe(SYNTH_WBRAID);
 }
 
 /**
@@ -182,8 +193,64 @@ test("captures gclid and forwards it in the (aborted) inquiry form submission", 
   expect(payload.source).toBe("discovery_qualifier");
   expect(payload.essentials).toBe(true);
   expect(payload.attribution?.gclid).toBe(SYNTH_GCLID);
+  expect(payload.attribution?.gbraid).toBe(SYNTH_GBRAID);
+  expect(payload.attribution?.wbraid).toBe(SYNTH_WBRAID);
   // The campaign UTM also rides along (used later for conversion VALUE).
   expect(payload.attribution?.utmCampaign).toBe("erp-migration-services");
+});
+
+test("carries the click IDs into the Cal.com booking metadata", async ({ page }) => {
+  // The booking calendar appears after a successful inquiry ("Book a Time" on
+  // the confirmation), so the inquiry POST gets a synthetic local success. The
+  // Cal.com script itself is blocked, so its loader keeps every call queued in
+  // window.Cal.q, which is where the inline embed's config is read from.
+  await installSafetyNet(page, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      headers: { "access-control-allow-origin": "*" },
+      body: JSON.stringify({ tier: "MEDIUM" }),
+    }),
+  );
+  await landAndAssertPersisted(page);
+  await sendInquiry(page);
+  await expect(page.locator("#essentials-confirmation")).toBeVisible();
+  await page.click("#essentials-confirm-book");
+
+  const readMetadata = () =>
+    page.evaluate(() => {
+      const cal = (window as unknown as { Cal?: { q?: ArrayLike<unknown>[] } }).Cal;
+      const inline = Array.from(cal?.q ?? [])
+        .map((args) => Array.from(args))
+        .find((args) => args[0] === "inline");
+      const opts = inline?.[1] as { config?: { metadata?: Record<string, string> } } | undefined;
+      return opts?.config?.metadata ?? null;
+    });
+  await expect.poll(readMetadata, { message: "the Cal inline embed should be queued" }).not.toBeNull();
+  expect(await readMetadata()).toEqual({
+    gclid: SYNTH_GCLID,
+    gbraid: SYNTH_GBRAID,
+    wbraid: SYNTH_WBRAID,
+  });
+});
+
+test("persists and forwards a wbraid-only iOS landing (no gclid, no UTM tags)", async ({
+  page,
+}) => {
+  const captured = await installSafetyNet(page, (route) => route.abort());
+
+  // Before wbraid counted as an ad parameter, this landing saved NO record.
+  const stored = await landAndReadStored(page, WBRAID_ONLY_URL);
+  expect(stored, "a wbraid alone should persist an attribution record").not.toBeNull();
+  expect(stored?.wbraid).toBe(SYNTH_WBRAID);
+  expect(stored?.gclid ?? null).toBeNull();
+
+  await sendInquiry(page);
+  await expect
+    .poll(() => captured.length, { message: "the inquiry POST body should have been captured" })
+    .toBe(1);
+  expect(captured[0].attribution?.wbraid).toBe(SYNTH_WBRAID);
+  expect(captured[0].attribution?.gclid ?? null).toBeNull();
 });
 
 test("forwards gclid in the full wizard reached via Add More Details (aborted)", async ({
@@ -259,6 +326,7 @@ test("forwards gclid in the full wizard reached via Add More Details (aborted)",
   expect(payload.source).toBe("discovery_qualifier");
   expect(payload.essentials).toBeUndefined();
   expect(payload.attribution?.gclid).toBe(SYNTH_GCLID);
+  expect(payload.attribution?.wbraid).toBe(SYNTH_WBRAID);
   expect(payload.attribution?.utmCampaign).toBe("erp-migration-services");
   expect(payload.qualifierAnswers?.role).toBe("Controller");
 });

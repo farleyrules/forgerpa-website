@@ -624,9 +624,15 @@ function initCalInlineEmbed(): void {
   // differs from the qualifier email. Captured at page load with a 30-day TTL
   // (qualifier-state.captureAttribution). Only attach `metadata` when a gclid
   // is actually present — never send `metadata: { gclid: null }`.
-  const gclid = captureAttribution().gclid;
-  if (gclid) {
-    config.metadata = { gclid };
+  // The iOS click IDs (gbraid, wbraid) ride along the same way, each only when
+  // present; the webhook uploads whichever Google ranks highest.
+  const { gclid, gbraid, wbraid } = captureAttribution();
+  const clickIds: Record<string, string> = {};
+  if (gclid) clickIds.gclid = gclid;
+  if (gbraid) clickIds.gbraid = gbraid;
+  if (wbraid) clickIds.wbraid = wbraid;
+  if (Object.keys(clickIds).length > 0) {
+    config.metadata = clickIds;
   }
 
   Cal("inline", {
