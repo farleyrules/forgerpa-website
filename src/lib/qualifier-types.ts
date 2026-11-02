@@ -21,6 +21,9 @@ export interface QualifierAnswers {
 
 export interface AttributionParams {
   gclid?: string | null;
+  /** Google iOS click IDs, sent in place of (or beside) gclid on iOS 14+ clicks. */
+  gbraid?: string | null;
+  wbraid?: string | null;
   msclkid?: string | null;
   fbclid?: string | null;
   utmSource?: string | null;
