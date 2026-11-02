@@ -56,6 +56,16 @@ export const demos: Demo[] = [
     uploadDate: '2026-10-30',
   },
   {
+    slug: 'multi-entity-month-end-close',
+    title: 'Multi-Entity Month-End Close',
+    audience: 'For CFOs and controllers of multi-entity groups',
+    description:
+      "A group's month-end close, in order: fees posted on both sides, intercompany balances reconciled, the P&L consolidated, and lender packages built.",
+    durationSeconds: 148.4,
+    category: 'finance',
+    uploadDate: '2026-11-02',
+  },
+  {
     slug: 'denial-and-delay-trace',
     title: 'Denial and Delay Trace',
     audience: 'For revenue cycle leaders',
