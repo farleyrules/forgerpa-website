@@ -18,7 +18,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: "list",
+  // In CI the github reporter also pins each failure to its line in the PR.
+  reporter: process.env.CI ? [["list"], ["github"]] : "list",
   use: {
     baseURL: "http://localhost:4321",
     trace: "on-first-retry",
