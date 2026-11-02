@@ -1,14 +1,22 @@
 name: CI
 
 # Pre-deploy gate for forgerpa.com (Astro 5 static site, deployed via Cloudflare).
-# Two jobs run on every push and PR to main, in parallel:
+# Three jobs run on every push and PR to main, in parallel:
 #   - Build: the production build (`astro build`) must succeed, then a metadata
 #     gate (`npm run check:metadata`) scans the built dist/ and fails on a
 #     doubled "| Forge RPA" title suffix, a page without exactly one <h1>, or a
 #     missing meta description.
 #   - Check: `astro check` must report zero type errors under the repo's strict
 #     tsconfig (astro/tsconfigs/strict).
-# A failure in either blocks the change before it reaches the deploy path.
+#   - E2E: the Playwright specs in e2e/ (gclid capture on /contact, demo pages,
+#     demo link beacons) run against a local `astro preview` build. The gclid
+#     spec guards Google Ads offline-conversion matching; it went stale for
+#     months in 2026 because nothing ran it, which is why it runs here.
+# A failure in any job blocks a PR before it reaches the deploy path. Most
+# changes land on main by direct push, so the push run is the alarm for those.
+#
+# Cost: this repo is public, so standard Linux runner minutes are free and do
+# not draw on the account's Actions budget.
 
 on:
   pull_request:
@@ -63,3 +71,50 @@ jobs:
 
       - name: astro check
         run: npm run check
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      # Key the browser cache on the installed Playwright version, so an
+      # upgrade downloads the matching browser once and reuses it after.
+      - name: Read Playwright version
+        id: pw
+        run: |
+          echo "version=$(npx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium-shell
+
+      # Headless runs only need Chromium's headless shell, so --only-shell
+      # skips the full browser. On a cache hit the download is skipped and
+      # only the OS libraries are installed.
+      - name: Install Chromium
+        run: npx playwright install --with-deps --only-shell chromium
+
+      # playwright.config.ts builds the site and serves it with `astro preview`.
+      - name: Playwright tests
+        run: npx playwright test
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 7
