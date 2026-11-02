@@ -146,3 +146,28 @@ test("a jump made while paused is reported when the tab is hidden; seconds watch
   expect(Number(last.body.p)).toBeGreaterThanOrEqual(Math.floor(length * 10) / 10 - 0.1);
   expect(Number(last.body.w)).toBeLessThan(10);
 });
+
+// The Google tags in BaseLayout run before DemoTracking removes the code from the address bar,
+// so they are configured with a page_location that never carries ?r=. The tags only render when
+// the site is built with a GA4 id, so this check needs one (any value works, nothing is sent):
+//   PUBLIC_GA4_MEASUREMENT_ID=G-TEST000000 npm run build && npx playwright test -c playwright.demo-tracking.config.ts
+test("Google tags get the page address without the ?r= code", async ({ page }) => {
+  const beacons = await captureBeacons(page);
+  await page.goto(`${pagePath}?r=${TOKEN}&utm_source=check`);
+  const configs = await page.evaluate(() =>
+    ((window as unknown as { dataLayer?: ArrayLike<unknown>[] }).dataLayer ?? [])
+      .map((entry) => Array.from(entry))
+      .filter((args) => args[0] === "config")
+      .map((args) => String((args[2] as { page_location?: string } | undefined)?.page_location ?? "")),
+  );
+  test.skip(configs.length === 0, "built without PUBLIC_GA4_MEASUREMENT_ID; see the comment above");
+  for (const location of configs) {
+    const url = new URL(location);
+    expect(url.pathname).toBe(pagePath);
+    expect(url.searchParams.has("r")).toBe(false);
+    expect(url.searchParams.get("utm_source")).toBe("check");
+    expect(location).not.toContain(TOKEN);
+  }
+  await expect.poll(() => events(beacons)).toContain("open");
+  expect(beacons[0]!.body.r).toBe(TOKEN);
+});
