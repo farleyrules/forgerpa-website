@@ -181,7 +181,7 @@ test("captures gclid and forwards it in the (aborted) inquiry form submission", 
   const payload = captured[0];
   expect(payload.source).toBe("discovery_qualifier");
   expect(payload.essentials).toBe(true);
-  expect(payload.attribution?.gclid).toBe("TEMP-BREAK-PROVES-CI-GATES");
+  expect(payload.attribution?.gclid).toBe(SYNTH_GCLID);
   // The campaign UTM also rides along (used later for conversion VALUE).
   expect(payload.attribution?.utmCampaign).toBe("erp-migration-services");
 });
