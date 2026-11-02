@@ -56,6 +56,16 @@ export const demos: Demo[] = [
     uploadDate: '2026-10-30',
   },
   {
+    slug: 'multi-entity-pl-consolidation',
+    title: 'Multi-Entity P&L Consolidation',
+    audience: 'For CFOs and controllers of multi-entity groups',
+    description:
+      "Every company's books consolidated into one P&L each month. Accounts map to one layout, intercompany fees are eliminated, and a person approves the result.",
+    durationSeconds: 156.4,
+    category: 'finance',
+    uploadDate: '2026-11-02',
+  },
+  {
     slug: 'multi-entity-month-end-close',
     title: 'Multi-Entity Month-End Close',
     audience: 'For CFOs and controllers of multi-entity groups',
