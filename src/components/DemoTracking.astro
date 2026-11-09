@@ -122,8 +122,11 @@ const { slug, durationSeconds } = Astro.props;
       } catch (e) {
         // fall through to fetch
       }
+      // Same credentials as sendBeacon, so the cockpit's team-device cookie (set only for
+      // Forge team members signed in to sales.forgerpa.com) also rides on this fallback and a
+      // team member's own test view is never counted as the lead's. This page sets no cookie.
       try {
-        fetch(endpoint, { method: 'POST', body: json, mode: 'no-cors', keepalive: true, credentials: 'omit' });
+        fetch(endpoint, { method: 'POST', body: json, mode: 'no-cors', keepalive: true, credentials: 'include' });
       } catch (e) {
         // Nothing else to try; the visitor's page is unaffected.
       }
