@@ -77,7 +77,7 @@ export const demos: Demo[] = [
   },
   {
     slug: 'denial-and-delay-trace',
-    title: 'Denial and Delay Trace',
+    title: 'Denial Root Cause Analysis',
     audience: 'For revenue cycle leaders',
     description:
       'Every denied or late-paid claim traced to the step that caused it, with the dollars and days totaled by step, community and payer.',
@@ -97,7 +97,7 @@ export const demos: Demo[] = [
   },
   {
     slug: 'denial-work-packets',
-    title: 'Denial Work Packets',
+    title: 'Denial Appeal Packets',
     audience: 'For denial and appeals specialists',
     description:
       'A morning queue of open denials, highest priority first, and an appeal packet the specialist reviews and approves.',
