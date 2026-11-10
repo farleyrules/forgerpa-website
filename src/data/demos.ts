@@ -105,6 +105,16 @@ export const demos: Demo[] = [
     category: 'healthcare',
     uploadDate: '2026-10-30',
   },
+  {
+    slug: 'hospital-denial-root-cause-analysis',
+    title: 'Hospital Denial Root Cause Analysis',
+    audience: 'For hospital revenue cycle leaders',
+    description:
+      'Every denied or late-paid hospital claim traced to the front-end, mid-cycle, clinical or back-end step that caused it, with the 835 remit line and the record that decided it, and the totals tied out to the remits.',
+    durationSeconds: 202.2,
+    category: 'healthcare',
+    uploadDate: '2026-11-09',
+  },
 ];
 
 /** Whole seconds, rounded, so the label and the ISO duration always agree. */
