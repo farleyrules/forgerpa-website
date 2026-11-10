@@ -81,7 +81,7 @@ export const demos: Demo[] = [
     audience: 'For revenue cycle leaders',
     description:
       'Every denied or late-paid claim traced to the step that caused it, with the dollars and days totaled by step, community and payer.',
-    durationSeconds: 155.5,
+    durationSeconds: 159.9,
     category: 'healthcare',
     uploadDate: '2026-10-30',
   },
@@ -101,7 +101,7 @@ export const demos: Demo[] = [
     audience: 'For denial and appeals specialists',
     description:
       'A morning queue of open denials, highest priority first, and an appeal packet the specialist reviews and approves.',
-    durationSeconds: 205.8,
+    durationSeconds: 208.4,
     category: 'healthcare',
     uploadDate: '2026-10-30',
   },
