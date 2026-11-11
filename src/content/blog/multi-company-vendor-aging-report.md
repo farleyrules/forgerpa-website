@@ -13,7 +13,7 @@ readingTime: "8 min"
 draft: true
 ---
 
-<p>By hand, a multi-company vendor aging report takes a separate report run, export and cleanup for each entity you pull on its own, plus combining the files and calculating the aging buckets, and none of it can start until AP closes for the month. In my work before Forge, at a Fortune Global 500 manufacturer running SAP across multiple company codes, that took one to two days every month. Automated, the same open-items report runs for every entity as of the period-end date, the results are combined, the buckets are derived from each invoice's due date, and past-due items are flagged, so your AP team starts with the report already built.</p>
+<p>By hand, a multi-company vendor aging report takes a separate report run, export and cleanup for each entity you pull on its own, plus combining the files and calculating the aging buckets, and none of it can start until AP closes for the month. In my work before Forge, at a Fortune Global 500 manufacturer running SAP across multiple company codes, that took one to two days every month, and the automation I built cut it to about 30 minutes. Automated, the same open-items report runs for every entity as of the period-end date, the results are combined, the buckets are derived from each invoice's due date, and past-due items are flagged, so your AP team starts with the report already built.</p>
 
 <p>A vendor aging report, often called an AP aging report, lists the open invoices you owe each vendor, grouped by how far past due they are.</p>
 
