@@ -34,6 +34,10 @@ const caseStudyCollection = defineCollection({
     publishDate: isoDate.optional(),
     tags: z.array(z.string()).optional().default([]),
     featured: z.boolean().optional().default(false),
+    // Draft flag, the same contract as the blog's: a draft study is left out
+    // of the case-study hub, the homepage featured cards, sibling "related"
+    // links, and the sitemap, and produces no route until this is set to false.
+    draft: z.boolean().optional().default(false),
   }),
 });
 

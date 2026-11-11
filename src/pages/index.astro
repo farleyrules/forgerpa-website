@@ -5,7 +5,7 @@ import ServiceCard from '../components/ServiceCard.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
 import CTASection from '../components/CTASection.astro';
 import { getCollection } from 'astro:content';
-const featuredStudies = await getCollection('case-studies', ({ data }) => data.featured === true);
+const featuredStudies = await getCollection('case-studies', ({ data }) => data.featured === true && !data.draft);
 const sortedFeatured = featuredStudies
   .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
   .slice(0, 3);

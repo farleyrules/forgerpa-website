@@ -3,7 +3,8 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
 import { getCollection } from 'astro:content';
 
-const caseStudies = await getCollection('case-studies');
+// Draft studies are excluded until `draft: false` is set.
+const caseStudies = (await getCollection('case-studies')).filter((study) => !study.data.draft);
 
 // Sort by order field (lower number = shown first)
 const sortedCaseStudies = caseStudies.sort((a, b) =>
