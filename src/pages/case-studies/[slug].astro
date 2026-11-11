@@ -4,7 +4,9 @@ import { getCollection } from 'astro:content';
 import { linksForStudy } from '../../lib/case-study-links';
 
 export async function getStaticPaths() {
-  const studies = await getCollection('case-studies');
+  // A draft study produces no route, and because titleBySlug is built from this
+  // filtered list, a published study's "related" link to a draft is dropped.
+  const studies = (await getCollection('case-studies')).filter((study) => !study.data.draft);
   const titleBySlug = Object.fromEntries(studies.map((s) => [s.slug, s.data.title]));
 
   return studies.map((study) => {

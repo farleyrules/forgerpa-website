@@ -65,6 +65,10 @@ export const caseStudyLinks: Record<string, CaseStudyLinks> = {
     service: { label: 'Data Lake', href: '/services/data-lake' },
     related: ['multi-unit-data-lake-composite'],
   },
+  'vendor-aging-report-sap': {
+    service: { label: 'Accounts Payable Automation', href: '/services/accounts-payable-automation' },
+    industry: { label: 'Manufacturing Finance', href: '/industries/manufacturing-finance' },
+  },
 };
 
 export function linksForStudy(slug: string): CaseStudyLinks {
