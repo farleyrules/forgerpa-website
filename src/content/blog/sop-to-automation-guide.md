@@ -178,9 +178,9 @@ readingTime: "9 min"
 
 <p>Ready to evaluate your processes for automation potential? Start with your top 5 most time-consuming SOPs and run them through the candidate checklist above. If 3 or more score well, you have a strong foundation for an automation program.</p>
 
-<p>Want expert eyes on your evaluation? We offer a complimentary <a href="https://forgerpa.com/services/automation-assessment">SOP-to-Automation Assessment</a> where we analyze your top processes and deliver a prioritized roadmap with timeline and ROI estimates.</p>
+<p>Want expert eyes on your evaluation? We offer an <a href="https://forgerpa.com/services/automation-assessment">SOP-to-Automation Assessment</a> where we analyze your top processes and deliver a prioritized roadmap with timeline and ROI estimates.</p>
 
-<p><a href="/contact?from=blog-sop-to-automation-guide">Book Your Free Assessment →</a></p>
+<p><a href="/contact?from=blog-sop-to-automation-guide">Ask About an Assessment →</a></p>
 
 <hr />
 

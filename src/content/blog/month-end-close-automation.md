@@ -137,9 +137,9 @@ readingTime: "9 min"
 
 <p>You do not need to automate all five at once. Pick one. The AP aging report is the best starting point for most teams, it is the quickest win and the easiest to validate.</p>
 
-<p>Want to identify which of your month-end close tasks will deliver the fastest payback? We offer a free <a href="https://forgerpa.com/services/automation-assessment">Close Process Assessment</a> where we map your close timeline, identify bottlenecks, and recommend a phased automation roadmap.</p>
+<p>Want to identify which of your month-end close tasks will deliver the fastest payback? We offer a <a href="https://forgerpa.com/services/automation-assessment">Close Process Assessment</a> where we map your close timeline, identify bottlenecks, and recommend a phased automation roadmap.</p>
 
-<p><a href="/contact?from=blog-month-end-close-automation">Book Your Free Close Assessment →</a></p>
+<p><a href="/contact?from=blog-month-end-close-automation">Ask About a Close Assessment →</a></p>
 
 <hr />
 
