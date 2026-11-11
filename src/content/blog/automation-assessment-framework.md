@@ -204,7 +204,7 @@ readingTime: "10 min"
 
 <p>Want us to run this assessment for your team? We offer a <a href="https://forgerpa.com/services/automation-assessment">Process Automation Assessment</a> where we evaluate your top 10 processes, score them using this framework, and deliver a prioritized implementation roadmap with ROI estimates.</p>
 
-<p>No sales pitch. Just data-driven recommendations from a finance veteran who has done this hundreds of times.</p>
+<p>Data-driven recommendations from a finance veteran who has done this hundreds of times.</p>
 
 <p><a href="/contact?from=blog-automation-assessment-framework">Ask About an Assessment →</a></p>
 
