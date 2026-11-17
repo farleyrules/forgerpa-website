@@ -19,6 +19,7 @@ outcome:
 order: 3
 publishDate: "2025-01-15"
 tags:
+  - "Prior Work"
   - "Manufacturing"
   - "Reporting"
   - "Data Analysis"

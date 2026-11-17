@@ -164,6 +164,7 @@ const differences = [
             metric={study.data.metric || study.data.summary}
             description={study.data.shortDescription || study.data.summary}
             link={`/case-studies/${study.slug}`}
+            label={(study.data.tags || []).includes('Prior Work') ? 'Prior Work' : undefined}
           />
         ))}
       </div>

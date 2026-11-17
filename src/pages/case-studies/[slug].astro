@@ -23,6 +23,8 @@ export async function getStaticPaths() {
 const { study, links, relatedStudies } = Astro.props;
 const d = study.data;
 const isComposite = (d.tags ?? []).includes('Composite');
+// David's own work before Forge (David, 2026-11-17): labeled so it never reads as a Forge client result.
+const isPriorWork = (d.tags ?? []).includes('Prior Work');
 
 // The content schema normalizes publishDate to an ISO "YYYY-MM-DD" string.
 const publishDate = d.publishDate;
@@ -44,6 +46,7 @@ const metaDescription = d.metaDescription ?? d.summary;
   outcome={d.outcome}
   tags={d.tags}
   isComposite={isComposite}
+  isPriorWork={isPriorWork}
   publishDate={publishDate}
   relatedService={links.service}
   relatedIndustry={links.industry}

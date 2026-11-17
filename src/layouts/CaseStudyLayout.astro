@@ -30,6 +30,8 @@ interface Props {
   outcome: string[];
   tags?: string[];
   isComposite?: boolean;
+  /** David's own work before he founded Forge RPA, never a Forge client engagement. */
+  isPriorWork?: boolean;
   publishDate?: string;
   relatedService?: RelatedLink;
   relatedIndustry?: RelatedLink;
@@ -49,6 +51,7 @@ const {
   outcome,
   tags = [],
   isComposite = false,
+  isPriorWork = false,
   publishDate,
   relatedService,
   relatedIndustry,
@@ -66,7 +69,9 @@ const articleSchema = {
   about: service,
   articleSection: industry,
   ...(publishDate ? { datePublished: publishDate } : {}),
-  author: { '@type': 'Organization', name: 'Forge RPA LLC', url: 'https://forgerpa.com' },
+  author: isPriorWork
+    ? { '@type': 'Person', name: 'David Farley', url: 'https://forgerpa.com/about' }
+    : { '@type': 'Organization', name: 'Forge RPA LLC', url: 'https://forgerpa.com' },
   publisher: { '@type': 'Organization', name: 'Forge RPA', url: 'https://forgerpa.com' },
   url: `https://forgerpa.com/case-studies/${slug}`,
   isAccessibleForFree: true,
@@ -105,7 +110,16 @@ const relatedServiceLinks = [
         {isComposite && (
           <span class="px-2 py-1 text-xs font-semibold bg-amber/15 text-amber-dark border border-amber/40 rounded-full">Illustrative</span>
         )}
+        {isPriorWork && (
+          <span class="px-2 py-1 text-xs font-semibold bg-white text-charcoal border border-charcoal/30 rounded-full">Prior Work</span>
+        )}
       </div>
+
+      {isPriorWork && (
+        <p class="mb-10 text-sm text-gray-600 bg-slate-light border border-gray-200 rounded-lg p-4">
+          This is David Farley's own work from his career before he founded Forge RPA. It is not a Forge RPA client engagement.
+        </p>
+      )}
 
       {isComposite && (
         <p class="mb-10 text-sm text-gray-600 bg-slate-light border border-gray-200 rounded-lg p-4">
@@ -120,7 +134,7 @@ const relatedServiceLinks = [
         </div>
 
         <div>
-          <h2 class="text-2xl font-bold text-charcoal mb-3">Our Approach</h2>
+          <h2 class="text-2xl font-bold text-charcoal mb-3">{isPriorWork ? 'The Approach' : 'Our Approach'}</h2>
           <p class="text-gray-700 leading-relaxed">{approach}</p>
         </div>
 
