@@ -13,6 +13,7 @@ outcome:
 order: 6
 publishDate: "2025-03-20"
 tags:
+  - "Prior Work"
   - "Cost Avoidance"
   - "Insurance"
   - "Automation"

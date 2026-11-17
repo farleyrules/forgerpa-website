@@ -19,6 +19,7 @@ outcome:
 order: 6
 publishDate: "2026-09-02"
 tags:
+  - "Prior Work"
   - "Fixed Assets"
   - "Power Automate"
   - "Office Scripts"

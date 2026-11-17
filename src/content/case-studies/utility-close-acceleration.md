@@ -14,6 +14,7 @@ outcome:
 order: 4
 publishDate: "2025-03-28"
 tags:
+  - "Prior Work"
   - "Month-End Close"
   - "Utilities"
   - "Finance Automation"

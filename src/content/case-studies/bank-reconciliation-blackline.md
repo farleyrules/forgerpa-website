@@ -19,6 +19,7 @@ outcome:
 order: 4
 publishDate: "2026-09-02"
 tags:
+  - "Prior Work"
   - "Bank Reconciliations"
   - "Record to Report"
   - "BlackLine"

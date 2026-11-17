@@ -18,6 +18,7 @@ outcome:
 order: 2
 publishDate: "2025-02-10"
 tags:
+  - "Prior Work"
   - "Month-End Close"
   - "Intercompany"
   - "Finance Automation"
