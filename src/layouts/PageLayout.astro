@@ -17,6 +17,8 @@ interface Props {
   heroCta?: string;
   heroCtaLink?: string;
   noindex?: boolean;
+  /** Passed straight through to BaseLayout (emits <meta name="referrer"> only when set). */
+  referrerPolicy?: 'strict-origin' | 'origin' | 'no-referrer' | 'same-origin';
   ogImage?: string;
   /** Optional link-preview extras, passed straight through to BaseLayout. */
   ogType?: string;
@@ -28,7 +30,7 @@ interface Props {
   stickyCta?: boolean;
 }
 
-const { title, description, heroTitle, heroSubtitle, heroEyebrow, heroTrustLine, heroCta, heroCtaLink, noindex, ogImage, ogType, ogImageWidth, ogImageHeight, ogVideo, stickyCta = true } = Astro.props;
+const { title, description, heroTitle, heroSubtitle, heroEyebrow, heroTrustLine, heroCta, heroCtaLink, noindex, referrerPolicy, ogImage, ogType, ogImageWidth, ogImageHeight, ogVideo, stickyCta = true } = Astro.props;
 // Show the mobile sticky CTA only when the page actually has a booking target,
 // so /book and the legal pages (which pass no heroCtaLink) never show it.
 const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
@@ -38,6 +40,7 @@ const showStickyCta = stickyCta !== false && Boolean(heroCtaLink);
   title={title}
   description={description}
   noindex={noindex}
+  referrerPolicy={referrerPolicy}
   ogImage={ogImage}
   ogType={ogType}
   ogImageWidth={ogImageWidth}
