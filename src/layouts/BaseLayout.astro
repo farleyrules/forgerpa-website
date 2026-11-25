@@ -6,6 +6,14 @@ interface Props {
   /** When true, ask search engines not to index (e.g. form thank-you pages). */
   noindex?: boolean;
   /**
+   * The page's referrer policy, emitted as <meta name="referrer"> only when set. /demos/watch/
+   * passes "strict-origin": its address keeps a prospect's ?r= code, and the default policy
+   * would hand that full address to the next page on this site (and to the analytics tags
+   * there) as document.referrer. "strict-origin" sends only https://forgerpa.com/ and leaves
+   * the Origin header on the page's own requests unchanged.
+   */
+  referrerPolicy?: 'strict-origin' | 'origin' | 'no-referrer' | 'same-origin';
+  /**
    * Absolute URL of the social-share image (1200x630 recommended). When set,
    * emits og:image + twitter:image and upgrades the Twitter card to a large
    * summary. When omitted, no image tags are emitted (no placeholder asset is
@@ -34,6 +42,7 @@ const {
   description = 'Intelligent automation built by people who understand your operations. Process automation, ERP data migration, and AI-powered assessment.',
   canonicalUrl,
   noindex = false,
+  referrerPolicy,
   ogImage,
   ogType = 'website',
   ogImageWidth,
@@ -180,6 +189,7 @@ try {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
+  {referrerPolicy && <meta name="referrer" content={referrerPolicy} />}
   <meta name="description" content={description} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
